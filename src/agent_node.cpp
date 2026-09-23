@@ -14,13 +14,20 @@ class CarSwarmAgent : public rclcpp::Node
 {
 public:
   CarSwarmAgent()
-  : Node("car_swarm_agent"), planner_(10) 
-  // 创建节点时，同时创建一个“分成 10 段”的规划器。
-  // 节点只负责“何时调用规划器、如何展示或发布结果”；规划器负责“如何生成路径”
+  : Node("car_swarm_agent"), 
+    planner_(declare_parameter<int>("num_segments",10))
+    // planner_ 是节点的成员对象，必须在进入 {} 前就创建，所以 num_segments 参数写在 : ... 后面
+    // 创建节点时，同时创建一个“分成 10 段”的规划器。
+    // 节点只负责“何时调用规划器、如何展示或发布结果”；规划器负责“如何生成路径”
   {
-    car_swarm_agent::Pose start{0.0, 0.0, 0.0};
-    car_swarm_agent::Pose goal{5.0, 3.0, 0.0};
+    const double start_x = declare_parameter<double>("start_x",0.0);
+    const double start_y = declare_parameter<double>("start_y",0.0);
+    const double goal_x = declare_parameter<double>("goal_x",5.0); 
+    // 声明一个 ROS 参数，名字叫 goal_x；如果运行时没有人传值，就使用默认值 5.0
+    const double goal_y = declare_parameter<double>("goal_y",3.0);
 
+    car_swarm_agent::Pose start{start_x, start_y, 0.0};
+    car_swarm_agent::Pose goal{goal_x, goal_y, 0.0};
     const std::vector<car_swarm_agent::Pose> path =
       planner_.plan(start, goal);
 

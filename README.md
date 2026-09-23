@@ -47,6 +47,20 @@ colcon build --packages-select car_swarm_agent
 source install/setup.bash
 ros2 run car_swarm_agent agent_node
 ```
+## ROS 参数
+
+规划起点、终点和路径段数可在运行时传入，无需修改代码：
+
+```bash
+ros2 run car_swarm_agent agent_node --ros-args \
+  -p start_x:=1.0 \
+  -p start_y:=-2.0 \
+  -p goal_x:=7.0 \
+  -p goal_y:=2.0 \
+  -p num_segments:=4
+```
+
+上述示例从 `(1, -2)` 规划至 `(7, 2)`，生成 5 个路径点。
 
 ## 技术标签
 
