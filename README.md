@@ -77,6 +77,18 @@ ros2 launch car_swarm_agent planner_demo.launch.py
 - 路径段数：`4`；
 - 输出路径点数量：`5`。
 
+## 自动测试
+
+规划器的核心逻辑可脱离 ROS 节点独立测试：
+
+```bash
+cd ~/car_swarm_ws
+colcon test --packages-select car_swarm_agent --ctest-args -R test_hybrid_astar_planner
+colcon test-result --verbose
+```
+
+当前测试验证路径点数量、起点、中间点和终点是否符合预期。
+
 ## 技术标签
 
 - ROS 2 Jazzy

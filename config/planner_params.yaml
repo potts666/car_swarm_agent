@@ -1,0 +1,7 @@
+car_swarm_agent:
+  ros__parameters:
+    start_x: 1.0
+    start_y: -2.0
+    goal_x: 7.0
+    goal_y: 2.0
+    num_segments: 4
