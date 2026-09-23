@@ -48,6 +48,11 @@ install(TARGETS
 install(DIRECTORY include/
   DESTINATION include
 )
+#install launch files.
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME})
+#构建时，把 launch 文件夹复制到 ROS package 的安装目录中；否则 ros2 launch 找不到它。
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

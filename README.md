@@ -62,6 +62,21 @@ ros2 run car_swarm_agent agent_node --ros-args \
 
 上述示例从 `(1, -2)` 规划至 `(7, 2)`，生成 5 个路径点。
 
+## Launch 启动
+
+也可以使用 launch 文件一次性启动节点和参数：
+
+```bash
+ros2 launch car_swarm_agent planner_demo.launch.py
+```
+
+`launch/planner_demo.launch.py` 当前配置：
+
+- 起点：`(1, -2)`；
+- 终点：`(7, 2)`；
+- 路径段数：`4`；
+- 输出路径点数量：`5`。
+
 ## 技术标签
 
 - ROS 2 Jazzy
