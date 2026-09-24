@@ -16,11 +16,9 @@ public:
   CarSwarmAgent()
   : Node("car_swarm_agent"), 
   planner_(car_swarm_agent::PlannerConfig{
-    static_cast<int>(
-    declare_parameter<int>("num_segments", 10)),
     declare_parameter<double>("step_size", 1.0),
     declare_parameter<double>("wheel_base", 2.7),
-    declare_parameter<double>("max_steer_angle", 0.5),
+    declare_parameter<double>("max_steer_angle", 0.5),  
     static_cast<int>(
       declare_parameter<int>("steering_samples", 3))})
     // planner_ 是节点的成员对象，必须在进入 {} 前就创建，所以 num_segments 参数写在 : ... 后面
