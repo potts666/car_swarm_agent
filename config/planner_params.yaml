@@ -5,3 +5,7 @@ car_swarm_agent:
     goal_x: 7.0
     goal_y: 2.0
     num_segments: 4
+    step_size: 1.0
+    wheel_base: 2.7
+    max_steer_angle: 0.5
+    steering_samples: 3

@@ -15,7 +15,14 @@ class CarSwarmAgent : public rclcpp::Node
 public:
   CarSwarmAgent()
   : Node("car_swarm_agent"), 
-    planner_(declare_parameter<int>("num_segments",10))
+  planner_(car_swarm_agent::PlannerConfig{
+    static_cast<int>(
+    declare_parameter<int>("num_segments", 10)),
+    declare_parameter<double>("step_size", 1.0),
+    declare_parameter<double>("wheel_base", 2.7),
+    declare_parameter<double>("max_steer_angle", 0.5),
+    static_cast<int>(
+      declare_parameter<int>("steering_samples", 3))})
     // planner_ 是节点的成员对象，必须在进入 {} 前就创建，所以 num_segments 参数写在 : ... 后面
     // 创建节点时，同时创建一个“分成 10 段”的规划器。
     // 节点只负责“何时调用规划器、如何展示或发布结果”；规划器负责“如何生成路径”
