@@ -2,10 +2,12 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
-
+#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "nav_msgs/msg/path.hpp"
 #include "car_swarm_agent/hybrid_astar_planner.hpp"
 
 using namespace std::chrono_literals;
@@ -36,6 +38,27 @@ public:
     const std::vector<car_swarm_agent::Pose> path =
       planner_.plan(start, goal);
 
+    path_publisher_ =
+    create_publisher<nav_msgs::msg::Path>("planned_path", 10);
+
+    path_message_.header.frame_id = "map";
+
+    for (const auto & planner_pose : path) {
+      geometry_msgs::msg::PoseStamped path_pose;
+
+      path_pose.header.frame_id = "map";
+      path_pose.pose.position.x = planner_pose.x;
+      path_pose.pose.position.y = planner_pose.y;
+      path_pose.pose.position.z = 0.0;
+
+      path_pose.pose.orientation.z =
+      std::sin(planner_pose.yaw / 2.0);
+      path_pose.pose.orientation.w =
+      std::cos(planner_pose.yaw / 2.0);
+
+      path_message_.poses.push_back(path_pose);
+    }
+
     RCLCPP_INFO(
       get_logger(),
       "Planner generated %zu path points.",
@@ -59,10 +82,26 @@ public:
         auto message = std_msgs::msg::String();
         message.data = "agent is working";
         publisher_->publish(message);
+        publishPath();
       });
   }
 
 private:
+  void publishPath()
+  {
+    const auto now = get_clock()->now();
+
+    path_message_.header.stamp = now;
+
+    for (auto & path_pose : path_message_.poses) {
+      path_pose.header.stamp = now;
+    }
+
+    path_publisher_->publish(path_message_);
+  }
+
+  rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_publisher_;
+  nav_msgs::msg::Path path_message_;
   car_swarm_agent::HybridAStarPlanner planner_;
 
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;

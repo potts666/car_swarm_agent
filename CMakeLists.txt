@@ -8,6 +8,9 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(nav_msgs REQUIRED)
 
 add_library(hybrid_astar_planner
   src/hybrid_astar_planner.cpp # ROS 节点可以调用这个库
@@ -31,6 +34,19 @@ target_link_libraries(agent_node
 ament_target_dependencies(agent_node
   rclcpp
   std_msgs
+  geometry_msgs
+  nav_msgs
+)
+
+add_executable(vehicle_tf_broadcaster
+  src/vehicle_tf_broadcaster.cpp
+)
+
+ament_target_dependencies(vehicle_tf_broadcaster
+  rclcpp
+  geometry_msgs
+  tf2_ros
+  nav_msgs
 )
 
 install(TARGETS
@@ -42,6 +58,7 @@ install(TARGETS
 
 install(TARGETS
   agent_node
+  vehicle_tf_broadcaster
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -52,6 +69,7 @@ install(DIRECTORY include/
 install(DIRECTORY
   launch
   config
+  rviz
   DESTINATION share/${PROJECT_NAME})
 #构建时，把 launch 文件夹复制到 ROS package 的安装目录中；否则 ros2 launch 找不到它。
 
