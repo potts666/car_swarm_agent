@@ -8,3 +8,15 @@ car_swarm_agent:
     wheel_base: 2.7
     max_steer_angle: 0.5
     steering_samples: 3
+    goal_tolerance: 0.5
+    max_iterations: 1000
+    grid_resolution: 0.5
+    yaw_resolution: 0.08726646259971647
+    map_resolution: 0.5
+    map_origin_x: 0.0
+    map_origin_y: -5.0
+    map_width: 40
+    map_height: 30
+    obstacle_enabled: true
+    obstacle_col: 7
+    obstacle_row: 7

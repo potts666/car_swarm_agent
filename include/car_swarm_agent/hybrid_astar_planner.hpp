@@ -12,6 +12,19 @@ namespace car_swarm_agent {
         double yaw;
     };
 
+    struct OccupancyGrid
+    {
+        double resolution{1.0};
+        double origin_x{0.0};
+        double origin_y{0.0};
+        int width{0};
+        int height{0};
+        std::vector<unsigned char> cells;
+
+        bool isOccupied(double x, double y) const;
+        bool isSegmentFree(double x0, double y0, double x1, double y1) const;
+    };
+
     struct PlannerConfig
     {
     double step_size{1.0};
@@ -19,7 +32,10 @@ namespace car_swarm_agent {
     double max_steer_angle{0.5};
     int steering_samples{3};
     double goal_tolerance{0.5};// 车辆离终点小于 0.5 m，就认为已经到达
-    int max_iterations{1000};
+    int max_iterations{1}; // 以后不会意外把“搜索未完成”当成“规划成功”
+    double grid_resolution{0.5};
+    double yaw_resolution{0.08726646259971647}; // 15 度，单位 rad
+    OccupancyGrid map{};
     };
 
     struct SearchNode
