@@ -29,6 +29,27 @@ Panels:
 Visualization Manager:
   Class: ""
   Displays:
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Vehicle Footprint
+      Topic:
+        Value: /vehicle_footprint
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Value: true
+    - Class: rviz_default_plugins/Map
+      Enabled: true
+      Name: Demo Map
+      Alpha: 0.7
+      Topic:
+        Value: /demo_map
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Value: true
     - Alpha: 0.5
       Cell Size: 1
       Class: rviz_default_plugins/Grid
@@ -149,7 +170,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 10.469745635986328
+      Distance: 70
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1

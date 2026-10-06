@@ -1,5 +1,5 @@
 #include "car_swarm_agent/hybrid_astar_planner.hpp"
-
+#include <stdexcept>
 #include <algorithm>
 #include <cmath>
 #include <vector>
@@ -210,12 +210,311 @@ namespace car_swarm_agent {
             config_.yaw_resolution,
             0.01,
             2.0 * kPi);// 把连续朝向归入一个角度格子
+            if (!std::isfinite(config_.vehicle_length) ||
+            !std::isfinite(config_.vehicle_width) ||
+            !std::isfinite(config_.rear_overhang) ||
+            !std::isfinite(config_.collision_margin) ||
+            !std::isfinite(config_.collision_check_step) ||
+            config_.vehicle_length <= 0.0 ||
+            config_.vehicle_width <= 0.0 ||
+            config_.rear_overhang < 0.0 ||
+            config_.rear_overhang >= config_.vehicle_length ||
+            config_.collision_margin < 0.0 ||
+            config_.collision_check_step <= 0.0)
+            {
+                throw std::invalid_argument(
+                    "Invalid vehicle collision configuration");
+            }
     }
     //段数至少是 1；
     //步长至少是 0.001 m；
     //轴距至少是 0.001 m，避免除以零；
     //最大转角不能是负数。
+    bool HybridAStarPlanner::isFootprintFree(
+        const Pose & pose,
+        double extra_margin) const
+    {
+        if (!std::isfinite(pose.x) ||
+            !std::isfinite(pose.y) ||
+            !std::isfinite(pose.yaw) ||
+            !std::isfinite(extra_margin) ||
+            extra_margin < 0.0)
+        {
+            return false;
+        }
 
+        const OccupancyGrid & map = config_.map;
+
+        // 默认空地图：保留无障碍规划行为。
+        if (map.width == 0 &&
+            map.height == 0 &&
+            map.cells.empty())
+        {
+            return true;
+        }
+
+        if (map.width <= 0 ||
+            map.height <= 0 ||
+            !std::isfinite(map.resolution) ||
+            map.resolution <= 0.0 ||
+            !std::isfinite(map.origin_x) ||
+            !std::isfinite(map.origin_y) ||
+            map.cells.size() !=
+                static_cast<std::size_t>(map.width) *
+                static_cast<std::size_t>(map.height))
+        {
+            return false;
+        }
+
+        const double padding =
+            config_.collision_margin + extra_margin;
+
+        // 车身矩形的半长、半宽。
+        const double half_length =
+            config_.vehicle_length * 0.5 + padding;
+
+        const double half_width =
+            config_.vehicle_width * 0.5 + padding;
+
+        const double c = std::cos(pose.yaw);
+        const double s = std::sin(pose.yaw);
+
+        // 后轴中心到车身几何中心的纵向距离。
+        const double center_offset =
+            config_.vehicle_length * 0.5 -
+            config_.rear_overhang;
+
+        const double center_x = pose.x + center_offset * c;
+        const double center_y = pose.y + center_offset * s;
+
+        // 旋转车身矩形在世界坐标下的轴对齐包围盒。
+        const double extent_x =
+            half_length * std::abs(c) +
+            half_width * std::abs(s);
+
+        const double extent_y =
+            half_length * std::abs(s) +
+            half_width * std::abs(c);
+
+        const double min_x = center_x - extent_x;
+        const double max_x = center_x + extent_x;
+        const double min_y = center_y - extent_y;
+        const double max_y = center_y + extent_y;
+
+        const double map_right =
+            map.origin_x + map.width * map.resolution;
+
+        const double map_top =
+            map.origin_y + map.height * map.resolution;
+
+        if (!std::isfinite(min_x) ||
+            !std::isfinite(max_x) ||
+            !std::isfinite(min_y) ||
+            !std::isfinite(max_y) ||
+            !std::isfinite(map_right) ||
+            !std::isfinite(map_top))
+        {
+            return false;
+        }
+
+        // 接触或越过地图外边界，按不可通行处理。
+        if (min_x <= map.origin_x ||
+            max_x >= map_right ||
+            min_y <= map.origin_y ||
+            max_y >= map_top)
+        {
+            return false;
+        }
+
+        // 多检查一圈，包含恰好接触车身包围盒边界的障碍格。
+        const int first_col = std::max(
+            0,
+            static_cast<int>(
+                std::floor((min_x - map.origin_x) /
+                        map.resolution)) - 1);
+
+        const int last_col = std::min(
+            map.width - 1,
+            static_cast<int>(
+                std::floor((max_x - map.origin_x) /
+                        map.resolution)) + 1);
+
+        const int first_row = std::max(
+            0,
+            static_cast<int>(
+                std::floor((min_y - map.origin_y) /
+                        map.resolution)) - 1);
+
+        const int last_row = std::min(
+            map.height - 1,
+            static_cast<int>(
+                std::floor((max_y - map.origin_y) /
+                        map.resolution)) + 1);
+
+        const double cell_half = map.resolution * 0.5;
+        constexpr double epsilon = 1e-9;
+
+        for (int row = first_row; row <= last_row; ++row) {
+            for (int col = first_col; col <= last_col; ++col) {
+                const auto index =
+                    static_cast<std::size_t>(row) *
+                    static_cast<std::size_t>(map.width) +
+                    static_cast<std::size_t>(col);
+
+                if (map.cells[index] == 0) {
+                    continue;
+                }
+
+                const double cell_x =
+                    map.origin_x +
+                    (col + 0.5) * map.resolution;
+
+                const double cell_y =
+                    map.origin_y +
+                    (row + 0.5) * map.resolution;
+
+                const double dx = cell_x - center_x;
+                const double dy = cell_y - center_y;
+
+                // SAT：世界 x 轴。 这里的 SAT 会检查整个矩形，因此能够检测“障碍在车身内部，但四个角都在空地”的情况。
+                if (std::abs(dx) >
+                    extent_x + cell_half + epsilon)
+                {
+                    continue;
+                }
+
+                // SAT：世界 y 轴。
+                if (std::abs(dy) >
+                    extent_y + cell_half + epsilon)
+                {
+                    continue;
+                }
+
+                // 栅格矩形在车身纵向、横向轴上的投影半径。
+                const double cell_projection =
+                    cell_half * (std::abs(c) + std::abs(s));
+
+                // SAT：车身纵向轴。
+                const double longitudinal = dx * c + dy * s;
+
+                if (std::abs(longitudinal) >
+                    half_length + cell_projection + epsilon)
+                {
+                    continue;
+                }
+
+                // SAT：车身横向轴。
+                const double lateral = -dx * s + dy * c;
+
+                if (std::abs(lateral) >
+                    half_width + cell_projection + epsilon)
+                {
+                    continue;
+                }
+
+                // 四个轴都无法分离：车身与障碍格相交。
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool HybridAStarPlanner::isPoseCollisionFree(
+        const Pose & pose) const
+    {
+        return isFootprintFree(pose, 0.0);
+    }
+
+    bool HybridAStarPlanner::isMotionCollisionFree(
+        const Pose & from,
+        const Pose & to) const
+    {
+        if (!isPoseCollisionFree(from) ||
+            !isPoseCollisionFree(to))
+        {
+            return false;
+        }
+
+        const OccupancyGrid & map = config_.map;
+
+        if (map.width == 0 &&
+            map.height == 0 &&
+            map.cells.empty())
+        {
+            return true;
+        }
+
+        const double dx = to.x - from.x;
+        const double dy = to.y - from.y;
+
+        // 已检查位姿有限；差值仍可能溢出。
+        const double raw_yaw_delta = to.yaw - from.yaw;
+
+        if (!std::isfinite(dx) ||
+            !std::isfinite(dy) ||
+            !std::isfinite(raw_yaw_delta))
+        {
+            return false;
+        }
+
+        const double yaw_delta =
+            std::remainder(raw_yaw_delta, 2.0 * kPi);
+
+        const double distance = std::hypot(dx, dy);
+
+        // 包含安全余量的车身，离后轴中心最远的角点半径。
+        const double longitudinal_radius =
+            std::max(
+                config_.rear_overhang,
+                config_.vehicle_length - config_.rear_overhang) +
+            config_.collision_margin;
+
+        const double lateral_radius =
+            config_.vehicle_width * 0.5 +
+            config_.collision_margin;
+
+        const double radius =
+            std::hypot(longitudinal_radius, lateral_radius);
+
+        // 任意车身点在整段插值中的位移上界：
+        // 后轴平移距离 + 旋转角度 × 角点半径。
+        const double motion_bound =
+            distance + radius * std::abs(yaw_delta);
+
+        const double required_samples = std::ceil(
+            motion_bound / config_.collision_check_step);
+
+        // 异常大输入按不可通行处理，避免溢出或无界循环。
+        if (!std::isfinite(required_samples) ||
+            required_samples > 1000000.0)
+        {
+            return false;
+        }
+
+        const int samples = std::max(
+            1, static_cast<int>(required_samples));
+
+        // 任意时刻距最近采样时刻最多半个间隔。
+        // 用这个上界膨胀采样车身，覆盖采样间的运动。
+        const double sweep_margin =
+            motion_bound / (2.0 * samples) + 1e-9;
+
+        for (int i = 0; i <= samples; ++i) {
+            const double t = static_cast<double>(i) / samples;
+
+            const Pose sample{
+                from.x + t * dx,
+                from.y + t * dy,
+                from.yaw + t * yaw_delta};
+
+            if (!isFootprintFree(sample, sweep_margin)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
     double HybridAStarPlanner::heuristic(
         //计算的是两点的直线距离
         const Pose & from,
@@ -298,8 +597,10 @@ namespace car_swarm_agent {
         const Pose & start,
         const Pose & goal) const
         {
-            if (config_.map.isOccupied(start.x, start.y) || config_.map.isOccupied(goal.x, goal.y)) {
-                return {};
+        if (!isPoseCollisionFree(start) ||
+            !isPoseCollisionFree(goal))
+        {
+            return {};
         }
         std::vector<SearchNode> all_nodes;
         //all_nodes 不是 Open 或 Closed。它是“所有被接受节点的档案库”，专门保存 parent_index；找到目标后才能从末尾一路追溯到起点，得到完整路径
@@ -368,18 +669,14 @@ namespace car_swarm_agent {
                 break;
             }// 到达目标判断
 
-            if (isGoalReached(current.pose, goal)) {
-                goal_index = current.node_index;
-                break;
-            }
-
             const std::vector<Pose> successors =
                 generateSuccessors(current.pose);
 
             for (const Pose & successor_pose : successors) {
-                if (!config_.map.isSegmentFree(
-                        current.pose.x, current.pose.y,
-                        successor_pose.x, successor_pose.y)) {
+                if (!isMotionCollisionFree(
+                        current.pose,
+                        successor_pose))
+                {
                     continue;
                 }
                 const GridKey child_key =
@@ -433,6 +730,17 @@ namespace car_swarm_agent {
         }
 
         std::reverse(path.begin(), path.end());
+        for (const Pose & pose : path) {
+            if (!isPoseCollisionFree(pose)) {
+                return {};
+            }
+        }
+
+        for (std::size_t i = 1; i < path.size(); ++i) {
+            if (!isMotionCollisionFree(path[i - 1], path[i])) {
+                return {};
+            }
+        }
 
         return path;
     }

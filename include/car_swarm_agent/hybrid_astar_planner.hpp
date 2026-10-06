@@ -36,6 +36,14 @@ namespace car_swarm_agent {
     double grid_resolution{0.5};
     double yaw_resolution{0.08726646259971647}; // 15 度，单位 rad
     OccupancyGrid map{};
+    // Pose 的位置代表后轴中心。
+    double vehicle_length{4.5};
+    double vehicle_width{1.8};
+    double rear_overhang{1.0};
+    double collision_margin{0.1};
+
+    // 车身任意点在相邻检查姿态之间的位移上界，单位 m。
+    double collision_check_step{0.1};
     };
 
     struct SearchNode
@@ -54,6 +62,11 @@ namespace car_swarm_agent {
 
     class HybridAStarPlanner {
     public:
+        bool isPoseCollisionFree(const Pose & pose) const;
+
+        bool isMotionCollisionFree(
+            const Pose & from,
+            const Pose & to) const;
         explicit HybridAStarPlanner(PlannerConfig config = {});// 构造函数
 
         std::vector<Pose> plan(const Pose& start, const Pose& goal) const;// 规划函数，输入起点和终点，返回路径点的向量
@@ -61,6 +74,9 @@ namespace car_swarm_agent {
         //根据 PlannerConfig 中的 step_size、wheel_base、max_steer_angle，向前模拟一步，得到下一个姿态
         std::vector<Pose> generateSuccessors(const Pose & pose) const;
     private:
+        bool isFootprintFree(
+            const Pose & pose,
+            double extra_margin) const;
         double heuristic(const Pose & from, const Pose & goal) const;
         bool isGoalReached(const Pose & pose, const Pose & goal) const;
         SearchNode makeChildNode(

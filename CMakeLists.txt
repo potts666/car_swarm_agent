@@ -11,6 +11,7 @@ find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
 
 add_library(hybrid_astar_planner
   src/hybrid_astar_planner.cpp # ROS 节点可以调用这个库
@@ -36,6 +37,7 @@ ament_target_dependencies(agent_node
   std_msgs
   geometry_msgs
   nav_msgs
+  visualization_msgs
 )
 
 add_executable(vehicle_tf_broadcaster
