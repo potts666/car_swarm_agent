@@ -1,5 +1,9 @@
 #include "car_swarm_agent/hybrid_astar_planner.hpp"
+#include "car_swarm_agent/reeds_shepp.hpp"
+#include "car_swarm_agent/vehicle_geometry.hpp"
 #include <stdexcept>
+#include <chrono>
+#include <limits>
 #include <algorithm>
 #include <cmath>
 #include <vector>
@@ -105,6 +109,19 @@ namespace car_swarm_agent {
 
     }  // namespace 匿名命名空间
 
+    const char * stopReasonName(StopReason reason)
+    {
+        switch (reason) {
+            case StopReason::GoalReached: return "goal_reached";
+            case StopReason::IterationLimit: return "iteration_limit";
+            case StopReason::OpenExhausted: return "open_exhausted";
+            case StopReason::InvalidStart: return "invalid_start";
+            case StopReason::InvalidGoal: return "invalid_goal";
+            case StopReason::PathCollision: return "path_collision";
+            default: return "not_started";
+        }
+    }
+
     bool OccupancyGrid::isOccupied(double x, double y) const
     {
         // 默认空地图：沿用现有的无障碍演示
@@ -195,11 +212,20 @@ namespace car_swarm_agent {
     //创建 HybridAStarPlanner 对象时，先把传入的 config 赋给成员变量 config_，然后再做参数修正和初始化
     //构造函数就是“对象出生时的初始化流程”
     {
+        if (!std::isfinite(config_.max_steer_angle) || config_.max_steer_angle < 0.0 ||
+            config_.max_steer_angle >= kPi / 2.0 ||
+            !std::isfinite(config_.analytic_max_distance) || config_.analytic_max_distance <= 0.0 ||
+            (config_.analytic_expansion && !config_.allow_reverse)) {
+            throw std::invalid_argument("Invalid steering or Reeds-Shepp configuration");
+        }
+        config_.analytic_expansion_interval = std::max(1, config_.analytic_expansion_interval);
         config_.step_size = std::max(0.001, config_.step_size);
         config_.wheel_base = std::max(0.001, config_.wheel_base);
         config_.max_steer_angle = std::max(0.0, config_.max_steer_angle);
         config_.steering_samples = std::max(2, config_.steering_samples);
         config_.goal_tolerance = std::max(0.001, config_.goal_tolerance);
+        config_.goal_yaw_tolerance = std::clamp(
+            config_.goal_yaw_tolerance, 0.001, kPi);
         config_.max_iterations = std::max(1, config_.max_iterations);
         //至少保留“左转、右转”两个候选，后面不会出现除以零。
         config_.grid_resolution = std::max(
@@ -266,26 +292,13 @@ namespace car_swarm_agent {
             return false;
         }
 
-        const double padding =
-            config_.collision_margin + extra_margin;
-
-        // 车身矩形的半长、半宽。
-        const double half_length =
-            config_.vehicle_length * 0.5 + padding;
-
-        const double half_width =
-            config_.vehicle_width * 0.5 + padding;
-
-        const double c = std::cos(pose.yaw);
-        const double s = std::sin(pose.yaw);
-
-        // 后轴中心到车身几何中心的纵向距离。
-        const double center_offset =
-            config_.vehicle_length * 0.5 -
-            config_.rear_overhang;
-
-        const double center_x = pose.x + center_offset * c;
-        const double center_y = pose.y + center_offset * s;
+        const auto body = vehicleRectangle(pose, config_, extra_margin);
+        const double half_length = body.half_length;
+        const double half_width = body.half_width;
+        const double c = body.c;
+        const double s = body.s;
+        const double center_x = body.center_x;
+        const double center_y = body.center_y;
 
         // 旋转车身矩形在世界坐标下的轴对齐包围盒。
         const double extent_x =
@@ -515,35 +528,147 @@ namespace car_swarm_agent {
 
         return true;
     }
-    double HybridAStarPlanner::heuristic(
-        //计算的是两点的直线距离
-        const Pose & from,
+    std::vector<double> HybridAStarPlanner::buildObstacleDistances(
         const Pose & goal) const
     {
-        return std::hypot(goal.x - from.x, goal.y - from.y);
+        const auto & map = config_.map;
+        if (map.cells.empty()) { return {}; }
+        const double infinity = std::numeric_limits<double>::infinity();
+        std::vector<double> distances(map.cells.size(), infinity);
+        using Entry = std::pair<double, std::size_t>;
+        std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> queue;
+        const int gx = static_cast<int>(std::floor((goal.x - map.origin_x) / map.resolution));
+        const int gy = static_cast<int>(std::floor((goal.y - map.origin_y) / map.resolution));
+        const auto goal_index = static_cast<std::size_t>(gy) * map.width + gx;
+        distances[goal_index] = 0.0;
+        queue.emplace(0.0, goal_index);
+        while (!queue.empty()) {
+            const auto [cost, index] = queue.top();
+            queue.pop();
+            if (cost > distances[index]) { continue; }
+            const int x = static_cast<int>(index % map.width);
+            const int y = static_cast<int>(index / map.width);
+            for (int dy = -1; dy <= 1; ++dy) {
+                for (int dx = -1; dx <= 1; ++dx) {
+                    if (dx == 0 && dy == 0) { continue; }
+                    const int nx = x + dx, ny = y + dy;
+                    if (nx < 0 || ny < 0 || nx >= map.width || ny >= map.height) { continue; }
+                    const auto next = static_cast<std::size_t>(ny) * map.width + nx;
+                    if (map.cells[next] != 0) { continue; }
+                    // Diagonal moves cannot cut through occupied corners.
+                    if (dx != 0 && dy != 0 &&
+                        (map.cells[static_cast<std::size_t>(y) * map.width + nx] != 0 ||
+                         map.cells[static_cast<std::size_t>(ny) * map.width + x] != 0)) { continue; }
+                    const double candidate = cost + map.resolution * std::hypot(dx, dy);
+                    if (candidate < distances[next]) {
+                        distances[next] = candidate;
+                        queue.emplace(candidate, next);
+                    }
+                }
+            }
+        }
+        return distances;
+    }
+
+    double HybridAStarPlanner::turnHeuristic(const Pose & from, const Pose & goal) const
+    {
+        if (config_.allow_reverse) {
+            const double curvature = std::tan(config_.max_steer_angle) / config_.wheel_base;
+            if (curvature > 1e-12) {
+                return detail::shortestReedsShepp(from, goal, 1.0 / curvature).length() / curvature;
+            }
+            return std::hypot(goal.x - from.x, goal.y - from.y);
+        }
+        // Forward-only Dubins relaxation: six combinations of maximum-curvature
+        // arcs and straight segments, with no obstacle or footprint constraints.
+        const double curvature = std::tan(config_.max_steer_angle) / config_.wheel_base;
+        const double dx = goal.x - from.x, dy = goal.y - from.y;
+        const double distance = std::hypot(dx, dy);
+        if (distance <= config_.goal_tolerance &&
+            std::abs(normalizeAngle(goal.yaw - from.yaw)) <= config_.goal_yaw_tolerance) { return 0.0; }
+        if (curvature <= 1e-12) {
+            const double lateral = -dx * std::sin(from.yaw) + dy * std::cos(from.yaw);
+            return std::abs(lateral) < 1e-9 &&
+                dx * std::cos(from.yaw) + dy * std::sin(from.yaw) >= 0.0 &&
+                std::abs(normalizeAngle(goal.yaw - from.yaw)) <= config_.goal_yaw_tolerance
+                ? distance : std::numeric_limits<double>::infinity();
+        }
+        // Close to the goal, Euler discretization and the accepted goal region
+        // can turn an exact Dubins connection into an unnecessary full loop.
+        // Use a model-consistent relaxed bound in this region instead.
+        if (distance < 2.0 / curvature) {
+            const double yaw_error = std::max(0.0,
+                std::abs(normalizeAngle(goal.yaw - from.yaw)) - config_.goal_yaw_tolerance);
+            const double lateral = std::max(0.0,
+                std::abs(-dx * std::sin(from.yaw) + dy * std::cos(from.yaw)) - config_.goal_tolerance);
+            double bound = std::max({std::max(0.0, distance - config_.goal_tolerance),
+                yaw_error / curvature, std::sqrt(2.0 * lateral / curvature)});
+            if (dx * std::cos(from.yaw) + dy * std::sin(from.yaw) < -config_.goal_tolerance) {
+                bound = std::max(bound, kPi / (2.0 * curvature));
+            }
+            return bound;
+        }
+        const auto mod = [](double v) { v = std::fmod(v, 2.0 * kPi); return v < 0.0 ? v + 2.0 * kPi : v; };
+        const double theta = std::atan2(dy, dx);
+        const double a = mod(from.yaw - theta), b = mod(goal.yaw - theta);
+        const double d = distance * curvature;
+        const double sa = std::sin(a), sb = std::sin(b), ca = std::cos(a), cb = std::cos(b);
+        const double cab = std::cos(a - b);
+        double best = std::numeric_limits<double>::infinity();
+        const auto accept = [&](double t, double p, double q) { best = std::min(best, mod(t) + p + mod(q)); };
+        double p2 = 2.0 + d*d - 2.0*cab + 2.0*d*(sa-sb);
+        if (p2 >= 0.0) { const double t = std::atan2(cb-ca, d+sa-sb); accept(-a+t, std::sqrt(p2), b-t); }
+        p2 = 2.0 + d*d - 2.0*cab + 2.0*d*(sb-sa);
+        if (p2 >= 0.0) { const double t = std::atan2(ca-cb, d-sa+sb); accept(a-t, std::sqrt(p2), -b+t); }
+        p2 = -2.0 + d*d + 2.0*cab + 2.0*d*(sa+sb);
+        if (p2 >= 0.0) { const double p = std::sqrt(p2); const double t = std::atan2(-ca-cb,d+sa+sb)-std::atan2(-2.0,p); accept(-a+t,p,-b+t); }
+        p2 = d*d - 2.0 + 2.0*cab - 2.0*d*(sa+sb);
+        if (p2 >= 0.0) { const double p = std::sqrt(p2); const double t = std::atan2(ca+cb,d-sa-sb)-std::atan2(2.0,p); accept(a-t,p,b-t); }
+        double v = (6.0-d*d+2.0*cab+2.0*d*(sa-sb))/8.0;
+        if (std::abs(v) <= 1.0) { const double p = mod(2.0*kPi-std::acos(v)); const double t = mod(a-std::atan2(ca-cb,d-sa+sb)+p/2.0); accept(t,p,a-b-t+p); }
+        v = (6.0-d*d+2.0*cab+2.0*d*(-sa+sb))/8.0;
+        if (std::abs(v) <= 1.0) { const double p = mod(2.0*kPi-std::acos(v)); const double t = mod(-a-std::atan2(ca-cb,d+sa-sb)+p/2.0); accept(t,p,b-a-t+p); }
+        return best / curvature;
+    }
+
+    double HybridAStarPlanner::heuristic(
+        const Pose & from, const Pose & goal,
+        const std::vector<double> & obstacle_distances) const
+    {
+        const double euclidean = std::hypot(goal.x - from.x, goal.y - from.y);
+        if (config_.heuristic_mode == HeuristicMode::Euclidean) { return euclidean; }
+        double obstacle = euclidean;
+        if (!obstacle_distances.empty()) {
+            const auto & map = config_.map;
+            const int x = static_cast<int>(std::floor((from.x - map.origin_x) / map.resolution));
+            const int y = static_cast<int>(std::floor((from.y - map.origin_y) / map.resolution));
+            obstacle = obstacle_distances[static_cast<std::size_t>(y) * map.width + x];
+        }
+        return config_.heuristic_mode == HeuristicMode::Dual
+            ? std::max(obstacle, turnHeuristic(from, goal)) : obstacle;
     }
    
     bool HybridAStarPlanner::isGoalReached(
         const Pose & pose,
         const Pose & goal) const
     {
-        return heuristic(pose, goal) <= config_.goal_tolerance;
+        return std::hypot(pose.x - goal.x, pose.y - goal.y) <= config_.goal_tolerance &&
+            std::abs(normalizeAngle(pose.yaw - goal.yaw)) <= config_.goal_yaw_tolerance;
     }
 
     SearchNode HybridAStarPlanner::makeChildNode(
         const SearchNode & parent,
         const Pose & child_pose,
         const Pose & goal,
+        const std::vector<double> & obstacle_distances,
         std::size_t parent_index) const
     {
-        const double step_cost = std::hypot(
-            child_pose.x - parent.pose.x,
-            child_pose.y - parent.pose.y);
+        const double step_cost = std::abs(child_pose.signed_distance);
 
         return SearchNode{
             child_pose,
             parent.g_cost + step_cost,
-            heuristic(child_pose, goal),
+            heuristic(child_pose, goal, obstacle_distances),
             parent_index,
             0};
     }
@@ -551,14 +676,22 @@ namespace car_swarm_agent {
     Pose HybridAStarPlanner::propagate(
         //基本运动学代码化 下一时刻的x坐标 y坐标 yaw坐标计算
         const Pose & pose,
-        double steering_angle) const
+        double steering_angle, int direction) const
     {
         const double steering = std::clamp(
             steering_angle,
             -config_.max_steer_angle,
             config_.max_steer_angle);
 
+        if (direction != 1 && direction != -1) { throw std::invalid_argument("Direction must be +1 or -1"); }
+        if (direction < 0 && !config_.allow_reverse) { throw std::invalid_argument("Reverse is disabled"); }
+        if (config_.allow_reverse) {
+            return detail::integrateArc(pose, direction * config_.step_size,
+                std::tan(steering) / config_.wheel_base);
+        }
         Pose next = pose;
+        next.signed_distance = config_.step_size;
+        next.curvature = 0.0; // Historical Euler segment is checked as an interpolated motion.
 
         next.x += config_.step_size * std::cos(pose.yaw);
         next.y += config_.step_size * std::sin(pose.yaw);
@@ -588,20 +721,108 @@ namespace car_swarm_agent {
             ratio * 2.0 * config_.max_steer_angle;
 
             successors.push_back(propagate(pose, steering));
+            if (config_.allow_reverse) { successors.push_back(propagate(pose, steering, -1)); }
         }
 
         return successors;
     }
 
+    bool HybridAStarPlanner::isArcCollisionFree(
+        const Pose & from, double signed_distance, double curvature) const
+    {
+        const double radius = std::hypot(
+            std::max(config_.rear_overhang, config_.vehicle_length - config_.rear_overhang) + config_.collision_margin,
+            config_.vehicle_width / 2.0 + config_.collision_margin);
+        const double bound = std::abs(signed_distance) * (1.0 + radius * std::abs(curvature));
+        const double required = std::ceil(bound / config_.collision_check_step);
+        if (!std::isfinite(required) || required > 1000000.0) { return false; }
+        const int samples = std::max(1, static_cast<int>(required));
+        // True arc sweep bound between samples; retain the rectangle SAT checker.
+        const double margin = bound / (2.0 * samples) + 1e-9;
+        for (int i = 0; i <= samples; ++i) {
+            if (!isFootprintFree(detail::integrateArc(from,
+                    signed_distance * i / samples, curvature), margin)) { return false; }
+        }
+        return true;
+    }
+
+    bool HybridAStarPlanner::tryAnalyticConnection(
+        const Pose & from, const Pose & goal, std::vector<Pose> & connection) const
+    {
+        connection.clear();
+        const double curvature = std::tan(config_.max_steer_angle) / config_.wheel_base;
+        if (curvature <= 1e-12) { return false; }
+        const double radius = 1.0 / curvature;
+        const auto solution = detail::shortestReedsShepp(from, goal, radius);
+        if (!std::isfinite(solution.length())) { return false; }
+        Pose current = from;
+        for (int segment = 0; segment < 5; ++segment) {
+            const double length = solution.length_[segment] * radius;
+            if (std::abs(length) < 1e-10) { continue; }
+            const auto type = solution.type_[segment];
+            const double k = type == detail::ReedsSheppStateSpace::RS_LEFT ? curvature :
+                type == detail::ReedsSheppStateSpace::RS_RIGHT ? -curvature : 0.0;
+            const double required = std::ceil(std::abs(length) /
+                std::min(config_.step_size, config_.collision_check_step));
+            if (!std::isfinite(required) || required > 1000000.0) { connection.clear(); return false; }
+            const int count = std::max(1, static_cast<int>(required));
+            const double ds = length / count;
+            for (int i = 0; i < count; ++i) {
+                const auto next = detail::integrateArc(current, ds, k);
+                if (!isArcCollisionFree(current, ds, k) || !isMotionCollisionFree(current, next)) {
+                    connection.clear();
+                    return false;
+                }
+                connection.push_back(next);
+                current = next;
+            }
+        }
+        // Reject any numerical/geometry mismatch; never append an unchecked straight snap.
+        if (std::hypot(current.x - goal.x, current.y - goal.y) > 1e-6 ||
+            std::abs(normalizeAngle(current.yaw - goal.yaw)) > 1e-6) {
+            connection.clear();
+            return false;
+        }
+        return true;
+    }
+
     std::vector<Pose> HybridAStarPlanner::plan(
         const Pose & start,
-        const Pose & goal) const
+        const Pose & goal, PlanningStats * stats) const
         {
-        if (!isPoseCollisionFree(start) ||
-            !isPoseCollisionFree(goal))
-        {
+        PlanningStats local_stats;
+        if (!stats) { stats = &local_stats; }
+        *stats = {};
+        struct Timer {
+            PlanningStats * stats;
+            std::chrono::steady_clock::time_point start{std::chrono::steady_clock::now()};
+            ~Timer() { stats->planning_time_ms = std::chrono::duration<double, std::milli>(
+                std::chrono::steady_clock::now() - start).count(); }
+        } timer{stats};
+        stats->start_body_free = isPoseCollisionFree(start);
+        stats->goal_body_free = isPoseCollisionFree(goal);
+        if (!stats->start_body_free || !stats->goal_body_free) {
+            stats->stop_reason = stats->start_body_free ? StopReason::InvalidGoal : StopReason::InvalidStart;
             return {};
         }
+        const auto record_pose = [&](const Pose & pose) {
+            const double position_error = std::hypot(pose.x - goal.x, pose.y - goal.y);
+            const double yaw_error = std::abs(normalizeAngle(pose.yaw - goal.yaw));
+            if (position_error < stats->closest_position_error ||
+                (position_error == stats->closest_position_error && yaw_error < stats->closest_yaw_error)) {
+                stats->closest_position_error = position_error;
+                stats->closest_yaw_error = yaw_error;
+                stats->closest_pose = pose;
+            }
+            if (position_error <= config_.goal_tolerance && yaw_error < stats->best_yaw_error_near_goal) {
+                stats->best_yaw_error_near_goal = yaw_error;
+                stats->best_yaw_pose_near_goal = pose;
+            }
+        };
+        record_pose(start);
+        const auto obstacle_distances = config_.heuristic_mode == HeuristicMode::Euclidean
+            ? std::vector<double>{} : buildObstacleDistances(goal);
+        stats->obstacle_table_builds = obstacle_distances.empty() ? 0 : 1;
         std::vector<SearchNode> all_nodes;
         //all_nodes 不是 Open 或 Closed。它是“所有被接受节点的档案库”，专门保存 parent_index；找到目标后才能从末尾一路追溯到起点，得到完整路径
         all_nodes.reserve(
@@ -618,7 +839,7 @@ namespace car_swarm_agent {
         SearchNode start_node{
             start,
             0.0,
-            heuristic(start, goal),
+            heuristic(start, goal, obstacle_distances),
             0,
             0};
 
@@ -630,12 +851,14 @@ namespace car_swarm_agent {
 
         std::size_t goal_index = 0;
         bool goal_found = false;
+        std::vector<Pose> analytic_connection;
 
         for (
             int iteration = 0;
             iteration < config_.max_iterations && !open_set.empty();
             ++iteration)
         {
+            ++stats->iterations;
             const SearchNode current = open_set.top();
             open_set.pop();
 
@@ -662,6 +885,7 @@ namespace car_swarm_agent {
             }
 
             closed_set.insert(current_key);
+            ++stats->expanded_nodes;
 
             if (isGoalReached(current.pose, goal)) {
                 goal_index = current.node_index;
@@ -669,27 +893,39 @@ namespace car_swarm_agent {
                 break;
             }// 到达目标判断
 
+            if (config_.analytic_expansion &&
+                (stats->expanded_nodes - 1) % config_.analytic_expansion_interval == 0 &&
+                std::hypot(current.pose.x - goal.x, current.pose.y - goal.y) <= config_.analytic_max_distance) {
+                ++stats->analytic_attempts;
+                if (tryAnalyticConnection(current.pose, goal, analytic_connection)) {
+                    ++stats->analytic_successes;
+                    goal_index = current.node_index;
+                    goal_found = true;
+                    break;
+                }
+            }
             const std::vector<Pose> successors =
                 generateSuccessors(current.pose);
 
             for (const Pose & successor_pose : successors) {
-                if (!isMotionCollisionFree(
+                const double curvature = successor_pose.curvature;
+                if ((config_.allow_reverse && !isArcCollisionFree(current.pose,
+                        successor_pose.signed_distance, curvature)) || !isMotionCollisionFree(
                         current.pose,
                         successor_pose))
                 {
                     continue;
                 }
+                record_pose(successor_pose); // Include every collision-free generated pose, even if merged.
                 const GridKey child_key =
                     makeGridKey(successor_pose, config_);
 
-                if (closed_set.find(child_key) != closed_set.end()) {
-                    continue;
-                }
 
                 SearchNode child = makeChildNode(
                     current,
                     successor_pose,
                     goal,
+                    obstacle_distances,
                     current.node_index);
 
                 const auto known_child =
@@ -703,6 +939,7 @@ namespace car_swarm_agent {
                     continue;
                 }//若新路线没有更便宜，就不浪费搜索资源
 
+                closed_set.erase(child_key); // Reopen when an inconsistent heuristic finds a better g.
                 child.node_index = all_nodes.size();
 
                 all_nodes.push_back(child);
@@ -711,7 +948,9 @@ namespace car_swarm_agent {
             }
         }
 
+        stats->open_nodes_remaining = open_set.size();
         if (!goal_found) {
+            stats->stop_reason = open_set.empty() ? StopReason::OpenExhausted : StopReason::IterationLimit;
             return {};
         }
 
@@ -730,18 +969,30 @@ namespace car_swarm_agent {
         }
 
         std::reverse(path.begin(), path.end());
+        path.front().signed_distance = 0.0;
+        path.front().curvature = 0.0;
+        path.insert(path.end(), analytic_connection.begin(), analytic_connection.end());
         for (const Pose & pose : path) {
             if (!isPoseCollisionFree(pose)) {
+                stats->stop_reason = StopReason::PathCollision;
                 return {};
             }
         }
 
         for (std::size_t i = 1; i < path.size(); ++i) {
             if (!isMotionCollisionFree(path[i - 1], path[i])) {
+                stats->stop_reason = StopReason::PathCollision;
                 return {};
             }
         }
 
+        stats->stop_reason = StopReason::GoalReached;
+        stats->reached_goal = true;
+        for (std::size_t i = 1; i < path.size(); ++i) {
+            stats->path_length += std::abs(path[i].signed_distance);
+            if (path[i].signed_distance < 0.0) { ++stats->reverse_segments; }
+        }
+        stats->path_points = path.size();
         return path;
     }
 

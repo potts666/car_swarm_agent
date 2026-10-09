@@ -1,0 +1,116 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Map
+      Name: Shared static map
+      Enabled: true
+      Alpha: 0.7
+      Topic:
+        Value: /yield_demo/map
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Value: true
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Cell Size: 1
+      Plane: XY
+      Plane Cell Count: 40
+      Color: 90; 90; 95
+      Alpha: 0.4
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Vehicles and yielding process
+      Enabled: true
+      Topic:
+        Value: /yield_demo/markers
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Value: true
+    - Class: rviz_default_plugins/Path
+      Name: car_1 priority path (blue)
+      Enabled: true
+      Color: 40; 165; 255
+      Alpha: 0.8
+      Buffer Length: 1
+      Line Style: Billboards
+      Line Width: 0.10
+      Pose Style: None
+      Topic:
+        Value: /yield_demo/neighbor_path
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Value: true
+    - Class: rviz_default_plugins/Path
+      Name: car_2 planned path (orange)
+      Enabled: true
+      Color: 255; 140; 40
+      Alpha: 0.8
+      Buffer Length: 1
+      Line Style: Billboards
+      Line Width: 0.10
+      Pose Style: None
+      Topic:
+        Value: /yield_demo/yielded_path
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Value: true
+    - Class: rviz_default_plugins/Path
+      Name: car_2 simulated actual path (green)
+      Enabled: true
+      Color: 50; 255; 100
+      Alpha: 0.9
+      Buffer Length: 1
+      Line Style: Billboards
+      Line Width: 0.12
+      Pose Style: None
+      Topic:
+        Value: /yield_demo/actual_path
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 30; 33; 40
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/Measure
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Angle: 0
+      Name: Current View
+      Near Clip Distance: 0.01
+      Scale: 18
+      Target Frame: <Fixed Frame>
+      X: 3
+      Y: 4
+      Value: TopDownOrtho (rviz)
+    Saved: ~
+  Value: true
+Window Geometry:
+  Width: 1300
+  Height: 900
+  Hide Left Dock: false
+  Hide Right Dock: false

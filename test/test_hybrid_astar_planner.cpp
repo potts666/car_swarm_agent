@@ -2,6 +2,7 @@
 #include <cmath>
 #include "car_swarm_agent/hybrid_astar_planner.hpp"
 #include "car_swarm_agent/demo_map.hpp"
+#include "car_swarm_agent/reeds_shepp.hpp"
 #include <algorithm>
 
 TEST(HybridAStarPlannerTest, ReachesGoalWithinTolerance)
@@ -12,7 +13,7 @@ TEST(HybridAStarPlannerTest, ReachesGoalWithinTolerance)
   config.max_steer_angle = 0.5;
   config.steering_samples = 3;
   config.goal_tolerance = 0.5;
-  config.max_iterations = 1000;
+  config.max_iterations = 10000;
 
   car_swarm_agent::HybridAStarPlanner planner(config);
 
@@ -34,6 +35,8 @@ TEST(HybridAStarPlannerTest, ReachesGoalWithinTolerance)
     last_pose.y - goal.y);
 
   EXPECT_LE(distance_to_goal, config.goal_tolerance);
+  EXPECT_LE(std::abs(std::remainder(last_pose.yaw - goal.yaw, 2.0 * std::acos(-1.0))),
+    config.goal_yaw_tolerance);
 }
 
 
@@ -174,7 +177,7 @@ TEST(HybridAStarPlannerTest, ExitsUThroughOpeningAndReachesGoal)
   car_swarm_agent::addUShapedObstacle(config.map);
 
   const car_swarm_agent::Pose start{0.0, 0.0, 0.0};
-  const car_swarm_agent::Pose goal{18.0, 0.0, 0.0};
+  const car_swarm_agent::Pose goal{24.0, 0.0, 0.0};
   EXPECT_FALSE(config.map.isSegmentFree(start.x, start.y, goal.x, goal.y));
   car_swarm_agent::HybridAStarPlanner planner(config);
   const auto path = planner.plan(start, goal);
@@ -183,6 +186,9 @@ TEST(HybridAStarPlannerTest, ExitsUThroughOpeningAndReachesGoal)
   EXPECT_DOUBLE_EQ(path.front().y, start.y);
   EXPECT_LE(std::hypot(path.back().x - goal.x, path.back().y - goal.y),
     config.goal_tolerance);
+
+  EXPECT_LE(std::abs(std::remainder(path.back().yaw - goal.yaw, 2.0 * std::acos(-1.0))),
+    config.goal_yaw_tolerance);
 
   bool exited_opening = false;
   for (std::size_t i = 1; i < path.size(); ++i) {
@@ -387,4 +393,261 @@ TEST(VehicleCollisionTest, AcceptsClearMotion)
     EXPECT_TRUE(planner.isMotionCollisionFree(
         {0.0, 0.0, 0.0},
         {1.0, 0.0, 0.2}));
+}
+
+TEST(HybridAStarHeuristicTest, ChecksHeadingAndWrapsAngles)
+{
+  car_swarm_agent::PlannerConfig config;
+  config.max_iterations = 1;
+  const double pi = std::acos(-1.0);
+  for (auto mode : {car_swarm_agent::HeuristicMode::Euclidean,
+      car_swarm_agent::HeuristicMode::Obstacle, car_swarm_agent::HeuristicMode::Dual}) {
+    config.heuristic_mode = mode;
+    car_swarm_agent::HybridAStarPlanner planner(config);
+    EXPECT_TRUE(planner.plan({0, 0, 0}, {0, 0, pi}).empty());
+    EXPECT_EQ(planner.plan({0, 0, pi - 0.01}, {0, 0, -pi + 0.01}).size(), 1u);
+  }
+}
+
+TEST(HybridAStarHeuristicTest, BuildsOncePerPlanAndHandlesDisconnectedMap)
+{
+  auto config = makeBodyTestConfig();
+  config.max_iterations = 10000;
+  for (auto mode : {car_swarm_agent::HeuristicMode::Euclidean,
+      car_swarm_agent::HeuristicMode::Obstacle, car_swarm_agent::HeuristicMode::Dual}) {
+    config.heuristic_mode = mode;
+    car_swarm_agent::HybridAStarPlanner planner(config);
+    for (double x : {4.0, 5.0}) {
+      car_swarm_agent::PlanningStats stats;
+      ASSERT_FALSE(planner.plan({-5, 0, 0}, {x, 0, 0}, &stats).empty());
+      EXPECT_TRUE(stats.reached_goal);
+      EXPECT_DOUBLE_EQ(stats.path_length, x + 5.0);
+      EXPECT_EQ(stats.obstacle_table_builds, mode == car_swarm_agent::HeuristicMode::Euclidean ? 0u : 1u);
+      EXPECT_GT(stats.expanded_nodes, 1u);
+      EXPECT_GE(stats.planning_time_ms, 0.0);
+    }
+  }
+  for (int row = 0; row < config.map.height; ++row) {
+    config.map.cells[row * config.map.width + 20] = 100;
+  }
+  car_swarm_agent::HybridAStarPlanner blocked(config);
+  car_swarm_agent::PlanningStats stats;
+  EXPECT_TRUE(blocked.plan({-5, 0, 0}, {5, 0, 0}, &stats).empty());
+  EXPECT_FALSE(stats.reached_goal);
+  EXPECT_EQ(stats.obstacle_table_builds, 1u);
+}
+
+TEST(HybridAStarHeuristicTest, ZeroSteeringCannotMoveSidewaysOrChangeHeading)
+{
+  car_swarm_agent::PlannerConfig config;
+  config.max_steer_angle = 0.0;
+  config.max_iterations = 100;
+  car_swarm_agent::HybridAStarPlanner planner(config);
+  EXPECT_FALSE(planner.plan({0, 0, 0}, {5, 0, 0}).empty());
+  EXPECT_TRUE(planner.plan({0, 0, 0}, {5, 2, 0}).empty());
+  EXPECT_TRUE(planner.plan({0, 0, 0}, {5, 0, 1}).empty());
+}
+
+TEST(HybridAStarHeuristicTest, PreservesOriginalUGoalWithRelaxedHeading)
+{
+  car_swarm_agent::PlannerConfig config;
+  config.max_iterations = 200000;
+  config.goal_yaw_tolerance = std::acos(-1.0);
+  config.heuristic_mode = car_swarm_agent::HeuristicMode::Euclidean;
+  config.map.resolution = 0.5;
+  config.map.origin_x = config.map.origin_y = -30.0;
+  config.map.width = config.map.height = 120;
+  config.map.cells.assign(120 * 120, 0);
+  car_swarm_agent::addUShapedObstacle(config.map);
+  car_swarm_agent::HybridAStarPlanner planner(config);
+  const auto path = planner.plan({0, 0, 0}, {18, 0, 0});
+  ASSERT_FALSE(path.empty());
+  for (std::size_t i = 1; i < path.size(); ++i) {
+    EXPECT_TRUE(planner.isMotionCollisionFree(path[i - 1], path[i]));
+  }
+}
+
+TEST(HybridAStarDiagnosticTest, ReportsStopReasons)
+{
+  car_swarm_agent::PlannerConfig c;
+  c.max_iterations = 1;
+  car_swarm_agent::PlanningStats s;
+  car_swarm_agent::HybridAStarPlanner limited(c);
+  EXPECT_TRUE(limited.plan({0,0,0}, {10,0,0}, &s).empty());
+  EXPECT_EQ(s.stop_reason, car_swarm_agent::StopReason::IterationLimit);
+  EXPECT_EQ(s.iterations, 1u);
+  EXPECT_GT(s.open_nodes_remaining, 0u);
+  EXPECT_DOUBLE_EQ(s.closest_position_error, 9.0);
+  auto blocked = makeBodyTestConfig();
+  blocked.map.cells[20 * blocked.map.width + 20] = 100;
+  car_swarm_agent::HybridAStarPlanner invalid(blocked);
+  EXPECT_TRUE(invalid.plan({-5,0,0}, {0,0,0}, &s).empty());
+  EXPECT_EQ(s.stop_reason, car_swarm_agent::StopReason::InvalidGoal);
+  EXPECT_FALSE(s.goal_body_free);
+  EXPECT_TRUE(s.start_body_free);
+  EXPECT_TRUE(invalid.plan({0,0,0}, {-5,0,0}, &s).empty());
+  EXPECT_EQ(s.stop_reason, car_swarm_agent::StopReason::InvalidStart);
+  c.allow_reverse = true;
+  c.max_steer_angle = 0;
+  c.max_iterations = 1000;
+  auto finite = makeBodyTestConfig();
+  c.map = finite.map;
+  car_swarm_agent::HybridAStarPlanner exhausted(c);
+  EXPECT_TRUE(exhausted.plan({-5,0,0}, {0,4,0}, &s).empty());
+  EXPECT_EQ(s.stop_reason, car_swarm_agent::StopReason::OpenExhausted);
+  EXPECT_EQ(s.open_nodes_remaining, 0u);
+}
+
+TEST(ReedsSheppPlannerTest, GeneratesSignedReverseArcs)
+{
+  car_swarm_agent::PlannerConfig c;
+  c.allow_reverse = true;
+  car_swarm_agent::HybridAStarPlanner planner(c);
+  const auto reverse = planner.propagate({0,0,0}, 0.5, -1);
+  const double k = std::tan(0.5) / c.wheel_base;
+  EXPECT_NEAR(reverse.x, -std::sin(k) / k, 1e-10);
+  EXPECT_NEAR(reverse.y, (1-std::cos(k)) / k, 1e-10);
+  EXPECT_NEAR(reverse.yaw, -k, 1e-10);
+  EXPECT_DOUBLE_EQ(reverse.signed_distance, -1.0);
+  EXPECT_EQ(planner.generateSuccessors({0,0,0}).size(), 6u);
+}
+
+TEST(ReedsSheppPlannerTest, ConnectsReverseStraightWithActualLength)
+{
+  car_swarm_agent::PlannerConfig c;
+  c.allow_reverse = true;
+  c.analytic_expansion = true;
+  c.max_iterations = 1;
+  car_swarm_agent::HybridAStarPlanner planner(c);
+  car_swarm_agent::PlanningStats s;
+  auto path = planner.plan({0,0,0}, {-5,0,0}, &s);
+  ASSERT_FALSE(path.empty());
+  EXPECT_EQ(s.stop_reason, car_swarm_agent::StopReason::GoalReached);
+  EXPECT_EQ(s.analytic_successes, 1u);
+  EXPECT_NEAR(s.path_length, 5.0, 1e-9);
+  EXPECT_GT(s.reverse_segments, 0u);
+  EXPECT_EQ(s.path_points, path.size());
+  EXPECT_NEAR(path.back().x, -5.0, 1e-9);
+  double sum = 0;
+  for (std::size_t i = 1; i < path.size(); ++i) {
+    EXPECT_LT(path[i].signed_distance, 0);
+    sum += std::abs(path[i].signed_distance);
+  }
+  EXPECT_NEAR(sum, s.path_length, 1e-9);
+}
+
+TEST(ReedsSheppPlannerTest, RejectsAnalyticConnectionThroughWall)
+{
+  auto c = makeBodyTestConfig();
+  c.allow_reverse = true;
+  c.analytic_expansion = true;
+  c.max_iterations = 1;
+  for (int row = 0; row < c.map.height; ++row) { c.map.cells[row * c.map.width + 20] = 100; }
+  car_swarm_agent::HybridAStarPlanner planner(c);
+  car_swarm_agent::PlanningStats s;
+  EXPECT_TRUE(planner.plan({-5,0,0}, {5,0,0}, &s).empty());
+  EXPECT_EQ(s.analytic_attempts, 1u);
+  EXPECT_EQ(s.analytic_successes, 0u);
+  EXPECT_EQ(s.stop_reason, car_swarm_agent::StopReason::IterationLimit);
+}
+
+TEST(ReedsSheppPlannerTest, ReachesOriginalUGoalWithHeadingAndBodySafety)
+{
+  car_swarm_agent::PlannerConfig c;
+  c.allow_reverse = true;
+  c.analytic_expansion = true;
+  c.max_iterations = 200000;
+  c.map.resolution = .5;
+  c.map.origin_x = c.map.origin_y = -30;
+  c.map.width = c.map.height = 120;
+  c.map.cells.assign(120 * 120, 0);
+  car_swarm_agent::addUShapedObstacle(c.map);
+  car_swarm_agent::HybridAStarPlanner planner(c);
+  car_swarm_agent::PlanningStats s;
+  const car_swarm_agent::Pose goal{18,0,0};
+  ASSERT_TRUE(planner.isPoseCollisionFree(goal));
+  auto path = planner.plan({0,0,0}, goal, &s);
+  ASSERT_FALSE(path.empty());
+  EXPECT_EQ(s.stop_reason, car_swarm_agent::StopReason::GoalReached);
+  EXPECT_EQ(s.analytic_successes, 1u);
+  EXPECT_GT(s.reverse_segments, 0u);
+  EXPECT_NEAR(path.back().x, goal.x, 1e-6);
+  EXPECT_NEAR(path.back().y, goal.y, 1e-6);
+  EXPECT_NEAR(std::remainder(path.back().yaw-goal.yaw, 2*std::acos(-1.0)), 0, 1e-6);
+  double length = 0;
+  bool exited = false;
+  for (std::size_t i = 1; i < path.size(); ++i) {
+    EXPECT_TRUE(planner.isPoseCollisionFree(path[i]));
+    EXPECT_TRUE(planner.isMotionCollisionFree(path[i-1], path[i]));
+    const double ds = path[i].signed_distance;
+    ASSERT_NE(ds, 0.0);
+    const double k = std::remainder(path[i].yaw-path[i-1].yaw, 2*std::acos(-1.0)) / ds;
+    EXPECT_NEAR(k, path[i].curvature, 1e-9);
+    EXPECT_TRUE(planner.isArcCollisionFree(path[i-1], ds, path[i].curvature));
+    EXPECT_LE(std::abs(k), std::tan(c.max_steer_angle)/c.wheel_base + 1e-9);
+    if (path[i].x < -10) { exited = true; }
+    length += std::abs(ds);
+  }
+  EXPECT_TRUE(exited);
+  EXPECT_NEAR(length, s.path_length, 1e-8);
+}
+
+TEST(ReedsSheppGeometryTest, SignedSegmentsReconstructEndpointsAndSymmetricLengths)
+{
+  using Geometry = car_swarm_agent::detail::ReedsSheppStateSpace;
+  const double radius = 5.0;
+  for (int i = 0; i < 300; ++i) {
+    const car_swarm_agent::Pose from{std::sin(i)*3, std::cos(i)*2, std::sin(i*2)*3};
+    const car_swarm_agent::Pose goal{std::cos(i*3)*12, std::sin(i*4)*12, std::cos(i*5)*3};
+    const auto solution = car_swarm_agent::detail::shortestReedsShepp(from, goal, radius);
+    const auto reversed = car_swarm_agent::detail::shortestReedsShepp(goal, from, radius);
+    EXPECT_NEAR(solution.length(), reversed.length(), 1e-9);
+    auto current = from;
+    for (int segment = 0; segment < 5; ++segment) {
+      const double k = solution.type_[segment] == Geometry::RS_LEFT ? 1/radius :
+        solution.type_[segment] == Geometry::RS_RIGHT ? -1/radius : 0;
+      current = car_swarm_agent::detail::integrateArc(current, solution.length_[segment]*radius, k);
+    }
+    EXPECT_NEAR(current.x, goal.x, 1e-8);
+    EXPECT_NEAR(current.y, goal.y, 1e-8);
+    EXPECT_NEAR(std::remainder(current.yaw-goal.yaw, 2*std::acos(-1.0)), 0, 1e-8);
+  }
+}
+
+TEST(ReedsSheppPlannerTest, ArcSweepDetectsCollisionWithFreeEndpoints)
+{
+  auto c = makeBodyTestConfig();
+  c.vehicle_length = c.vehicle_width = 0.1;
+  c.rear_overhang = 0.05;
+  c.collision_margin = 0;
+  occupyCell(c.map, 3.6, 1.4);
+  car_swarm_agent::HybridAStarPlanner planner(c);
+  const car_swarm_agent::Pose start{0,0,0};
+  const double length = 5.0 * std::acos(-1.0) / 2;
+  const auto end = car_swarm_agent::detail::integrateArc(start, length, 0.2);
+  ASSERT_TRUE(planner.isPoseCollisionFree(start));
+  ASSERT_TRUE(planner.isPoseCollisionFree(end));
+  EXPECT_FALSE(planner.isArcCollisionFree(start, length, 0.2));
+}
+
+TEST(ReedsSheppPlannerTest, InPlaceHeadingConnectionHasCuspsAndNonzeroLength)
+{
+  car_swarm_agent::PlannerConfig c;
+  c.allow_reverse = c.analytic_expansion = true;
+  c.max_iterations = 1;
+  car_swarm_agent::HybridAStarPlanner planner(c);
+  car_swarm_agent::PlanningStats s;
+  auto path = planner.plan({0,0,0}, {0,0,std::acos(-1.0)}, &s);
+  ASSERT_FALSE(path.empty());
+  EXPECT_GT(s.path_length, 0);
+  EXPECT_GT(s.reverse_segments, 0u);
+  bool forward = false, reverse = false;
+  for (const auto & pose : path) {
+    forward |= pose.signed_distance > 0;
+    reverse |= pose.signed_distance < 0;
+  }
+  EXPECT_TRUE(forward);
+  EXPECT_TRUE(reverse);
+  EXPECT_NEAR(path.back().x, 0, 1e-8);
+  EXPECT_NEAR(path.back().y, 0, 1e-8);
 }

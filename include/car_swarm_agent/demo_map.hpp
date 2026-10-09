@@ -7,6 +7,11 @@
 
 namespace car_swarm_agent {
 
+inline bool hasStaticMap(const OccupancyGrid & map)
+{
+  return !(map.width == 0 && map.height == 0 && map.cells.empty());
+}
+
 // U opens toward negative x; the walls leave 23.5 m of free width.
 inline void addUShapedObstacle(OccupancyGrid & map)
 {
@@ -36,6 +41,19 @@ inline void addUShapedObstacle(OccupancyGrid & map)
       }
     }
   }
+}
+
+// Same grid and walls as the default planner demo. Use this one object for
+// planning, verification and publication, rather than a visualization-only map.
+inline OccupancyGrid makeUShapedDemoMap()
+{
+  OccupancyGrid map;
+  map.resolution = 0.5;
+  map.origin_x = map.origin_y = -30.0;
+  map.width = map.height = 120;
+  map.cells.assign(static_cast<std::size_t>(map.width) * map.height, 0);
+  addUShapedObstacle(map);
+  return map;
 }
 
 }  // namespace car_swarm_agent

@@ -1,0 +1,61 @@
+{
+  "method": "previous-prediction decentralized MPC baseline",
+  "cooperative_dmpc": false,
+  "transport": "synchronous in-process prediction packets",
+  "model": "midpoint kinematic bicycle, substep 0.1 s; independent of native C++ tracking model",
+  "absolute_epoch_s": 100.0,
+  "control_dt_s": 0.4,
+  "horizon_s": 4.800000000000001,
+  "arrival_position_tolerance_m": 0.3,
+  "arrival_speed_tolerance_m_s": 0.05,
+  "arrived": [
+    true,
+    true
+  ],
+  "arrival_time_s": [
+    20.80000000000001,
+    25.60000000000001
+  ],
+  "final_states": [
+    [
+      10.008169889100229,
+      0.0,
+      0.0,
+      2.431589921715243e-13,
+      0.0
+    ],
+    [
+      1.5519947049663578e-06,
+      8.000824035285449,
+      1.5707964633941105,
+      0.04344229078213743,
+      0.0003441399313769468
+    ]
+  ],
+  "min_sampled_body_distance_m": 0.1616514718729896,
+  "max_realized_sampled_constraint_violation": 7.105427357601002e-15,
+  "realized_violation_by_constraint": {
+    "neighbor_gap_m": 0.0,
+    "static_gap_m": 0.0,
+    "speed_m_s": 7.105427357601002e-15,
+    "steering_rad": 0.0,
+    "acceleration_m_s2": 0.0,
+    "steering_rate_rad_s": 0.0,
+    "total_acceleration_m_s2": 0.0
+  },
+  "violation_tolerance": 1e-05,
+  "body_padding_per_car_m": 0.1,
+  "required_neighbor_sat_gap_m": 0.08,
+  "required_static_sat_gap_m": 0.03,
+  "max_prediction_constraint_violation": 1.433600209816397e-13,
+  "rejected_solves": 0,
+  "solve_count": 128,
+  "braking_initialization_retries": 0,
+  "solve_seconds_mean": 0.08574445242197726,
+  "solve_seconds_p95": 0.2850884357492759,
+  "solve_seconds_max": 0.4603471000009449,
+  "cycles_exceeding_control_period": 3,
+  "failure": null,
+  "continuous_safety_certified": false,
+  "success": true
+}

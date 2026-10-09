@@ -35,6 +35,18 @@ public:
       static_cast<int>(declare_parameter<int>("steering_samples", 3));
     config.goal_tolerance =
       declare_parameter<double>("goal_tolerance", 0.5);
+    config.allow_reverse = declare_parameter<bool>("allow_reverse", true);
+    config.analytic_expansion = declare_parameter<bool>("analytic_expansion", true);
+    config.analytic_max_distance = declare_parameter<double>("analytic_max_distance", 15.0);
+    config.analytic_expansion_interval = static_cast<int>(
+      declare_parameter<int>("analytic_expansion_interval", 10));
+    config.goal_yaw_tolerance =
+      declare_parameter<double>("goal_yaw_tolerance", 0.17453292519943295);
+    const auto heuristic_mode = declare_parameter<std::string>("heuristic_mode", "dual");
+    if (heuristic_mode == "euclidean") { config.heuristic_mode = car_swarm_agent::HeuristicMode::Euclidean; }
+    else if (heuristic_mode == "obstacle") { config.heuristic_mode = car_swarm_agent::HeuristicMode::Obstacle; }
+    else if (heuristic_mode == "dual") { config.heuristic_mode = car_swarm_agent::HeuristicMode::Dual; }
+    else { throw std::invalid_argument("heuristic_mode must be euclidean, obstacle or dual"); }
     config.max_iterations =
       static_cast<int>(declare_parameter<int>("max_iterations", 200000));
     config.grid_resolution =
@@ -118,10 +130,23 @@ public:
     const double goal_y =
       declare_parameter<double>("goal_y", 0.0);
 
-    const car_swarm_agent::Pose start{start_x, start_y, 0.0};
-    const car_swarm_agent::Pose goal{goal_x, goal_y, 0.0};
-    const std::vector<car_swarm_agent::Pose> path =
-      planner_.plan(start, goal);
+    const double start_yaw = declare_parameter<double>("start_yaw", 0.0);
+    const double goal_yaw = declare_parameter<double>("goal_yaw", 0.0);
+    const car_swarm_agent::Pose start{start_x, start_y, start_yaw};
+    const car_swarm_agent::Pose goal{goal_x, goal_y, goal_yaw};
+    car_swarm_agent::PlanningStats stats;
+    const std::vector<car_swarm_agent::Pose> path = planner_.plan(start, goal, &stats);
+    RCLCPP_INFO(get_logger(),
+      "mode=%s reached=%d stop=%s iterations=%zu expanded=%zu open=%zu length_m=%.3f points=%zu reverse_segments=%zu time_ms=%.3f tables=%zu analytic=%zu/%zu",
+      heuristic_mode.c_str(), stats.reached_goal, car_swarm_agent::stopReasonName(stats.stop_reason),
+      stats.iterations, stats.expanded_nodes, stats.open_nodes_remaining, stats.path_length,
+      stats.path_points, stats.reverse_segments, stats.planning_time_ms, stats.obstacle_table_builds,
+      stats.analytic_successes, stats.analytic_attempts);
+    RCLCPP_INFO(get_logger(),
+      "start_body_free=%d goal_body_free=%d closest=(%.4f,%.4f,%.4f) position_error=%.4f yaw_error=%.4f best_yaw_near_goal=%.4f rad",
+      stats.start_body_free, stats.goal_body_free, stats.closest_pose.x, stats.closest_pose.y,
+      stats.closest_pose.yaw, stats.closest_position_error, stats.closest_yaw_error,
+      stats.best_yaw_error_near_goal);
 
     footprint_publisher_ =
       create_publisher<visualization_msgs::msg::MarkerArray>(

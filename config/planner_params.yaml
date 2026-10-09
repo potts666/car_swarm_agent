@@ -9,6 +9,14 @@ car_swarm_agent:
     max_steer_angle: 0.5
     steering_samples: 3
     goal_tolerance: 0.5
+    goal_yaw_tolerance: 0.17453292519943295
+    heuristic_mode: dual
+    allow_reverse: true
+    analytic_expansion: true
+    analytic_max_distance: 15.0
+    analytic_expansion_interval: 10
+    start_yaw: 0.0
+    goal_yaw: 0.0
     max_iterations: 200000
     grid_resolution: 0.5
     yaw_resolution: 0.08726646259971647
