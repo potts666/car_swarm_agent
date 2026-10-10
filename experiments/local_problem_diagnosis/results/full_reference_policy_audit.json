@@ -1,0 +1,80 @@
+{
+  "reference_direction": [
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1
+  ],
+  "stop_equation_endpoints_s": [],
+  "waiting_with_zero_speed_allowed_in_reverse_mode": true,
+  "physical_hard_constraints": [
+    "bicycle dynamics",
+    "signed speed bounds",
+    "acceleration / steering bounds",
+    "steering rate",
+    "total acceleration",
+    "static / fixed-prediction body clearance"
+  ],
+  "policy_hard_constraints": [
+    "reference-dependent direction inequality",
+    "reference-dependent fixed stop equalities"
+  ],
+  "soft_task_progress": [
+    "timed pose / signed-speed tracking",
+    "reference control tracking",
+    "terminal POSITION COST (no terminal-goal hard constraint in this local problem)"
+  ],
+  "caveat": "Future fixed stop/direction schedules reduce admissible controls in general. At THIS snapshot, no stop equality exists; waiting is not forbidden by reverse direction since v=0 is allowed.",
+  "whole_A_reference_mode_intervals": [
+    {
+      "start_s": 0.0,
+      "end_s": 0.8,
+      "mode": 0
+    },
+    {
+      "start_s": 0.8,
+      "end_s": 12.0,
+      "mode": -1
+    },
+    {
+      "start_s": 12.0,
+      "end_s": 13.600000000000001,
+      "mode": 0
+    },
+    {
+      "start_s": 13.600000000000001,
+      "end_s": 24.8,
+      "mode": -1
+    },
+    {
+      "start_s": 24.8,
+      "end_s": 27.200000000000003,
+      "mode": 0
+    }
+  ],
+  "whole_A_reference_forced_stop_endpoints_s": [
+    0.4,
+    0.8,
+    12.0,
+    12.4,
+    12.8,
+    13.200000000000001,
+    13.600000000000001,
+    24.8,
+    25.200000000000003,
+    25.6,
+    26.0,
+    26.400000000000002,
+    26.8,
+    27.200000000000003
+  ],
+  "reference_tail_behavior": "window() uses gear=0 and zero reference controls after reference exhaustion; forcing zero speed at every endpoint prevents a stopped car from catching up to a missed goal. Policy restriction, not vehicle requirement."
+}

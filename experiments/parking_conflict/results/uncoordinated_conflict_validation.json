@@ -1,0 +1,49 @@
+{
+  "name": "uncoordinated_conflict",
+  "physical_envelope_pass": false,
+  "unchanged_baseline_envelope_pass": false,
+  "minimum_sampled_padded_body_distance_m": 0.0,
+  "minimum_sampled_sat_gap_m": -2.6068581428993083,
+  "violations": {
+    "0_static": 0.0,
+    "0_speed": 0.0,
+    "0_acceleration": 0.0,
+    "0_steering": 0.0,
+    "0_steering_rate": 0.0,
+    "0_total_acceleration": 0.0,
+    "0_goal": 0.0,
+    "0_gear_jump": 0.0,
+    "1_static": 0.0,
+    "1_speed": 0.0,
+    "1_acceleration": 0.0,
+    "1_steering": 0.0,
+    "1_steering_rate": 0.0,
+    "1_total_acceleration": 0.0,
+    "1_goal": 0.0,
+    "1_gear_jump": 0.0,
+    "pair_gap": 2.6868581428993084
+  },
+  "completion_time_s": [
+    24.66,
+    28.740000000000002
+  ],
+  "reverse_entries": [
+    1,
+    0
+  ],
+  "sample_dt_s": 0.01,
+  "continuous_time_certified": false,
+  "execution": "open-loop controls through bicycle plant",
+  "final_errors": [
+    {
+      "distance_m": 2.3569212631020048e-07,
+      "yaw_error_rad": 7.287955333424821e-17,
+      "speed_m_s": -1.6479873021779667e-17
+    },
+    {
+      "distance_m": 6.501466032204917e-13,
+      "yaw_error_rad": 0.0,
+      "speed_m_s": -5.204170427930421e-18
+    }
+  ]
+}

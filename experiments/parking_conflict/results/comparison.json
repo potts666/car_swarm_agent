@@ -1,0 +1,250 @@
+{
+  "counterfactuals": [
+    {
+      "name": "A_first_B_wait",
+      "physical_envelope_pass": true,
+      "unchanged_baseline_envelope_pass": false,
+      "minimum_sampled_padded_body_distance_m": 1.400000097743789,
+      "minimum_sampled_sat_gap_m": 1.4000000977437885,
+      "violations": {
+        "0_static": 0.0,
+        "0_speed": 0.0,
+        "0_acceleration": 0.0,
+        "0_steering": 0.0,
+        "0_steering_rate": 0.0,
+        "0_total_acceleration": 0.0,
+        "0_goal": 0.0,
+        "0_gear_jump": 0.0,
+        "1_static": 0.0,
+        "1_speed": 0.0,
+        "1_acceleration": 0.0,
+        "1_steering": 0.0,
+        "1_steering_rate": 0.0,
+        "1_total_acceleration": 0.0,
+        "1_goal": 0.0,
+        "1_gear_jump": 0.0,
+        "pair_gap": 0.0
+      },
+      "completion_time_s": [
+        24.66,
+        54.34
+      ],
+      "reverse_entries": [
+        1,
+        0
+      ],
+      "sample_dt_s": 0.01,
+      "continuous_time_certified": false,
+      "execution": "open-loop controls through bicycle plant",
+      "final_errors": [
+        {
+          "distance_m": 2.3569212631020048e-07,
+          "yaw_error_rad": 7.287955333424821e-17,
+          "speed_m_s": -1.6479873021779667e-17
+        },
+        {
+          "distance_m": 6.501466032204917e-13,
+          "yaw_error_rad": 0.0,
+          "speed_m_s": -5.204170427930421e-18
+        }
+      ]
+    },
+    {
+      "name": "B_bypass_A_parallel",
+      "physical_envelope_pass": false,
+      "unchanged_baseline_envelope_pass": false,
+      "minimum_sampled_padded_body_distance_m": 4.800000195487578,
+      "minimum_sampled_sat_gap_m": 4.513134477827482,
+      "violations": {
+        "0_static": 0.0,
+        "0_speed": 0.0,
+        "0_acceleration": 0.0,
+        "0_steering": 0.0,
+        "0_steering_rate": 0.0,
+        "0_total_acceleration": 0.0,
+        "0_goal": 0.0,
+        "0_gear_jump": 0.0,
+        "1_static": 0.4354258588712202,
+        "1_speed": 0.0,
+        "1_acceleration": 0.0,
+        "1_steering": 0.0,
+        "1_steering_rate": 0.0,
+        "1_total_acceleration": 0.0,
+        "1_goal": 0.0,
+        "1_gear_jump": 0.0,
+        "pair_gap": 0.0
+      },
+      "completion_time_s": [
+        24.66,
+        66.26
+      ],
+      "reverse_entries": [
+        1,
+        0
+      ],
+      "sample_dt_s": 0.01,
+      "continuous_time_certified": false,
+      "execution": "open-loop controls through bicycle plant",
+      "final_errors": [
+        {
+          "distance_m": 2.3569212631020048e-07,
+          "yaw_error_rad": 7.287955333424821e-17,
+          "speed_m_s": -1.6479873021779667e-17
+        },
+        {
+          "distance_m": 4.2893783991360124e-07,
+          "yaw_error_rad": 2.1302358411144172e-17,
+          "speed_m_s": 7.19910242530375e-17
+        }
+      ]
+    },
+    {
+      "name": "uncoordinated_conflict",
+      "physical_envelope_pass": false,
+      "unchanged_baseline_envelope_pass": false,
+      "minimum_sampled_padded_body_distance_m": 0.0,
+      "minimum_sampled_sat_gap_m": -2.6068581428993083,
+      "violations": {
+        "0_static": 0.0,
+        "0_speed": 0.0,
+        "0_acceleration": 0.0,
+        "0_steering": 0.0,
+        "0_steering_rate": 0.0,
+        "0_total_acceleration": 0.0,
+        "0_goal": 0.0,
+        "0_gear_jump": 0.0,
+        "1_static": 0.0,
+        "1_speed": 0.0,
+        "1_acceleration": 0.0,
+        "1_steering": 0.0,
+        "1_steering_rate": 0.0,
+        "1_total_acceleration": 0.0,
+        "1_goal": 0.0,
+        "1_gear_jump": 0.0,
+        "pair_gap": 2.6868581428993084
+      },
+      "completion_time_s": [
+        24.66,
+        28.740000000000002
+      ],
+      "reverse_entries": [
+        1,
+        0
+      ],
+      "sample_dt_s": 0.01,
+      "continuous_time_certified": false,
+      "execution": "open-loop controls through bicycle plant",
+      "final_errors": [
+        {
+          "distance_m": 2.3569212631020048e-07,
+          "yaw_error_rad": 7.287955333424821e-17,
+          "speed_m_s": -1.6479873021779667e-17
+        },
+        {
+          "distance_m": 6.501466032204917e-13,
+          "yaw_error_rad": 0.0,
+          "speed_m_s": -5.204170427930421e-18
+        }
+      ]
+    }
+  ],
+  "closed_loop": [
+    {
+      "policy": "baseline",
+      "seed": 20261010,
+      "stop": "rejected_optimization_no_execution",
+      "cycles": 30,
+      "success": false,
+      "classification": "not_reproduced",
+      "minimum_sampled_sat_gap_m": 1.8094965960713139,
+      "solve_seconds_mean": 0.5058639793869295,
+      "solve_seconds_max": 4.13258512900029,
+      "final_errors": [
+        {
+          "distance_m": 8.19850658714103,
+          "yaw_error_rad": 1.2752626191638721e-11,
+          "speed_m_s": -1.3018610406237366e-08
+        },
+        {
+          "distance_m": 14.509743603474696,
+          "yaw_error_rad": 0.000247192401408918,
+          "speed_m_s": 0.8938315104311805
+        }
+      ],
+      "permission_rule": "both permitted"
+    },
+    {
+      "policy": "baseline",
+      "seed": 20261011,
+      "stop": "rejected_optimization_no_execution",
+      "cycles": 30,
+      "success": false,
+      "classification": "not_reproduced",
+      "minimum_sampled_sat_gap_m": 1.8094965960713139,
+      "solve_seconds_mean": 0.5158311653065304,
+      "solve_seconds_max": 4.117335314998854,
+      "final_errors": [
+        {
+          "distance_m": 8.19850658714103,
+          "yaw_error_rad": 1.2752626191638721e-11,
+          "speed_m_s": -1.3018610406237366e-08
+        },
+        {
+          "distance_m": 14.509743603474696,
+          "yaw_error_rad": 0.000247192401408918,
+          "speed_m_s": 0.8938315104311805
+        }
+      ],
+      "permission_rule": "both permitted"
+    },
+    {
+      "policy": "baseline",
+      "seed": 20261012,
+      "stop": "rejected_optimization_no_execution",
+      "cycles": 30,
+      "success": false,
+      "classification": "not_reproduced",
+      "minimum_sampled_sat_gap_m": 1.8094965960713139,
+      "solve_seconds_mean": 0.4889492870322776,
+      "solve_seconds_max": 3.9938323610003863,
+      "final_errors": [
+        {
+          "distance_m": 8.19850658714103,
+          "yaw_error_rad": 1.2752626191638721e-11,
+          "speed_m_s": -1.3018610406237366e-08
+        },
+        {
+          "distance_m": 14.509743603474696,
+          "yaw_error_rad": 0.000247192401408918,
+          "speed_m_s": 0.8938315104311805
+        }
+      ],
+      "permission_rule": "both permitted"
+    },
+    {
+      "policy": "rule_cycle",
+      "seed": 20261010,
+      "stop": "observation_limit",
+      "cycles": 60,
+      "success": false,
+      "classification": "rule_cycle",
+      "minimum_sampled_sat_gap_m": 11.3,
+      "solve_seconds_mean": 0.0,
+      "solve_seconds_max": 0,
+      "final_errors": [
+        {
+          "distance_m": 8.198506518950952,
+          "yaw_error_rad": 0.0,
+          "speed_m_s": 0.0
+        },
+        {
+          "distance_m": 24.0,
+          "yaw_error_rad": 0.0,
+          "speed_m_s": 0.0
+        }
+      ],
+      "permission_rule": "A waits B goal; B waits A goal"
+    }
+  ],
+  "conclusion": "Physical signed-speed witness and forward-only baseline use different admissible input sets. Strict evidence A under unchanged baseline constraints is NOT established. No infinite deadlock or scene impossibility proof."
+}

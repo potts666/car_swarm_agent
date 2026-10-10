@@ -1,0 +1,269 @@
+{
+  "single_car": [
+    {
+      "success": true,
+      "stop": "goals_reached_and_held",
+      "seed": 20261010,
+      "cycles": 67,
+      "arrival_times_s": [
+        24.8
+      ],
+      "final_errors": [
+        {
+          "position_m": 0.0014060873343518406,
+          "yaw_rad": 0.0006296939111160437,
+          "speed_m_s": 0.0
+        }
+      ],
+      "maximum_actual_sampled_violation": 8.239936510889834e-17,
+      "min_sampled_static_sat_gap_m": 0.5999999999999999,
+      "min_sampled_pair_body_distance_m": null,
+      "solve_seconds_mean": 0.318584466657183,
+      "solve_seconds_max": 2.217926458000875,
+      "classification": "normal_completion",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01,
+      "max_first_control_difference_from_reference": 0.07581300613230008,
+      "mode": "single"
+    },
+    {
+      "success": true,
+      "stop": "goals_reached_and_held",
+      "seed": 20261011,
+      "cycles": 67,
+      "arrival_times_s": [
+        24.8
+      ],
+      "final_errors": [
+        {
+          "position_m": 0.0014060873343518406,
+          "yaw_rad": 0.0006296939111160437,
+          "speed_m_s": 0.0
+        }
+      ],
+      "maximum_actual_sampled_violation": 8.239936510889834e-17,
+      "min_sampled_static_sat_gap_m": 0.5999999999999999,
+      "min_sampled_pair_body_distance_m": null,
+      "solve_seconds_mean": 0.3122882589704028,
+      "solve_seconds_max": 2.0953969769980176,
+      "classification": "normal_completion",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01,
+      "max_first_control_difference_from_reference": 0.07581300613230008,
+      "mode": "single"
+    },
+    {
+      "success": true,
+      "stop": "goals_reached_and_held",
+      "seed": 20261012,
+      "cycles": 67,
+      "arrival_times_s": [
+        24.8
+      ],
+      "final_errors": [
+        {
+          "position_m": 0.0014060873343518406,
+          "yaw_rad": 0.0006296939111160437,
+          "speed_m_s": 0.0
+        }
+      ],
+      "maximum_actual_sampled_violation": 8.239936510889834e-17,
+      "min_sampled_static_sat_gap_m": 0.5999999999999999,
+      "min_sampled_pair_body_distance_m": null,
+      "solve_seconds_mean": 0.35502822213441765,
+      "solve_seconds_max": 2.2204195260019333,
+      "classification": "normal_completion",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01,
+      "max_first_control_difference_from_reference": 0.07581300613230008,
+      "mode": "single"
+    }
+  ],
+  "independent_two_car": [
+    {
+      "success": false,
+      "stop": "solver_rejected_no_execution",
+      "seed": 20261010,
+      "cycles": 15,
+      "arrival_times_s": [
+        null,
+        null
+      ],
+      "final_errors": [
+        {
+          "position_m": 6.3340869793892,
+          "yaw_rad": 0.39312931215302604,
+          "speed_m_s": 0.4191708215668613
+        },
+        {
+          "position_m": 19.88059397412029,
+          "yaw_rad": 6.752229672641024e-06,
+          "speed_m_s": 0.8955049731942231
+        }
+      ],
+      "maximum_actual_sampled_violation": 0.0,
+      "min_sampled_static_sat_gap_m": 0.5999926317135574,
+      "min_sampled_pair_body_distance_m": 4.987341066937196,
+      "solve_seconds_mean": 0.28409036993753034,
+      "solve_seconds_max": 1.2794295179992332,
+      "classification": "stagnation_not_reproduced",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01,
+      "max_first_control_difference_from_reference": 0.07193241875395928,
+      "mode": "two"
+    },
+    {
+      "success": false,
+      "stop": "solver_rejected_no_execution",
+      "seed": 20261011,
+      "cycles": 15,
+      "arrival_times_s": [
+        null,
+        null
+      ],
+      "final_errors": [
+        {
+          "position_m": 6.3340869793892,
+          "yaw_rad": 0.39312931215302604,
+          "speed_m_s": 0.4191708215668613
+        },
+        {
+          "position_m": 19.88059397412029,
+          "yaw_rad": 6.752229672641024e-06,
+          "speed_m_s": 0.8955049731942231
+        }
+      ],
+      "maximum_actual_sampled_violation": 0.0,
+      "min_sampled_static_sat_gap_m": 0.5999926317135574,
+      "min_sampled_pair_body_distance_m": 4.987341066937196,
+      "solve_seconds_mean": 0.26732105534415496,
+      "solve_seconds_max": 1.2502207059987995,
+      "classification": "stagnation_not_reproduced",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01,
+      "max_first_control_difference_from_reference": 0.07193241875395928,
+      "mode": "two"
+    },
+    {
+      "success": false,
+      "stop": "solver_rejected_no_execution",
+      "seed": 20261012,
+      "cycles": 15,
+      "arrival_times_s": [
+        null,
+        null
+      ],
+      "final_errors": [
+        {
+          "position_m": 6.3340869793892,
+          "yaw_rad": 0.39312931215302604,
+          "speed_m_s": 0.4191708215668613
+        },
+        {
+          "position_m": 19.88059397412029,
+          "yaw_rad": 6.752229672641024e-06,
+          "speed_m_s": 0.8955049731942231
+        }
+      ],
+      "maximum_actual_sampled_violation": 0.0,
+      "min_sampled_static_sat_gap_m": 0.5999926317135574,
+      "min_sampled_pair_body_distance_m": 4.987341066937196,
+      "solve_seconds_mean": 0.26734455181258454,
+      "solve_seconds_max": 1.2454405870012124,
+      "classification": "stagnation_not_reproduced",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01,
+      "max_first_control_difference_from_reference": 0.07193241875395928,
+      "mode": "two"
+    }
+  ],
+  "witness": {
+    "pass_all_declared_sampled_constraints": true,
+    "final_hold_pass": true,
+    "hold_seconds": 2,
+    "input_limits": {
+      "acceleration_m_s2": 1,
+      "steering_rad": 0.5,
+      "steering_rate_rad_s": 1,
+      "total_acceleration_m_s2": 2,
+      "pair_sat_gap_m": 0.08,
+      "static_sat_gap_m": 0.03,
+      "speed_m_s": [
+        -1,
+        1
+      ]
+    },
+    "vehicle": {
+      "length_m": 4.5,
+      "width_m": 1.8,
+      "rear_overhang_m": 1,
+      "wheelbase_m": 2.7,
+      "padding_per_side_m": 0.1,
+      "minimum_radius_m": 4.942316848623621
+    },
+    "initial_states": [
+      [
+        6,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        -10,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "goals": [
+      [
+        -1.460262002187406,
+        -3.4,
+        0
+      ],
+      [
+        14,
+        0,
+        0
+      ]
+    ],
+    "violations": {
+      "pair": 0.0,
+      "prediction_constraints": 0.0,
+      "stop_equalities": 4.4408920985006264e-17,
+      "static": 0.0,
+      "speed": 0.0,
+      "acceleration": 0.0,
+      "steering": 0.0,
+      "steering_rate": 0.0,
+      "total_acceleration": 0.0,
+      "gear": 4.163336342344337e-17
+    },
+    "completion_times_s": [
+      24.8,
+      56.0
+    ],
+    "total_duration_s": 58.0,
+    "min_sampled_padded_body_distance_m": 1.4000097723431515,
+    "min_sampled_static_sat_gap_m": 0.5999999999999999,
+    "final_errors": [
+      {
+        "position_m": 2.3564299725297506e-05,
+        "yaw_rad": 4.759930711140754e-17,
+        "speed_m_s": 4.163336342344337e-17
+      },
+      {
+        "position_m": 3.907985046680551e-14,
+        "yaw_rad": 0.0,
+        "speed_m_s": 0.0
+      }
+    ],
+    "continuous_time_certified": false,
+    "sampling_dt_s": 0.01,
+    "driving_mode_policy": "Witness references encode B waiting before forward motion; baseline references are uncoordinated. Same physical/input/gear-switch constraints, different planned timing.",
+    "validation_method": "Per-control interval dense midpoint reintegration from actual coarse-model states; SAT gap and exact rectangle edge/vertex distances at samples only."
+  },
+  "conclusion": "Single-car gate passed; sampled same-model/input-envelope sequential witness passed; independent two-car solves rejected before sustained stagnation. No MPC strategy deadlock reproduced."
+}

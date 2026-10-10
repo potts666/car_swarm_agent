@@ -1,0 +1,88 @@
+{
+  "single_car_gate_passed": true,
+  "single_car_runs": [
+    {
+      "success": true,
+      "stop": "goals_reached_and_held",
+      "seed": 20261010,
+      "cycles": 67,
+      "arrival_times_s": [
+        24.8
+      ],
+      "final_errors": [
+        {
+          "position_m": 0.0014060873343518406,
+          "yaw_rad": 0.0006296939111160437,
+          "speed_m_s": 0.0
+        }
+      ],
+      "maximum_actual_sampled_violation": 8.239936510889834e-17,
+      "min_sampled_static_sat_gap_m": 0.5999999999999999,
+      "min_sampled_pair_body_distance_m": null,
+      "solve_seconds_mean": 0.318584466657183,
+      "solve_seconds_max": 2.217926458000875,
+      "classification": "normal_completion",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01
+    },
+    {
+      "success": true,
+      "stop": "goals_reached_and_held",
+      "seed": 20261011,
+      "cycles": 67,
+      "arrival_times_s": [
+        24.8
+      ],
+      "final_errors": [
+        {
+          "position_m": 0.0014060873343518406,
+          "yaw_rad": 0.0006296939111160437,
+          "speed_m_s": 0.0
+        }
+      ],
+      "maximum_actual_sampled_violation": 8.239936510889834e-17,
+      "min_sampled_static_sat_gap_m": 0.5999999999999999,
+      "min_sampled_pair_body_distance_m": null,
+      "solve_seconds_mean": 0.3122882589704028,
+      "solve_seconds_max": 2.0953969769980176,
+      "classification": "normal_completion",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01
+    },
+    {
+      "success": true,
+      "stop": "goals_reached_and_held",
+      "seed": 20261012,
+      "cycles": 67,
+      "arrival_times_s": [
+        24.8
+      ],
+      "final_errors": [
+        {
+          "position_m": 0.0014060873343518406,
+          "yaw_rad": 0.0006296939111160437,
+          "speed_m_s": 0.0
+        }
+      ],
+      "maximum_actual_sampled_violation": 8.239936510889834e-17,
+      "min_sampled_static_sat_gap_m": 0.5999999999999999,
+      "min_sampled_pair_body_distance_m": null,
+      "solve_seconds_mean": 0.35502822213441765,
+      "solve_seconds_max": 2.2204195260019333,
+      "classification": "normal_completion",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01
+    }
+  ],
+  "sampled_counterfactual_passed": true,
+  "core_sha256": {
+    "mpc.py": "dc9a9d5e524b1fe08e82dba186f19cc2014396745ff80579e0ab9e505cedee1e",
+    "run.py": "67144100460ca08765ccee79dc741b7740327a79422cf6bf4a65d5ac1f3307c5",
+    "config.json": "f62abefaa6a31e1a65b0fcf7ff18fb810eef8708ada5c71569e6512aa8dd9b1f",
+    "reference_A_controls.json": "79e60d2866399796c702eff425526afe7e52d8d34fdb1fac0fa40eb791f57570",
+    "reference_B_controls.json": "191c0a3c24fc543d9552999b764e979aabede54786c3b7b3754a9ea408d82c4a",
+    "../parking_conflict/frozen/optimize_spatial_temporal.py": "c2f9a401dbfd75b620ceabdc44da44aa737c3875078d8bbfb9d5b395aa417fdc"
+  },
+  "original_scenario_sha256": "b96bbf55fbe01f799204d849ff7dfa0813e1c99aff119a9c7f36231d3367422e",
+  "declaration": "Frozen after single-car acceptance and before any two-car baseline run. Physical limits and geometry unchanged; signed timed control references and explicit stop/gear modes added. No continuous-time proof."
+}

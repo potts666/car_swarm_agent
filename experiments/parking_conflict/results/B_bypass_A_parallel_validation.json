@@ -1,0 +1,49 @@
+{
+  "name": "B_bypass_A_parallel",
+  "physical_envelope_pass": false,
+  "unchanged_baseline_envelope_pass": false,
+  "minimum_sampled_padded_body_distance_m": 4.800000195487578,
+  "minimum_sampled_sat_gap_m": 4.513134477827482,
+  "violations": {
+    "0_static": 0.0,
+    "0_speed": 0.0,
+    "0_acceleration": 0.0,
+    "0_steering": 0.0,
+    "0_steering_rate": 0.0,
+    "0_total_acceleration": 0.0,
+    "0_goal": 0.0,
+    "0_gear_jump": 0.0,
+    "1_static": 0.4354258588712202,
+    "1_speed": 0.0,
+    "1_acceleration": 0.0,
+    "1_steering": 0.0,
+    "1_steering_rate": 0.0,
+    "1_total_acceleration": 0.0,
+    "1_goal": 0.0,
+    "1_gear_jump": 0.0,
+    "pair_gap": 0.0
+  },
+  "completion_time_s": [
+    24.66,
+    66.26
+  ],
+  "reverse_entries": [
+    1,
+    0
+  ],
+  "sample_dt_s": 0.01,
+  "continuous_time_certified": false,
+  "execution": "open-loop controls through bicycle plant",
+  "final_errors": [
+    {
+      "distance_m": 2.3569212631020048e-07,
+      "yaw_error_rad": 7.287955333424821e-17,
+      "speed_m_s": -1.6479873021779667e-17
+    },
+    {
+      "distance_m": 4.2893783991360124e-07,
+      "yaw_error_rad": 2.1302358411144172e-17,
+      "speed_m_s": 7.19910242530375e-17
+    }
+  ]
+}

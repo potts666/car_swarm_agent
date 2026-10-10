@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "seeds": [
+    20261010,
+    20261011,
+    20261012
+  ],
+  "starts": [
+    [
+      6,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      -10,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "goals": [
+    [
+      -1.460262002187406,
+      -3.4,
+      0
+    ],
+    [
+      14,
+      0,
+      0
+    ]
+  ],
+  "vehicle": {
+    "length_m": 4.5,
+    "width_m": 1.8,
+    "rear_overhang_m": 1,
+    "wheelbase_m": 2.7,
+    "padding_per_side_m": 0.1,
+    "minimum_radius_m": 4.942316848623621
+  },
+  "limits": {
+    "physical_speed_m_s": [
+      -1,
+      1
+    ],
+    "baseline_speed_m_s": [
+      0,
+      1
+    ],
+    "acceleration_m_s2": 1,
+    "steering_rad": 0.5,
+    "steering_rate_rad_s": 1,
+    "total_acceleration_m_s2": 2,
+    "pair_sat_gap_m": 0.08,
+    "static_sat_gap_m": 0.03
+  },
+  "time": {
+    "control_dt_s": 0.4,
+    "prediction_steps": 12,
+    "model_substeps": 4,
+    "validation_substeps": 40,
+    "epoch_s": 100
+  },
+  "obstacle_boxes": [
+    [
+      -30,
+      5.5,
+      60,
+      1
+    ],
+    [
+      -30,
+      -6.5,
+      60,
+      1
+    ],
+    [
+      -30,
+      -5.5,
+      25,
+      3.9
+    ],
+    [
+      10,
+      -5.5,
+      20,
+      3.9
+    ]
+  ],
+  "parking_polygon": [
+    [
+      -3.5,
+      -4.7
+    ],
+    [
+      3,
+      -4.7
+    ],
+    [
+      3,
+      -1.6
+    ],
+    [
+      -3.5,
+      -1.6
+    ]
+  ],
+  "criteria": {
+    "position_m": 0.3,
+    "yaw_rad": 0.17453292519943295,
+    "speed_m_s": 0.05,
+    "duration_s": 24,
+    "stagnation_window_s": 8,
+    "max_extent_m": 0.1,
+    "min_progress_m": 0.1,
+    "repeats": 3
+  },
+  "reference_primitives": {
+    "arc_cycles": 28,
+    "straight_cycles": 70,
+    "bypass_straight_cycles": 36,
+    "steering_ramp_at_rest": true
+  },
+  "freeze_note": "Frozen before first solve. Geometry uses real configured padded 4.7 x 2.0 m bodies. Road upper edge 5.5; lower edge -1.6 except roadside bay opening x[-5,10]."
+}

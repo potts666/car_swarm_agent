@@ -1,0 +1,30 @@
+{
+  "success": false,
+  "stop": "solver_rejected_no_execution",
+  "seed": 20261012,
+  "cycles": 15,
+  "arrival_times_s": [
+    null,
+    null
+  ],
+  "final_errors": [
+    {
+      "position_m": 6.3340869793892,
+      "yaw_rad": 0.39312931215302604,
+      "speed_m_s": 0.4191708215668613
+    },
+    {
+      "position_m": 19.88059397412029,
+      "yaw_rad": 6.752229672641024e-06,
+      "speed_m_s": 0.8955049731942231
+    }
+  ],
+  "maximum_actual_sampled_violation": 0.0,
+  "min_sampled_static_sat_gap_m": 0.5999926317135574,
+  "min_sampled_pair_body_distance_m": 4.987341066937196,
+  "solve_seconds_mean": 0.26734455181258454,
+  "solve_seconds_max": 1.2454405870012124,
+  "classification": "stagnation_not_reproduced",
+  "continuous_time_certified": false,
+  "validation_dt_s": 0.01
+}

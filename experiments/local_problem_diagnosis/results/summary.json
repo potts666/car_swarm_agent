@@ -1,0 +1,13 @@
+{
+  "local_sampled_feasibility_confirmed": true,
+  "original_replay_accepted": false,
+  "objective_from_feasible_accepted": 2,
+  "feasible_raw_candidates": [
+    "max_brake_hold_steer",
+    "gentle_brake_hold_steer",
+    "max_brake_then_straighten"
+  ],
+  "original_constraints_unchanged": true,
+  "continuous_time_certified": false,
+  "interpretation": "A legal candidate refutes local sampled infeasibility; rejected optimization is a numerical/initialization outcome, not a scene or local impossibility proof."
+}

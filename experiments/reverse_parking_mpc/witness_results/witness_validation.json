@@ -1,0 +1,88 @@
+{
+  "pass_all_declared_sampled_constraints": true,
+  "final_hold_pass": true,
+  "hold_seconds": 2,
+  "input_limits": {
+    "acceleration_m_s2": 1,
+    "steering_rad": 0.5,
+    "steering_rate_rad_s": 1,
+    "total_acceleration_m_s2": 2,
+    "pair_sat_gap_m": 0.08,
+    "static_sat_gap_m": 0.03,
+    "speed_m_s": [
+      -1,
+      1
+    ]
+  },
+  "vehicle": {
+    "length_m": 4.5,
+    "width_m": 1.8,
+    "rear_overhang_m": 1,
+    "wheelbase_m": 2.7,
+    "padding_per_side_m": 0.1,
+    "minimum_radius_m": 4.942316848623621
+  },
+  "initial_states": [
+    [
+      6,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      -10,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "goals": [
+    [
+      -1.460262002187406,
+      -3.4,
+      0
+    ],
+    [
+      14,
+      0,
+      0
+    ]
+  ],
+  "violations": {
+    "pair": 0.0,
+    "prediction_constraints": 0.0,
+    "stop_equalities": 4.4408920985006264e-17,
+    "static": 0.0,
+    "speed": 0.0,
+    "acceleration": 0.0,
+    "steering": 0.0,
+    "steering_rate": 0.0,
+    "total_acceleration": 0.0,
+    "gear": 4.163336342344337e-17
+  },
+  "completion_times_s": [
+    24.8,
+    56.0
+  ],
+  "total_duration_s": 58.0,
+  "min_sampled_padded_body_distance_m": 1.4000097723431515,
+  "min_sampled_static_sat_gap_m": 0.5999999999999999,
+  "final_errors": [
+    {
+      "position_m": 2.3564299725297506e-05,
+      "yaw_rad": 4.759930711140754e-17,
+      "speed_m_s": 4.163336342344337e-17
+    },
+    {
+      "position_m": 3.907985046680551e-14,
+      "yaw_rad": 0.0,
+      "speed_m_s": 0.0
+    }
+  ],
+  "continuous_time_certified": false,
+  "sampling_dt_s": 0.01,
+  "driving_mode_policy": "Witness references encode B waiting before forward motion; baseline references are uncoordinated. Same physical/input/gear-switch constraints, different planned timing.",
+  "validation_method": "Per-control interval dense midpoint reintegration from actual coarse-model states; SAT gap and exact rectangle edge/vertex distances at samples only."
+}

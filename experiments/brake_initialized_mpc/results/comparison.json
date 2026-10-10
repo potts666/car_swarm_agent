@@ -1,0 +1,164 @@
+{
+  "runs": [
+    {
+      "success": false,
+      "stop": "solver_rejected_no_execution",
+      "seed": 20261010,
+      "cycles": 16,
+      "arrival_times_s": [
+        null,
+        null
+      ],
+      "final_errors": [
+        {
+          "position_m": 6.225788678530151,
+          "yaw_rad": 0.3971753390661567,
+          "speed_m_s": 0.1252210578609872
+        },
+        {
+          "position_m": 19.522480430369516,
+          "yaw_rad": 0.0003712049373798049,
+          "speed_m_s": 0.8950627874107295
+        }
+      ],
+      "maximum_actual_sampled_violation": 7.902340004584119e-08,
+      "min_sampled_static_sat_gap_m": 0.5996594784092573,
+      "min_sampled_pair_body_distance_m": 4.526745592330127,
+      "solve_seconds_mean": 0.3153245869408933,
+      "solve_seconds_max": 1.5370017810055288,
+      "classification": "stagnation_not_reproduced",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01,
+      "original_prefix_identical": true,
+      "accepted_extra_initializations": [
+        {
+          "time_s": 6.0,
+          "car": 0,
+          "initialization": "max_brake_hold_steer"
+        }
+      ],
+      "first_unexecuted_time_s": 6.4,
+      "optimization_rejections": 7,
+      "legal_braking_candidates_at_stop": {
+        "0": [
+          "max_brake_hold_steer",
+          "gentle_brake_hold_steer",
+          "max_brake_then_straighten"
+        ],
+        "1": [
+          "max_brake_hold_steer",
+          "gentle_brake_hold_steer",
+          "max_brake_then_straighten"
+        ]
+      },
+      "fallback_controls_executed": 0
+    },
+    {
+      "success": false,
+      "stop": "solver_rejected_no_execution",
+      "seed": 20261011,
+      "cycles": 16,
+      "arrival_times_s": [
+        null,
+        null
+      ],
+      "final_errors": [
+        {
+          "position_m": 6.225788678530151,
+          "yaw_rad": 0.3971753390661567,
+          "speed_m_s": 0.1252210578609872
+        },
+        {
+          "position_m": 19.522480430369516,
+          "yaw_rad": 0.0003712049373798049,
+          "speed_m_s": 0.8950627874107295
+        }
+      ],
+      "maximum_actual_sampled_violation": 7.902340004584119e-08,
+      "min_sampled_static_sat_gap_m": 0.5996594784092573,
+      "min_sampled_pair_body_distance_m": 4.526745592330127,
+      "solve_seconds_mean": 0.31781533073487533,
+      "solve_seconds_max": 1.5850493920006556,
+      "classification": "stagnation_not_reproduced",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01,
+      "original_prefix_identical": true,
+      "accepted_extra_initializations": [
+        {
+          "time_s": 6.0,
+          "car": 0,
+          "initialization": "max_brake_hold_steer"
+        }
+      ],
+      "first_unexecuted_time_s": 6.4,
+      "optimization_rejections": 7,
+      "legal_braking_candidates_at_stop": {
+        "0": [
+          "max_brake_hold_steer",
+          "gentle_brake_hold_steer",
+          "max_brake_then_straighten"
+        ],
+        "1": [
+          "max_brake_hold_steer",
+          "gentle_brake_hold_steer",
+          "max_brake_then_straighten"
+        ]
+      },
+      "fallback_controls_executed": 0
+    },
+    {
+      "success": false,
+      "stop": "solver_rejected_no_execution",
+      "seed": 20261012,
+      "cycles": 16,
+      "arrival_times_s": [
+        null,
+        null
+      ],
+      "final_errors": [
+        {
+          "position_m": 6.225788678530151,
+          "yaw_rad": 0.3971753390661567,
+          "speed_m_s": 0.1252210578609872
+        },
+        {
+          "position_m": 19.522480430369516,
+          "yaw_rad": 0.0003712049373798049,
+          "speed_m_s": 0.8950627874107295
+        }
+      ],
+      "maximum_actual_sampled_violation": 7.902340004584119e-08,
+      "min_sampled_static_sat_gap_m": 0.5996594784092573,
+      "min_sampled_pair_body_distance_m": 4.526745592330127,
+      "solve_seconds_mean": 0.308294218235567,
+      "solve_seconds_max": 1.5307351610026672,
+      "classification": "stagnation_not_reproduced",
+      "continuous_time_certified": false,
+      "validation_dt_s": 0.01,
+      "original_prefix_identical": true,
+      "accepted_extra_initializations": [
+        {
+          "time_s": 6.0,
+          "car": 0,
+          "initialization": "max_brake_hold_steer"
+        }
+      ],
+      "first_unexecuted_time_s": 6.4,
+      "optimization_rejections": 7,
+      "legal_braking_candidates_at_stop": {
+        "0": [
+          "max_brake_hold_steer",
+          "gentle_brake_hold_steer",
+          "max_brake_then_straighten"
+        ],
+        "1": [
+          "max_brake_hold_steer",
+          "gentle_brake_hold_steer",
+          "max_brake_then_straighten"
+        ]
+      },
+      "fallback_controls_executed": 0
+    }
+  ],
+  "conclusion": "Initialization-only retries repair cycle 15 at 6 s but all three runs reject A at cycle 16 / 6.4 s; feasible braking candidates remain, no fallback executed, no sustained stagnation reproduced."
+}

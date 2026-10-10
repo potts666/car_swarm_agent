@@ -1,0 +1,78 @@
+Exported Hybrid A* + S-T seed, 25.5 seconds
+cycle=0 t=0.0s min_body_distance=5.831m
+{
+  "method": "previous-prediction decentralized MPC baseline",
+  "cooperative_dmpc": false,
+  "transport": "ROS 2 independent processes",
+  "model": "midpoint kinematic bicycle, substep 0.1 s; independent of native C++ tracking model",
+  "absolute_epoch_s": 100.0,
+  "control_dt_s": 0.4,
+  "horizon_s": 4.800000000000001,
+  "arrival_position_tolerance_m": 0.3,
+  "arrival_speed_tolerance_m_s": 0.05,
+  "arrived": [
+    false,
+    false
+  ],
+  "arrival_time_s": [
+    null,
+    null
+  ],
+  "final_states": [
+    [
+      -9.200000000000003,
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      4.8985871965894125e-17,
+      -7.200000000000003,
+      1.5707963267948966,
+      1.0,
+      0.0
+    ]
+  ],
+  "min_sampled_body_distance_m": 5.283937925449167,
+  "max_realized_sampled_constraint_violation": 0.0,
+  "realized_violation_by_constraint": {
+    "neighbor_gap_m": 0.0,
+    "static_gap_m": 0.0,
+    "speed_m_s": 0.0,
+    "steering_rad": 0.0,
+    "acceleration_m_s2": 0.0,
+    "steering_rate_rad_s": 0.0,
+    "total_acceleration_m_s2": 0.0
+  },
+  "violation_tolerance": 1e-05,
+  "body_padding_per_car_m": 0.1,
+  "required_neighbor_sat_gap_m": 0.08,
+  "required_static_sat_gap_m": 0.03,
+  "max_prediction_constraint_violation": 1.433600209816397e-13,
+  "rejected_solves": 0,
+  "solve_count": 4,
+  "braking_initialization_retries": 0,
+  "solve_seconds_mean": 0.11499536924975473,
+  "solve_seconds_p95": 0.25632923904959165,
+  "solve_seconds_max": 0.28680282099958276,
+  "cycles_exceeding_control_period": 0,
+  "receive_to_control_seconds_mean": 0.12587340675054293,
+  "receive_to_control_seconds_p95": 0.27468187950134954,
+  "receive_to_control_seconds_max": 0.3066688200015051,
+  "individual_outputs_exceeding_period": 0,
+  "rounds_with_output_exceeding_period": 0,
+  "round_request_to_outputs_seconds_mean": 0.20061651899959543,
+  "round_request_to_outputs_seconds_max": 0.3110029489998851,
+  "ros_rounds_exceeding_control_period": 0,
+  "conservative_outputs": 0,
+  "min_inter_sample_body_distance_m": 5.283937925449177,
+  "inter_sample_check_dt_s": 0.01,
+  "inter_sample_clearance_target_m": 0.08,
+  "inter_sample_clearance_target_met": true,
+  "inter_sample_clearance_below_margin_samples": 0,
+  "inter_sample_clearance_shortfall_m": 0.0,
+  "failure": null,
+  "continuous_safety_certified": false,
+  "success": false
+}

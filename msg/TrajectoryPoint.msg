@@ -11,3 +11,7 @@ int8 FORWARD=1
 
 # 从前一点运动到本点的方向；第一个点为 STOP
 int8 direction
+
+# MPC 状态扩展：纵向速度及当前施加的前轮转角
+float64 speed
+float64 steering

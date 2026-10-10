@@ -129,6 +129,16 @@ if(BUILD_TESTING)
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
   add_test(NAME test_spatial_temporal_math
     COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/test_spatial_temporal_math.py)
+  add_test(NAME test_ros_decentralized_mpc
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/test_ros_decentralized_mpc.py)
+  add_test(NAME test_brake_initialization
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/experiments/brake_initialized_mpc/test_initialization.py)
+  add_test(NAME test_local_problem_diagnosis
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/experiments/local_problem_diagnosis/test_diagnose.py)
+  add_test(NAME test_reverse_parking_mpc
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/experiments/reverse_parking_mpc/test_mpc.py)
+  add_test(NAME test_parking_conflict
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/experiments/parking_conflict/test_experiment.py)
   add_test(NAME test_decentralized_mpc
     COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/test_decentralized_mpc.py)
 
@@ -188,6 +198,11 @@ target_link_libraries(trajectory_comm_node
 install(TARGETS trajectory_comm_node
   DESTINATION lib/${PROJECT_NAME}
 )
+
+install(PROGRAMS test/ros_decentralized_mpc.py
+  DESTINATION lib/${PROJECT_NAME})
+install(FILES test/decentralized_mpc.py test/optimize_spatial_temporal.py
+  DESTINATION lib/${PROJECT_NAME})
 
 ament_export_dependencies(rosidl_default_runtime)
 

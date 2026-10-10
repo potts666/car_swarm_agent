@@ -1,0 +1,12 @@
+Starting >>> car_swarm_agent
+--- stderr: car_swarm_agent
+Errors while running CTest
+Output from these tests are in: /home/sunflower/car_swarm_ws/build/car_swarm_agent/Testing/Temporary/LastTest.log
+Use "--rerun-failed --output-on-failure" to re-run the failed cases verbosely.
+---
+[Processing: car_swarm_agent]
+Finished <<< car_swarm_agent [45.5s]	[ with test failures ]
+
+Summary: 1 package finished [45.7s]
+  1 package had stderr output: car_swarm_agent
+  1 package had test failures: car_swarm_agent

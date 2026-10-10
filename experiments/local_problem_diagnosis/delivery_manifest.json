@@ -1,0 +1,31 @@
+{
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "numpy": "1.26.4",
+  "scipy": "1.11.4",
+  "files_sha256": {
+    ".gitignore": "862263fa1f46c20f0d1e4dac5ffcc75abd55c08211b2c3864c5f8764b9d87793",
+    "README.md": "8f0f4e58c2eda1f9a53a121e3ead5b79ef6528de9ce30a50919c88fe407d876c",
+    "report.py": "e77fdc93eb46c7a8d943a4da65da795fedeb6bbe116f8314a8294d90cf9c894f",
+    "test_diagnose.py": "f1e51493e292c5cfa8925a9984ef794506984b4ea4ce214b746ceaa7e0a8fbf6",
+    "diagnose.py": "27b3e15b0d38dd26009a2723b366a8fe0f14ae580eabb8b3680762105430d4a2",
+    "results/max_brake_then_straighten_predictions.csv": "e820a4387330298c4f54ed6b252a01666c712f75c34789a836e24f9932cc1d48",
+    "results/max_brake_hold_steer_predictions.csv": "a92db46fba8695f8354520b9a947293d0a3449b22be1377caa087c57127b1e97",
+    "results/phase_one.json": "0daee1edf1ea036781b290c17ac430c18926e28ab0e8c1251217210280bba3bd",
+    "results/original_replay.json": "edd0bb43128de16cc6c5bdd36d8032efe098d9f759e62c9439fbe0c75b89636d",
+    "results/summary.json": "8a815b17b740f93a2d65cbc49388f5ec340271ae1371c2a3824a2a2fe35c2fa4",
+    "results/local_candidates.png": "95a030c5e19871acbf473accd7d0a6597daf9c6440b360e168978916a0b05053",
+    "results/shifted_solution_predictions.csv": "64ffe0b4091d9b1f114266f5761ccfeb73af109d04bf73cf6e2b30272439724d",
+    "results/problem.json": "67e5f4741ba03ead676074fd68d5477c178539927d370916485159f73ff58896",
+    "results/gentle_brake_hold_steer_predictions.csv": "38d39763484a10fd7a2eec87a1870ba6ea4503541152484e6d39a5f29e94f39b",
+    "results/candidates.json": "ca45e70c5860a7316488f3b515eadcbd11a259d29a1cf4738f1c1ec068b1917c",
+    "results/phase_one_metrics.csv": "e617301bca137f62b55881420c1a6f8a84dbf352dc0d86ec7cf7454db74ebb75",
+    "results/objective_from_feasible.json": "ab1e32d1db5138bd148469c9ff734de48acd399f6cafc5f1f596676b036ac1f7",
+    "results/signed_reference_predictions.csv": "0f43c7cb3d1765e25e84b67b41793de6ee9523a7b14abacca27ea29e4b2342a1",
+    "results/constraint_policy_audit.json": "2481640d209dd1225d3e192be9098bb8f88c491b6746552afce4157cb6fc928c",
+    "results/full_reference_policy_audit.json": "96fe21cb6f30087bffe3c2335c93c4bcca5596e98f7db1e2b6adaaf6a37d9e22",
+    "results/comparison.md": "cedc434add1fa8f412b291bd0ef381d8d10d7b93e8ec9c49aad8d0b252c52e8f",
+    "checks/local_problem_replay.txt": "8a815b17b740f93a2d65cbc49388f5ec340271ae1371c2a3824a2a2fe35c2fa4",
+    "checks/local_diagnosis_tests.txt": "37fcce429b493aad3c130fc1a98bec86ae0259ee8199c2587f6d5c7193d4b963",
+    "checks/local_diagnosis_build.txt": "603ad54f77f54a5ae2c213e403bae591b4d09b12feee5a197de81cc0d0950fe4"
+  }
+}

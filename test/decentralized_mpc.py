@@ -23,7 +23,7 @@ N = 12
 MARGIN = 0.08
 
 
-def rollout(state, controls, tail=False):
+def rollout(state, controls, tail=False, substeps=SUBSTEPS):
     """Midpoint bicycle model, controls [acceleration, front-wheel angle].
 
     The last column stores applied steering. No clipping hides violations.
@@ -34,9 +34,9 @@ def rollout(state, controls, tail=False):
     commands = np.asarray(controls).reshape(-1, 2)
     if tail:
         commands = np.vstack((commands, [0.0, commands[-1, 1]]))
-    h = DT / SUBSTEPS
+    h = DT / substeps
     for acc, steer in commands:
-        for _ in range(SUBSTEPS):
+        for _ in range(substeps):
             v_mid = state[3] + acc * h / 2
             omega = v_mid * np.tan(steer) / 2.7
             yaw_mid = state[2] + omega * h / 2
@@ -137,7 +137,7 @@ def solve(state, now, prediction, ref, obstacles, warm):
 
 
 
-def run(directory, binary, max_seconds=60):
+def run(directory, binary, max_seconds=60, transport=None):
     directory.mkdir(parents=True, exist_ok=True)
     seed = directory / 'seed'
     subprocess.run([str(binary.resolve()), '--export', str(seed.resolve())], check=True)
@@ -169,7 +169,9 @@ def run(directory, binary, max_seconds=60):
     goals = [np.array([10, 0]), np.array([0, 8])]
     warm = [np.zeros((N, 2)), np.zeros((N, 2))]
     predictions = [packet(EPOCH, rollout(s, u, tail=True)) for s, u in zip(states, warm)]
-    records, actual, publications = [], [], []
+    if transport is not None:
+        transport.initialize(refs, obstacles, states, predictions)
+    records, actual, publications, distance_rows = [], [], [], []
     min_distance, actual_violation, failure = float('inf'), 0., None
     reached_at = [None, None]
     maxima = {k: 0.0 for k in ('neighbor_gap_m', 'static_gap_m', 'speed_m_s',
@@ -179,8 +181,14 @@ def run(directory, binary, max_seconds=60):
         now = EPOCH + cycle * DT
         # Freeze both inboxes before either solve: no Gauss-Seidel coordination.
         controls, reports = [], []
+        remote = transport.step(cycle, now, states) if transport is not None else None
         for i in range(2):
-            u, report = solve(states[i], now, predictions[1-i], refs[i], obstacles, warm[i])
+            if remote is None:
+                started = time.perf_counter()
+                u, report = solve(states[i], now, predictions[1-i], refs[i], obstacles, warm[i])
+                report['receive_to_control_seconds'] = time.perf_counter() - started
+            else:
+                u, report = remote[i]
             controls.append(u); reports.append(report)
             records.append({'cycle': cycle, 'car': i + 1, 'absolute_time_s': now, **report})
         if not all(r['accepted'] for r in reports):
@@ -192,6 +200,11 @@ def run(directory, binary, max_seconds=60):
                                  'times_absolute_s': pred['times'].tolist(), 'states': pred['states'].tolist()})
         # Execute only the first control of each accepted plan, simultaneously.
         executed = [rollout(s, u[:1]) for s, u in zip(states, controls)]
+        dense = [rollout(s, u[:1], substeps=40) for s, u in zip(states, controls)]
+        dense_distances = body_distance(dense[0][:, :2], dense[0][:, 2],
+                                        dense[1][:, :2], dense[1][:, 2])
+        distance_rows.extend([cycle, now + j * DT / 40, float(d)]
+                             for j, d in enumerate(dense_distances))
         a, b = executed
         distances = body_distance(a[:, :2], a[:, 2], b[:, :2], b[:, 2])
         min_distance = min(min_distance, float(np.min(distances)))
@@ -234,14 +247,23 @@ def run(directory, binary, max_seconds=60):
         writer = csv.writer(out)
         writer.writerow(['absolute_time_s', 'car', 'x', 'y', 'yaw', 'speed', 'steering', 'acceleration', 'command_steering'])
         writer.writerows(actual)
+    with (directory / 'body_distances.csv').open('w') as out:
+        writer = csv.writer(out)
+        writer.writerow(['cycle', 'absolute_time_s', 'body_distance_m'])
+        writer.writerows(distance_rows)
     (directory / 'solves.json').write_text(json.dumps(records, indent=2) + '\n')
     with (directory / 'predictions.jsonl').open('w') as out:
         for pub in publications:
             out.write(json.dumps(pub) + '\n')
     elapsed = [r['solve_seconds'] for r in records]
+    latencies = [r['receive_to_control_seconds'] for r in records
+                 if r['receive_to_control_seconds'] is not None]
+    round_latencies = [records[j].get('round_request_to_outputs_seconds')
+                       for j in range(0, len(records), 2)]
+    round_latencies = [v for v in round_latencies if v is not None]
     arrived = [bool(np.linalg.norm(s[:2] - g) < .3 and abs(s[3]) < .05) for s, g in zip(states, goals)]
     report = {'method': 'previous-prediction decentralized MPC baseline',
-        'cooperative_dmpc': False, 'transport': 'synchronous in-process prediction packets',
+        'cooperative_dmpc': False, 'transport': 'ROS 2 independent processes' if transport else 'synchronous in-process prediction packets',
         'model': 'midpoint kinematic bicycle, substep 0.1 s; independent of native C++ tracking model',
         'absolute_epoch_s': EPOCH, 'control_dt_s': DT, 'horizon_s': N * DT,
         'arrival_position_tolerance_m': .3, 'arrival_speed_tolerance_m_s': .05,
@@ -252,13 +274,28 @@ def run(directory, binary, max_seconds=60):
         'violation_tolerance': 1e-5, 'body_padding_per_car_m': .1,
         'required_neighbor_sat_gap_m': MARGIN, 'required_static_sat_gap_m': .03,
         'max_prediction_constraint_violation': max((r['prediction_constraint_violation'] for r in records), default=0),
-        'rejected_solves': sum(not r['accepted'] for r in records), 'solve_count': len(records),
+        'rejected_solves': sum(not r.get('optimizer_accepted', r['accepted']) for r in records), 'solve_count': len(records),
         'braking_initialization_retries': sum(len(r['attempts']) > 1 for r in records),
         'solve_seconds_mean': float(np.mean(elapsed)) if elapsed else None,
         'solve_seconds_p95': float(np.percentile(elapsed, 95)) if elapsed else None,
         'solve_seconds_max': max(elapsed, default=0),
         'cycles_exceeding_control_period': sum(sum(r['solve_seconds'] for r in records if r['cycle'] == c) > DT
                                                for c in set(r['cycle'] for r in records)),
+        'receive_to_control_seconds_mean': float(np.mean(latencies)) if latencies else None,
+        'receive_to_control_seconds_p95': float(np.percentile(latencies, 95)) if latencies else None,
+        'receive_to_control_seconds_max': max(latencies, default=0),
+        'individual_outputs_exceeding_period': sum(v > DT for v in latencies),
+        'rounds_with_output_exceeding_period': len({r['cycle'] for r in records if r['receive_to_control_seconds'] is not None and r['receive_to_control_seconds'] > DT}),
+        'round_request_to_outputs_seconds_mean': float(np.mean(round_latencies)) if round_latencies else None,
+        'round_request_to_outputs_seconds_max': max(round_latencies, default=None),
+        'ros_rounds_exceeding_control_period': sum(v > DT for v in round_latencies),
+        'conservative_outputs': sum(r.get('conservative', False) for r in records),
+        'min_inter_sample_body_distance_m': min((r[2] for r in distance_rows), default=None),
+        'inter_sample_check_dt_s': DT / 40,
+        'inter_sample_clearance_target_m': MARGIN,
+        'inter_sample_clearance_target_met': all(r[2] >= MARGIN - 1e-5 for r in distance_rows),
+        'inter_sample_clearance_below_margin_samples': sum(r[2] < MARGIN - 1e-5 for r in distance_rows),
+        'inter_sample_clearance_shortfall_m': max((max(0., MARGIN - r[2]) for r in distance_rows), default=0.),
         'failure': failure, 'continuous_safety_certified': False,
         'success': all(arrived) and failure is None}
     (directory / 'summary.json').write_text(json.dumps(report, indent=2) + '\n')

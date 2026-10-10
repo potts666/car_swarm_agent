@@ -1,0 +1,198 @@
+[
+  {
+    "cycle": 0,
+    "car": 1,
+    "absolute_time_s": 100.0,
+    "solver_success": true,
+    "accepted": true,
+    "message": "Optimization terminated successfully",
+    "iterations": 1,
+    "solve_seconds": 0.04870490000030259,
+    "prediction_constraint_violation": 0.0,
+    "peer_stamp_absolute_s": 100.0,
+    "attempts": [
+      {
+        "initialization": "shifted_plan",
+        "success": true,
+        "accepted": true,
+        "message": "Optimization terminated successfully",
+        "violation": 0.0
+      }
+    ],
+    "optimizer_accepted": true,
+    "conservative": false,
+    "peer_status": "fresh",
+    "peer_expected_sequence": -1,
+    "peer_sequence": -1,
+    "fallback_reason": null,
+    "peer_vehicle_id": "car_2",
+    "message_age_s": 0.0,
+    "point_count": 53,
+    "request_to_control_seconds": 0.054812571999718784,
+    "receive_to_control_seconds": 0.05526802699932887,
+    "receive_available": true,
+    "control_output_monotonic_s": 9687.923408539,
+    "worker_pid": 22089,
+    "round_request_to_outputs_seconds": 0.3110029489998851,
+    "executed_first_control": [
+      0.0,
+      0.0
+    ],
+    "realized_pair_violation_by_constraint": {
+      "neighbor_gap_m": 0.0,
+      "static_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "steering_rad": 0.0,
+      "acceleration_m_s2": 0.0,
+      "steering_rate_rad_s": 0.0,
+      "total_acceleration_m_s2": 0.0
+    }
+  },
+  {
+    "cycle": 0,
+    "car": 2,
+    "absolute_time_s": 100.0,
+    "solver_success": true,
+    "accepted": true,
+    "message": "Optimization terminated successfully",
+    "iterations": 7,
+    "solve_seconds": 0.28680282099958276,
+    "prediction_constraint_violation": 1.433600209816397e-13,
+    "peer_stamp_absolute_s": 100.0,
+    "attempts": [
+      {
+        "initialization": "shifted_plan",
+        "success": true,
+        "accepted": true,
+        "message": "Optimization terminated successfully",
+        "violation": 1.433600209816397e-13
+      }
+    ],
+    "optimizer_accepted": true,
+    "conservative": false,
+    "peer_status": "fresh",
+    "peer_expected_sequence": -1,
+    "peer_sequence": -1,
+    "fallback_reason": null,
+    "peer_vehicle_id": "car_1",
+    "message_age_s": 0.0,
+    "point_count": 53,
+    "request_to_control_seconds": 0.3062493670004187,
+    "receive_to_control_seconds": 0.3066688200015051,
+    "receive_available": true,
+    "control_output_monotonic_s": 9688.174929418,
+    "worker_pid": 22090,
+    "round_request_to_outputs_seconds": 0.3110029489998851,
+    "executed_first_control": [
+      7.098278315400683e-16,
+      0.0
+    ],
+    "realized_pair_violation_by_constraint": {
+      "neighbor_gap_m": 0.0,
+      "static_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "steering_rad": 0.0,
+      "acceleration_m_s2": 0.0,
+      "steering_rate_rad_s": 0.0,
+      "total_acceleration_m_s2": 0.0
+    }
+  },
+  {
+    "cycle": 1,
+    "car": 1,
+    "absolute_time_s": 100.4,
+    "solver_success": true,
+    "accepted": true,
+    "message": "Optimization terminated successfully",
+    "iterations": 1,
+    "solve_seconds": 0.04082814799949119,
+    "prediction_constraint_violation": 0.0,
+    "peer_stamp_absolute_s": 100.0,
+    "attempts": [
+      {
+        "initialization": "shifted_plan",
+        "success": true,
+        "accepted": true,
+        "message": "Optimization terminated successfully",
+        "violation": 0.0
+      }
+    ],
+    "optimizer_accepted": true,
+    "conservative": false,
+    "peer_status": "fresh",
+    "peer_expected_sequence": 0,
+    "peer_sequence": 0,
+    "fallback_reason": null,
+    "peer_vehicle_id": "car_2",
+    "message_age_s": 0.4000000000000057,
+    "point_count": 53,
+    "request_to_control_seconds": 0.04392201700102305,
+    "receive_to_control_seconds": 0.04813423000086914,
+    "receive_available": true,
+    "control_output_monotonic_s": 9688.225699758,
+    "worker_pid": 22089,
+    "round_request_to_outputs_seconds": 0.09023008899930574,
+    "executed_first_control": [
+      0.0,
+      0.0
+    ],
+    "realized_pair_violation_by_constraint": {
+      "neighbor_gap_m": 0.0,
+      "static_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "steering_rad": 0.0,
+      "acceleration_m_s2": 0.0,
+      "steering_rate_rad_s": 0.0,
+      "total_acceleration_m_s2": 0.0
+    }
+  },
+  {
+    "cycle": 1,
+    "car": 2,
+    "absolute_time_s": 100.4,
+    "solver_success": true,
+    "accepted": true,
+    "message": "Optimization terminated successfully",
+    "iterations": 2,
+    "solve_seconds": 0.08364560799964238,
+    "prediction_constraint_violation": 4.987286782759742e-14,
+    "peer_stamp_absolute_s": 100.0,
+    "attempts": [
+      {
+        "initialization": "shifted_plan",
+        "success": true,
+        "accepted": true,
+        "message": "Optimization terminated successfully",
+        "violation": 4.987286782759742e-14
+      }
+    ],
+    "optimizer_accepted": true,
+    "conservative": false,
+    "peer_status": "fresh",
+    "peer_expected_sequence": 0,
+    "peer_sequence": 0,
+    "fallback_reason": null,
+    "peer_vehicle_id": "car_1",
+    "message_age_s": 0.4000000000000057,
+    "point_count": 53,
+    "request_to_control_seconds": 0.08842983399881632,
+    "receive_to_control_seconds": 0.09342255000046862,
+    "receive_available": true,
+    "control_output_monotonic_s": 9688.270945183,
+    "worker_pid": 22090,
+    "round_request_to_outputs_seconds": 0.09023008899930574,
+    "executed_first_control": [
+      2.5097576076476595e-16,
+      0.0
+    ],
+    "realized_pair_violation_by_constraint": {
+      "neighbor_gap_m": 0.0,
+      "static_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "steering_rad": 0.0,
+      "acceleration_m_s2": 0.0,
+      "steering_rate_rad_s": 0.0,
+      "total_acceleration_m_s2": 0.0
+    }
+  }
+]

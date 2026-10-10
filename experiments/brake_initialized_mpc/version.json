@@ -1,0 +1,37 @@
+{
+  "version": "brake_initialization_v1",
+  "change_scope": "Only append three dynamically regenerated braking initial guesses after the original signed-reference and shifted-plan guesses. No Phase I, objective, solver option, reference, constraint, plant or execution-rule change.",
+  "source_sha256": {
+    "mpc.py": "f8e2f6ef1a95b275c86fbf099f219cee5852e5c9ca5684711945e9ab7e497493",
+    "initialization.py": "d6479b1ae4e7453aba67ddd58ecc78a1f844f614be1600f2e3b3bc5668f9dc06",
+    "run.py": "eb2cd6a8f431e152ffd280319b1bab61a362aca7db65d49b6bc5e53fd0e205a4",
+    "config.json": "f62abefaa6a31e1a65b0fcf7ff18fb810eef8708ada5c71569e6512aa8dd9b1f",
+    "reference_A_controls.json": "79e60d2866399796c702eff425526afe7e52d8d34fdb1fac0fa40eb791f57570",
+    "reference_B_controls.json": "191c0a3c24fc543d9552999b764e979aabede54786c3b7b3754a9ea408d82c4a"
+  },
+  "parent_core_sha256": {
+    "mpc.py": "dc9a9d5e524b1fe08e82dba186f19cc2014396745ff80579e0ab9e505cedee1e",
+    "run.py": "67144100460ca08765ccee79dc741b7740327a79422cf6bf4a65d5ac1f3307c5",
+    "config.json": "f62abefaa6a31e1a65b0fcf7ff18fb810eef8708ada5c71569e6512aa8dd9b1f",
+    "reference_A_controls.json": "79e60d2866399796c702eff425526afe7e52d8d34fdb1fac0fa40eb791f57570",
+    "reference_B_controls.json": "191c0a3c24fc543d9552999b764e979aabede54786c3b7b3754a9ea408d82c4a",
+    "../parking_conflict/frozen/optimize_spatial_temporal.py": "c2f9a401dbfd75b620ceabdc44da44aa737c3875078d8bbfb9d5b395aa417fdc"
+  },
+  "seed_order": [
+    "signed_reference",
+    "shifted_solution",
+    "max_brake_hold_steer",
+    "gentle_brake_hold_steer",
+    "max_brake_then_straighten"
+  ],
+  "fallback_mode": "disabled; failed optimization stops unchanged runner, candidates logged only",
+  "repeats": 3,
+  "seeds": [
+    20261010,
+    20261011,
+    20261012
+  ],
+  "max_simulation_seconds": 100,
+  "observation_criteria": "unchanged parent baseline 8 s window",
+  "execution_validation": "unchanged runner compares BOTH actual first controls at 0.01 s samples, separately from old-peer predicted candidate feasibility"
+}

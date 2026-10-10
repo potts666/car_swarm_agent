@@ -1,0 +1,31 @@
+Internal ctest changing into directory: /home/sunflower/car_swarm_ws/build/car_swarm_agent
+Test project /home/sunflower/car_swarm_ws/build/car_swarm_agent
+      Start  1: test_spatial_temporal_math
+ 1/11 Test  #1: test_spatial_temporal_math .......   Passed    0.20 sec
+      Start  2: test_ros_decentralized_mpc
+ 2/11 Test  #2: test_ros_decentralized_mpc .......   Passed    0.48 sec
+      Start  3: test_reverse_parking_mpc
+ 3/11 Test  #3: test_reverse_parking_mpc .........   Passed    1.04 sec
+      Start  4: test_parking_conflict
+ 4/11 Test  #4: test_parking_conflict ............   Passed    0.96 sec
+      Start  5: test_decentralized_mpc
+ 5/11 Test  #5: test_decentralized_mpc ...........   Passed    1.07 sec
+      Start  6: test_hybrid_astar_planner
+ 6/11 Test  #6: test_hybrid_astar_planner ........   Passed    8.08 sec
+      Start  7: test_trajectory_collision
+ 7/11 Test  #7: test_trajectory_collision ........   Passed    0.07 sec
+      Start  8: test_trajectory_yield
+ 8/11 Test  #8: test_trajectory_yield ............   Passed    0.26 sec
+      Start  9: test_continuous_trajectory
+ 9/11 Test  #9: test_continuous_trajectory .......   Passed    4.57 sec
+      Start 10: test_quintic_trajectory
+10/11 Test #10: test_quintic_trajectory ..........   Passed    0.10 sec
+      Start 11: test_trajectory_tracking
+11/11 Test #11: test_trajectory_tracking .........   Passed    0.11 sec
+
+100% tests passed, 0 tests failed out of 11
+
+Label Time Summary:
+gtest    =  13.19 sec*proc (6 tests)
+
+Total Test time (real) =  16.95 sec

@@ -1,0 +1,158 @@
+{
+  "config": {
+    "schema_version": 1,
+    "seeds": [
+      20261010,
+      20261011,
+      20261012
+    ],
+    "starts": [
+      [
+        6,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        -10,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "goals": [
+      [
+        -1.460262002187406,
+        -3.4,
+        0
+      ],
+      [
+        14,
+        0,
+        0
+      ]
+    ],
+    "vehicle": {
+      "length_m": 4.5,
+      "width_m": 1.8,
+      "rear_overhang_m": 1,
+      "wheelbase_m": 2.7,
+      "padding_per_side_m": 0.1,
+      "minimum_radius_m": 4.942316848623621
+    },
+    "limits": {
+      "acceleration_m_s2": 1,
+      "steering_rad": 0.5,
+      "steering_rate_rad_s": 1,
+      "total_acceleration_m_s2": 2,
+      "pair_sat_gap_m": 0.08,
+      "static_sat_gap_m": 0.03,
+      "speed_m_s": [
+        -1,
+        1
+      ]
+    },
+    "time": {
+      "control_dt_s": 0.4,
+      "prediction_steps": 12,
+      "model_substeps": 4,
+      "validation_substeps": 40,
+      "epoch_s": 100
+    },
+    "obstacle_boxes": [
+      [
+        -30,
+        5.5,
+        60,
+        1
+      ],
+      [
+        -30,
+        -6.5,
+        60,
+        1
+      ],
+      [
+        -30,
+        -5.5,
+        25,
+        3.9
+      ],
+      [
+        10,
+        -5.5,
+        20,
+        3.9
+      ]
+    ],
+    "parking_polygon": [
+      [
+        -3.5,
+        -4.7
+      ],
+      [
+        3,
+        -4.7
+      ],
+      [
+        3,
+        -1.6
+      ],
+      [
+        -3.5,
+        -1.6
+      ]
+    ],
+    "criteria": {
+      "position_m": 0.3,
+      "yaw_rad": 0.17453292519943295,
+      "speed_m_s": 0.05,
+      "duration_s": 24,
+      "stagnation_window_s": 8,
+      "max_extent_m": 0.1,
+      "min_progress_m": 0.1,
+      "repeats": 3
+    },
+    "reference_primitives": {
+      "arc_cycles": 28,
+      "straight_cycles": 70,
+      "bypass_straight_cycles": 36,
+      "steering_ramp_at_rest": true
+    },
+    "freeze_note": "New signed MPC development configuration; original geometry, starts, goals and safety constraints unchanged. Single-car acceptance required before freezing baseline. Durations registered before first solve.",
+    "mpc": {
+      "horizon_steps": 12,
+      "max_iterations": 100,
+      "ftol": 1e-07,
+      "constraint_tolerance": 1e-05,
+      "weights": {
+        "position": 30,
+        "yaw": 12,
+        "signed_speed": 10,
+        "control": 0.01,
+        "change": 0.02,
+        "reference_control": 0.1,
+        "terminal_position": 20
+      },
+      "finite_difference_step": 1e-06
+    },
+    "acceptance": {
+      "single_car_max_seconds": 60,
+      "two_car_max_seconds": 100,
+      "hold_seconds": 2,
+      "validation_sample_seconds": 0.01,
+      "required_single_repeats": 3,
+      "gear_zero_speed_tolerance": 1e-05
+    },
+    "source_scenario_sha256": "b96bbf55fbe01f799204d849ff7dfa0813e1c99aff119a9c7f36231d3367422e"
+  },
+  "files_sha256": {
+    "reference_B_controls.json": "191c0a3c24fc543d9552999b764e979aabede54786c3b7b3754a9ea408d82c4a",
+    "mpc.py": "ecb6a45c8e74a0cbd72305828689db0aec4ebedd0164a75bae55c525e7dcf460",
+    "reference_A_controls.json": "79e60d2866399796c702eff425526afe7e52d8d34fdb1fac0fa40eb791f57570",
+    "run.py": "32dc184a28d13b387096195c55a84d695ca524355475732122122d6dd8760ab6",
+    "config.json": "f62abefaa6a31e1a65b0fcf7ff18fb810eef8708ada5c71569e6512aa8dd9b1f"
+  }
+}

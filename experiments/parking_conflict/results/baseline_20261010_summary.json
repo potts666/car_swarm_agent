@@ -1,0 +1,24 @@
+{
+  "policy": "baseline",
+  "seed": 20261010,
+  "stop": "rejected_optimization_no_execution",
+  "cycles": 30,
+  "success": false,
+  "classification": "not_reproduced",
+  "minimum_sampled_sat_gap_m": 1.8094965960713139,
+  "solve_seconds_mean": 0.5058639793869295,
+  "solve_seconds_max": 4.13258512900029,
+  "final_errors": [
+    {
+      "distance_m": 8.19850658714103,
+      "yaw_error_rad": 1.2752626191638721e-11,
+      "speed_m_s": -1.3018610406237366e-08
+    },
+    {
+      "distance_m": 14.509743603474696,
+      "yaw_error_rad": 0.000247192401408918,
+      "speed_m_s": 0.8938315104311805
+    }
+  ],
+  "permission_rule": "both permitted"
+}

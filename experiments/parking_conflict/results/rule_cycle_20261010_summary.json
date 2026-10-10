@@ -1,0 +1,24 @@
+{
+  "policy": "rule_cycle",
+  "seed": 20261010,
+  "stop": "observation_limit",
+  "cycles": 60,
+  "success": false,
+  "classification": "rule_cycle",
+  "minimum_sampled_sat_gap_m": 11.3,
+  "solve_seconds_mean": 0.0,
+  "solve_seconds_max": 0,
+  "final_errors": [
+    {
+      "distance_m": 8.198506518950952,
+      "yaw_error_rad": 0.0,
+      "speed_m_s": 0.0
+    },
+    {
+      "distance_m": 24.0,
+      "yaw_error_rad": 0.0,
+      "speed_m_s": 0.0
+    }
+  ],
+  "permission_rule": "A waits B goal; B waits A goal"
+}

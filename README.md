@@ -663,3 +663,17 @@ build/car_swarm_agent/diagnose_hybrid_astar --rs
 前一条依次改变步长、角度分箱、位置分箱和转向采样，预算100万次；后一条在20万次预算下对比前进、仅倒车、倒车加解析连接。独立编译时需要同时编译 `src/reeds_shepp.cpp`。复现前进模式需设置 `allow_reverse:=false` 和 `analytic_expansion:=false`；仅倒车设置 `allow_reverse:=true`、`analytic_expansion:=false`。
 
 解析扩展仅尝试当前位姿到目标的最短 Reeds–Shepp 几何曲线；若曲线碰撞则继续栅格搜索，不保证尝试所有更长连接。成功连接后按原父链加解析曲线输出，并保留换向点。`nav_msgs/Path` 只发布位姿，倒车方向保存在规划器的 `Pose::signed_distance` 中。原空间节点 TF 仍作位姿播放；独立车辆模型与跟踪控制仿真通过 `yield_demo` 的 `execution_mode:=tracking` 启用，尚未接真实车辆。
+
+## ROS 双节点 MPC 离线闭环
+
+预测轨迹通过两个独立车辆 ROS 进程交换，保留上一轮预测规则；记录 ID、绝对仿真时间戳、消息年龄、点数、接收至控制耗时、超周期次数和 0.01 s 采样间车身距离。缺失或过期时限幅制动。正常闭环与进程内基线一致，但故障实验加密距离检查低于 0.08 m 余量，尚无连续安全或实时保证。
+
+运行方式、故障注入与结果见 [ROS 双节点对比](test/ros_decentralized_mpc_results.md)。
+
+固定双车倒车停车冲突实验（保留当前 MPC baseline、反事实采样验证、逐轮日志与规则等待环对照）：见 [实验说明](experiments/parking_conflict/README.md)。本轮结论：实验框架与失败分类已建立；已找到物理上可行的顺序通行候选；尚未复现 MPC 策略性死锁。原 MPC 不支持负速度，不能把物理倒车候选当作相同输入限制下的可行性证明。
+
+可倒车 MPC 新基线：[单车验收与双车实验](experiments/reverse_parking_mpc/README.md)。A单车3/3通过，顺序双车候选采样验证通过；冻结后的独立双车基线3次均在6秒求解拒绝，尚未复现策略性死锁。
+
+6.0秒失败的固定局部问题诊断：[原样重放、制动候选与可行性优先搜索](experiments/local_problem_diagnosis/README.md)。已找到满足同一局部采样约束的控制，原初始化拒绝不能解释为局部无解；冻结基线未改动。
+
+仅改变初始化的独立版本：[动态制动初值双车闭环](experiments/brake_initialized_mpc/README.md)。3次均恢复6秒优化并执行到6.4秒，随后A全部尝试拒绝；保留合法候选与失败状态的区别，没有执行备用控制。

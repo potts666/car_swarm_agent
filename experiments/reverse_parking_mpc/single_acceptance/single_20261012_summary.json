@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "stop": "goals_reached_and_held",
+  "seed": 20261012,
+  "cycles": 67,
+  "arrival_times_s": [
+    24.8
+  ],
+  "final_errors": [
+    {
+      "position_m": 0.0014060873343518406,
+      "yaw_rad": 0.0006296939111160437,
+      "speed_m_s": 0.0
+    }
+  ],
+  "maximum_actual_sampled_violation": 8.239936510889834e-17,
+  "min_sampled_static_sat_gap_m": 0.5999999999999999,
+  "min_sampled_pair_body_distance_m": null,
+  "solve_seconds_mean": 0.35502822213441765,
+  "solve_seconds_max": 2.2204195260019333,
+  "classification": "normal_completion",
+  "continuous_time_certified": false,
+  "validation_dt_s": 0.01
+}

@@ -1,0 +1,24 @@
+{
+  "success": false,
+  "stop": "solver_rejected_no_execution",
+  "seed": 20261010,
+  "cycles": 29,
+  "arrival_times_s": [
+    null
+  ],
+  "final_errors": [
+    {
+      "position_m": 4.152826882221675,
+      "yaw_rad": 0.8366656405422972,
+      "speed_m_s": 0.24796587340036044
+    }
+  ],
+  "maximum_actual_sampled_violation": 0.0,
+  "min_sampled_static_sat_gap_m": 0.5999999999999999,
+  "min_sampled_pair_body_distance_m": null,
+  "solve_seconds_mean": 0.25918118433364723,
+  "solve_seconds_max": 0.7104081780016713,
+  "classification": "stagnation_not_reproduced",
+  "continuous_time_certified": false,
+  "validation_dt_s": 0.01
+}
