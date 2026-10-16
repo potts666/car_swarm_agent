@@ -1,0 +1,38 @@
+{
+  "case": "merge_cooperative",
+  "status": "completed",
+  "expected_status": "completed",
+  "expectation_met": true,
+  "failure": null,
+  "final_phase": "merged",
+  "simulation_seconds": 25.2,
+  "minimum_sampled_sat_gap_m": 2.2999999999999963,
+  "max_executed_sampled_violation": 0.0,
+  "max_prediction_violation": 0.0,
+  "final_states_x_v": {
+    "A": [
+      51.80000000000008,
+      1.5
+    ],
+    "B": [
+      35.399941465183794,
+      1.5000510037852226
+    ],
+    "C": [
+      43.599960195314836,
+      1.5000412523185156
+    ]
+  },
+  "admitted_at_s": 2.8,
+  "merge_completed_at_s": 8.8,
+  "B_minimum_speed_m_s": 0.6843530819251166,
+  "solve_count": 189,
+  "rejected_solves": 0,
+  "solve_seconds_mean": 0.000571764211739209,
+  "solve_seconds_p95": 0.0009301984006015118,
+  "cycles_over_control_period": 0,
+  "continuous_safety_certified": false,
+  "steering_feasibility_tested": false,
+  "autonomous_order_selection": false,
+  "supervisor_is_centralized": true
+}

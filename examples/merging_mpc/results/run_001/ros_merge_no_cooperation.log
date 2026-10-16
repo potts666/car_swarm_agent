@@ -1,0 +1,19 @@
+[INFO] [launch]: All log files can be found below /home/sunflower/.ros/log/2026-10-16-22-19-04-082067-sunflower-VirtualBox-19591
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [rviz_replay.py-1]: process started with pid [19596]
+[rviz_replay.py-1] [INFO] [1792160344.577272310] [merging_replay]: Replaying /home/sunflower/car_swarm_switch_ws/src/car_swarm_agent/examples/merging_mpc/results/run_001/merge_no_cooperation; 30.0s; no optimizer/control publication
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [rviz_replay.py-1]: sending signal 'SIGINT' to process[rviz_replay.py-1]
+[rviz_replay.py-1] Traceback (most recent call last):
+[rviz_replay.py-1]   File "/tmp/merging_case_install/merging_mpc/lib/merging_mpc/rviz_replay.py", line 129, in <module>
+[rviz_replay.py-1]     main()
+[rviz_replay.py-1]   File "/tmp/merging_case_install/merging_mpc/lib/merging_mpc/rviz_replay.py", line 124, in main
+[rviz_replay.py-1]     node.destroy_node()
+[rviz_replay.py-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 1956, in destroy_node
+[rviz_replay.py-1]     self.destroy_publisher(self._publishers[0])
+[rviz_replay.py-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 1836, in destroy_publisher
+[rviz_replay.py-1]     publisher.destroy()
+[rviz_replay.py-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/publisher.py", line 105, in destroy
+[rviz_replay.py-1]     self.__publisher.destroy_when_not_in_use()
+[rviz_replay.py-1] KeyboardInterrupt
+[ERROR] [rviz_replay.py-1]: process has died [pid 19596, exit code -2, cmd '/tmp/merging_case_install/merging_mpc/lib/merging_mpc/rviz_replay.py --ros-args --params-file /tmp/launch_params_r8mqvlz0'].

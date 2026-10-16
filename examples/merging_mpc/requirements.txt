@@ -1,0 +1,5 @@
+numpy>=1.26,<3
+scipy>=1.11,<2
+matplotlib>=3.6,<4
+# Needed only to render/validate H.264 videos. Ubuntu: python3-opencv.
+opencv-python>=4.6,<5

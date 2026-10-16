@@ -1,0 +1,87 @@
+{
+  "settings": {
+    "dt": 0.4,
+    "horizon": 16,
+    "substeps": 4,
+    "epoch": 100.0,
+    "max_speed": 2.0,
+    "max_acceleration": 1.0,
+    "length": 4.7,
+    "width": 2.0,
+    "margin": 0.5,
+    "headway": 0.8,
+    "lateral_seconds": 6.0,
+    "tolerance": 1e-05
+  },
+  "road": {
+    "xmin": -20.0,
+    "xmax": 250.0,
+    "ymin": -1.4,
+    "ymax": 4.9
+  },
+  "initial_states_x_v": {
+    "A": [
+      14.0,
+      1.5
+    ],
+    "B": [
+      0.0,
+      1.5
+    ],
+    "C": [
+      7.0,
+      1.5
+    ]
+  },
+  "main_lane_y": 0.0,
+  "merge_lane_y": 3.5,
+  "cruise_speed": 1.5,
+  "request_time_s": 2.0,
+  "observation_time_s": 25.0,
+  "time_limit_s": 30.0,
+  "settled_speed_tolerance_m_s": 0.05,
+  "sampled_gap_min_m": 0.08,
+  "admission_buffer_m": 1.0,
+  "following_extra_gap_m": 1.8,
+  "cases": {
+    "merge_no_cooperation": {
+      "cooperative": false,
+      "expected_status": "blocked"
+    },
+    "merge_cooperative": {
+      "cooperative": true,
+      "expected_status": "completed"
+    }
+  },
+  "case": "merge_no_cooperation",
+  "desired_order": [
+    "A",
+    "C",
+    "B"
+  ],
+  "origin": "vehicle centre; all cars face east",
+  "model": "exact longitudinal double integrator; prescribed lateral occupancy",
+  "communication": {
+    "transport": "synchronous in-process full-mesh prediction packets",
+    "nominal_packet_age_s": 0.4,
+    "bootstrap_packet_age_s": 0.0,
+    "loss_rate": 0.0,
+    "jitter_s": 0.0,
+    "within_cycle_iterations": 0,
+    "fields": [
+      "stamp",
+      "absolute times",
+      "x",
+      "vx",
+      "y"
+    ],
+    "tail": "one cycle at zero acceleration"
+  },
+  "supervisor": "centralized admission; fixed A-C-B order; no decentralized negotiation",
+  "cost": {
+    "cruise_speed": 2.0,
+    "following_gap": 1.2,
+    "acceleration": 0.15,
+    "acceleration_change": 0.2
+  }
+}

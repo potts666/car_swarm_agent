@@ -1,0 +1,22 @@
+[
+  {
+    "case": "merge_no_cooperation",
+    "passed": true,
+    "execution_samples_per_car": 301,
+    "prediction_packets_verified": 225,
+    "admission_decisions_recomputed": 70,
+    "minimum_sampled_sat_gap_m": 2.2999999999999945,
+    "minimum_active_headway_residual_m": null,
+    "video_decoded_frames": 341
+  },
+  {
+    "case": "merge_cooperative",
+    "passed": true,
+    "execution_samples_per_car": 253,
+    "prediction_packets_verified": 189,
+    "admission_decisions_recomputed": 3,
+    "minimum_sampled_sat_gap_m": 2.2999999999999963,
+    "minimum_active_headway_residual_m": 0.5999999999999979,
+    "video_decoded_frames": 294
+  }
+]

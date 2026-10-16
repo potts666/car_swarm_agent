@@ -1,0 +1,41 @@
+{
+  "filename": "replay.mp4",
+  "codec": "avc1",
+  "pixel_dimensions": [
+    1280,
+    720
+  ],
+  "fps": 20.0,
+  "frames": 341,
+  "decoded_frames": 341,
+  "playback_rate": 2.0,
+  "video_seconds": 17.05,
+  "simulation_seconds": 30.0,
+  "source": "actual.csv and predictions.jsonl through recording.py; not an RViz screen capture",
+  "final_display_states": {
+    "A": {
+      "absolute_time_s": 130.0,
+      "x": 59.0000000000001,
+      "vx": 1.5,
+      "y": 0.0,
+      "acceleration": 0.0,
+      "phase": "open_gap"
+    },
+    "B": {
+      "absolute_time_s": 130.0,
+      "x": 45.000000000000064,
+      "vx": 1.5,
+      "y": 0.0,
+      "acceleration": 0.0,
+      "phase": "open_gap"
+    },
+    "C": {
+      "absolute_time_s": 130.0,
+      "x": 52.00000000000008,
+      "vx": 1.5,
+      "y": 3.5,
+      "acceleration": 0.0,
+      "phase": "open_gap"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.8)
+project(merging_mpc)
+find_package(ament_cmake REQUIRED)
+install(PROGRAMS scripts/rviz_replay.py DESTINATION lib/${PROJECT_NAME})
+install(FILES scripts/recording.py DESTINATION lib/${PROJECT_NAME})
+install(DIRECTORY launch rviz config results DESTINATION share/${PROJECT_NAME})
+ament_package()

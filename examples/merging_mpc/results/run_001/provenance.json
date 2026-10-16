@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-10-16T22:17:40.257116+08:00",
+  "upstream_git_head_at_run": "75b27b621781a7e00800b00e6f8c7a1952d622a5",
+  "parent_worktree_dirty": true,
+  "source_sha256": {
+    ".gitignore": "7c84913ffa409f341ed844314e295b880c299851bafaaec040b8dbc119a36323",
+    "CMakeLists.txt": "781c98d8138d5a9d48137b36a8f4dd19b4a0c93306f8ffb7059784c63d87e2f3",
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "README.md": "ea3a9bbcf07b1ab64e1f0fb0fd9830d9a50f4ee746c30b7b37493a3863dc9572",
+    "config/scenarios.json": "344d9c063fa7fbc060f89f22f82e5b270222da71d5b735f81ec6eba5fa0a6121",
+    "launch/replay.launch.py": "db2cf41ec9feb9accd21b9a567657376118637d3897b1947335a3595defd695f",
+    "package.xml": "e5e23cfecebd8fa47521ff34d2ae0edd73a77b065d94f0f3c626b0a6626b8a92",
+    "requirements.txt": "d7883ed7e2e223bdf78b646ed7a1548702eeba44cad918e5494609a93710cd31",
+    "rviz/replay.rviz": "526196f7440e42878a9d10ffe3ff0c5f0693338d2368482ed8b253367be74912",
+    "scripts/merging_core.py": "beceb4c99f4a9abc55f3a5f6700bff805fcb8e4847364eab92edb22c74423697",
+    "scripts/recording.py": "4454687af2f367ddb27a751863712a6a992f7e045ca88fb679932514b6905105",
+    "scripts/render.py": "4bdeb6545ccdf88a89dd901cb9fcdf4e65160136fa6ee7e892691414a6a24bd2",
+    "scripts/run_study.py": "18a6e306ed4c4aa04d3f3d319f489ea7a21599583e1b89b1d7b740aa7c3018d7",
+    "scripts/rviz_replay.py": "893d4febc66fb4bc7378d7118805e1ae3146e0cbf395e5ef41bc0c5a5239f50d",
+    "scripts/verify_bundle.py": "5791e7a1f2fb383b84f40e5a776d668e96c9c2e4e9e7ccc04a6091584d2d036e",
+    "tests/check_ros_replay.py": "91d3fddbb362a192e4a9e0caf1126007f58e5baa2c14ced0aea28c94e11b155a",
+    "tests/test_merging.py": "9533061c887e69ec5974fcfc7c700e68fd3ab29ac7c44e896ae47fe92b214ccb"
+  },
+  "source_tree_sha256": "9e7c1c637e0a0be504fcc622bf83958cabd8876deee4bad5f3525bdaf01b6256",
+  "version_note": "Git HEAD is the parent revision; this extracted package is uncommitted until the user commits it. The file hashes identify the executed source.",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "numpy": "1.26.4",
+  "scipy": "1.11.4",
+  "matplotlib": "3.6.3",
+  "opencv": "4.6.0",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "command_argv": [
+    "examples/merging_mpc/scripts/run_study.py"
+  ],
+  "openblas_threads": "1",
+  "randomness": "none; deterministic initial conditions",
+  "video": "OpenCV FFmpeg backend, H.264 avc1, 1280x720, 20fps, 2x simulation playback"
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "case": "merge_no_cooperation",
+    "passed": true,
+    "final_positions_match_log": true,
+    "camera_tf_received": true,
+    "status": "merge_no_cooperation | t=30.0s | open_gap | blocked",
+    "gui_rendering_tested": false
+  },
+  {
+    "case": "merge_cooperative",
+    "passed": true,
+    "final_positions_match_log": true,
+    "camera_tf_received": true,
+    "status": "merge_cooperative | t=25.2s | merged | completed",
+    "gui_rendering_tested": false
+  }
+]

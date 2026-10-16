@@ -1,0 +1,29 @@
+[
+  {
+    "time_s": 2.0,
+    "admitted": false,
+    "minimum_predicted_residual_m": -0.4000000000000039,
+    "pair_residuals_m": {
+      "A-C": -0.4000000000000039,
+      "C-B": -0.4000000000000039
+    }
+  },
+  {
+    "time_s": 2.4,
+    "admitted": false,
+    "minimum_predicted_residual_m": -0.3910032913479595,
+    "pair_residuals_m": {
+      "A-C": 3.552713678800501e-15,
+      "C-B": -0.3910032913479595
+    }
+  },
+  {
+    "time_s": 2.8,
+    "admitted": true,
+    "minimum_predicted_residual_m": 0.2826478386064917,
+    "pair_residuals_m": {
+      "A-C": 0.34676080696745704,
+      "C-B": 0.2826478386064917
+    }
+  }
+]

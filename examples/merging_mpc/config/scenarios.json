@@ -1,0 +1,19 @@
+{
+  "settings": {"dt": 0.4, "horizon": 16, "substeps": 4, "epoch": 100.0, "max_speed": 2.0, "max_acceleration": 1.0, "length": 4.7, "width": 2.0, "margin": 0.5, "headway": 0.8, "lateral_seconds": 6.0, "tolerance": 0.00001},
+  "road": {"xmin": -20.0, "xmax": 250.0, "ymin": -1.4, "ymax": 4.9},
+  "initial_states_x_v": {"A": [14.0, 1.5], "B": [0.0, 1.5], "C": [7.0, 1.5]},
+  "main_lane_y": 0.0,
+  "merge_lane_y": 3.5,
+  "cruise_speed": 1.5,
+  "request_time_s": 2.0,
+  "observation_time_s": 25.0,
+  "time_limit_s": 30.0,
+  "settled_speed_tolerance_m_s": 0.05,
+  "sampled_gap_min_m": 0.08,
+  "admission_buffer_m": 1.0,
+  "following_extra_gap_m": 1.8,
+  "cases": {
+    "merge_no_cooperation": {"cooperative": false, "expected_status": "blocked"},
+    "merge_cooperative": {"cooperative": true, "expected_status": "completed"}
+  }
+}

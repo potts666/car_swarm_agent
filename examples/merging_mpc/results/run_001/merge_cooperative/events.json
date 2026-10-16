@@ -1,0 +1,20 @@
+[
+  {
+    "time_s": 2.0,
+    "from": "following",
+    "to": "open_gap",
+    "detail": "C requests insertion; activate virtual-front following only if cooperative"
+  },
+  {
+    "time_s": 2.8,
+    "from": "open_gap",
+    "to": "merging",
+    "detail": "All A-C-B pair predictions meet spacing over the entire lateral transfer"
+  },
+  {
+    "time_s": 8.8,
+    "from": "merging",
+    "to": "merged",
+    "detail": "C occupancy reached main lane; continue observing car following"
+  }
+]
