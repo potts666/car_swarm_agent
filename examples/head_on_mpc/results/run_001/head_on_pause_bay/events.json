@@ -1,0 +1,26 @@
+[
+  {
+    "time_s": 6.0,
+    "from": "approach",
+    "to": "enter_bay",
+    "detail": "Prescribed lateral occupancy starts after longitudinal stop"
+  },
+  {
+    "time_s": 12.0,
+    "from": "enter_bay",
+    "to": "A_passes",
+    "detail": "B occupies bay; release A stop line"
+  },
+  {
+    "time_s": 18.8,
+    "from": "A_passes",
+    "to": "leave_bay",
+    "detail": "A cleared bay; B returns to main lane"
+  },
+  {
+    "time_s": 24.8,
+    "from": "leave_bay",
+    "to": "depart",
+    "detail": "B resumes westbound travel"
+  }
+]

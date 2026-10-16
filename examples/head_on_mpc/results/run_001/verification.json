@@ -1,0 +1,26 @@
+[
+  {
+    "case": "head_on_inline_stop",
+    "passed": true,
+    "execution_samples_per_car": 249,
+    "prediction_packets_verified": 124,
+    "minimum_sampled_sat_gap_m": 1.300000210956064,
+    "video_decoded_frames": 289
+  },
+  {
+    "case": "head_on_pause_bay",
+    "passed": true,
+    "execution_samples_per_car": 377,
+    "prediction_packets_verified": 188,
+    "minimum_sampled_sat_gap_m": 1.0,
+    "video_decoded_frames": 417
+  },
+  {
+    "case": "head_on_reverse",
+    "passed": true,
+    "execution_samples_per_car": 501,
+    "prediction_packets_verified": 250,
+    "minimum_sampled_sat_gap_m": 1.0,
+    "video_decoded_frames": 541
+  }
+]

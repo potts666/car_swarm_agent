@@ -1,0 +1,36 @@
+{
+  "case": "head_on_reverse",
+  "status": "completed",
+  "expected_status": "completed",
+  "expectation_met": true,
+  "failure": null,
+  "final_phase": "depart",
+  "simulation_seconds": 50.0,
+  "minimum_sampled_sat_gap_m": 1.0,
+  "max_executed_sampled_violation": 1.368816171520848e-11,
+  "max_prediction_violation": 3.644655674667864e-08,
+  "final_states_x_v": {
+    "A": [
+      17.999999932655566,
+      3.580094557806434e-09
+    ],
+    "B": [
+      -17.982764523537078,
+      -0.01991471628322011
+    ]
+  },
+  "arrival_times_s": {
+    "A": 30.0,
+    "B": 50.0
+  },
+  "B_reverse_distance_m": 4.583279239728289,
+  "solve_count": 250,
+  "rejected_solves": 0,
+  "solve_seconds_mean": 0.0008162792881048518,
+  "solve_seconds_p95": 0.0031386543012558803,
+  "cycles_over_control_period": 0,
+  "continuous_safety_certified": false,
+  "steering_feasibility_tested": false,
+  "autonomous_strategy_selection": false,
+  "supervisor_is_centralized": true
+}

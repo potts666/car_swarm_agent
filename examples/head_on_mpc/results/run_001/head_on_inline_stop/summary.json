@@ -1,0 +1,33 @@
+{
+  "case": "head_on_inline_stop",
+  "status": "blocked",
+  "expected_status": "blocked",
+  "expectation_met": true,
+  "failure": null,
+  "final_phase": "approach",
+  "simulation_seconds": 24.8,
+  "minimum_sampled_sat_gap_m": 1.300000210956064,
+  "max_executed_sampled_violation": 0.0,
+  "max_prediction_violation": 2.631997465372298e-08,
+  "final_states_x_v": {
+    "A": [
+      -5.999999997108409,
+      -4.03364309272747e-09
+    ],
+    "B": [
+      2.8403331407574554e-07,
+      9.999999999998174e-09
+    ]
+  },
+  "arrival_times_s": {},
+  "B_reverse_distance_m": 0.0,
+  "solve_count": 124,
+  "rejected_solves": 0,
+  "solve_seconds_mean": 0.0005176771772957798,
+  "solve_seconds_p95": 0.00099802634849766,
+  "cycles_over_control_period": 0,
+  "continuous_safety_certified": false,
+  "steering_feasibility_tested": false,
+  "autonomous_strategy_selection": false,
+  "supervisor_is_centralized": true
+}

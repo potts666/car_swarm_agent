@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_agent/examples/head_on_mpc/tests",
+    "-p",
+    "test_*.py"
+  ],
+  "returncode": 0,
+  "log": "tests.log"
+}

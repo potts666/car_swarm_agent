@@ -1,0 +1,26 @@
+[
+  {
+    "case": "head_on_inline_stop",
+    "passed": true,
+    "final_positions_match_log": true,
+    "camera_tf_received": true,
+    "status": "head_on_inline_stop | t=24.8s | approach | blocked",
+    "gui_rendering_tested": false
+  },
+  {
+    "case": "head_on_pause_bay",
+    "passed": true,
+    "final_positions_match_log": true,
+    "camera_tf_received": true,
+    "status": "head_on_pause_bay | t=37.6s | depart | completed",
+    "gui_rendering_tested": false
+  },
+  {
+    "case": "head_on_reverse",
+    "passed": true,
+    "final_positions_match_log": true,
+    "camera_tf_received": true,
+    "status": "head_on_reverse | t=50.0s | depart | completed",
+    "gui_rendering_tested": false
+  }
+]

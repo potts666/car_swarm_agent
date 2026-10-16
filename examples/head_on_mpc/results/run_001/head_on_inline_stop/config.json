@@ -1,0 +1,113 @@
+{
+  "settings": {
+    "dt": 0.4,
+    "horizon": 16,
+    "substeps": 4,
+    "epoch": 100.0,
+    "max_speed": 2.0,
+    "max_acceleration": 1.0,
+    "length": 4.7,
+    "width": 2.0,
+    "margin": 0.5,
+    "lateral_seconds": 6.0,
+    "tolerance": 1e-05
+  },
+  "road": {
+    "xmin": -22.0,
+    "xmax": 22.0,
+    "ymin": -1.4,
+    "ymax": 1.4,
+    "bays": [
+      {
+        "xmin": -3.0,
+        "xmax": 3.0,
+        "ymax": 4.4
+      },
+      {
+        "xmin": 7.0,
+        "xmax": 13.0,
+        "ymax": 4.4
+      }
+    ]
+  },
+  "initial_states_x_v": {
+    "A": [
+      -12.0,
+      1.0
+    ],
+    "B": [
+      6.0,
+      -0.8
+    ]
+  },
+  "goals_x": {
+    "A": 18.0,
+    "B": -18.0
+  },
+  "A_hold_x": -6.0,
+  "reverse_brake_x": 5.4,
+  "reverse_bay_x": 10.0,
+  "pause_bay_x": 0.0,
+  "bay_y": 3.0,
+  "arrival_position_tolerance_m": 0.08,
+  "arrival_speed_tolerance_m_s": 0.025,
+  "sampled_gap_min_m": 0.08,
+  "cases": {
+    "head_on_inline_stop": {
+      "time_limit_s": 25.0,
+      "expected_status": "blocked"
+    },
+    "head_on_pause_bay": {
+      "time_limit_s": 90.0,
+      "expected_status": "completed"
+    },
+    "head_on_reverse": {
+      "time_limit_s": 90.0,
+      "expected_status": "completed"
+    }
+  },
+  "case": "head_on_inline_stop",
+  "origin": "vehicle centre; A yaw=0, B yaw=pi",
+  "model": "exact longitudinal double integrator; prescribed lateral occupancy",
+  "communication": {
+    "transport": "synchronous in-process prediction packets",
+    "nominal_packet_age_s": 0.4,
+    "bootstrap_packet_age_s": 0.0,
+    "loss_rate": 0.0,
+    "jitter_s": 0.0,
+    "within_cycle_iterations": 0,
+    "fields": [
+      "stamp",
+      "absolute times",
+      "x",
+      "vx",
+      "y"
+    ],
+    "tail": "one cycle at zero acceleration"
+  },
+  "supervisor": "centralized fixed A-first priority; case strategy selected externally",
+  "initial_lane_occupancies": {
+    "A": [
+      0.0,
+      0.0,
+      100.0,
+      6.0
+    ],
+    "B": [
+      0.0,
+      0.0,
+      100.0,
+      6.0
+    ]
+  },
+  "cost": {
+    "position": 0.6,
+    "speed": 0.4,
+    "acceleration": 0.15,
+    "acceleration_change": 0.2
+  },
+  "numerical_slack": {
+    "target_position_m": 1e-07,
+    "velocity_direction_m_s": 1e-08
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-10-16T18:17:57.683589+08:00",
+  "upstream_git_head_at_run": "2d5f84f225899ae4b749cb2c851bfdbed86a9642",
+  "parent_worktree_dirty": true,
+  "source_sha256": {
+    ".gitignore": "7c84913ffa409f341ed844314e295b880c299851bafaaec040b8dbc119a36323",
+    "CMakeLists.txt": "07ac7ad8383b1cce0759bc05fb360a1a668f45335c675052541aedbfb75b373a",
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "README.md": "3480610dfcd42185fb4aee0d8276ba18c71095ad5ad6a63c4da6813fd59c2ff1",
+    "config/scenarios.json": "c04a0cc8058ef965c4672fa1b03282d4830b781f72f4cbc23978677b5192c0fa",
+    "launch/replay.launch.py": "d83bfe09a345635178393189698d64d75b023dd5deba3dba9dde0db8490a6e09",
+    "package.xml": "f7c8163eeeb6d7a7765ecda7f30c07bdd56ed722864791af4d5e670ece922f5d",
+    "requirements.txt": "d7883ed7e2e223bdf78b646ed7a1548702eeba44cad918e5494609a93710cd31",
+    "rviz/replay.rviz": "a944bffd57cf3466ba576f91149f6235126bda85c14ad693e2a74b2691e035bc",
+    "scripts/head_on_core.py": "98232e4a64832049bcc3c42fbb72e7691b7c3d8cc9b5338378b50da017afb1b0",
+    "scripts/recording.py": "b6e3898e5ad04f2f426b69c57485f857672a3af6fa52e4d129f5e0407df7cc45",
+    "scripts/render.py": "20a6091702ffd9eb823ce052e146f16870a88ff362b7a381c2ee4e58ce035b77",
+    "scripts/run_study.py": "6802351abc0febe3aff85effc1a8e8a59f0bc13ff0032a8072ba1a50de119e81",
+    "scripts/rviz_replay.py": "f2b307a85f873f9af37c5d842bc076d670c886ae02becc5cffa50e3839a79d51",
+    "scripts/verify_bundle.py": "dc985115bc0401812e6796903033d5922395fb8105b2cbe43713e3de1784411e",
+    "tests/check_ros_replay.py": "9eddeccc454d007629c8078506ec16f21509fda097901b08504b5798a43732f7",
+    "tests/test_head_on.py": "2fdaf052f6fd5092701261d5d09ba6d21f2b36e356d339f9c010757aa92e85b1"
+  },
+  "source_tree_sha256": "685582862f5834ab7ada58cd53a80113cfe05fb227dcb135ad8ecffb810f8183",
+  "version_note": "Git HEAD is the parent revision; this extracted package is uncommitted until the user commits it. The file hashes identify the executed source.",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "numpy": "1.26.4",
+  "scipy": "1.11.4",
+  "matplotlib": "3.6.3",
+  "opencv": "4.6.0",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "command_argv": [
+    "src/car_swarm_agent/examples/head_on_mpc/scripts/run_study.py"
+  ],
+  "openblas_threads": "1",
+  "randomness": "none; deterministic initial conditions",
+  "video": "OpenCV FFmpeg backend, H.264 avc1, 1280x720, 20fps, 2x simulation playback"
+}

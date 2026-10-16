@@ -1,0 +1,19 @@
+[INFO] [launch]: All log files can be found below /home/sunflower/.ros/log/2026-10-16-18-18-37-138896-sunflower-VirtualBox-15643
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [rviz_replay.py-1]: process started with pid [15646]
+[rviz_replay.py-1] [INFO] [1792145917.590328811] [head_on_replay]: Replaying /home/sunflower/car_swarm_switch_ws/src/car_swarm_agent/examples/head_on_mpc/results/run_001/head_on_reverse; 50.0s; no optimizer/control publication
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [rviz_replay.py-1]: sending signal 'SIGINT' to process[rviz_replay.py-1]
+[rviz_replay.py-1] Traceback (most recent call last):
+[rviz_replay.py-1]   File "/tmp/head_on_case_install/head_on_mpc/lib/head_on_mpc/rviz_replay.py", line 133, in <module>
+[rviz_replay.py-1]     main()
+[rviz_replay.py-1]   File "/tmp/head_on_case_install/head_on_mpc/lib/head_on_mpc/rviz_replay.py", line 128, in main
+[rviz_replay.py-1]     node.destroy_node()
+[rviz_replay.py-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 1956, in destroy_node
+[rviz_replay.py-1]     self.destroy_publisher(self._publishers[0])
+[rviz_replay.py-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 1836, in destroy_publisher
+[rviz_replay.py-1]     publisher.destroy()
+[rviz_replay.py-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/publisher.py", line 105, in destroy
+[rviz_replay.py-1]     self.__publisher.destroy_when_not_in_use()
+[rviz_replay.py-1] KeyboardInterrupt
+[ERROR] [rviz_replay.py-1]: process has died [pid 15646, exit code -2, cmd '/tmp/head_on_case_install/head_on_mpc/lib/head_on_mpc/rviz_replay.py --ros-args --params-file /tmp/launch_params_6bpct7_3'].

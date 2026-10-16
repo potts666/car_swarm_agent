@@ -1,0 +1,107 @@
+{
+  "head_on_inline_stop": {
+    "case": "head_on_inline_stop",
+    "status": "blocked",
+    "expected_status": "blocked",
+    "expectation_met": true,
+    "failure": null,
+    "final_phase": "approach",
+    "simulation_seconds": 24.8,
+    "minimum_sampled_sat_gap_m": 1.300000210956064,
+    "max_executed_sampled_violation": 0.0,
+    "max_prediction_violation": 2.631997465372298e-08,
+    "final_states_x_v": {
+      "A": [
+        -5.999999997108409,
+        -4.03364309272747e-09
+      ],
+      "B": [
+        2.8403331407574554e-07,
+        9.999999999998174e-09
+      ]
+    },
+    "arrival_times_s": {},
+    "B_reverse_distance_m": 0.0,
+    "solve_count": 124,
+    "rejected_solves": 0,
+    "solve_seconds_mean": 0.0005176771772957798,
+    "solve_seconds_p95": 0.00099802634849766,
+    "cycles_over_control_period": 0,
+    "continuous_safety_certified": false,
+    "steering_feasibility_tested": false,
+    "autonomous_strategy_selection": false,
+    "supervisor_is_centralized": true
+  },
+  "head_on_pause_bay": {
+    "case": "head_on_pause_bay",
+    "status": "completed",
+    "expected_status": "completed",
+    "expectation_met": true,
+    "failure": null,
+    "final_phase": "depart",
+    "simulation_seconds": 37.6,
+    "minimum_sampled_sat_gap_m": 1.0,
+    "max_executed_sampled_violation": 8.433254095052689e-13,
+    "max_prediction_violation": 2.631997465372298e-08,
+    "final_states_x_v": {
+      "A": [
+        17.99999990535349,
+        -9.701011533442617e-09
+      ],
+      "B": [
+        -17.986614992257433,
+        -0.01600501315323653
+      ]
+    },
+    "arrival_times_s": {
+      "A": 27.6,
+      "B": 37.6
+    },
+    "B_reverse_distance_m": 0.0,
+    "solve_count": 188,
+    "rejected_solves": 0,
+    "solve_seconds_mean": 0.0009008993617131405,
+    "solve_seconds_p95": 0.0034375095989162227,
+    "cycles_over_control_period": 0,
+    "continuous_safety_certified": false,
+    "steering_feasibility_tested": false,
+    "autonomous_strategy_selection": false,
+    "supervisor_is_centralized": true
+  },
+  "head_on_reverse": {
+    "case": "head_on_reverse",
+    "status": "completed",
+    "expected_status": "completed",
+    "expectation_met": true,
+    "failure": null,
+    "final_phase": "depart",
+    "simulation_seconds": 50.0,
+    "minimum_sampled_sat_gap_m": 1.0,
+    "max_executed_sampled_violation": 1.368816171520848e-11,
+    "max_prediction_violation": 3.644655674667864e-08,
+    "final_states_x_v": {
+      "A": [
+        17.999999932655566,
+        3.580094557806434e-09
+      ],
+      "B": [
+        -17.982764523537078,
+        -0.01991471628322011
+      ]
+    },
+    "arrival_times_s": {
+      "A": 30.0,
+      "B": 50.0
+    },
+    "B_reverse_distance_m": 4.583279239728289,
+    "solve_count": 250,
+    "rejected_solves": 0,
+    "solve_seconds_mean": 0.0008162792881048518,
+    "solve_seconds_p95": 0.0031386543012558803,
+    "cycles_over_control_period": 0,
+    "continuous_safety_certified": false,
+    "steering_feasibility_tested": false,
+    "autonomous_strategy_selection": false,
+    "supervisor_is_centralized": true
+  }
+}
