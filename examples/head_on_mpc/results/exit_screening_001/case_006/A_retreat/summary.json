@@ -1,0 +1,30 @@
+{
+  "role": "A",
+  "waiter": "B",
+  "feasible": false,
+  "terminal_passed": false,
+  "failure": "optimization_rejected",
+  "exit_time_s": null,
+  "attempted_time_s": 10.0,
+  "minimum_sampled_gap_m": 0.4999999999999991,
+  "full_path_checks": 52,
+  "solve_count": 52,
+  "rejected_solves": 1,
+  "final_states_x_v": {
+    "A": [
+      -15.545714299993078,
+      -1.7761905000019236
+    ],
+    "B": [
+      5.6,
+      0.0
+    ]
+  },
+  "terminal_check": {
+    "passed": true,
+    "reasons": [],
+    "minimum_sampled_gap_m": 16.445714299993078,
+    "samples_per_car": 1
+  },
+  "continuous_safety_certified": false
+}

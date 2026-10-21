@@ -1,0 +1,658 @@
+[
+  {
+    "case": 0,
+    "factors": {
+      "encounter_x_m": -3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 20.0,
+      "braking_m_s2": 0.5
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 15.2,
+        "attempted_time_s": 15.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 77,
+        "solve_count": 76,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -14.699973005534364,
+            -4.688263148901908e-05
+          ],
+          "B": [
+            -0.3999999999999999,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 9.599973005534363,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": false,
+        "terminal_passed": false,
+        "failure": "optimization_rejected",
+        "exit_time_s": null,
+        "attempted_time_s": 7.6,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 40,
+        "solve_count": 40,
+        "rejected_solves": 1,
+        "final_states_x_v": {
+          "A": [
+            -5.6,
+            0.0
+          ],
+          "B": [
+            10.79523809999138,
+            1.976190500002155
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 11.695238099991382,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true
+      },
+      "screened": {
+        "role": "A",
+        "feasible": true
+      }
+    },
+    "shared_generation_solve_count": 116
+  },
+  {
+    "case": 1,
+    "factors": {
+      "encounter_x_m": -3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 20.0,
+      "braking_m_s2": 1.0
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 14.0,
+        "attempted_time_s": 14.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 71,
+        "solve_count": 70,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -14.699987119553958,
+            -1.1370111995800923e-05
+          ],
+          "B": [
+            -0.3999999999999999,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 9.599987119553958,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 17.2,
+        "attempted_time_s": 17.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 87,
+        "solve_count": 86,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -5.6,
+            0.0
+          ],
+          "B": [
+            14.699989449248836,
+            8.013972682083135e-06
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 15.599989449248834,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true
+      },
+      "screened": {
+        "role": "A",
+        "feasible": true
+      }
+    },
+    "shared_generation_solve_count": 156
+  },
+  {
+    "case": 2,
+    "factors": {
+      "encounter_x_m": -3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 28.0,
+      "braking_m_s2": 0.5
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 17.2,
+        "attempted_time_s": 17.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 87,
+        "solve_count": 86,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -18.699973005534368,
+            -4.688263148928117e-05
+          ],
+          "B": [
+            -0.3999999999999999,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 13.59997300553437,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": false,
+        "terminal_passed": false,
+        "failure": "optimization_rejected",
+        "exit_time_s": null,
+        "attempted_time_s": 9.6,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 50,
+        "solve_count": 50,
+        "rejected_solves": 1,
+        "final_states_x_v": {
+          "A": [
+            -5.6,
+            0.0
+          ],
+          "B": [
+            14.79523809999028,
+            1.9761905000024302
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 15.69523809999028,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true
+      },
+      "screened": {
+        "role": "A",
+        "feasible": true
+      }
+    },
+    "shared_generation_solve_count": 136
+  },
+  {
+    "case": 3,
+    "factors": {
+      "encounter_x_m": -3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 28.0,
+      "braking_m_s2": 1.0
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 16.0,
+        "attempted_time_s": 16.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 81,
+        "solve_count": 80,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -18.699987119553956,
+            -1.1370111995395005e-05
+          ],
+          "B": [
+            -0.3999999999999999,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 13.599987119553958,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 19.2,
+        "attempted_time_s": 19.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 97,
+        "solve_count": 96,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -5.6,
+            0.0
+          ],
+          "B": [
+            18.69998944924883,
+            8.013972688833539e-06
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 19.599989449248827,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true
+      },
+      "screened": {
+        "role": "A",
+        "feasible": true
+      }
+    },
+    "shared_generation_solve_count": 176
+  },
+  {
+    "case": 4,
+    "factors": {
+      "encounter_x_m": 3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 20.0,
+      "braking_m_s2": 0.5
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": false,
+        "terminal_passed": false,
+        "failure": "optimization_rejected",
+        "exit_time_s": null,
+        "attempted_time_s": 8.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 42,
+        "solve_count": 42,
+        "rejected_solves": 1,
+        "final_states_x_v": {
+          "A": [
+            -11.545714299997138,
+            -1.7761905000007958
+          ],
+          "B": [
+            5.6,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 12.445714299997139,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 15.2,
+        "attempted_time_s": 15.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 77,
+        "solve_count": 76,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            0.3999999999999999,
+            0.0
+          ],
+          "B": [
+            14.699973005534366,
+            4.688263148925522e-05
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 9.599973005534366,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": false
+      },
+      "screened": {
+        "role": "B",
+        "feasible": true
+      }
+    },
+    "shared_generation_solve_count": 118
+  },
+  {
+    "case": 5,
+    "factors": {
+      "encounter_x_m": 3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 20.0,
+      "braking_m_s2": 1.0
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 17.2,
+        "attempted_time_s": 17.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 87,
+        "solve_count": 86,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -14.699989449248836,
+            -8.013972682419927e-06
+          ],
+          "B": [
+            5.6,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 15.599989449248834,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 14.0,
+        "attempted_time_s": 14.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 71,
+        "solve_count": 70,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            0.3999999999999999,
+            0.0
+          ],
+          "B": [
+            14.699987119553956,
+            1.137011199578131e-05
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 9.599987119553955,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true
+      },
+      "screened": {
+        "role": "B",
+        "feasible": true
+      }
+    },
+    "shared_generation_solve_count": 156
+  },
+  {
+    "case": 6,
+    "factors": {
+      "encounter_x_m": 3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 28.0,
+      "braking_m_s2": 0.5
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": false,
+        "terminal_passed": false,
+        "failure": "optimization_rejected",
+        "exit_time_s": null,
+        "attempted_time_s": 10.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 52,
+        "solve_count": 52,
+        "rejected_solves": 1,
+        "final_states_x_v": {
+          "A": [
+            -15.545714299993078,
+            -1.7761905000019236
+          ],
+          "B": [
+            5.6,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 16.445714299993078,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 17.2,
+        "attempted_time_s": 17.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 87,
+        "solve_count": 86,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            0.3999999999999999,
+            0.0
+          ],
+          "B": [
+            18.699973005534368,
+            4.688263148838055e-05
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 13.59997300553437,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": false
+      },
+      "screened": {
+        "role": "B",
+        "feasible": true
+      }
+    },
+    "shared_generation_solve_count": 138
+  },
+  {
+    "case": 7,
+    "factors": {
+      "encounter_x_m": 3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 28.0,
+      "braking_m_s2": 1.0
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 19.2,
+        "attempted_time_s": 19.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 97,
+        "solve_count": 96,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -18.69998944924883,
+            -8.013972690006193e-06
+          ],
+          "B": [
+            5.6,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 19.599989449248827,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 16.0,
+        "attempted_time_s": 16.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 81,
+        "solve_count": 80,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            0.3999999999999999,
+            0.0
+          ],
+          "B": [
+            18.699987119553953,
+            1.1370111997657741e-05
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "minimum_sampled_gap_m": 13.599987119553955,
+          "samples_per_car": 1
+        },
+        "continuous_safety_certified": false
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true
+      },
+      "screened": {
+        "role": "B",
+        "feasible": true
+      }
+    },
+    "shared_generation_solve_count": 176
+  }
+]

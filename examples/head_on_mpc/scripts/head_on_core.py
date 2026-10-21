@@ -21,6 +21,7 @@ class Settings:
     margin: float = 0.5
     lateral_seconds: float = 6.0
     tolerance: float = 1e-5
+    solver_maxiter: int = 120
 
 
 CFG = Settings()
@@ -85,7 +86,7 @@ def inside_road(states, road, cfg=CFG):
     return inside & main
 
 
-def solve(state, previous_acceleration, warm, now, target, front=None, rear=None, cfg=CFG, allow_reverse=False):
+def solve(state, previous_acceleration, warm, now, target, front=None, rear=None, cfg=CFG, allow_reverse=False, road=None, terminal_stop=False):
     """Solve one car's quadratic objective subject to linear constraints."""
     # ticks 当前时刻之后、覆盖整个预测时域的一组采样时间
     ticks = np.arange(1, cfg.horizon*cfg.substeps+1)*cfg.dt/cfg.substeps
@@ -100,12 +101,18 @@ def solve(state, previous_acceleration, warm, now, target, front=None, rear=None
 
     lower(vmat, vbase, -cfg.max_speed)
     lower(-vmat, -vbase, -cfg.max_speed)
+    if terminal_stop:
+        lower(vmat[-1], vbase[-1:], 0.)
+        lower(-vmat[-1], -vbase[-1:], 0.)
     direction = 1 if target >= state[0] else -1
     # Legacy strategies constrain travel to their stage target direction.
     # The deadlock experiment permits both velocity signs with its forward goal.
     if not allow_reverse:
         lower(direction*vmat, direction*vbase, -1e-8)
     lower(-direction*pmat, -direction*pbase, -direction*target-1e-7)
+    if road is not None:
+        lower(pmat, pbase, road["xmin"]+cfg.length/2)
+        lower(-pmat, -pbase, -road["xmax"]+cfg.length/2)
     distance = cfg.length+cfg.margin
     if front is not None:
         lower(-pmat, front[:, 0]-pbase, distance)
@@ -125,7 +132,7 @@ def solve(state, previous_acceleration, warm, now, target, front=None, rear=None
                       bounds=[(-cfg.max_acceleration, cfg.max_acceleration)]*cfg.horizon,
                       constraints=[{'type': 'ineq', 'fun': lambda u: matrix@u-bound,
                                     'jac': lambda u: matrix}],
-                      options={'ftol': 1e-7, 'maxiter': 120})
+                      options={'ftol': 1e-7, 'maxiter': cfg.solver_maxiter})
     violation = float(max(0., np.max(bound-matrix@result.x),
                           np.max(np.abs(result.x))-cfg.max_acceleration))
     return result.x, {'stamp': now, 'accepted': bool(result.success and
