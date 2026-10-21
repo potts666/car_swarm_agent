@@ -1,0 +1,1343 @@
+[
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 8.881784197001252e-16,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.4999999999999991,
+    "samples_per_car": 1
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.064153931640277e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.5025000000532076,
+    "samples_per_car": 64,
+    "cycle": 0,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 8.881784197001252e-16,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.064153931640277e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.4999999999999991,
+    "samples_per_car": 5,
+    "cycle": 0,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 3.454543229253204e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.5625000013958941,
+    "samples_per_car": 64,
+    "cycle": 1,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 2.378202657027373e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.5400000008513226,
+    "samples_per_car": 5,
+    "cycle": 1,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 4.173778656024751e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.7025000058165487,
+    "samples_per_car": 64,
+    "cycle": 2,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.6600000044565304,
+    "samples_per_car": 5,
+    "cycle": 2,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.2684526540240881e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.9225000108120485,
+    "samples_per_car": 64,
+    "cycle": 3,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.8600000096934997,
+    "samples_per_car": 5,
+    "cycle": 3,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 2.4185749625260655e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 1.2225000127746997,
+    "samples_per_car": 64,
+    "cycle": 4,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 1.140000012691785,
+    "samples_per_car": 5,
+    "cycle": 4,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 2.2793962273226498e-09,
+      "acceleration_m_s2": 1.6414222092642206e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 1.6025000097273354,
+    "samples_per_car": 64,
+    "cycle": 5,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 1.500000010927212,
+    "samples_per_car": 5,
+    "cycle": 5,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.4666206027413864e-09,
+      "acceleration_m_s2": 1.7647727834635418e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 2.062500003763433,
+    "samples_per_car": 64,
+    "cycle": 6,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 1.9400000054078594,
+    "samples_per_car": 5,
+    "cycle": 6,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.8327730444411827e-09,
+      "acceleration_m_s2": 2.0515450338542962e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 2.6024999967141342,
+    "samples_per_car": 64,
+    "cycle": 7,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 2.4599999985344736,
+    "samples_per_car": 5,
+    "cycle": 7,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.6216801235202638e-09,
+      "acceleration_m_s2": 1.856701425939633e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 3.222499989448985,
+    "samples_per_car": 64,
+    "cycle": 8,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.6285409465410794e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 3.0599999912119253,
+    "samples_per_car": 5,
+    "cycle": 8,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.5075971582234615e-09,
+      "acceleration_m_s2": 1.8318072170231403e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 3.922499984035924,
+    "samples_per_car": 64,
+    "cycle": 9,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.8318072170231403e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 3.7399999851372856,
+    "samples_per_car": 5,
+    "cycle": 9,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 4.868630831822429e-09,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 4.699999981489085,
+    "samples_per_car": 64,
+    "cycle": 10,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 4.868630831822429e-09,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 4.499999981830926,
+    "samples_per_car": 5,
+    "cycle": 10,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 5.498455011926731,
+    "samples_per_car": 64,
+    "cycle": 11,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 4.868630831822429e-09,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 5.299999981884194,
+    "samples_per_car": 5,
+    "cycle": 11,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 6.260420693954475,
+    "samples_per_car": 64,
+    "cycle": 12,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 6.075280456722411,
+    "samples_per_car": 5,
+    "cycle": 12,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 6.950981648888608,
+    "samples_per_car": 64,
+    "cycle": 13,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 6.785841409248511,
+    "samples_per_car": 5,
+    "cycle": 13,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 6.245292560880245e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 7.561542613013292,
+    "samples_per_car": 64,
+    "cycle": 14,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 6.245292560880245e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 7.4164023715204115,
+    "samples_per_car": 5,
+    "cycle": 14,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 6.666736873661705e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 8.092103572718454,
+    "samples_per_car": 64,
+    "cycle": 15,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 6.666736873661705e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 7.966963333744762,
+    "samples_per_car": 5,
+    "cycle": 15,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 8.542664522286465,
+    "samples_per_car": 64,
+    "cycle": 16,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 8.43752428563949,
+    "samples_per_car": 5,
+    "cycle": 16,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 5.478048192841811e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 8.913225468726683,
+    "samples_per_car": 64,
+    "cycle": 17,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 5.478048192841811e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 8.82808523230711,
+    "samples_per_car": 5,
+    "cycle": 17,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 4.3336981336850044e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.20378640898415,
+    "samples_per_car": 64,
+    "cycle": 18,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 4.3336981336850044e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.138646174698579,
+    "samples_per_car": 5,
+    "cycle": 18,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.414347342120731,
+    "samples_per_car": 64,
+    "cycle": 19,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.369207109240648,
+    "samples_per_car": 5,
+    "cycle": 19,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 9.13575282091017e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.544908275710167,
+    "samples_per_car": 64,
+    "cycle": 20,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 9.13575282091017e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.51976804209663,
+    "samples_per_car": 5,
+    "cycle": 20,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.57938214806924,
+    "samples_per_car": 64,
+    "cycle": 21,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.590328976002628,
+    "samples_per_car": 5,
+    "cycle": 21,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579382154945037,
+    "samples_per_car": 64,
+    "cycle": 22,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.584002331288982,
+    "samples_per_car": 5,
+    "cycle": 22,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579382156048563,
+    "samples_per_car": 64,
+    "cycle": 23,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579382156048563,
+    "samples_per_car": 5,
+    "cycle": 23,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579748319569116,
+    "samples_per_car": 64,
+    "cycle": 24,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579382156048563,
+    "samples_per_car": 5,
+    "cycle": 24,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.584006718541644,
+    "samples_per_car": 64,
+    "cycle": 25,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.582611176521336,
+    "samples_per_car": 5,
+    "cycle": 25,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.589540479008079,
+    "samples_per_car": 64,
+    "cycle": 26,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.588195321865737,
+    "samples_per_car": 5,
+    "cycle": 26,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.593891559305426,
+    "samples_per_car": 64,
+    "cycle": 27,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.592957491057337,
+    "samples_per_car": 5,
+    "cycle": 27,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.596638053339312,
+    "samples_per_car": 64,
+    "cycle": 28,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.596089912962963,
+    "samples_per_car": 5,
+    "cycle": 28,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.598171910227965,
+    "samples_per_car": 64,
+    "cycle": 29,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.597878297614567,
+    "samples_per_car": 5,
+    "cycle": 29,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.598980482801768,
+    "samples_per_car": 64,
+    "cycle": 30,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.598827652889309,
+    "samples_per_car": 5,
+    "cycle": 30,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.59940705113129,
+    "samples_per_car": 64,
+    "cycle": 31,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599325246379774,
+    "samples_per_car": 5,
+    "cycle": 31,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599642814835981,
+    "samples_per_car": 64,
+    "cycle": 32,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599596246570115,
+    "samples_per_car": 5,
+    "cycle": 32,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599781287597349,
+    "samples_per_car": 64,
+    "cycle": 33,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.59975321351584,
+    "samples_per_car": 5,
+    "cycle": 33,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.59986613938521,
+    "samples_per_car": 64,
+    "cycle": 34,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599848722453771,
+    "samples_per_car": 5,
+    "cycle": 34,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599918832190454,
+    "samples_per_car": 64,
+    "cycle": 35,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599908016095362,
+    "samples_per_car": 5,
+    "cycle": 35,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.59995131419267,
+    "samples_per_car": 64,
+    "cycle": 36,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599944689028714,
+    "samples_per_car": 5,
+    "cycle": 36,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.59997102960731,
+    "samples_per_car": 64,
+    "cycle": 37,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599967038639974,
+    "samples_per_car": 5,
+    "cycle": 37,
+    "kind": "executed_segment"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599982823306828,
+    "samples_per_car": 64,
+    "cycle": 38,
+    "kind": "whole_prediction"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599980449461789,
+    "samples_per_car": 5,
+    "cycle": 38,
+    "kind": "executed_segment"
+  }
+]

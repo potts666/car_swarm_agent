@@ -52,6 +52,27 @@ ROS_DOMAIN_ID=83 python3 tests/check_ros_replay.py \
 
 所有离线测试：`OPENBLAS_NUM_THREADS=1 python3 -m unittest discover -s tests -p 'test_*.py'`。新增测试覆盖实际双向速度可行性、双方互等、对方后退后能够前进，以及到达目标后的正常停车不会被判为死锁。
 
+## 最新：分项验收、等价 QP 与预演耗时
+
+[数值核查总报告](results/exit_numerics_003/report.md) · [分项残差与计时数据](results/exit_numerics_003/analysis.json) · [SLSQP 完整重跑](results/exit_audited_003/report.md) · [OSQP 完整重跑](results/exit_qp_003/report.md)
+
+当前 `run_exit_screening.py` 采用独立于收敛标志的验收：检查有限值、独立逐子步积分与凝聚状态的动力学偏差、速度、加速度、终端速度、纵向道路、邻车与目标不越界，再检查配对完整路径、实际执行与退出终态。局部约束残差验收容差为 1e−5；求解器 status 保留为诊断，未收敛但全部检查通过的控制可以继续预演。分项原始值见每条候选的 `solves.json`、`path_checks.json` 和 `summary.json`。原有 DMPC/四组对照入口仍使用原先的 success 验收规则。
+
+代码确认每个固定邻车/掩码/目标的纵向子问题为严格凸 QP；`build_longitudinal_qp()` 为 SLSQP 和 OSQP 共用实际矩阵。OSQP 将终端双向不等式合并为等式，约束行与目标使用正数缩放，保持数学等价。全道路区域并集、横向占用与配对完整轨迹仍在外部验收，并不将整个预演称为凸 QP。参考 [OSQP 问题形式](https://osqp.org/docs/solver/index.html) 与 [Python 接口](https://osqp.org/docs/interfaces/python.html)。
+
+```bash
+cd examples/head_on_mpc
+# 在自己的 Python 环境安装可选依赖：python3 -m pip install -r requirements-qp.txt
+OPENBLAS_NUM_THREADS=1 python3 scripts/run_exit_screening.py --output results/rerun_audited --qp-crosscheck
+OPENBLAS_NUM_THREADS=1 python3 scripts/run_exit_screening.py --output results/rerun_qp --solver osqp
+OPENBLAS_NUM_THREADS=1 python3 scripts/analyze_exit_numerics.py \
+  --runs results/rerun_audited results/rerun_qp --output results/rerun_numerics
+```
+
+最新完整 QP 重跑中，A退与B退均 8/8，固定A与筛选均 8/8，成功率收益消失。固定A平均退让 14.10 m、退出 17.1 s；筛选平均 11.10 m、退出 15.8 s。SLSQP 新验收重跑接受了 6 次未收敛但检查通过的解，随后仍拒绝 4 次确实违反终端速度/目标边界的返回解；对应等价 QP 均通过。下方旧 6/8 表属于历史版本，不应作为当前成功率结论。
+
+**方法定位为离线完整闭环模拟预演。** 阻塞状态快照上先串行生成两条直到退出的候选，然后选角；不等同于在线 DMPC 的单次有限时域决策。最终QP运行每组两候选生成与选角等待约 0.549–1.244 s（含审计与日志写入，不含进程启动），均超过 0.4 s 控制周期；8组共1368次QP主求解，零重试。交叉验证另一次运行有1186次SLSQP与1186次QP诊断，其延迟另报。不能称为满足实时预算的在线方法。共享候选是离线公平比较安排，真实固定角色部署可省去另一条预演。尚未模拟后续恢复与最终通行，不报告恢复时间收益。
+
 ## 安全静止初值下的完整退出候选与筛选
 
 新增 [完整退出入口](scripts/run_exit_screening.py)、[终端与硬路径约束清单](constraints_exit.md) 和 [本次报告](results/exit_screening_001/report.md)。此入口固定初速为零，在相同安全阻塞初值下独立生成“A退/B等”与“B退/A等”，每条候选滚动求解到入口外退让区并完成横向进入、停车。等待车同样实际求解并积分，要求始终留在原位。退让车先对静止对方求解，等待车再对该候选求解，两车均保留邻车硬约束；属于离线候选生成，不是原 DMPC 的上一周期预测通信实验。

@@ -86,8 +86,8 @@ def inside_road(states, road, cfg=CFG):
     return inside & main
 
 
-def solve(state, previous_acceleration, warm, now, target, front=None, rear=None, cfg=CFG, allow_reverse=False, road=None, terminal_stop=False):
-    """Solve one car's quadratic objective subject to linear constraints."""
+def build_longitudinal_qp(state, previous_acceleration, warm, now, target, front=None, rear=None, cfg=CFG, allow_reverse=False, road=None, terminal_stop=False):
+    """Condensed convex QP: min .5*u.T*H*u+q.T*u, A*u >= b."""
     # ticks 当前时刻之后、覆盖整个预测时域的一组采样时间
     ticks = np.arange(1, cfg.horizon*cfg.substeps+1)*cfg.dt/cfg.substeps
     pmat, vmat = matrices(ticks, cfg)
@@ -126,6 +126,14 @@ def solve(state, previous_acceleration, warm, now, target, front=None, rear=None
     hess = sum(2*w*m.T@m for w, m, _ in terms)/len(ticks)
     linear = sum(2*w*m.T@b for w, m, b in terms)/len(ticks)
     matrix, bound = np.vstack(rows), np.concatenate(limits)
+    return hess, linear, matrix, bound
+
+
+def solve(state, previous_acceleration, warm, now, target, front=None, rear=None, cfg=CFG, allow_reverse=False, road=None, terminal_stop=False):
+    """Solve one car's quadratic objective subject to linear constraints."""
+    hess, linear, matrix, bound = build_longitudinal_qp(
+        state, previous_acceleration, warm, now, target, front, rear, cfg,
+        allow_reverse, road, terminal_stop)
     started = time.perf_counter()
     result = minimize(lambda u: .5*u@hess@u+linear@u, warm,
                       jac=lambda u: hess@u+linear, method='SLSQP',

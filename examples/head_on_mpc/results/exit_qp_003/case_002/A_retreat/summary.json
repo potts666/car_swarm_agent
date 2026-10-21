@@ -1,0 +1,53 @@
+{
+  "role": "A",
+  "waiter": "B",
+  "feasible": true,
+  "terminal_passed": true,
+  "failure": null,
+  "exit_time_s": 17.6,
+  "attempted_time_s": 17.6,
+  "minimum_sampled_gap_m": 0.4999999999999991,
+  "full_path_checks": 89,
+  "solve_count": 88,
+  "generation_compute_wall_seconds": 0.5143324760138057,
+  "primary_solve_calls": 88,
+  "qp_crosscheck_calls": 0,
+  "solver_backend": "osqp",
+  "retry_count": 0,
+  "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+  "nonconverged_accepted_solves": 0,
+  "retreat_distance_m": 13.099988410130726,
+  "rejected_solves": 0,
+  "final_states_x_v": {
+    "A": [
+      -18.699988410130725,
+      -1.4790074337705483e-05
+    ],
+    "B": [
+      -0.3999999999999999,
+      0.0
+    ]
+  },
+  "terminal_check": {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 13.599988410130727,
+    "samples_per_car": 1,
+    "exit_residuals": {
+      "position_m": 1.1589869274075681e-05,
+      "velocity_m_s": 1.4790074337705483e-05,
+      "lateral_m": 0.0
+    }
+  },
+  "continuous_safety_certified": false,
+  "generation_total_wall_seconds": 0.5254537390137557
+}

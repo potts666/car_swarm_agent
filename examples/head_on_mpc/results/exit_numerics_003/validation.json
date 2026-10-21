@@ -1,0 +1,26 @@
+{
+  "runs": {
+    "exit_audited_003": {
+      "candidate_logs": 16,
+      "executed_zoh_intervals": 4712,
+      "source_hashes_match": true,
+      "executed_gap_and_waiter_passed": true,
+      "accepted_local_residuals_passed": true
+    },
+    "exit_qp_003": {
+      "candidate_logs": 16,
+      "executed_zoh_intervals": 5472,
+      "source_hashes_match": true,
+      "executed_gap_and_waiter_passed": true,
+      "accepted_local_residuals_passed": true
+    }
+  },
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "1.26.4",
+    "scipy": "1.11.4",
+    "osqp": "1.1.3",
+    "machine": "x86_64",
+    "openblas_threads": 1
+  }
+}

@@ -1,0 +1,1138 @@
+[
+  {
+    "case": 0,
+    "factors": {
+      "encounter_x_m": -3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 20.0,
+      "braking_m_s2": 0.5
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 15.2,
+        "attempted_time_s": 15.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 77,
+        "solve_count": 76,
+        "generation_compute_wall_seconds": 0.5883275750093162,
+        "primary_solve_calls": 76,
+        "qp_crosscheck_calls": 76,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 9.099973005534364,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -14.699973005534364,
+            -4.688263148901908e-05
+          ],
+          "B": [
+            -0.3999999999999999,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 9.599973005534363,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 2.6994465635254983e-05,
+            "velocity_m_s": 4.688263148901908e-05,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.6086993039934896
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": false,
+        "terminal_passed": false,
+        "failure": "optimization_rejected",
+        "exit_time_s": null,
+        "attempted_time_s": 8.4,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 44,
+        "solve_count": 44,
+        "generation_compute_wall_seconds": 0.43987375899450853,
+        "primary_solve_calls": 44,
+        "qp_crosscheck_calls": 44,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 1,
+        "retreat_distance_m": 12.616190500001105,
+        "rejected_solves": 1,
+        "final_states_x_v": {
+          "A": [
+            -5.6,
+            0.0
+          ],
+          "B": [
+            12.216190500001105,
+            1.576190500042155
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 13.116190500001107,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 2.4838094999988947,
+            "velocity_m_s": 1.576190500042155,
+            "lateral_m": 3.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.44845869598793797
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true,
+        "exit_time_s": 15.2,
+        "retreat_distance_m": 9.099973005534364,
+        "decision_wait_wall_seconds": 1.058925735997036
+      },
+      "screened": {
+        "role": "A",
+        "feasible": true,
+        "exit_time_s": 15.2,
+        "retreat_distance_m": 9.099973005534364,
+        "decision_wait_wall_seconds": 1.058925735997036
+      }
+    },
+    "shared_generation_solve_count": 120,
+    "qp_crosscheck_calls": 120,
+    "retry_count": 0,
+    "candidate_generation_total_wall_seconds": 1.0589160480012652,
+    "selection_wall_seconds": 8.974981028586626e-06,
+    "decision_wait_wall_seconds": 1.058925735997036,
+    "control_period_s": 0.4,
+    "decision_within_control_period": false,
+    "method": "offline full closed-loop rehearsal before role selection"
+  },
+  {
+    "case": 1,
+    "factors": {
+      "encounter_x_m": -3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 20.0,
+      "braking_m_s2": 1.0
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 14.0,
+        "attempted_time_s": 14.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 71,
+        "solve_count": 70,
+        "generation_compute_wall_seconds": 0.36188791098538786,
+        "primary_solve_calls": 70,
+        "qp_crosscheck_calls": 70,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 9.099987119553958,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -14.699987119553958,
+            -1.1370111995800923e-05
+          ],
+          "B": [
+            -0.3999999999999999,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 9.599987119553958,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 1.2880446041307891e-05,
+            "velocity_m_s": 1.1370111995800923e-05,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.3742437519831583
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 17.2,
+        "attempted_time_s": 17.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 87,
+        "solve_count": 86,
+        "generation_compute_wall_seconds": 0.511234425008297,
+        "primary_solve_calls": 86,
+        "qp_crosscheck_calls": 86,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 15.099989449248836,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -5.6,
+            0.0
+          ],
+          "B": [
+            14.699989449248836,
+            8.013972682083135e-06
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 15.599989449248834,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 1.0550751163407313e-05,
+            "velocity_m_s": 8.013972682083135e-06,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.5278275030141231
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true,
+        "exit_time_s": 14.0,
+        "retreat_distance_m": 9.099987119553958,
+        "decision_wait_wall_seconds": 0.9041441850131378
+      },
+      "screened": {
+        "role": "A",
+        "feasible": true,
+        "exit_time_s": 14.0,
+        "retreat_distance_m": 9.099987119553958,
+        "decision_wait_wall_seconds": 0.9041441850131378
+      }
+    },
+    "shared_generation_solve_count": 156,
+    "qp_crosscheck_calls": 156,
+    "retry_count": 0,
+    "candidate_generation_total_wall_seconds": 0.9041335550136864,
+    "selection_wall_seconds": 1.002699718810618e-05,
+    "decision_wait_wall_seconds": 0.9041441850131378,
+    "control_period_s": 0.4,
+    "decision_within_control_period": false,
+    "method": "offline full closed-loop rehearsal before role selection"
+  },
+  {
+    "case": 2,
+    "factors": {
+      "encounter_x_m": -3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 28.0,
+      "braking_m_s2": 0.5
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 17.2,
+        "attempted_time_s": 17.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 87,
+        "solve_count": 86,
+        "generation_compute_wall_seconds": 0.66640096300398,
+        "primary_solve_calls": 86,
+        "qp_crosscheck_calls": 86,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 13.099973005534368,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -18.699973005534368,
+            -4.688263148928117e-05
+          ],
+          "B": [
+            -0.3999999999999999,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 13.59997300553437,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 2.699446563170227e-05,
+            "velocity_m_s": 4.688263148928117e-05,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.6978161480219569
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": false,
+        "terminal_passed": false,
+        "failure": "optimization_rejected",
+        "exit_time_s": null,
+        "attempted_time_s": 10.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 52,
+        "solve_count": 52,
+        "generation_compute_wall_seconds": 0.6687286920205224,
+        "primary_solve_calls": 52,
+        "qp_crosscheck_calls": 52,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 1,
+        "retreat_distance_m": 15.945714299991254,
+        "rejected_solves": 1,
+        "final_states_x_v": {
+          "A": [
+            -5.6,
+            0.0
+          ],
+          "B": [
+            15.545714299991253,
+            1.7761905000024303
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 16.445714299991256,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 3.154285700008746,
+            "velocity_m_s": 1.7761905000024303,
+            "lateral_m": 3.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.6858674389950465
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true,
+        "exit_time_s": 17.2,
+        "retreat_distance_m": 13.099973005534368,
+        "decision_wait_wall_seconds": 1.3861094099993352
+      },
+      "screened": {
+        "role": "A",
+        "feasible": true,
+        "exit_time_s": 17.2,
+        "retreat_distance_m": 13.099973005534368,
+        "decision_wait_wall_seconds": 1.3861094099993352
+      }
+    },
+    "shared_generation_solve_count": 138,
+    "qp_crosscheck_calls": 138,
+    "retry_count": 0,
+    "candidate_generation_total_wall_seconds": 1.3860858799889684,
+    "selection_wall_seconds": 2.308998955413699e-05,
+    "decision_wait_wall_seconds": 1.3861094099993352,
+    "control_period_s": 0.4,
+    "decision_within_control_period": false,
+    "method": "offline full closed-loop rehearsal before role selection"
+  },
+  {
+    "case": 3,
+    "factors": {
+      "encounter_x_m": -3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 28.0,
+      "braking_m_s2": 1.0
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 16.0,
+        "attempted_time_s": 16.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 81,
+        "solve_count": 80,
+        "generation_compute_wall_seconds": 0.444025803997647,
+        "primary_solve_calls": 80,
+        "qp_crosscheck_calls": 80,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 13.099987119553957,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -18.699987119553956,
+            -1.1370111995395005e-05
+          ],
+          "B": [
+            -0.3999999999999999,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 13.599987119553958,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 1.2880446043084248e-05,
+            "velocity_m_s": 1.1370111995395005e-05,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.4614451070083305
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 19.2,
+        "attempted_time_s": 19.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 97,
+        "solve_count": 96,
+        "generation_compute_wall_seconds": 0.5707890189951286,
+        "primary_solve_calls": 96,
+        "qp_crosscheck_calls": 96,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 19.099989449248827,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -5.6,
+            0.0
+          ],
+          "B": [
+            18.69998944924883,
+            8.013972688833539e-06
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 19.599989449248827,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 1.055075117051274e-05,
+            "velocity_m_s": 8.013972688833539e-06,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.590588980994653
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true,
+        "exit_time_s": 16.0,
+        "retreat_distance_m": 13.099987119553957,
+        "decision_wait_wall_seconds": 1.0542962200124748
+      },
+      "screened": {
+        "role": "A",
+        "feasible": true,
+        "exit_time_s": 16.0,
+        "retreat_distance_m": 13.099987119553957,
+        "decision_wait_wall_seconds": 1.0542962200124748
+      }
+    },
+    "shared_generation_solve_count": 176,
+    "qp_crosscheck_calls": 176,
+    "retry_count": 0,
+    "candidate_generation_total_wall_seconds": 1.0542858380067628,
+    "selection_wall_seconds": 9.904993930831552e-06,
+    "decision_wait_wall_seconds": 1.0542962200124748,
+    "control_period_s": 0.4,
+    "decision_within_control_period": false,
+    "method": "offline full closed-loop rehearsal before role selection"
+  },
+  {
+    "case": 4,
+    "factors": {
+      "encounter_x_m": 3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 20.0,
+      "braking_m_s2": 0.5
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": false,
+        "terminal_passed": false,
+        "failure": "optimization_rejected",
+        "exit_time_s": null,
+        "attempted_time_s": 9.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 48,
+        "solve_count": 48,
+        "generation_compute_wall_seconds": 0.6154803689860273,
+        "primary_solve_calls": 48,
+        "qp_crosscheck_calls": 48,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 3,
+        "retreat_distance_m": 13.717142899998096,
+        "rejected_solves": 1,
+        "final_states_x_v": {
+          "A": [
+            -13.317142899998096,
+            -1.176190500000796
+          ],
+          "B": [
+            5.6,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 14.217142899998098,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 1.3828571000019032,
+            "velocity_m_s": 1.176190500000796,
+            "lateral_m": 3.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.628343144984683
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 15.2,
+        "attempted_time_s": 15.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 77,
+        "solve_count": 76,
+        "generation_compute_wall_seconds": 0.6364809210062958,
+        "primary_solve_calls": 76,
+        "qp_crosscheck_calls": 76,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 9.099973005534366,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            0.3999999999999999,
+            0.0
+          ],
+          "B": [
+            14.699973005534366,
+            4.688263148925522e-05
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 9.599973005534366,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 2.6994465633478626e-05,
+            "velocity_m_s": 4.688263148925522e-05,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.6520791350048967
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": false,
+        "exit_time_s": null,
+        "retreat_distance_m": 13.717142899998096,
+        "decision_wait_wall_seconds": 1.2828490019892342
+      },
+      "screened": {
+        "role": "B",
+        "feasible": true,
+        "exit_time_s": 15.2,
+        "retreat_distance_m": 9.099973005534366,
+        "decision_wait_wall_seconds": 1.2828490019892342
+      }
+    },
+    "shared_generation_solve_count": 124,
+    "qp_crosscheck_calls": 124,
+    "retry_count": 0,
+    "candidate_generation_total_wall_seconds": 1.282840153988218,
+    "selection_wall_seconds": 8.432980393990874e-06,
+    "decision_wait_wall_seconds": 1.2828490019892342,
+    "control_period_s": 0.4,
+    "decision_within_control_period": false,
+    "method": "offline full closed-loop rehearsal before role selection"
+  },
+  {
+    "case": 5,
+    "factors": {
+      "encounter_x_m": 3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 20.0,
+      "braking_m_s2": 1.0
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 17.2,
+        "attempted_time_s": 17.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 87,
+        "solve_count": 86,
+        "generation_compute_wall_seconds": 0.4270444800204132,
+        "primary_solve_calls": 86,
+        "qp_crosscheck_calls": 86,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 15.099989449248836,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -14.699989449248836,
+            -8.013972682419927e-06
+          ],
+          "B": [
+            5.6,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 15.599989449248834,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 1.0550751163407313e-05,
+            "velocity_m_s": 8.013972682419927e-06,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.4418143410002813
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 14.0,
+        "attempted_time_s": 14.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 71,
+        "solve_count": 70,
+        "generation_compute_wall_seconds": 0.42773433797992766,
+        "primary_solve_calls": 70,
+        "qp_crosscheck_calls": 70,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 9.099987119553957,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            0.3999999999999999,
+            0.0
+          ],
+          "B": [
+            14.699987119553956,
+            1.137011199578131e-05
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 9.599987119553955,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 1.2880446043084248e-05,
+            "velocity_m_s": 1.137011199578131e-05,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.44682086998363957
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true,
+        "exit_time_s": 17.2,
+        "retreat_distance_m": 15.099989449248836,
+        "decision_wait_wall_seconds": 0.8910894619766623
+      },
+      "screened": {
+        "role": "B",
+        "feasible": true,
+        "exit_time_s": 14.0,
+        "retreat_distance_m": 9.099987119553957,
+        "decision_wait_wall_seconds": 0.8910894619766623
+      }
+    },
+    "shared_generation_solve_count": 156,
+    "qp_crosscheck_calls": 156,
+    "retry_count": 0,
+    "candidate_generation_total_wall_seconds": 0.8910767619963735,
+    "selection_wall_seconds": 1.227800385095179e-05,
+    "decision_wait_wall_seconds": 0.8910894619766623,
+    "control_period_s": 0.4,
+    "decision_within_control_period": false,
+    "method": "offline full closed-loop rehearsal before role selection"
+  },
+  {
+    "case": 6,
+    "factors": {
+      "encounter_x_m": 3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 28.0,
+      "braking_m_s2": 0.5
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": false,
+        "terminal_passed": false,
+        "failure": "optimization_rejected",
+        "exit_time_s": null,
+        "attempted_time_s": 10.4,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 54,
+        "solve_count": 54,
+        "generation_compute_wall_seconds": 0.7106545739807189,
+        "primary_solve_calls": 54,
+        "qp_crosscheck_calls": 54,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 1,
+        "retreat_distance_m": 16.616190499993845,
+        "rejected_solves": 1,
+        "final_states_x_v": {
+          "A": [
+            -16.216190499993846,
+            -1.5761905000019236
+          ],
+          "B": [
+            5.6,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 17.116190499993845,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 2.483809500006153,
+            "velocity_m_s": 1.5761905000019236,
+            "lateral_m": 3.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.7201363210042473
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 17.2,
+        "attempted_time_s": 17.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 87,
+        "solve_count": 86,
+        "generation_compute_wall_seconds": 0.6488821319944691,
+        "primary_solve_calls": 86,
+        "qp_crosscheck_calls": 86,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 13.099973005534368,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            0.3999999999999999,
+            0.0
+          ],
+          "B": [
+            18.699973005534368,
+            4.688263148838055e-05
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 13.59997300553437,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 2.699446563170227e-05,
+            "velocity_m_s": 4.688263148838055e-05,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.6680169860192109
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": false,
+        "exit_time_s": null,
+        "retreat_distance_m": 16.616190499993845,
+        "decision_wait_wall_seconds": 1.3900732079928275
+      },
+      "screened": {
+        "role": "B",
+        "feasible": true,
+        "exit_time_s": 17.2,
+        "retreat_distance_m": 13.099973005534368,
+        "decision_wait_wall_seconds": 1.3900732079928275
+      }
+    },
+    "shared_generation_solve_count": 140,
+    "qp_crosscheck_calls": 140,
+    "retry_count": 0,
+    "candidate_generation_total_wall_seconds": 1.3900641129876021,
+    "selection_wall_seconds": 8.765025995671749e-06,
+    "decision_wait_wall_seconds": 1.3900732079928275,
+    "control_period_s": 0.4,
+    "decision_within_control_period": false,
+    "method": "offline full closed-loop rehearsal before role selection"
+  },
+  {
+    "case": 7,
+    "factors": {
+      "encounter_x_m": 3.0,
+      "initial_speed_m_s": 0.0,
+      "channel_length_m": 28.0,
+      "braking_m_s2": 1.0
+    },
+    "candidates": {
+      "A": {
+        "role": "A",
+        "waiter": "B",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 19.2,
+        "attempted_time_s": 19.2,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 97,
+        "solve_count": 96,
+        "generation_compute_wall_seconds": 0.5060059700044803,
+        "primary_solve_calls": 96,
+        "qp_crosscheck_calls": 96,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 19.099989449248827,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            -18.69998944924883,
+            -8.013972690006193e-06
+          ],
+          "B": [
+            5.6,
+            0.0
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 19.599989449248827,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 1.055075117051274e-05,
+            "velocity_m_s": 8.013972690006193e-06,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.528965566016268
+      },
+      "B": {
+        "role": "B",
+        "waiter": "A",
+        "feasible": true,
+        "terminal_passed": true,
+        "failure": null,
+        "exit_time_s": 16.0,
+        "attempted_time_s": 16.0,
+        "minimum_sampled_gap_m": 0.4999999999999991,
+        "full_path_checks": 81,
+        "solve_count": 80,
+        "generation_compute_wall_seconds": 0.4321685220056679,
+        "primary_solve_calls": 80,
+        "qp_crosscheck_calls": 80,
+        "solver_backend": "slsqp",
+        "retry_count": 0,
+        "acceptance_rule": "finite and all independent residual checks and full path; optimizer status diagnostic",
+        "nonconverged_accepted_solves": 0,
+        "retreat_distance_m": 13.099987119553953,
+        "rejected_solves": 0,
+        "final_states_x_v": {
+          "A": [
+            0.3999999999999999,
+            0.0
+          ],
+          "B": [
+            18.699987119553953,
+            1.1370111997657741e-05
+          ]
+        },
+        "terminal_check": {
+          "passed": true,
+          "reasons": [],
+          "residuals": {
+            "road_body_m": 0.0,
+            "neighbor_gap_m": 0.0,
+            "speed_m_s": 0.0,
+            "acceleration_m_s2": 0.0,
+            "waiter_position_m": 0.0,
+            "waiter_velocity_m_s": 0.0,
+            "waiter_lateral_m": 0.0
+          },
+          "minimum_sampled_gap_m": 13.599987119553955,
+          "samples_per_car": 1,
+          "exit_residuals": {
+            "position_m": 1.2880446046636962e-05,
+            "velocity_m_s": 1.1370111997657741e-05,
+            "lateral_m": 0.0
+          }
+        },
+        "continuous_safety_certified": false,
+        "generation_total_wall_seconds": 0.4496182129951194
+      }
+    },
+    "baselines": {
+      "fixed_A": {
+        "role": "A",
+        "feasible": true,
+        "exit_time_s": 19.2,
+        "retreat_distance_m": 19.099989449248827,
+        "decision_wait_wall_seconds": 0.9815491089830175
+      },
+      "screened": {
+        "role": "B",
+        "feasible": true,
+        "exit_time_s": 16.0,
+        "retreat_distance_m": 13.099987119553953,
+        "decision_wait_wall_seconds": 0.9815491089830175
+      }
+    },
+    "shared_generation_solve_count": 176,
+    "qp_crosscheck_calls": 176,
+    "retry_count": 0,
+    "candidate_generation_total_wall_seconds": 0.9815378699859139,
+    "selection_wall_seconds": 1.0917981853708625e-05,
+    "decision_wait_wall_seconds": 0.9815491089830175,
+    "control_period_s": 0.4,
+    "decision_within_control_period": false,
+    "method": "offline full closed-loop rehearsal before role selection"
+  }
+]
