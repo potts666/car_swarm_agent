@@ -85,8 +85,9 @@ def inside_road(states, road, cfg=CFG):
     return inside & main
 
 
-def solve(state, previous_acceleration, warm, now, target, front=None, rear=None, cfg=CFG):
+def solve(state, previous_acceleration, warm, now, target, front=None, rear=None, cfg=CFG, allow_reverse=False):
     """Solve one car's quadratic objective subject to linear constraints."""
+    # ticks 当前时刻之后、覆盖整个预测时域的一组采样时间
     ticks = np.arange(1, cfg.horizon*cfg.substeps+1)*cfg.dt/cfg.substeps
     pmat, vmat = matrices(ticks, cfg)
     pbase = state[0]+ticks*state[1]
@@ -100,7 +101,10 @@ def solve(state, previous_acceleration, warm, now, target, front=None, rear=None
     lower(vmat, vbase, -cfg.max_speed)
     lower(-vmat, -vbase, -cfg.max_speed)
     direction = 1 if target >= state[0] else -1
-    lower(direction*vmat, direction*vbase, -1e-8)
+    # Legacy strategies constrain travel to their stage target direction.
+    # The deadlock experiment permits both velocity signs with its forward goal.
+    if not allow_reverse:
+        lower(direction*vmat, direction*vbase, -1e-8)
     lower(-direction*pmat, -direction*pbase, -direction*target-1e-7)
     distance = cfg.length+cfg.margin
     if front is not None:
@@ -133,6 +137,9 @@ def solve(state, previous_acceleration, warm, now, target, front=None, rear=None
 
 
 def run_case(name, output, scene):
+#     初始化场景
+# 检查场景名称和时间参数，创建输出目录；
+# 从场景配置加载道路、车辆初始状态和目标，初始化车辆横向位置、MPC 控制序列、预测包，以及当前仿真阶段。stopped、transition 和 record 是函数内部的小工具，分别用于判断停车、记录阶段切换和采集仿真数据。
     if name not in CASES:
         raise ValueError(f'Unknown head-on case: {name}')
     cfg = Settings(**scene['settings'])
@@ -188,6 +195,15 @@ def run_case(name, output, scene):
 
     record(cfg.epoch, {car: np.array([[s[0],s[1],0.]]) for car,s in states.items()}, previous_acc)
     complete = False
+#     逐周期闭环仿真
+# 主循环从 head_on_core.py:191 开始，每轮对应一个控制周期：
+
+# 根据车辆状态更新当前阶段，例如刹车、进入避让区、让对方通过、重新出发。
+# 从对方上一个周期发来的预测包中，取得本周期控制时域内的邻车状态。
+# 分别为两辆车调用 solve(...) 求控制序列，并检查优化结果是否可接受。只要有一个结果未通过检查，本周期就不执行控制，仿真记为失败。
+# 用控制序列生成下一轮预测包；实际仿真则只执行当前周期的第一个加速度，并在子步内积分车辆运动。
+# 记录位置、速度、车间距和约束违反情况，再更新车辆状态、上一周期加速度和 warm start 控制序列。
+# 这就是 MPC 的滚动方式：每周期重新预测和求解，但只执行当前周期的控制，然后拿更新后的状态再算下一轮。
     for cycle in range(int(scene['cases'][name]['time_limit_s']/cfg.dt)):
         if failure:
             break
@@ -250,6 +266,8 @@ def run_case(name, output, scene):
         complete = len(arrivals)==2
         if failure or complete:
             break
+#         整理并写出结果
+# 循环结束后，根据是否失败、是否到达目标，确定 failed、completed 或 blocked 状态；汇总安全间距、求解耗时、到达时间等指标，并写出实际轨迹、求解记录、事件、预测包和摘要文件。
     status = 'failed' if failure else 'completed' if complete else 'blocked'
     elapsed = [r['solve_seconds'] for r in records]
     sums = {}

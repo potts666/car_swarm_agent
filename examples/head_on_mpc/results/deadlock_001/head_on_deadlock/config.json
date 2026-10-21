@@ -1,0 +1,54 @@
+{
+  "settings": {
+    "dt": 0.4,
+    "horizon": 16,
+    "substeps": 4,
+    "epoch": 100.0,
+    "max_speed": 2.0,
+    "max_acceleration": 1.0,
+    "length": 4.7,
+    "width": 2.0,
+    "margin": 0.5,
+    "lateral_seconds": 6.0,
+    "tolerance": 1e-05
+  },
+  "road": {
+    "xmin": -22.0,
+    "xmax": 22.0,
+    "ymin": -1.4,
+    "ymax": 1.4,
+    "bays": []
+  },
+  "initial_states_x_v": {
+    "A": [
+      -2.6,
+      0.0
+    ],
+    "B": [
+      2.6,
+      0.0
+    ]
+  },
+  "goals_x": {
+    "A": 18.0,
+    "B": -18.0
+  },
+  "retreat_probe_targets_x": {
+    "A": -12.0,
+    "B": 12.0
+  },
+  "sampled_gap_min_m": 0.08,
+  "arrival_position_tolerance_m": 0.08,
+  "arrival_speed_tolerance_m_s": 0.025,
+  "duration_s": 12.0,
+  "deadlock_window_s": 5.0,
+  "deadlock_position_tolerance_m": 0.01,
+  "deadlock_speed_tolerance_m_s": 0.01,
+  "case": "head_on_deadlock",
+  "origin": "vehicle centre; A yaw=0, B yaw=pi",
+  "model": "longitudinal double integrator; y=0, both velocity signs allowed",
+  "supervisor": "none; both retain their forward destinations; no hold targets",
+  "initial_condition": "already stopped at an encounter inside the channel; no approach simulation",
+  "communication": "synchronous previous-cycle prediction packets; no negotiation",
+  "capability_probe": "counterfactual retreat target, never executed by the actual policy"
+}

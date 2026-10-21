@@ -15,7 +15,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('study_dir',default_value=str(share/'results/run_001')),
         DeclareLaunchArgument('case',default_value='head_on_pause_bay',choices=[
-            'head_on_inline_stop','head_on_pause_bay','head_on_reverse']),
+            'head_on_inline_stop','head_on_pause_bay','head_on_reverse','head_on_deadlock']),
         DeclareLaunchArgument('playback_rate',default_value='1.0'),
         DeclareLaunchArgument('loop',default_value='true'),
         DeclareLaunchArgument('rviz',default_value='true'),

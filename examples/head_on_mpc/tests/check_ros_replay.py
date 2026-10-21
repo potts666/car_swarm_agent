@@ -18,6 +18,8 @@ from tf2_msgs.msg import TFMessage
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--run',type=Path,default=Path(__file__).resolve().parents[1]/'results/run_001')
+    parser.add_argument('--case', action='append', dest='cases',
+                        choices=['head_on_inline_stop', 'head_on_pause_bay', 'head_on_reverse', 'head_on_deadlock'])
     args = parser.parse_args()
     run = args.run.resolve()
     rclpy.init()
@@ -28,7 +30,7 @@ def main():
     node.create_subscription(TFMessage,'/tf',lambda m:frames.extend(t.child_frame_id for t in m.transforms),10)
     results = []
     try:
-        for case in ('head_on_inline_stop','head_on_pause_bay','head_on_reverse'):
+        for case in (args.cases or ('head_on_inline_stop','head_on_pause_bay','head_on_reverse')):
             latest[0] = None
             frames.clear()
             expected = json.loads((run/case/'summary.json').read_text())['status']

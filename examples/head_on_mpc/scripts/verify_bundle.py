@@ -75,6 +75,24 @@ def audit_case(directory, video=True):
     summary = json.loads((directory/'summary.json').read_text())
     assert summary['expectation_met']
     assert abs(summary['minimum_sampled_sat_gap_m']-minimum_gap)<1e-8
+    if cfg['case'] == 'head_on_deadlock':
+        assert not road['bays'], 'unexpected side bay in deadlock case'
+        assert summary['status'] == 'deadlock'
+        assert all(r['allow_reverse'] and r['target'] == cfg['goals_x'][r['car']] for r in solves)
+        detected = summary['deadlock_detected_at_s']
+        assert detected >= cfg['deadlock_window_s']
+        for car, rows in by_car.items():
+            window = [s for t, s in rows.items()
+                      if settings['epoch']+detected-cfg['deadlock_window_s']-1e-8 <= t
+                      <= settings['epoch']+detected+1e-8]
+            assert len(window) > 1
+            assert max(s['x'] for s in window)-min(s['x'] for s in window) <= cfg['deadlock_position_tolerance_m']
+            assert max(abs(s['vx']) for s in window) <= cfg['deadlock_speed_tolerance_m_s']
+            assert abs(window[-1]['x']-cfg['goals_x'][car]) > cfg['arrival_position_tolerance_m']
+        events = json.loads((directory/'events.json').read_text())
+        evidence = next(e for e in events if e['to'] == 'deadlock_detected')
+        assert evidence['wait_for'] == {'A': 'B', 'B': 'A'}
+        assert all(p['feasible'] and p['accepted'] for p in evidence['retreat_probes'].values())
     if directory.name=='head_on_reverse':
         events = json.loads((directory/'events.json').read_text())
         start = next(e['time_s'] for e in events if e['to']=='retreat')+settings['epoch']

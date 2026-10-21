@@ -1,0 +1,19 @@
+[INFO] [launch]: All log files can be found below /home/sunflower/.ros/log/2026-10-22-03-47-20-786990-sunflower-VirtualBox-30910
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [rviz_replay.py-1]: process started with pid [30913]
+[rviz_replay.py-1] [INFO] [1792612041.299368426] [head_on_replay]: Replaying /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/deadlock_001/head_on_deadlock; 12.0s; no optimizer/control publication
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [rviz_replay.py-1]: sending signal 'SIGINT' to process[rviz_replay.py-1]
+[rviz_replay.py-1] Traceback (most recent call last):
+[rviz_replay.py-1]   File "/tmp/head_on_deadlock_install/head_on_mpc/lib/head_on_mpc/rviz_replay.py", line 136, in <module>
+[rviz_replay.py-1]     main()
+[rviz_replay.py-1]   File "/tmp/head_on_deadlock_install/head_on_mpc/lib/head_on_mpc/rviz_replay.py", line 131, in main
+[rviz_replay.py-1]     node.destroy_node()
+[rviz_replay.py-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 1962, in destroy_node
+[rviz_replay.py-1]     self.destroy_service(self._services[0])
+[rviz_replay.py-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/node.py", line 1886, in destroy_service
+[rviz_replay.py-1]     service.destroy()
+[rviz_replay.py-1]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/service.py", line 123, in destroy
+[rviz_replay.py-1]     self.__service.destroy_when_not_in_use()
+[rviz_replay.py-1] KeyboardInterrupt
+[ERROR] [rviz_replay.py-1]: process has died [pid 30913, exit code -2, cmd '/tmp/head_on_deadlock_install/head_on_mpc/lib/head_on_mpc/rviz_replay.py --ros-args --params-file /tmp/launch_params_6wcx8pit'].

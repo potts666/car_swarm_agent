@@ -1,0 +1,43 @@
+{
+  "case": "head_on_deadlock",
+  "status": "deadlock",
+  "expected_status": "deadlock",
+  "expectation_met": true,
+  "failure": null,
+  "final_phase": "deadlock_detected",
+  "simulation_seconds": 12.0,
+  "deadlock_detected_at_s": 5.2,
+  "initial_retreat_probes": {
+    "A": {
+      "feasible": true,
+      "target_x": -12.0,
+      "first_acceleration": -1.0,
+      "predicted_displacement_m": -9.058395832162336,
+      "accepted": true
+    },
+    "B": {
+      "feasible": true,
+      "target_x": 12.0,
+      "first_acceleration": 1.0,
+      "predicted_displacement_m": 9.058395832162315,
+      "accepted": true
+    }
+  },
+  "minimum_sampled_sat_gap_m": 0.5,
+  "final_states_x_v": {
+    "A": [
+      -2.6,
+      0.0
+    ],
+    "B": [
+      2.6,
+      0.0
+    ]
+  },
+  "solve_count": 60,
+  "rejected_solves": 0,
+  "continuous_safety_certified": false,
+  "autonomous_strategy_selection": false,
+  "supervisor_is_centralized": false,
+  "interpretation": "Operational mutual-wait criterion, not a general deadlock-freedom theorem"
+}

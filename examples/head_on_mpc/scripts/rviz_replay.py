@@ -110,7 +110,10 @@ class Replay(Node):
         markers.append(title)
         note = self.marker('status', 1, Marker.TEXT_VIEW_FACING, (.85,.8,.55), anchor, 5.7, 1.)
         note.scale.z = .42
-        note.text = 'LOG REPLAY | thick: executed | thin: predicted | prescribed lateral occupancy'
+        if recording.config['case'] == 'head_on_deadlock':
+            note.text = 'REVERSE ENABLED | A waits for B to retreat; B waits for A | no priority'
+        else:
+            note.text = 'LOG REPLAY | thick: executed | thin: predicted | prescribed lateral occupancy'
         markers.append(note)
         self.publisher.publish(MarkerArray(markers=markers))
 

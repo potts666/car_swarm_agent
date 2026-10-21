@@ -14,6 +14,44 @@ MP4可以下载后用系统播放器/VLC播放。GitHub是否内嵌显示由其�
 
 每一次模拟包含七项：提交版本、地图与初值、控制周期、通信设置、原始日志与图片、RViz2回放、可播放视频。代码只保留本案例需要的仿真、导出、回放与验证，独立于父工程的规划器和旧演示。
 
+## 当前研究：无占用权调度的双车死锁
+
+新增独立入口 `scripts/run_deadlock.py`，不使用原来固定 A 优先的让行状态机。配置见 [deadlock.json](config/deadlock.json)，已生成结果见 [复现报告](results/deadlock_001/report.md) 和 [轨迹图](results/deadlock_001/head_on_deadlock/overview.png)。旧三种策略仍由 `run_study.py` 运行。
+
+本阶段从两车已在单通道内相遇并停车的状态开始：A 位于 `x=-2.6`，目标 `x=18`；B 位于 `x=2.6`，目标 `x=-18`。主通道宽 2.8 m、车宽 2 m，没有沿途避让区。两车中心间距 5.2 m，车身间隙 0.5 m。尚未模拟接近和刹车过程，也未建立入口外等待区的几何；入口占用权调度属于下一阶段。
+
+两车 MPC 均设置 `allow_reverse=True`，在保持前方最终目标时也允许正负速度，不设置等待位置或 A/B 优先级。每车针对对方上一周期的预测求解。对方预测保持停车时，前进受间距约束，后退使自己的目标误差增大；因此双方的局部最优都是停车。“等待对方倒车”是该策略的行为解释，当前没有显式协商报文。
+
+另做两次互不执行的反事实求解：让 A 或 B 单独以身后位置为目标、对方保持停车，验证倒车轨迹可行。检测器只在双方未到目标、持续至少 5 秒位置变化不超过 0.01 m、速度不超过 0.01 m/s，且双方倒车探测均可行时标记 `deadlock`。默认配置在 5.2 秒检测到，随后记录到 12 秒；所有 60 次局部求解均被接受。该判据用于本场景复现，不构成任意场景的死锁证明。
+
+重跑（输出目录下的 `head_on_deadlock` 子目录必须不存在）：
+
+```bash
+cd ~/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc
+OPENBLAS_NUM_THREADS=1 python3 scripts/run_deadlock.py --output results/rerun_deadlock_001
+# 可加 --video 导出 H.264 视频；默认只生成日志、图片与报告。
+```
+
+查看仓库自带结果：先按下文方法独立构建并 source 安装环境，然后运行：
+
+```bash
+ros2 launch head_on_mpc replay.launch.py \
+  case:=head_on_deadlock \
+  study_dir:="$(ros2 pkg prefix --share head_on_mpc)/results/deadlock_001" \
+  loop:=false
+```
+
+回放中的 `mutual_wait` 表示双方等待，`deadlock_detected` 表示已满足检测条件。标题最后显示 `deadlock`。车辆从开始就静止是本实验的明确初始条件；优化器每周期仍在求解，没有人为将控制量覆盖为零。
+
+无 GUI 验证回放消息（`--run` 指向新结果可验证重跑）：
+
+```bash
+ROS_DOMAIN_ID=83 python3 tests/check_ros_replay.py \
+  --run results/deadlock_001 --case head_on_deadlock
+```
+
+所有离线测试：`OPENBLAS_NUM_THREADS=1 python3 -m unittest discover -s tests -p 'test_*.py'`。新增测试覆盖实际双向速度可行性、双方互等、对方后退后能够前进，以及到达目标后的正常停车不会被判为死锁。
+
 ## 运行范围
 
 状态为车身中心x和有符号vx，控制为加速度。纵向双积分模型、0.4s控制周期、6.4s预测时域、0.1s采样。两车分别求解并交换上一轮预测；高层监督器固定A优先，策略由案例名指定。

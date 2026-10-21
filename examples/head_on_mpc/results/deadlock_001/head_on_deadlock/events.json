@@ -1,0 +1,28 @@
+[
+  {
+    "time_s": 5.2,
+    "from": "mutual_wait",
+    "to": "deadlock_detected",
+    "detail": "Both unfinished and stationary over the window; each has a feasible retreat",
+    "wait_for": {
+      "A": "B",
+      "B": "A"
+    },
+    "retreat_probes": {
+      "A": {
+        "feasible": true,
+        "target_x": -12.0,
+        "first_acceleration": -1.0,
+        "predicted_displacement_m": -9.058395832162336,
+        "accepted": true
+      },
+      "B": {
+        "feasible": true,
+        "target_x": 12.0,
+        "first_acceleration": 1.0,
+        "predicted_displacement_m": 9.058395832162315,
+        "accepted": true
+      }
+    }
+  }
+]

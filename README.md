@@ -31,24 +31,120 @@ vehicle_tf_broadcaster → TF → RViz
 
 ## 项目结构
 
+仓库目录名为 `car_swarm_single_lane`，根目录的 ROS 2 包名为 `car_swarm_agent`（由 `package.xml` 和 `CMakeLists.txt` 定义）。`ros2` 和 `colcon --packages-select` 使用包名。`examples/head_on_mpc` 另有独立的 `package.xml` 和 `CMakeLists.txt`，包名为 `head_on_mpc`，可按其 README 单独构建。
+
 ```text
-car_swarm_agent/
-├── include/car_swarm_agent/
-│   ├── hybrid_astar_planner.hpp
-│   └── demo_map.hpp
+car_swarm_single_lane/
+├── CMakeLists.txt                  # C++ 库、节点、消息生成、测试与安装
+├── package.xml                     # car_swarm_agent 包信息及 ROS 依赖
+├── include/car_swarm_agent/        # C++ 接口与公共数据结构
+│   ├── hybrid_astar_planner.hpp    # 位姿、地图、车辆配置及 Hybrid A* 接口
+│   ├── reeds_shepp.hpp             # 支持前进/倒车的解析路径
+│   ├── vehicle_geometry.hpp        # 矩形车身几何
+│   ├── trajectory_collision.hpp    # 两车带时间轨迹的碰撞检查
+│   ├── trajectory_yield.hpp        # 固定路径等待与 S–T 速度搜索
+│   ├── continuous_trajectory.hpp   # 连续轨迹求值及复核接口
+│   ├── trajectory_tracking.hpp     # 自行车模型、反馈跟踪与仿真
+│   ├── quintic_trajectory.hpp       # 五次多项式轨迹研究接口
+│   ├── demo_map.hpp                # 演示地图生成
+│   ├── demo_validation.hpp         # 演示轨迹验证辅助函数
+│   └── continues_trajectory.hpp    # 未被当前代码引用的近名头文件
 ├── src/
-│   ├── agent_node.cpp
-│   ├── hybrid_astar_planner.cpp
-│   └── vehicle_tf_broadcaster.cpp
-├── config/planner_params.yaml
-├── launch/
-│   ├── planner_demo.launch.py
-│   └── car_swarm_demo.launch.py
-├── rviz/car_swarm_demo.rviz
-├── test/test_hybrid_astar_planner.cpp
-├── CMakeLists.txt
-└── package.xml
+│   ├── hybrid_astar_planner.cpp    # Hybrid A* 搜索与静态碰撞检查
+│   ├── reeds_shepp.cpp             # Reeds–Shepp 实现
+│   ├── trajectory_collision.cpp    # 两车轨迹碰撞检查实现
+│   ├── trajectory_yield.cpp        # 等待让行、S–T 搜索、连续轨迹及复核实现
+│   ├── trajectory_tracking.cpp     # 车辆模型与闭环跟踪仿真
+│   ├── quintic_trajectory.cpp       # 五次多项式轨迹实现
+│   ├── agent_node.cpp              # 单车规划 ROS 节点
+│   ├── vehicle_tf_broadcaster.cpp   # 按路径点播放车辆 TF
+│   ├── trajectory_comm_node.cpp    # 预测轨迹发布、邻车订阅与可视化
+│   └── yield_demo_node.cpp         # 两车让行回放及车辆模型仿真节点
+├── msg/
+│   ├── TrajectoryPoint.msg         # 相对时间、后轴位姿及行驶方向
+│   └── PredictedTrajectory.msg     # 时间基准、坐标系、车辆 ID 及轨迹点
+├── config/planner_params.yaml      # 单车规划、地图与车身参数
+├── launch/                         # ROS 启动入口，见下表
+├── rviz/                           # 单车规划与双车让行显示配置
+├── test/
+│   ├── test_*.cpp                  # 规划、碰撞、让行、连续轨迹与跟踪单元测试
+│   ├── test_*.py                   # 时空优化数学与分散式 MPC 测试
+│   ├── diagnose_hybrid_astar.cpp   # 规划失败诊断
+│   ├── benchmark_hybrid_astar.cpp  # 规划性能对比
+│   ├── compare_spatial_temporal.cpp # 时空轨迹实验辅助程序
+│   ├── optimize_spatial_temporal.py # 时空联合优化研究脚本（暂停推进）
+│   ├── decentralized_mpc.py        # 父工程的分散式 MPC 数值实验
+│   └── *.md / *.json              # 诊断记录、基准与实验结果
+├── examples/head_on_mpc/           # 独立的单通道双车相向 MPC 案例
+│   ├── scripts/head_on_core.py     # 纵向预测模型、优化、策略状态机与闭环日志
+│   ├── scripts/run_study.py        # 测试、三种策略仿真、报告与工件生成入口
+│   ├── scripts/recording.py        # 日志读取及显示插值
+│   ├── scripts/rviz_replay.py      # ROS 可视化回放
+│   ├── scripts/render.py           # 图片和视频导出
+│   ├── scripts/verify_bundle.py    # 结果工件校验
+│   ├── config/scenarios.json       # 场景、模型参数及策略配置
+│   ├── tests/                      # 离线行为及 ROS 回放检查
+│   ├── launch/                     # replay.launch.py
+│   ├── rviz/                       # 回放显示配置
+│   ├── results/run_001/            # 三种策略的日志、图片、视频与报告
+│   └── README.md                   # 独立运行和验证说明
+├── README.md
+├── LICENSE
+└── THIRD_PARTY_NOTICES.md
 ```
+
+### 模块职责与依赖
+
+根目录 CMake 构建四个算法库，箭头表示“被右侧库依赖”：
+
+```text
+hybrid_astar_planner ─┐
+                     ├──→ trajectory_yield ──→ trajectory_tracking
+trajectory_collision ┘
+```
+
+- `hybrid_astar_planner` 包含 Hybrid A* 和 Reeds–Shepp，可供单车规划节点调用。
+- `trajectory_collision` 处理带时间轨迹的车身冲突，依赖本包生成的 ROS 消息类型。
+- `trajectory_yield` 在空间路径上调整通行时序；`ContinuousTrajectory` 和连续复核的实现也在 `src/trajectory_yield.cpp` 中。
+- `trajectory_tracking` 同时编译跟踪与五次多项式代码，为演示和研究对比提供数值仿真。
+
+主要运行流程如下；这些入口分别服务于不同演示：
+
+```text
+单车规划：参数/演示地图 → agent_node → Hybrid A* → planned_path
+                                                   ↓
+                                       vehicle_tf_broadcaster → TF / RViz
+
+轨迹通信：car_1/trajectory_comm ⇄ PredictedTrajectory ⇄ car_2/trajectory_comm
+
+双车让行：yield_demo_node → 等待让行或 S–T 搜索 → 轨迹复核
+                                                 ↓
+                                      计划回放或车辆模型跟踪仿真
+
+独立 MPC：scenarios.json → run_study.py → head_on_core.py → 结果日志
+                                                           ↓
+                                            RViz 回放 / 图片 / 视频 / 报告
+```
+
+### 运行入口
+
+| 目的 | 入口 | 启动内容 |
+| --- | --- | --- |
+| 单车路径规划 | `ros2 launch car_swarm_agent planner_demo.launch.py` | 规划节点，读取 YAML 参数 |
+| 单车路径与 TF 播放 | `ros2 launch car_swarm_agent car_swarm_demo.launch.py` | 规划节点及 TF 广播节点；RViz 另行启动 |
+| 两车轨迹通信 | `ros2 launch car_swarm_agent two_car_comm.launch.py` | 两个命名空间下的轨迹通信节点 |
+| 两车让行演示 | `ros2 launch car_swarm_agent yield_demo.launch.py` | 让行节点及 RViz，默认 S–T 规划与计划回放 |
+| 让行后的模型跟踪 | 上一命令加 `execution_mode:=tracking` | 运行数值车辆模型和反馈控制仿真 |
+| 独立 MPC 案例仿真 | 在 `examples/head_on_mpc` 下运行 `python3 scripts/run_study.py --output results/rerun_001` | 测试并生成三种策略的日志及报告，输出目录须不存在 |
+| 独立 MPC 日志回放 | `ros2 launch head_on_mpc replay.launch.py case:=head_on_pause_bay` | 构建该独立包后回放已有结果 |
+
+独立案例的详细依赖、构建方法和模型范围见 [案例说明](examples/head_on_mpc/README.md)。其横向进出暂停区采用预设平滑占用变化，结论限于纵向空间与通行时序。
+
+### 结构维护注意事项
+
+- `test/` 同时包含单元测试、研究脚本和结果记录；阅读时需区分测试验证与实验入口。
+- 当前代码引用 `continuous_trajectory.hpp`。`continues_trajectory.hpp` 与其定义了同名类型并共用 include guard，后续清理时应先核对外部使用情况。
+- 论文基线、S–T/跟踪扩展和 MPC 案例的范围不同；五次多项式及时空联合优化保留为研究代码，当前暂停推进。
 
 ## 构建与运行
 
