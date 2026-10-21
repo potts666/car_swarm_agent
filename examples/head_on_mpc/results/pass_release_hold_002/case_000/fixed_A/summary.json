@@ -1,0 +1,148 @@
+{
+  "policy": "fixed_A",
+  "role": "A",
+  "passer": "B",
+  "status": "RELEASED",
+  "failure": null,
+  "failure_phase": null,
+  "exit_success": true,
+  "pass_success": true,
+  "released": true,
+  "overall_success": true,
+  "both_tasks_completed": false,
+  "simulation_terminated": false,
+  "verified_physical_safe_stop": false,
+  "exit_simulation_s": 15.599999999999994,
+  "pass_simulation_s": 15.600000000000222,
+  "pass_plus_hold_simulation_s": 15.600000000000222,
+  "initial_to_release_simulation_s": 31.200000000000216,
+  "retreat_distance_m": 9.0999884101311,
+  "passing_distance_m": 21.334447913792303,
+  "grant_time_s": 15.599999999999994,
+  "pass_start_time_s": 15.599999999999994,
+  "first_actual_body_cleared_time_s": 23.900000000000105,
+  "first_stop_candidate_time_s": 30.400000000000205,
+  "stopped_confirmation_time_s": 31.200000000000216,
+  "release_time_s": 31.200000000000216,
+  "minimum_executed_gap_m": 0.4999999999999991,
+  "minimum_predicted_gap_m": 0.5024999999402704,
+  "continuity_check": {
+    "passed": true,
+    "residuals": {
+      "time_s": 0.0,
+      "position_m": 0.0,
+      "velocity_m_s": 0.0,
+      "lateral_m": 0.0,
+      "previous_acceleration_m_s2": 0.0,
+      "warm_control_m_s2": 0.0,
+      "lateral_schedule_endpoints_m": 0.0,
+      "lateral_schedule_stamp_s": 0.0,
+      "lateral_schedule_duration_s": 0.0
+    }
+  },
+  "ready_check": {
+    "passed": true,
+    "checks": {
+      "full_exit": true,
+      "lateral_finished": true,
+      "retreat_target_position": true,
+      "retreat_speed": true,
+      "retreat_lateral": true,
+      "bay_contains": true,
+      "waiter_position": true,
+      "waiter_speed": true,
+      "waiter_lateral": true,
+      "body_road": true,
+      "pair_gap": true
+    }
+  },
+  "parked_reference_actual": [
+    -14.6999884101311,
+    -1.4790073862206467e-05,
+    3.0
+  ],
+  "selection_wait_wall_s": 1.335494077007752,
+  "phase_compute_wall_s": {
+    "EXIT": 0.6730784460087307,
+    "PASS": 0.7172794110956602,
+    "CLEARED_HOLD": 0.02677071699872613
+  },
+  "suffix_total_wall_s": 0.7441385580168571,
+  "phase_primary_calls": {
+    "EXIT": 78,
+    "PASS": 74,
+    "CLEARED_HOLD": 4
+  },
+  "phase_diagnostic_calls": {
+    "EXIT": 0,
+    "PASS": 2,
+    "CLEARED_HOLD": 0
+  },
+  "phase_retry_counts": {
+    "EXIT": 0,
+    "PASS": 0,
+    "CLEARED_HOLD": 0
+  },
+  "diagnostic_calls": 2,
+  "retries": 0,
+  "role_switch_count": 0,
+  "geometry": {
+    "channel": {
+      "xmin": -10.0,
+      "xmax": 10.0
+    },
+    "conflict_region": {
+      "xmin": -10.0,
+      "xmax": 10.0,
+      "ymin": -1.4,
+      "ymax": 1.4
+    },
+    "release_margin_m": 0.5,
+    "exit_boundaries": {
+      "A_positive_x": 10.0,
+      "B_negative_x": -10.0
+    },
+    "passing_stop_targets_x": {
+      "A": 21.75,
+      "B": -21.75
+    },
+    "arrival_position_tolerance_m": 0.08,
+    "arrival_speed_tolerance_m_s": 0.025,
+    "road_unchanged": {
+      "xmin": -28.8,
+      "xmax": 28.8,
+      "ymin": -1.4,
+      "ymax": 1.4,
+      "bays": [
+        {
+          "xmin": -17.25,
+          "xmax": -12.15,
+          "ymax": 4.2
+        },
+        {
+          "xmin": 12.15,
+          "xmax": 17.25,
+          "ymax": 4.2
+        }
+      ]
+    }
+  },
+  "hold_constraints_enabled": true,
+  "hold_precheck_count": 1,
+  "hold_precheck_failures": 0,
+  "final_actual_states": {
+    "A": [
+      -14.699988410131114,
+      1.968282227967552e-14,
+      3.0
+    ],
+    "B": [
+      -21.7344479137923,
+      0.0027695253182641183,
+      0.0
+    ]
+  },
+  "continuous_safety_certified": false,
+  "steering_feasibility_tested": false,
+  "branch_total_wall_s_including_log_write": 0.7962602909829002
+}

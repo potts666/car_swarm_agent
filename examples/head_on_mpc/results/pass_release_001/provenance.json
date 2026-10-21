@@ -1,0 +1,22 @@
+{
+  "source_sha256": {
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/pass_release_core.py": "a1137b8aea444d52618bd8a578c6c9a38ea11d00e28a11a2dbedcce4394fd0a9",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_pass_release.py": "340e8dea4eccde3b71a0150abb031af8bef556e8240b8de78cbb9c6576073844",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_exit_screening.py": "a99056bdecdfab56fd14c2c01af52ca89d5a532ad112651789aa7594bae081a3",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/trajectory_acceptance.py": "a86a9c0ea66325fd2df35f1a5ac4467deef3a46ae605f08eaf2a217e00fbdaa1",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/head_on_core.py": "9e724e960808516bdc60e984cb46690b7a6794d91a0f7a2913568e95b16272d5",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_comparison.py": "66b3e32a773968f0c9d9d3272fb531bc06e2fedde5c428a29766995d3779e7a1",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_pass_release.py": "eb6ae2d5e7efdf3528fa13868d63e98f93a45657ad86cf3e3361e3ec08e1b91b",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/config/comparison.json": "3526e15c6831b2414de41ac4bac8bf8f185ae33cc2a32e57208f72beb39d4f19",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/config/pass_release.json": "44780477ff1d7424cfe5b234bf7094adca2e5b0c3d38dc63cdf68ed34d0c1156",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/pass_release_protocol.md": "c30fc0b24943489dc5da5ea72302ef4b44c85a59c268a9e5c6d9f983b3c629b1",
+    "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/tests/test_pass_release.py": "5abe9ef8aa9283e1733afaa1e8a3ac676d36ae3c4c390f0d7bf109a72eb0c577"
+  },
+  "python": "3.12.3",
+  "numpy": "1.26.4",
+  "scipy": "1.11.4",
+  "osqp": "1.1.3",
+  "openblas_threads": "1 requested by command",
+  "model": "longitudinal double integrator and prescribed lateral occupancy; offline full rehearsal",
+  "command_solver": "OSQP, max_iter=20000, no retries or diagnostic solves"
+}

@@ -1,0 +1,3983 @@
+[
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 8.881784197001252e-16,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.4999999999999991,
+    "samples_per_car": 1,
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 7.645450161852807e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.5024999999402704,
+    "samples_per_car": 64,
+    "cycle": 0,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 8.881784197001252e-16,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.4999999999999991,
+    "samples_per_car": 5,
+    "cycle": 0,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.0993537413739318e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.5624999986214787,
+    "samples_per_car": 64,
+    "cycle": 1,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.0993537413739318e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.5399999990443396,
+    "samples_per_car": 5,
+    "cycle": 1,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 9.960240743289717e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.7024999979668474,
+    "samples_per_car": 64,
+    "cycle": 2,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.6599999980125029,
+    "samples_per_car": 5,
+    "cycle": 2,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.406271765702627e-10,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.9224999976401937,
+    "samples_per_car": 64,
+    "cycle": 3,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 0.8599999977390587,
+    "samples_per_car": 5,
+    "cycle": 3,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 7.233158516584126e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 1.2224999971830828,
+    "samples_per_car": 64,
+    "cycle": 4,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 1.1399999973408006,
+    "samples_per_car": 5,
+    "cycle": 4,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 2.0885360108024997e-09,
+      "acceleration_m_s2": 1.0532671179674935e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 1.6024999953989587,
+    "samples_per_car": 64,
+    "cycle": 5,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 1.4999999960232424,
+    "samples_per_car": 5,
+    "cycle": 5,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.4914354196093882e-09,
+      "acceleration_m_s2": 1.488884371347865e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 2.062499991587111,
+    "samples_per_car": 64,
+    "cycle": 6,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 1.9399999927340934,
+    "samples_per_car": 5,
+    "cycle": 6,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.2083631872883416e-09,
+      "acceleration_m_s2": 1.249752012988381e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 2.6024999858895503,
+    "samples_per_car": 64,
+    "cycle": 7,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 8.707037535415907e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 2.4599999874178478,
+    "samples_per_car": 5,
+    "cycle": 7,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.1299481350590668e-09,
+      "acceleration_m_s2": 1.254612524981269e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 3.2224999806556722,
+    "samples_per_car": 64,
+    "cycle": 8,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.0428993557631827e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 3.0599999818270787,
+    "samples_per_car": 5,
+    "cycle": 8,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.5778396367238656e-09,
+      "acceleration_m_s2": 1.49080882083652e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 3.922499977028303,
+    "samples_per_car": 64,
+    "cycle": 9,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.3500348394757111e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 3.7399999777671935,
+    "samples_per_car": 5,
+    "cycle": 9,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 3.3976395030776985e-09,
+      "acceleration_m_s2": 1.987574627104749e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 4.6999999754310435,
+    "samples_per_car": 64,
+    "cycle": 10,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 3.3976395030776985e-09,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 4.499999975621654,
+    "samples_per_car": 5,
+    "cycle": 10,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.2914405767006087e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 5.498455006757728,
+    "samples_per_car": 64,
+    "cycle": 11,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 3.3976395030776985e-09,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 5.299999975768427,
+    "samples_per_car": 5,
+    "cycle": 11,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 2.034274748652365e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 6.2604207130459875,
+    "samples_per_car": 64,
+    "cycle": 12,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 2.034274748652365e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 6.07528046752009,
+    "samples_per_car": 5,
+    "cycle": 12,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 6.950981695072206,
+    "samples_per_car": 64,
+    "cycle": 13,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 6.78584144950162,
+    "samples_per_car": 5,
+    "cycle": 13,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.8483532482349574e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 7.561542679547176,
+    "samples_per_car": 64,
+    "cycle": 14,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.8483532482349574e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 7.416402433174617,
+    "samples_per_car": 5,
+    "cycle": 14,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.5255313456918884e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 8.092103664785547,
+    "samples_per_car": 64,
+    "cycle": 15,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.5255313456918884e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 7.966963418553955,
+    "samples_per_car": 5,
+    "cycle": 15,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 8.096807113666671e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 8.542664648222168,
+    "samples_per_car": 64,
+    "cycle": 16,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 8.096807113666671e-09,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 8.437524402565,
+    "samples_per_car": 5,
+    "cycle": 16,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.2102592705787174e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 8.913225630021145,
+    "samples_per_car": 64,
+    "cycle": 17,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.2102592705787174e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 8.828085384707876,
+    "samples_per_car": 5,
+    "cycle": 17,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.7605681579269117e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.203786610036449,
+    "samples_per_car": 64,
+    "cycle": 18,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.7605681579269117e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.138646365234798,
+    "samples_per_car": 5,
+    "cycle": 18,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.2516556013864033e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.41434758750793,
+    "samples_per_car": 64,
+    "cycle": 19,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.2516556013864033e-08,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.36920734338506,
+    "samples_per_car": 5,
+    "cycle": 19,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.54490856283514,
+    "samples_per_car": 64,
+    "cycle": 20,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.519768319125543,
+    "samples_per_car": 5,
+    "cycle": 20,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579380911402005,
+    "samples_per_car": 64,
+    "cycle": 21,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.590329294261611,
+    "samples_per_car": 5,
+    "cycle": 21,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579380918359433,
+    "samples_per_car": 64,
+    "cycle": 22,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.584001240116613,
+    "samples_per_car": 5,
+    "cycle": 22,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579380919474335,
+    "samples_per_car": 64,
+    "cycle": 23,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579380919474335,
+    "samples_per_car": 5,
+    "cycle": 23,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579747130721138,
+    "samples_per_car": 64,
+    "cycle": 24,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.579380919474335,
+    "samples_per_car": 5,
+    "cycle": 24,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.58400583672693,
+    "samples_per_car": 64,
+    "cycle": 25,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.582610205070853,
+    "samples_per_car": 5,
+    "cycle": 25,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.589539926029655,
+    "samples_per_car": 64,
+    "cycle": 26,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.588194692341336,
+    "samples_per_car": 5,
+    "cycle": 26,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.593891245121881,
+    "samples_per_car": 64,
+    "cycle": 27,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.59295712695829,
+    "samples_per_car": 5,
+    "cycle": 27,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.596637882800426,
+    "samples_per_car": 64,
+    "cycle": 28,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.596089714270242,
+    "samples_per_car": 5,
+    "cycle": 28,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.59817181755222,
+    "samples_per_car": 64,
+    "cycle": 29,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.597878190187018,
+    "samples_per_car": 5,
+    "cycle": 29,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.598980430658141,
+    "samples_per_car": 64,
+    "cycle": 30,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.598827593095773,
+    "samples_per_car": 5,
+    "cycle": 30,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599407020473286,
+    "samples_per_car": 64,
+    "cycle": 31,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599325211575618,
+    "samples_per_car": 5,
+    "cycle": 31,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599642796248386,
+    "samples_per_car": 64,
+    "cycle": 32,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599596225577326,
+    "samples_per_car": 5,
+    "cycle": 32,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599781276216419,
+    "samples_per_car": 64,
+    "cycle": 33,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599753200665035,
+    "samples_per_car": 5,
+    "cycle": 33,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599866132456768,
+    "samples_per_car": 64,
+    "cycle": 34,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599848714610093,
+    "samples_per_car": 5,
+    "cycle": 34,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599918828024418,
+    "samples_per_car": 64,
+    "cycle": 35,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.59990801136355,
+    "samples_per_car": 5,
+    "cycle": 35,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.59995131171732,
+    "samples_per_car": 64,
+    "cycle": 36,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599944686209998,
+    "samples_per_car": 5,
+    "cycle": 36,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599971028147813,
+    "samples_per_car": 64,
+    "cycle": 37,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599967036975865,
+    "samples_per_car": 5,
+    "cycle": 37,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599982822448556,
+    "samples_per_car": 64,
+    "cycle": 38,
+    "kind": "whole_prediction",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0,
+      "waiter_position_m": 0.0,
+      "waiter_velocity_m_s": 0.0,
+      "waiter_lateral_m": 0.0
+    },
+    "minimum_sampled_gap_m": 9.599980448483091,
+    "samples_per_car": 5,
+    "cycle": 38,
+    "kind": "executed_segment",
+    "stage": "EXIT"
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 5.380476175709248e-09
+    },
+    "minimum_gap_m": 4.479988403050357,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.945497848434343e-06,
+        "speed_m_s": 1.1877170148160462e-05,
+        "speed_from_actual_reference_m_s": 1.7920657634111424e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 39,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 115.6
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 5.380476175709248e-09
+    },
+    "minimum_gap_m": 9.559991995407238,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.5857065743272187e-06,
+        "speed_m_s": 1.4790073862206467e-05,
+        "speed_from_actual_reference_m_s": 1.1651614856184017e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 1.6940658945086007e-21
+      },
+      "B": {
+        "position_m": 5.551115123125783e-17,
+        "velocity_m_s": 0.0
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 39,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 115.6
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.5607787284821484e-08
+    },
+    "minimum_gap_m": 3.8399884131455257,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.945497800472708e-06,
+        "speed_m_s": 3.130588881338809e-06,
+        "speed_from_actual_reference_m_s": 1.7920662743545276e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 40,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 116.0
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.280914929679966e-09
+    },
+    "minimum_gap_m": 9.439992178225197,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.945497800472708e-06,
+        "speed_m_s": 3.13845900602245e-06,
+        "speed_from_actual_reference_m_s": 1.7009626331869184e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 0.0
+      },
+      "B": {
+        "position_m": 1.1102230246251565e-16,
+        "velocity_m_s": 5.551115123125783e-17
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 40,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 116.0
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 5.22219623100284e-09
+    },
+    "minimum_gap_m": 3.119988388113075,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.5361446748538583e-06,
+        "speed_m_s": 3.1305892966388914e-06,
+        "speed_from_actual_reference_m_s": 1.7920663158845357e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 41,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 116.4
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 9.23999110777445,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.769487882721023e-06,
+        "speed_m_s": 3.1305892966388914e-06,
+        "speed_from_actual_reference_m_s": 1.7920663158845357e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 0.0,
+        "velocity_m_s": 4.235164736271502e-22
+      },
+      "B": {
+        "position_m": 1.1102230246251565e-16,
+        "velocity_m_s": 1.1102230246251565e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 41,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 116.4
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 2.44136377780535e-09
+    },
+    "minimum_gap_m": 2.3999883982737957,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.3962488135964577e-06,
+        "speed_m_s": 2.9336249875848715e-06,
+        "speed_from_actual_reference_m_s": 1.772369884979134e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 42,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 116.80000000000001
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 8.959990013537404,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.6994595287987977e-06,
+        "speed_m_s": 3.1305892966388914e-06,
+        "speed_from_actual_reference_m_s": 1.7920663158845357e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 0.0
+      },
+      "B": {
+        "position_m": 1.1102230246251565e-16,
+        "velocity_m_s": 1.1102230246251565e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 42,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 116.80000000000001
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.0028251118399112e-08
+    },
+    "minimum_gap_m": 1.5999884026719817,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.3826340659051084e-06,
+        "speed_m_s": 2.100491791596413e-06,
+        "speed_from_actual_reference_m_s": 1.689056565380288e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 43,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 117.20000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 8.599989272153572,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.60479525845858e-06,
+        "speed_m_s": 2.3427320604228116e-06,
+        "speed_from_actual_reference_m_s": 1.713280592262928e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 2.117582368135751e-22
+      },
+      "B": {
+        "position_m": 2.220446049250313e-16,
+        "velocity_m_s": 1.1102230246251565e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 43,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 117.20000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 4.426734534490606e-10,
+      "acceleration_m_s2": 5.711734862856588e-09
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 7.324710260547818e-07,
+        "speed_m_s": 1.2067014735073005e-06,
+        "speed_from_actual_reference_m_s": 1.5996775335713767e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 44,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 117.60000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 8.15998885950193,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 8.614946480633989e-07,
+        "speed_m_s": 1.3737709851172175e-06,
+        "speed_from_actual_reference_m_s": 1.6163844847323686e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 2.117582368135751e-22
+      },
+      "B": {
+        "position_m": 2.220446049250313e-16,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 44,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 117.60000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 6.374967220779126e-10,
+      "acceleration_m_s2": 1.461201692976033e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.796223211338656e-07,
+        "speed_m_s": 6.148978706853776e-07,
+        "speed_from_actual_reference_m_s": 1.5404971732891845e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 45,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 118.00000000000003
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 7.639988654158478,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 4.4564186296724984e-07,
+        "speed_m_s": 7.054929386775499e-07,
+        "speed_from_actual_reference_m_s": 1.5495566800884015e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 5.293955920339377e-23
+      },
+      "B": {
+        "position_m": 4.440892098500626e-16,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 45,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 118.00000000000003
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 9.91555726415072e-10,
+      "acceleration_m_s2": 1.839582641771642e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.0375332887567765e-07,
+        "speed_m_s": 3.0023557977957593e-07,
+        "speed_from_actual_reference_m_s": 1.5090309441986044e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 46,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 118.40000000000003
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 7.03998855733198,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.3592074072098512e-07,
+        "speed_m_s": 3.431126667088607e-07,
+        "speed_from_actual_reference_m_s": 1.5133186528915327e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 5.293955920339377e-23
+      },
+      "B": {
+        "position_m": 4.440892098500626e-16,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 46,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 118.40000000000003
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 9.63860102842773e-10,
+      "acceleration_m_s2": 1.6955455928169272e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.1678375777535166e-07,
+        "speed_m_s": 1.5226739093480426e-07,
+        "speed_from_actual_reference_m_s": 1.4942341253141271e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 47,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 118.80000000000004
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.4235522094452335e-08
+    },
+    "minimum_gap_m": 6.359988509701533,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.3297734291484176e-07,
+        "speed_m_s": 1.716043189917216e-07,
+        "speed_from_actual_reference_m_s": 1.4961678181198189e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 0.0
+      },
+      "B": {
+        "position_m": 0.0,
+        "velocity_m_s": 0.0
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 47,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 118.80000000000004
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 9.751368601484955e-10,
+      "acceleration_m_s2": 1.767277657549471e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 7.084401332235757e-08,
+        "speed_m_s": 8.496630003454323e-08,
+        "speed_from_actual_reference_m_s": 1.4875040162241011e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 48,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 119.20000000000005
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.767277657549471e-08
+    },
+    "minimum_gap_m": 5.599988482420209,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 7.980515803751587e-08,
+        "speed_m_s": 9.425660676405222e-08,
+        "speed_from_actual_reference_m_s": 1.488433046897052e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 6.617444900424222e-24
+      },
+      "B": {
+        "position_m": 8.881784197001252e-16,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 48,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 119.20000000000005
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 3.563435768683121e-09,
+      "acceleration_m_s2": 5.460766061560207e-09
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 4.408463460947587e-08,
+        "speed_m_s": 5.1907152448624004e-08,
+        "speed_from_actual_reference_m_s": 1.484198101465509e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 49,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 119.60000000000005
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 3.563435768683121e-09,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 4.799988463807577,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 4.953476029356807e-08,
+        "speed_m_s": 5.709537984601627e-08,
+        "speed_from_actual_reference_m_s": 1.4847169242052483e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 6.617444900424222e-24
+      },
+      "B": {
+        "position_m": 8.881784197001252e-16,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 49,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 119.60000000000005
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 2.740505600229426e-09,
+      "acceleration_m_s2": 1.0856213927823433e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.737777116124107e-08,
+        "speed_m_s": 3.3045900325366105e-08,
+        "speed_from_actual_reference_m_s": 1.4823119762531833e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 50,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 120.00000000000006
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 3.563435768683121e-09,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 3.9999884518085542,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.0847189691485255e-08,
+        "speed_m_s": 3.6342470256447205e-08,
+        "speed_from_actual_reference_m_s": 1.4826416332462915e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 3.308722450212111e-24
+      },
+      "B": {
+        "position_m": 8.881784197001252e-16,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 50,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 120.00000000000006
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 2.880514049508065e-09,
+      "acceleration_m_s2": 5.288737670028354e-09
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.6741077857318487e-08,
+        "speed_m_s": 2.097139032081992e-08,
+        "speed_from_actual_reference_m_s": 1.4811045252527287e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 51,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 120.40000000000006
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 2.880514049508065e-09,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 3.199988444331214,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.894745693675759e-08,
+        "speed_m_s": 2.3156190532122813e-08,
+        "speed_from_actual_reference_m_s": 1.481323005273859e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 3.308722450212111e-24
+      },
+      "B": {
+        "position_m": 8.881784197001252e-16,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 51,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 120.40000000000006
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.4714913731950219e-09,
+      "acceleration_m_s2": 7.820143754777575e-09
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.006213956600277e-08,
+        "speed_m_s": 1.2996659694989758e-08,
+        "speed_from_actual_reference_m_s": 1.4803070521901456e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 52,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 120.80000000000007
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 2.880514049508065e-09,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 2.3999884396756954,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.1432820912204988e-08,
+        "speed_m_s": 1.441698968691125e-08,
+        "speed_from_actual_reference_m_s": 1.4804490851893378e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 1.6543612251060553e-24
+      },
+      "B": {
+        "position_m": 8.881784197001252e-16,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 52,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 120.80000000000007
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 2.367311680018247e-09,
+      "acceleration_m_s2": 1.1897183238573916e-09
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 5.973099348466349e-09,
+        "speed_m_s": 7.8481724604907e-09,
+        "speed_from_actual_reference_m_s": 1.4797922034666957e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 53,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 121.20000000000007
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 2.367311680018247e-09,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.5999884369690784,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 6.80229028660051e-09,
+        "speed_m_s": 8.735669719225287e-09,
+        "speed_from_actual_reference_m_s": 1.4798809531925692e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 0.0
+      },
+      "B": {
+        "position_m": 8.881784197001252e-16,
+        "velocity_m_s": 0.0
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 53,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 121.20000000000007
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.1039178460237054e-09,
+      "acceleration_m_s2": 1.3726639380706729e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.526183789404058e-09,
+        "speed_m_s": 4.651028186880386e-09,
+        "speed_from_actual_reference_m_s": 1.4794724890393348e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 54,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 121.60000000000008
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 2.367311680018247e-09,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 4.01801969474036e-09,
+        "speed_m_s": 5.185680684286937e-09,
+        "speed_from_actual_reference_m_s": 1.4795259542890755e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 8.271806125530277e-25
+      },
+      "B": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 54,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 121.60000000000008
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.9703914055924088e-09,
+      "acceleration_m_s2": 1.2969186391487142e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.082487071675132e-09,
+        "speed_m_s": 2.732578614022982e-09,
+        "speed_from_actual_reference_m_s": 1.4792806440820491e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 55,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 122.00000000000009
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.9703914055924088e-09,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.371470131379283e-09,
+        "speed_m_s": 3.0470706946607317e-09,
+        "speed_from_actual_reference_m_s": 1.4793120932901128e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 2.0679515313825692e-25
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 0.0
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 55,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 122.00000000000009
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.0320668764052243e-09,
+      "acceleration_m_s2": 1.1906137187267518e-09
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.2344898436822405e-09,
+        "speed_m_s": 1.605805039386132e-09,
+        "speed_from_actual_reference_m_s": 1.4791679667245854e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 56,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 122.40000000000009
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.9703914055924088e-09,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.404236726898489e-09,
+        "speed_m_s": 1.7891023721097324e-09,
+        "speed_from_actual_reference_m_s": 1.4791862964578577e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 0.0
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 4.440892098500626e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 56,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 122.40000000000009
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.3130647680270613e-09,
+      "acceleration_m_s2": 1.396917059803826e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 7.349978403681234e-10,
+        "speed_m_s": 9.4879523375349e-10,
+        "speed_from_actual_reference_m_s": 1.479102265744022e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 57,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 122.8000000000001
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.3130647680270613e-09,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 8.352341041018008e-10,
+        "speed_m_s": 1.0559130412153308e-09,
+        "speed_from_actual_reference_m_s": 1.4791129775247683e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 1.0339757656912846e-25
+      },
+      "B": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 4.440892098500626e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 57,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 122.8000000000001
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 5.1288444602448635e-09,
+      "acceleration_m_s2": 2.1407101646886417e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 4.389786312231081e-10,
+        "speed_m_s": 5.642819404544644e-10,
+        "speed_from_actual_reference_m_s": 1.4790638144146921e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 58,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 123.2000000000001
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.3130647680270613e-09,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 4.985647450439501e-10,
+        "speed_m_s": 6.274418113679676e-10,
+        "speed_from_actual_reference_m_s": 1.4790701304017834e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 1.0339757656912846e-25
+      },
+      "B": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 4.440892098500626e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 58,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 123.2000000000001
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 2.8099558235794575e-09,
+      "acceleration_m_s2": 1.067692600997816e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.625171191539266e-10,
+        "speed_m_s": 3.372104828037128e-10,
+        "speed_from_actual_reference_m_s": 1.479041107268927e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 59,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 123.60000000000011
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 6.744733660468683e-10,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.9811708657234703e-10,
+        "speed_m_s": 3.7480232771395473e-10,
+        "speed_from_actual_reference_m_s": 1.479044866453418e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 0.0
+      },
+      "B": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 4.440892098500626e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 59,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 123.60000000000011
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 6.526295059927634e-10,
+      "acceleration_m_s2": 1.8441580706962668e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.5695178490204853e-10,
+        "speed_m_s": 2.0192279366761542e-10,
+        "speed_from_actual_reference_m_s": 1.4790275785000135e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 60,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 124.00000000000011
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 6.744733660468683e-10,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.7826984333169094e-10,
+        "speed_m_s": 2.24434948072987e-10,
+        "speed_from_actual_reference_m_s": 1.4790298297154541e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 2.5849394142282115e-26
+      },
+      "B": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 4.440892098500626e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 60,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 124.00000000000011
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 4.4701753409981393e-10,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 9.374367948566942e-11,
+        "speed_m_s": 1.2087744453533806e-10,
+        "speed_from_actual_reference_m_s": 1.4790194739651002e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 61,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 124.40000000000012
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 4.4701753409981393e-10,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.0650680337676022e-10,
+        "speed_m_s": 1.343863304515007e-10,
+        "speed_from_actual_reference_m_s": 1.4790208248536919e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 1.2924697071141057e-26
+      },
+      "B": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 61,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 124.40000000000012
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.9590640221167632e-10,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 5.5930371445356286e-11,
+        "speed_m_s": 7.225303212529397e-11,
+        "speed_from_actual_reference_m_s": 1.4790146115238592e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 62,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 124.80000000000013
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 4.4701753409981393e-10,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 6.355982407058036e-11,
+        "speed_m_s": 8.035078678685009e-11,
+        "speed_from_actual_reference_m_s": 1.4790154212993253e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 1.2924697071141057e-26
+      },
+      "B": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 62,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 124.80000000000013
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 3.154272398830926e-10,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.33439942323821e-11,
+        "speed_m_s": 4.311735815202492e-11,
+        "speed_from_actual_reference_m_s": 1.479011697956462e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 63,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 125.20000000000013
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 3.154272398830926e-10,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.7898573168604344e-11,
+        "speed_m_s": 4.795976814062561e-11,
+        "speed_from_actual_reference_m_s": 1.4790121821974607e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 6.462348535570529e-27
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 0.0
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 63,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 125.20000000000013
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 1.0089529212109483e-10,
+      "acceleration_m_s2": 2.591445502631018e-09
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.9873880319210002e-11,
+        "speed_m_s": 2.5701121539324047e-11,
+        "speed_from_actual_reference_m_s": 1.4790099563328006e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 64,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 125.60000000000014
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 3.154272398830926e-10,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.2588153569813585e-11,
+        "speed_m_s": 2.859012818622285e-11,
+        "speed_from_actual_reference_m_s": 1.4790102452334653e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 3.2311742677852644e-27
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 0.0
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 64,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 125.60000000000014
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.184474740512087e-11,
+        "speed_m_s": 1.5312981872759316e-11,
+        "speed_from_actual_reference_m_s": 1.479008917518834e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 65,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 126.00000000000014
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.3463008485814498e-11,
+        "speed_m_s": 1.7034101598627647e-11,
+        "speed_from_actual_reference_m_s": 1.4790090896308066e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 1.6155871338926322e-27
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 65,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 126.00000000000014
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 7.062794793455396e-12,
+        "speed_m_s": 9.124687125382596e-12,
+        "speed_from_actual_reference_m_s": 1.4790082986893593e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 66,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 126.40000000000015
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 8.025580200410332e-12,
+        "speed_m_s": 1.0149622695154328e-11,
+        "speed_from_actual_reference_m_s": 1.4790084011829163e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 0.0
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 66,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 126.40000000000015
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 4.211742066217994e-12,
+        "speed_m_s": 5.439327527807759e-12,
+        "speed_from_actual_reference_m_s": 1.4790079301533995e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 67,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 126.80000000000015
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 4.787281682183675e-12,
+        "speed_m_s": 6.0498804160673984e-12,
+        "speed_from_actual_reference_m_s": 1.4790079912086884e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 4.0389678347315804e-28
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 67,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 126.80000000000015
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 2.213347838342372e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.5135449277513544e-12,
+        "speed_m_s": 3.24377356302761e-12,
+        "speed_from_actual_reference_m_s": 1.479007710598003e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 68,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 127.20000000000016
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 2.213347838342372e-08
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.8563817977556027e-12,
+        "speed_m_s": 3.6076688630288425e-12,
+        "speed_from_actual_reference_m_s": 1.479007746987533e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 4.0389678347315804e-28
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 2.220446049250313e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 68,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 127.20000000000016
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.1288389112351638e-09
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.5010215292932116e-12,
+        "speed_m_s": 1.935105612487326e-12,
+        "speed_from_actual_reference_m_s": 1.479007579731208e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 69,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 127.60000000000016
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.7053025658242404e-12,
+        "speed_m_s": 2.152087663023913e-12,
+        "speed_from_actual_reference_m_s": 1.479007601429413e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 2.0194839173657902e-28
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 0.0
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 69,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 127.60000000000016
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.160835533814704,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 8.970602038971265e-13,
+        "speed_m_s": 1.1547411047743165e-12,
+        "speed_from_actual_reference_m_s": 1.4790075016947572e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 70,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 128.00000000000017
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.0494763774130034,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.0178524689763435e-12,
+        "speed_m_s": 1.2841594608775641e-12,
+        "speed_from_actual_reference_m_s": 1.4790075146365929e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 2.0194839173657902e-28
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 1.1102230246251565e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 70,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 128.00000000000017
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.556272160871976,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 5.346834086594754e-13,
+        "speed_m_s": 6.8926794685822e-13,
+        "speed_from_actual_reference_m_s": 1.4790074551474414e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 71,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 128.40000000000018
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 1.4649130039052354,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 6.075140390748857e-13,
+        "speed_m_s": 7.664860364645732e-13,
+        "speed_from_actual_reference_m_s": 1.4790074628692504e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 0.0
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 1.1102230246251565e-16
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 71,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 128.40000000000018
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.1854398018762424e-08
+    },
+    "minimum_gap_m": 1.8717087896019988,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.1796787425264483e-13,
+        "speed_m_s": 4.115222027630989e-13,
+        "speed_from_actual_reference_m_s": 1.479007427372867e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 72,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 128.80000000000018
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.1854398018762424e-08
+    },
+    "minimum_gap_m": 1.8003496323547248,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.623767952376511e-13,
+        "speed_m_s": 4.576136780391604e-13,
+        "speed_from_actual_reference_m_s": 1.4790074319820145e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 5.048709793414476e-29
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 0.0
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 72,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 128.80000000000018
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 5.837792027563182e-09
+    },
+    "minimum_gap_m": 2.107145417435672,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.9184653865522705e-13,
+        "speed_m_s": 2.457237645606461e-13,
+        "speed_from_actual_reference_m_s": 1.4790074107930232e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 73,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 129.2000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 5.837792027563182e-09
+    },
+    "minimum_gap_m": 2.0557862606325132,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.1671553440683056e-13,
+        "speed_m_s": 2.732477769349144e-13,
+        "speed_from_actual_reference_m_s": 1.4790074135454244e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 2.524354896707238e-29
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 5.551115123125783e-17
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 73,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 129.2000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.0272932837729343e-08
+    },
+    "minimum_gap_m": 2.2625820440423317,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.1191048088221578e-13,
+        "speed_m_s": 1.4670221106956494e-13,
+        "speed_from_actual_reference_m_s": 1.4790074008908679e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 74,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 129.6000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 1.0272932837729343e-08
+    },
+    "minimum_gap_m": 2.2312228874948703,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 1.2789769243681803e-13,
+        "speed_m_s": 1.6315172743784112e-13,
+        "speed_from_actual_reference_m_s": 1.4790074025358194e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 2.524354896707238e-29
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 2.7755575615628914e-17
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 74,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 129.6000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 2.333607953999567,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 6.572520305780927e-14,
+        "speed_m_s": 8.748020210186899e-14,
+        "speed_from_actual_reference_m_s": 1.479007394968667e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "cycle": 75,
+    "stage": "PASS",
+    "kind": "whole_prediction",
+    "absolute_time_s": 130.0000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 2.3266595130683365,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 7.460698725481052e-14,
+        "speed_m_s": 9.735366196473647e-14,
+        "speed_from_actual_reference_m_s": 1.479007395956013e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 1.262177448353619e-29
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 1.3877787807814457e-17
+      }
+    },
+    "applied_to_simulation": true,
+    "cycle": 75,
+    "stage": "PASS",
+    "kind": "executed_segment",
+    "absolute_time_s": 130.0000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 2.334334633526839,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 3.730349362740526e-14,
+        "speed_m_s": 5.1902322990446165e-14,
+        "speed_from_actual_reference_m_s": 1.479007391410879e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "passing_hold": {
+      "passed": true,
+      "target_position_error_m": 0.015676956342048243,
+      "speed_m_s": 0.024999996403035685,
+      "position_tolerance_m": 0.08,
+      "speed_limit_m_s": 0.025
+    },
+    "cycle": 76,
+    "stage": "CLEARED_HOLD",
+    "kind": "whole_prediction",
+    "absolute_time_s": 130.4000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 2.340013408005434,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 4.263256414560601e-14,
+        "speed_m_s": 5.785982251326654e-14,
+        "speed_from_actual_reference_m_s": 1.479007392006629e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 6.310887241768095e-30
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 0.0
+      }
+    },
+    "cleared_hold_residuals": {
+      "target_position_error_m": 0.009998181863441147,
+      "actual_segment_speed_m_s": 0.024999996403035685,
+      "clearance_deficit_m": 0.0
+    },
+    "cleared_hold_all_samples": true,
+    "applied_to_simulation": true,
+    "cycle": 76,
+    "stage": "CLEARED_HOLD",
+    "kind": "executed_segment",
+    "absolute_time_s": 130.4000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 2.334334637288756,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.1316282072803006e-14,
+        "speed_m_s": 3.044307388640767e-14,
+        "speed_from_actual_reference_m_s": 1.4790073892649541e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "passing_hold": {
+      "passed": true,
+      "target_position_error_m": 0.01567695258013302,
+      "speed_m_s": 0.024999996403035685,
+      "position_tolerance_m": 0.08,
+      "speed_limit_m_s": 0.025
+    },
+    "cycle": 77,
+    "stage": "CLEARED_HOLD",
+    "kind": "whole_prediction",
+    "absolute_time_s": 130.8000000000002
+  },
+  {
+    "passed": true,
+    "finite": true,
+    "reasons": [],
+    "residuals": {
+      "road_body_m": 0.0,
+      "neighbor_gap_m": 0.0,
+      "speed_m_s": 0.0,
+      "acceleration_m_s2": 0.0
+    },
+    "minimum_gap_m": 2.3344595036611873,
+    "parked": {
+      "passed": true,
+      "finite": true,
+      "residuals": {
+        "position_from_actual_reference_m": 2.4868995751603507e-14,
+        "speed_m_s": 3.402982442198505e-14,
+        "speed_from_actual_reference_m_s": 1.4790073896236292e-05,
+        "lateral_from_actual_reference_m": 0.0,
+        "main_strip_intrusion_m": 0.0
+      }
+    },
+    "dynamics_residuals": {
+      "A": {
+        "position_m": 1.7763568394002505e-15,
+        "velocity_m_s": 0.0
+      },
+      "B": {
+        "position_m": 3.552713678800501e-15,
+        "velocity_m_s": 0.0
+      }
+    },
+    "cleared_hold_residuals": {
+      "target_position_error_m": 0.015552086207698324,
+      "actual_segment_speed_m_s": 0.024999996403035685,
+      "clearance_deficit_m": 0.0
+    },
+    "cleared_hold_all_samples": true,
+    "applied_to_simulation": true,
+    "cycle": 77,
+    "stage": "CLEARED_HOLD",
+    "kind": "executed_segment",
+    "absolute_time_s": 130.8000000000002
+  }
+]

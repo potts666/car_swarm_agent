@@ -1,0 +1,168 @@
+{
+  "aggregates": {
+    "fixed_A": {
+      "exit_success_count": 8,
+      "exit_conditioned_mean_exit_simulation_s": 17.099999999999998,
+      "exit_conditioned_mean_retreat_distance_m": 14.100038718502063,
+      "actual_body_cleared_count": 8,
+      "pass_success_count": 6,
+      "released_count": 6,
+      "all_phase_compute_wall_s": {
+        "EXIT": 3.6984748219838366,
+        "PASS": 5.725816752121318,
+        "CLEARED_HOLD": 0.10803380000288598
+      }
+    },
+    "screened": {
+      "exit_success_count": 8,
+      "exit_conditioned_mean_exit_simulation_s": 15.799999999999997,
+      "exit_conditioned_mean_retreat_distance_m": 11.099989677188205,
+      "actual_body_cleared_count": 8,
+      "pass_success_count": 4,
+      "released_count": 4,
+      "all_phase_compute_wall_s": {
+        "EXIT": 3.2813954460434616,
+        "PASS": 5.019513150211424,
+        "CLEARED_HOLD": 0.10668890102533624
+      }
+    }
+  },
+  "accepted_local_max_residuals": {
+    "dynamics_position_m": 2.842170943040401e-14,
+    "dynamics_velocity_m_s": 4.496403249731884e-15,
+    "speed_m_s": 2.220244432749041e-08,
+    "acceleration_m_s2": 2.7437043526035154e-08,
+    "terminal_velocity_m_s": 3.0951138696880894e-10,
+    "road_longitudinal_m": 0.0,
+    "neighbor_m": 0.0,
+    "target_overshoot_m": 1.1984368814287337e-07
+  },
+  "committed_execution_dynamics_max_residuals": {
+    "position_m": 7.105427357601002e-15,
+    "velocity_m_s": 4.440892098500626e-16
+  },
+  "passed_parked_check_max_residuals": {
+    "position_from_actual_reference_m": 0.0007846401937214864,
+    "speed_m_s": 0.0016118490687565155,
+    "speed_from_actual_reference_m_s": 0.0018432560863012207,
+    "lateral_from_actual_reference_m": 0.0,
+    "main_strip_intrusion_m": 0.0
+  },
+  "failures": [
+    {
+      "case": 0,
+      "policy": "fixed_A",
+      "role": "A",
+      "failure_phase": "CLEARED_HOLD",
+      "reason": "cleared_hold_actual_condition_lost",
+      "record_path": "examples/head_on_mpc/results/pass_release_001/case_000/fixed_A/path_checks.json",
+      "record_index": 154,
+      "absolute_time_s": 130.4000000000002,
+      "applied_to_simulation": false,
+      "hold_residuals": {
+        "target_position_error_m": 0.010294954317046745,
+        "actual_segment_speed_m_s": 0.026483858671062826,
+        "clearance_deficit_m": 0.0
+      },
+      "actual_first_clear_time_s": 23.900000000000105,
+      "first_stop_candidate_time_s": 30.400000000000205
+    },
+    {
+      "case": 0,
+      "policy": "screened",
+      "role": "A",
+      "failure_phase": "CLEARED_HOLD",
+      "reason": "cleared_hold_actual_condition_lost",
+      "record_path": "examples/head_on_mpc/results/pass_release_001/case_000/screened/path_checks.json",
+      "record_index": 154,
+      "absolute_time_s": 130.4000000000002,
+      "applied_to_simulation": false,
+      "hold_residuals": {
+        "target_position_error_m": 0.010294954317046745,
+        "actual_segment_speed_m_s": 0.026483858671062826,
+        "clearance_deficit_m": 0.0
+      },
+      "actual_first_clear_time_s": 23.900000000000105,
+      "first_stop_candidate_time_s": 30.400000000000205
+    },
+    {
+      "case": 2,
+      "policy": "fixed_A",
+      "role": "A",
+      "failure_phase": "CLEARED_HOLD",
+      "reason": "cleared_hold_actual_condition_lost",
+      "record_path": "examples/head_on_mpc/results/pass_release_001/case_002/fixed_A/path_checks.json",
+      "record_index": 174,
+      "absolute_time_s": 134.40000000000023,
+      "applied_to_simulation": false,
+      "hold_residuals": {
+        "target_position_error_m": 0.010294955257414529,
+        "actual_segment_speed_m_s": 0.02648385805879161,
+        "clearance_deficit_m": 0.0
+      },
+      "actual_first_clear_time_s": 27.900000000000134,
+      "first_stop_candidate_time_s": 34.40000000000023
+    },
+    {
+      "case": 2,
+      "policy": "screened",
+      "role": "A",
+      "failure_phase": "CLEARED_HOLD",
+      "reason": "cleared_hold_actual_condition_lost",
+      "record_path": "examples/head_on_mpc/results/pass_release_001/case_002/screened/path_checks.json",
+      "record_index": 174,
+      "absolute_time_s": 134.40000000000023,
+      "applied_to_simulation": false,
+      "hold_residuals": {
+        "target_position_error_m": 0.010294955257414529,
+        "actual_segment_speed_m_s": 0.02648385805879161,
+        "clearance_deficit_m": 0.0
+      },
+      "actual_first_clear_time_s": 27.900000000000134,
+      "first_stop_candidate_time_s": 34.40000000000023
+    },
+    {
+      "case": 4,
+      "policy": "screened",
+      "role": "B",
+      "failure_phase": "CLEARED_HOLD",
+      "reason": "cleared_hold_actual_condition_lost",
+      "record_path": "examples/head_on_mpc/results/pass_release_001/case_004/screened/path_checks.json",
+      "record_index": 154,
+      "absolute_time_s": 130.4000000000002,
+      "applied_to_simulation": false,
+      "hold_residuals": {
+        "target_position_error_m": 0.01029495431684424,
+        "actual_segment_speed_m_s": 0.026483858670630744,
+        "clearance_deficit_m": 0.0
+      },
+      "actual_first_clear_time_s": 23.900000000000105,
+      "first_stop_candidate_time_s": 30.400000000000205
+    },
+    {
+      "case": 6,
+      "policy": "screened",
+      "role": "B",
+      "failure_phase": "CLEARED_HOLD",
+      "reason": "cleared_hold_actual_condition_lost",
+      "record_path": "examples/head_on_mpc/results/pass_release_001/case_006/screened/path_checks.json",
+      "record_index": 174,
+      "absolute_time_s": 134.40000000000023,
+      "applied_to_simulation": false,
+      "hold_residuals": {
+        "target_position_error_m": 0.010294955252444282,
+        "actual_segment_speed_m_s": 0.02648385805348226,
+        "clearance_deficit_m": 0.0
+      },
+      "actual_first_clear_time_s": 27.900000000000134,
+      "first_stop_candidate_time_s": 34.40000000000023
+    }
+  ],
+  "minimum_executed_gap_m": 0.4999999999999991,
+  "minimum_predicted_gap_m": 0.5024999999402704,
+  "public_exit_primary_calls": 1368,
+  "independent_branch_suffix_primary_calls": 1364,
+  "total_actual_primary_calls": 2732,
+  "diagnostic_calls": 0,
+  "retries": 0
+}

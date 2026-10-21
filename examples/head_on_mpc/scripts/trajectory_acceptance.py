@@ -15,7 +15,7 @@ def road_residual(motion, road, cfg):
     return float(max(0., np.max(np.maximum(longitudinal, np.min(pieces, axis=0)))))
 
 
-def audit_controls(state, u, target, cfg, road, front=None, rear=None):
+def audit_controls(state, u, target, cfg, road, front=None, rear=None, hold_bounds=None):
     """Reintegrate per substep and compare to condensed states independently."""
     if np.shape(u) != (cfg.horizon,) or not np.all(np.isfinite(u)):
         return {'passed': False, 'finite': False, 'residuals': {}}
@@ -46,17 +46,31 @@ def audit_controls(state, u, target, cfg, road, front=None, rear=None):
         'road_longitudinal_m': road_residual(np.column_stack((independent, np.zeros(len(ticks)))), road, cfg),
         'neighbor_m': max(0., neighbor),
         'target_overshoot_m': float(max(0., np.max(direction*(independent[:, 0]-target))-1e-7))}
+    if hold_bounds is not None:
+        # Include the actual initial state as well as every prediction sample.
+        x_all = np.r_[state[0], independent[:, 0]]
+        v_all = np.r_[state[1], independent[:, 1]]
+        residuals['hold_speed_m_s'] = float(max(0., np.max(np.abs(v_all))-hold_bounds['speed_max_m_s']))
+        residuals['hold_position_m'] = float(max(0., np.max(hold_bounds['xmin']-x_all), np.max(x_all-hold_bounds['xmax'])))
     return {'passed': bool(all(r <= cfg.tolerance for r in residuals.values())),
             'finite': True, 'tolerance': cfg.tolerance, 'residuals': residuals}
 
 
-def solve_qp(state, previous, warm, now, target, cfg, road, **peers):
+def solve_qp(state, previous, warm, now, target, cfg, road, hold_bounds=None, **peers):
     """Equivalent OSQP solve, using the same H, q, A, b as SLSQP."""
     import osqp
     from scipy.sparse import csc_matrix, vstack, eye
     started = time.perf_counter()
     H, q, A, b = build_longitudinal_qp(state, previous, warm, now, target,
                                      cfg=cfg, allow_reverse=True, terminal_stop=True, road=road, **peers)
+    if hold_bounds is not None:
+        ticks = np.arange(1, cfg.horizon*cfg.substeps+1)*cfg.dt/cfg.substeps
+        pmat, vmat = matrices(ticks, cfg)
+        pbase = state[0]+ticks*state[1]
+        A = np.vstack([A, vmat, -vmat, pmat, -pmat])
+        b = np.r_[b, np.full(len(ticks), -hold_bounds['speed_max_m_s']-state[1]),
+                  np.full(len(ticks), state[1]-hold_bounds['speed_max_m_s']),
+                  hold_bounds['xmin']-pbase, pbase-hold_bounds['xmax']]
     # Encode the two opposite terminal rows as one exact equality, then
     # normalize rows and objective by positive constants (same feasible set/minimizer).
     terminal = 2*cfg.horizon*cfg.substeps
@@ -75,7 +89,7 @@ def solve_qp(state, previous, warm, now, target, cfg, road, **peers):
     solver.warm_start(x=warm)
     result = solver.solve(raise_error=False)
     u = result.x
-    audit = audit_controls(state, u, target, cfg, road, **peers)
+    audit = audit_controls(state, u, target, cfg, road, hold_bounds=hold_bounds, **peers)
     report = {'solver': 'OSQP', 'version': osqp.__version__, 'message': result.info.status,
               'solver_success': result.info.status_val in (1, 2),
               'accepted': bool(result.info.status_val in (1, 2) and audit['passed']),
@@ -85,7 +99,7 @@ def solve_qp(state, previous, warm, now, target, cfg, road, **peers):
               'constraint_violation': max(audit['residuals'].values(), default=None),
               'first_acceleration': float(u[0]), 'target': target, 'stamp': now,
               'independent_acceptance': audit,
-              'objective': float(.5*u@H@u+q@u)}
+              'objective': float(.5*u@H@u+q@u), 'hold_bounds': hold_bounds}
     return u, report
 
 

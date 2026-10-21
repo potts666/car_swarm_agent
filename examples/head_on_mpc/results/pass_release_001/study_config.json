@@ -1,0 +1,55 @@
+{
+  "base": {
+    "settings": {
+      "dt": 0.4,
+      "horizon": 16,
+      "substeps": 4,
+      "epoch": 100.0,
+      "max_speed": 2.0,
+      "max_acceleration": 1.0,
+      "length": 4.7,
+      "width": 2.0,
+      "margin": 0.5,
+      "lateral_seconds": 6.0,
+      "tolerance": 1e-05,
+      "solver_maxiter": 120
+    },
+    "bay_y": 3.0,
+    "duration_s": 100.0,
+    "sampled_gap_min_m": 0.08,
+    "arrival_position_tolerance_m": 0.08,
+    "arrival_speed_tolerance_m_s": 0.025,
+    "deadlock_window_s": 5.0,
+    "selection_metric": "distance",
+    "minimum_role_dwell_s": 5.0,
+    "switch_improvement": 1.0,
+    "sweep": {
+      "encounter_x_m": [
+        -3.0,
+        3.0
+      ],
+      "initial_speed_m_s": [
+        0.0,
+        0.5
+      ],
+      "channel_length_m": [
+        20.0,
+        28.0
+      ],
+      "braking_m_s2": [
+        0.5,
+        1.0
+      ]
+    }
+  },
+  "options": {
+    "exit_timeout_s": 100.0,
+    "pass_timeout_s": 100.0,
+    "total_timeout_s": 200.0,
+    "release_margin_m": 0.5,
+    "cleared_hold_s": 0.8,
+    "parked_position_tolerance_m": 0.01,
+    "parked_speed_tolerance_m_s": 0.025,
+    "parked_lateral_tolerance_m": 1e-05
+  }
+}

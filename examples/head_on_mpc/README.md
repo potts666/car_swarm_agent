@@ -52,7 +52,46 @@ ROS_DOMAIN_ID=83 python3 tests/check_ros_replay.py \
 
 所有离线测试：`OPENBLAS_NUM_THREADS=1 python3 -m unittest discover -s tests -p 'test_*.py'`。新增测试覆盖实际双向速度可行性、双方互等、对方后退后能够前进，以及到达目标后的正常停车不会被判为死锁。
 
-## 最新：分项验收、等价 QP 与预演耗时
+## 最新：CLEARED_HOLD 保持约束补齐
+
+[旧新完整重跑对照](results/pass_release_hold_002/hold_comparison.md) · [本轮逐初值阶段报告](results/pass_release_hold_002/report.md) · [旧首控制量核对](results/pass_release_hold_002/original_acceleration_checks.json)
+
+旧六次拒绝已核对为通行车首加速度使下一0.4 s段速度幅值从约0.023411升到0.026484 m/s。新可选模式在通行车CLEARED_HOLD优化内加入全预测低速硬约束 `|v|≤0.025 m/s` 与通过目标±0.08 m位置区间；保留道路、间距、目标不越界、原速度/加速度和预测末端停车条件。进入条件、外部严格阈值、0.8 s确认时间均未改变。
+
+切换前两次QP诊断检查配对完整保持预测，失败则不进入可保持状态。另用“首周期制动到零、随后零加速度”的序列检查动力学、目标不越界、位置区间、道路、间距和完整路径，仅保存诊断，不作替代执行。不开启 `--hold-constraints` 时保留旧默认行为。
+
+```bash
+cd examples/head_on_mpc
+OPENBLAS_NUM_THREADS=1 python3 scripts/run_pass_release.py --hold-constraints --output results/rerun_hold
+OPENBLAS_NUM_THREADS=1 python3 scripts/verify_pass_release.py --run results/rerun_hold
+OPENBLAS_NUM_THREADS=1 python3 scripts/compare_hold_update.py \
+  --old results/pass_release_001 --new results/rerun_hold
+```
+
+新八组完整重跑中固定A与筛选均EXIT/PASS/释放8/8；原六次保持拒绝消失，未观察到新增返回验收或保持预检查失败。16条候选与16个分支在进入保持前的实际日志均与旧版一致，进入时刻不变。16次配对预检查与16条制动候选完整检查通过；额外32次QP诊断，零重试。实际保持样本最大速度约0.0249999964 m/s，位置误差最大约0.01794 m。
+
+这属于保持约束补齐后的数值和采样验证；仍是离线模拟预演，不构成递归可行性、连续时间安全或最终恢复理论证明，不代表退让车回归或双方任务完成。
+
+## 阶段历史：完整退出、实际通过与通行权释放
+
+[完整闭环实验报告](results/pass_release_001/report.md) · [协议与几何定义](pass_release_protocol.md) · [逐策略指标](results/pass_release_001/summary.csv)
+
+新增独立入口 `scripts/run_pass_release.py`，在原八组安全静止初值上，先按完整EXIT候选冻结固定A/筛选角色，再继承退出的实际积分状态和控制器上下文，运行 `PARKED_READY → PASS → CLEARED_HOLD → RELEASED/FAILED`。不修改旧复现入口和退出实验默认行为；不实现退让车回归，不标记双方任务完成。
+
+```bash
+cd examples/head_on_mpc
+OPENBLAS_NUM_THREADS=1 python3 scripts/run_pass_release.py --output results/rerun_pass_release
+OPENBLAS_NUM_THREADS=1 python3 scripts/verify_pass_release.py --run results/rerun_pass_release
+# 需要已有 requirements-qp.txt 中的可选OSQP依赖。
+```
+
+保护区域R为原单通道主路矩形，释放裕度显式为0.5 m。通过目标沿用原 `goals_x`，既要整车离开R也要在原道路内停驻；禁止移动边界。通过车实际到目标附近、速度≤0.025 m/s并持续确认0.8 s后才释放。阶段切换不重置 x/v/y、全局时间、上一控制或warm controls。退让车保持参考取实际退出终态，始终继续求解和积分。两基线使用相同模型、约束、容差和预算，PASS失败不改选角色。
+
+本次EXIT两基线均8/8；固定A完整通过/释放6/8，筛选4/8。6条失败分支均已实际整车清空R，但后续持续低速确认的积分段检查失败，未提交该段状态；这是停驻/释放条件未完成，不是无法穿过通道的几何证明。较短退出并不保证本模型下后续停驻与释放成功。完整原始日志、失败原因、共同成功集合的配对比较与计算时间见报告。
+
+仍是离线完整预演，没有在线等待补偿；不声称实时预算、连续时间安全、转向可达性、递归可行性或双方任务完成已获证明。
+
+## 退出阶段历史：分项验收、等价 QP 与预演耗时
 
 [数值核查总报告](results/exit_numerics_003/report.md) · [分项残差与计时数据](results/exit_numerics_003/analysis.json) · [SLSQP 完整重跑](results/exit_audited_003/report.md) · [OSQP 完整重跑](results/exit_qp_003/report.md)
 

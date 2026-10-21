@@ -1,0 +1,451 @@
+{
+  "options_unchanged": true,
+  "all_exit_candidate_actual_logs_identical": true,
+  "paired": [
+    {
+      "case": 0,
+      "policy": "fixed_A",
+      "role": "A",
+      "passer": "B",
+      "old_released": false,
+      "new_released": true,
+      "old_failure": "cleared_hold_actual_condition_lost",
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": 0.0039723775192464965
+    },
+    {
+      "case": 0,
+      "policy": "screened",
+      "role": "A",
+      "passer": "B",
+      "old_released": false,
+      "new_released": true,
+      "old_failure": "cleared_hold_actual_condition_lost",
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": 0.0039723775192464965
+    },
+    {
+      "case": 1,
+      "policy": "fixed_A",
+      "role": "A",
+      "passer": "B",
+      "old_released": true,
+      "new_released": true,
+      "old_failure": null,
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": 0.017238098136905872
+    },
+    {
+      "case": 1,
+      "policy": "screened",
+      "role": "A",
+      "passer": "B",
+      "old_released": true,
+      "new_released": true,
+      "old_failure": null,
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": 0.017238098136905872
+    },
+    {
+      "case": 2,
+      "policy": "fixed_A",
+      "role": "A",
+      "passer": "B",
+      "old_released": false,
+      "new_released": true,
+      "old_failure": "cleared_hold_actual_condition_lost",
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": 0.003972369787961
+    },
+    {
+      "case": 2,
+      "policy": "screened",
+      "role": "A",
+      "passer": "B",
+      "old_released": false,
+      "new_released": true,
+      "old_failure": "cleared_hold_actual_condition_lost",
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": 0.003972369787961
+    },
+    {
+      "case": 3,
+      "policy": "fixed_A",
+      "role": "A",
+      "passer": "B",
+      "old_released": true,
+      "new_released": true,
+      "old_failure": null,
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": 0.017238098256625277
+    },
+    {
+      "case": 3,
+      "policy": "screened",
+      "role": "A",
+      "passer": "B",
+      "old_released": true,
+      "new_released": true,
+      "old_failure": null,
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": 0.017238098256625277
+    },
+    {
+      "case": 4,
+      "policy": "fixed_A",
+      "role": "A",
+      "passer": "B",
+      "old_released": true,
+      "new_released": true,
+      "old_failure": null,
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": -0.04493504527178972
+    },
+    {
+      "case": 4,
+      "policy": "screened",
+      "role": "B",
+      "passer": "A",
+      "old_released": false,
+      "new_released": true,
+      "old_failure": "cleared_hold_actual_condition_lost",
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": -0.00397237752024115
+    },
+    {
+      "case": 5,
+      "policy": "fixed_A",
+      "role": "A",
+      "passer": "B",
+      "old_released": true,
+      "new_released": true,
+      "old_failure": null,
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": 0.01965465483144471
+    },
+    {
+      "case": 5,
+      "policy": "screened",
+      "role": "B",
+      "passer": "A",
+      "old_released": true,
+      "new_released": true,
+      "old_failure": null,
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": -0.017238098136877766
+    },
+    {
+      "case": 6,
+      "policy": "fixed_A",
+      "role": "A",
+      "passer": "B",
+      "old_released": true,
+      "new_released": true,
+      "old_failure": null,
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": -0.04493504484399744
+    },
+    {
+      "case": 6,
+      "policy": "screened",
+      "role": "B",
+      "passer": "A",
+      "old_released": false,
+      "new_released": true,
+      "old_failure": "cleared_hold_actual_condition_lost",
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": -0.003972369821962399
+    },
+    {
+      "case": 7,
+      "policy": "fixed_A",
+      "role": "A",
+      "passer": "B",
+      "old_released": true,
+      "new_released": true,
+      "old_failure": null,
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": 0.019654654806181823
+    },
+    {
+      "case": 7,
+      "policy": "screened",
+      "role": "B",
+      "passer": "A",
+      "old_released": true,
+      "new_released": true,
+      "old_failure": null,
+      "new_failure": null,
+      "prefix_before_hold_identical": true,
+      "entry_time_unchanged": true,
+      "first_new_hold_u0_m_s2": -0.017238098256378058
+    }
+  ],
+  "original_acceleration_checks": [
+    {
+      "case": 0,
+      "policy": "fixed_A",
+      "car": "B",
+      "v0_m_s": 0.023411045395337088,
+      "old_u0_m_s2": 0.007682033189314348,
+      "old_end_v_m_s": 0.026483858671062826,
+      "signed_acceleration_upper_m_s2": 0.003972386511657284,
+      "new_u0_m_s2": 0.0039723775192464965,
+      "new_end_v_m_s": 0.024999996403035685,
+      "stop_u0_m_s2": -0.05852761348834272,
+      "stop_displacement_m": 0.004682209079067418,
+      "stop_candidate_passed": true
+    },
+    {
+      "case": 0,
+      "policy": "screened",
+      "car": "B",
+      "v0_m_s": 0.023411045395337088,
+      "old_u0_m_s2": 0.007682033189314348,
+      "old_end_v_m_s": 0.026483858671062826,
+      "signed_acceleration_upper_m_s2": 0.003972386511657284,
+      "new_u0_m_s2": 0.0039723775192464965,
+      "new_end_v_m_s": 0.024999996403035685,
+      "stop_u0_m_s2": -0.05852761348834272,
+      "stop_displacement_m": 0.004682209079067418,
+      "stop_candidate_passed": true
+    },
+    {
+      "case": 2,
+      "policy": "fixed_A",
+      "car": "B",
+      "v0_m_s": 0.02341104848784914,
+      "old_u0_m_s2": 0.0076820239273561785,
+      "old_end_v_m_s": 0.02648385805879161,
+      "signed_acceleration_upper_m_s2": 0.003972378780377154,
+      "new_u0_m_s2": 0.003972369787961,
+      "new_end_v_m_s": 0.02499999640303354,
+      "stop_u0_m_s2": -0.05852762121962285,
+      "stop_displacement_m": 0.004682209697569828,
+      "stop_candidate_passed": true
+    },
+    {
+      "case": 2,
+      "policy": "screened",
+      "car": "B",
+      "v0_m_s": 0.02341104848784914,
+      "old_u0_m_s2": 0.0076820239273561785,
+      "old_end_v_m_s": 0.02648385805879161,
+      "signed_acceleration_upper_m_s2": 0.003972378780377154,
+      "new_u0_m_s2": 0.003972369787961,
+      "new_end_v_m_s": 0.02499999640303354,
+      "stop_u0_m_s2": -0.05852762121962285,
+      "stop_displacement_m": 0.004682209697569828,
+      "stop_candidate_passed": true
+    },
+    {
+      "case": 4,
+      "policy": "screened",
+      "car": "A",
+      "v0_m_s": -0.023411045394937297,
+      "old_u0_m_s2": -0.007682033189233618,
+      "old_end_v_m_s": -0.026483858670630744,
+      "signed_acceleration_upper_m_s2": 0.003972386512656762,
+      "new_u0_m_s2": -0.00397237752024115,
+      "new_end_v_m_s": -0.024999996403033756,
+      "stop_u0_m_s2": 0.05852761348734324,
+      "stop_displacement_m": -0.0046822090789874595,
+      "stop_candidate_passed": true
+    },
+    {
+      "case": 6,
+      "policy": "screened",
+      "car": "A",
+      "v0_m_s": -0.02341104847424888,
+      "old_u0_m_s2": -0.007682023948083451,
+      "old_end_v_m_s": -0.02648385805348226,
+      "signed_acceleration_upper_m_s2": 0.003972378814377803,
+      "new_u0_m_s2": -0.003972369821962399,
+      "new_end_v_m_s": -0.02499999640303384,
+      "stop_u0_m_s2": 0.0585276211856222,
+      "stop_displacement_m": -0.004682209694849776,
+      "stop_candidate_passed": true
+    }
+  ],
+  "prechecks": [
+    {
+      "case": 0,
+      "policy": "fixed_A",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 0,
+      "policy": "screened",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 1,
+      "policy": "fixed_A",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 1,
+      "policy": "screened",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 2,
+      "policy": "fixed_A",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 2,
+      "policy": "screened",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 3,
+      "policy": "fixed_A",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 3,
+      "policy": "screened",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 4,
+      "policy": "fixed_A",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 4,
+      "policy": "screened",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 5,
+      "policy": "fixed_A",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 5,
+      "policy": "screened",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 6,
+      "policy": "fixed_A",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 6,
+      "policy": "screened",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 7,
+      "policy": "fixed_A",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    },
+    {
+      "case": 7,
+      "policy": "screened",
+      "passed": true,
+      "stop_candidate_passed": true,
+      "unchanged_state": true
+    }
+  ],
+  "aggregates": {
+    "fixed_A": {
+      "old_release_success": 6,
+      "new_release_success": 8,
+      "new_exit_success": 8,
+      "new_hold_precheck_failures": 0,
+      "new_primary_calls": 1404,
+      "new_diagnostic_calls": 16,
+      "new_retries": 0,
+      "new_mean_initial_to_release_s": 35.10000000000025
+    },
+    "screened": {
+      "old_release_success": 4,
+      "new_release_success": 8,
+      "new_exit_success": 8,
+      "new_hold_precheck_failures": 0,
+      "new_primary_calls": 1288,
+      "new_diagnostic_calls": 16,
+      "new_retries": 0,
+      "new_mean_initial_to_release_s": 32.20000000000023
+    }
+  },
+  "new_rejected_returns": 0,
+  "new_accepted_residual_maxima": {
+    "dynamics_position_m": 2.842170943040401e-14,
+    "dynamics_velocity_m_s": 4.496403249731884e-15,
+    "speed_m_s": 2.220244432749041e-08,
+    "acceleration_m_s2": 2.7437043526035154e-08,
+    "terminal_velocity_m_s": 3.0951138696880894e-10,
+    "road_longitudinal_m": 0.0,
+    "neighbor_m": 0.0,
+    "target_overshoot_m": 1.1984368814287337e-07,
+    "hold_speed_m_s": 0.0,
+    "hold_position_m": 0.0
+  },
+  "maximum_actual_hold_speed_m_s": 0.024999996403035685,
+  "maximum_actual_hold_position_error_m": 0.017937374500622383
+}
