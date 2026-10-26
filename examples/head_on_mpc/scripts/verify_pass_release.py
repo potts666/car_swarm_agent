@@ -57,8 +57,17 @@ def verify(run):
                     else:
                         assert abs(dt-cfg.dt/cfg.substeps)<1e-8
                         total_intervals+=1
-            if summary['exit_success']:
-                grant=next(e for e in events if e['kind']=='grant')
+            grants=[e for e in events if e['kind']=='grant']
+            pass_started=bool(grants)
+            if pass_started:
+                assert summary['exit_success'] and len(grants)==1
+            else:
+                assert not summary['pass_success'] and not summary['released']
+                assert summary['failure_phase'] in ('EXIT', 'PARKED_READY')
+                assert summary['exit_success']==(summary['failure_phase']=='PARKED_READY')
+                assert not any(r['stage'] in ('PASS', 'CLEARED_HOLD', 'RELEASED') for r in rows)
+            if pass_started:
+                grant=grants[0]
                 assert grant['before']==grant['after']
                 assert grant['holder']==summary['passer']
                 assert all(v==0. for v in grant['continuity']['residuals'].values())
@@ -86,7 +95,7 @@ def verify(run):
                 if record['accepted']:
                     assert record['independent_acceptance']['passed']
                     assert all(v<=cfg.tolerance for v in record['independent_acceptance']['residuals'].values())
-            if summary['exit_success']:
+            if pass_started:
                 for c in ('A','B'):
                     last_solve=next(r for r in reversed(records) if r['stage']=='EXIT' and r['car']==c)
                     expected=np.r_[last_solve['controls'][1:],last_solve['controls'][-1]]
@@ -123,7 +132,7 @@ def verify(run):
                 if check.get('stage')!='EXIT' and check.get('kind')=='executed_segment' and check.get('applied_to_simulation'):
                     assert check['passed']
                     assert all(v<=cfg.tolerance for entry in check['dynamics_residuals'].values() for v in entry.values())
-            if study.get('hold_constraints', False):
+            if study.get('hold_constraints', False) and pass_started:
                 prechecks=json.loads((directory/'hold_prechecks.json').read_text())
                 if summary['released']:
                     assert len(prechecks)==1 and prechecks[0]['passed']
@@ -140,7 +149,7 @@ def verify(run):
                 diag=[r for r in records if r.get('diagnostic')]
                 assert len(diag)==summary['diagnostic_calls']
             finding=dict(case=case['case'],policy=policy,actual_intervals_verified=True,minimum_executed_gap_m=min_gap,
-                         released=summary['released'],exit_handoff_verified=summary['exit_success'],role_unchanged=True)
+                         released=summary['released'],exit_handoff_verified=pass_started,role_unchanged=True)
             findings.append(finding)
         if case['same_role_check']:
             assert case['same_role_check']['identical']

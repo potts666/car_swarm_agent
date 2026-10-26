@@ -1,0 +1,296 @@
+[
+  {
+    "case": "case_000",
+    "variant": "E4",
+    "raw_log": "case_000/E4/switch_checks.jsonl",
+    "absolute_time_s": 135.6000000000002,
+    "from_mode": "PASS",
+    "to_mode": "CLEARED_HOLD",
+    "actual_states": {
+      "A": [
+        -14.69998841013117,
+        5.786964436586119e-14,
+        3.0
+      ],
+      "B": [
+        -21.74968402649701,
+        0.02341104539443395,
+        0.0
+      ]
+    },
+    "failed_constraints": [
+      "B:hold_speed_m_s",
+      "B:strict_hold_band"
+    ],
+    "violations_by_car_and_physical_unit": {
+      "A": {
+        "dynamics_position_m": 5.329070518200751e-15,
+        "dynamics_velocity_m_s": 1.6433575029467406e-29,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 1.7203854853878022e-21,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 0.0
+      },
+      "B": {
+        "dynamics_position_m": 2.4868995751603507e-14,
+        "dynamics_velocity_m_s": 1.3877787807814457e-17,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 1.0826097505446663e-16,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 0.0,
+        "hold_speed_m_s": 0.0014838580345662503,
+        "hold_position_m": 0.0
+      }
+    },
+    "allowed": true,
+    "witness": "existing_hold_precheck"
+  },
+  {
+    "case": "case_002",
+    "variant": "E4",
+    "raw_log": "case_002/E4/switch_checks.jsonl",
+    "absolute_time_s": 139.60000000000022,
+    "from_mode": "PASS",
+    "to_mode": "CLEARED_HOLD",
+    "actual_states": {
+      "A": [
+        -18.69998841013071,
+        3.524272978124514e-15,
+        3.0
+      ],
+      "B": [
+        -25.749684026054535,
+        0.02341104846467726,
+        0.0
+      ]
+    },
+    "failed_constraints": [
+      "B:hold_speed_m_s",
+      "B:strict_hold_band"
+    ],
+    "violations_by_car_and_physical_unit": {
+      "A": {
+        "dynamics_position_m": 3.552713678800501e-15,
+        "dynamics_velocity_m_s": 9.121204216617949e-31,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 3.176550189510966e-21,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 0.0
+      },
+      "B": {
+        "dynamics_position_m": 3.552713678800501e-15,
+        "dynamics_velocity_m_s": 4.336808689942018e-18,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 8.493029955529419e-17,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 0.0,
+        "hold_speed_m_s": 0.0014838574127826534,
+        "hold_position_m": 0.0
+      }
+    },
+    "allowed": true,
+    "witness": "existing_hold_precheck"
+  },
+  {
+    "case": "case_004",
+    "variant": "E4",
+    "raw_log": "case_004/E4/switch_checks.jsonl",
+    "absolute_time_s": 120.8,
+    "from_mode": "PARKED_READY",
+    "to_mode": "PASS",
+    "actual_states": {
+      "A": [
+        0.3999999997768969,
+        3.169141072954895e-17,
+        0.0
+      ],
+      "B": [
+        14.699988410131128,
+        1.479007382868814e-05,
+        3.0
+      ]
+    },
+    "failed_constraints": [
+      "B:target_overshoot_m"
+    ],
+    "violations_by_car_and_physical_unit": {
+      "A": {
+        "dynamics_position_m": 5.551115123125783e-17,
+        "dynamics_velocity_m_s": 6.162975822039155e-33,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 8.048681474741933e-23,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 0.0
+      },
+      "B": {
+        "dynamics_position_m": 5.329070518200751e-15,
+        "dynamics_velocity_m_s": 2.541098841762901e-21,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 8.729407425047021e-13,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 1.1478493753106044e-05
+      }
+    },
+    "allowed": true,
+    "witness": "fresh_joint_plan"
+  },
+  {
+    "case": "case_004",
+    "variant": "E4",
+    "raw_log": "case_004/E4/switch_checks.jsonl",
+    "absolute_time_s": 135.6000000000002,
+    "from_mode": "PASS",
+    "to_mode": "CLEARED_HOLD",
+    "actual_states": {
+      "A": [
+        21.749684026497345,
+        -0.023411045390638263,
+        0.0
+      ],
+      "B": [
+        14.699988410129944,
+        1.498673772757746e-12,
+        3.0
+      ]
+    },
+    "failed_constraints": [
+      "A:hold_speed_m_s",
+      "A:strict_hold_band"
+    ],
+    "violations_by_car_and_physical_unit": {
+      "A": {
+        "dynamics_position_m": 7.105427357601002e-15,
+        "dynamics_velocity_m_s": 5.095750210681871e-18,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 4.037060670567666e-16,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 0.0,
+        "hold_speed_m_s": 0.0014838580331039478,
+        "hold_position_m": 0.0
+      },
+      "B": {
+        "dynamics_position_m": 5.329070518200751e-15,
+        "dynamics_velocity_m_s": 5.048709793414476e-28,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 6.225548272633068e-20,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 0.0
+      }
+    },
+    "allowed": true,
+    "witness": "existing_hold_precheck"
+  },
+  {
+    "case": "case_006",
+    "variant": "E4",
+    "raw_log": "case_006/E4/switch_checks.jsonl",
+    "absolute_time_s": 122.8,
+    "from_mode": "PARKED_READY",
+    "to_mode": "PASS",
+    "actual_states": {
+      "A": [
+        0.3999999998067271,
+        2.8325287231518313e-18,
+        0.0
+      ],
+      "B": [
+        18.69998841013071,
+        1.4790074350426365e-05,
+        3.0
+      ]
+    },
+    "failed_constraints": [
+      "B:target_overshoot_m"
+    ],
+    "violations_by_car_and_physical_unit": {
+      "A": {
+        "dynamics_position_m": 0.0,
+        "dynamics_velocity_m_s": 3.0814879110195774e-33,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 7.59138910248531e-23,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 0.0
+      },
+      "B": {
+        "dynamics_position_m": 7.105427357601002e-15,
+        "dynamics_velocity_m_s": 3.5998900258307764e-21,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 8.729407884760919e-13,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 1.1478494177655329e-05
+      }
+    },
+    "allowed": true,
+    "witness": "fresh_joint_plan"
+  },
+  {
+    "case": "case_006",
+    "variant": "E4",
+    "raw_log": "case_006/E4/switch_checks.jsonl",
+    "absolute_time_s": 139.60000000000022,
+    "from_mode": "PASS",
+    "to_mode": "CLEARED_HOLD",
+    "actual_states": {
+      "A": [
+        25.74968402605443,
+        -0.023411048465921236,
+        0.0
+      ],
+      "B": [
+        18.699988410130626,
+        1.1237264026315335e-13,
+        3.0
+      ]
+    },
+    "failed_constraints": [
+      "A:hold_speed_m_s",
+      "A:strict_hold_band"
+    ],
+    "violations_by_car_and_physical_unit": {
+      "A": {
+        "dynamics_position_m": 1.0658141036401503e-14,
+        "dynamics_velocity_m_s": 8.673617379884035e-18,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 6.69901417324481e-17,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 0.0,
+        "hold_speed_m_s": 0.001483857413461999,
+        "hold_position_m": 0.0
+      },
+      "B": {
+        "dynamics_position_m": 7.105427357601002e-15,
+        "dynamics_velocity_m_s": 1.8932661725304283e-29,
+        "speed_m_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "terminal_velocity_m_s": 1.7999340842129765e-20,
+        "road_longitudinal_m": 0.0,
+        "neighbor_m": 0.0,
+        "target_overshoot_m": 0.0
+      }
+    },
+    "allowed": true,
+    "witness": "existing_hold_precheck"
+  }
+]

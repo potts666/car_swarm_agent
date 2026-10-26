@@ -48,7 +48,7 @@ car_swarm_single_lane/
 │   ├── quintic_trajectory.hpp       # 五次多项式轨迹研究接口
 │   ├── demo_map.hpp                # 演示地图生成
 │   ├── demo_validation.hpp         # 演示轨迹验证辅助函数
-│   └── continues_trajectory.hpp    # 未被当前代码引用的近名头文件
+│   └── continues_trajectory.hpp    # 旧包含路径的兼容转发头
 ├── src/
 │   ├── hybrid_astar_planner.cpp    # Hybrid A* 搜索与静态碰撞检查
 │   ├── reeds_shepp.cpp             # Reeds–Shepp 实现
@@ -143,7 +143,7 @@ trajectory_collision ┘
 ### 结构维护注意事项
 
 - `test/` 同时包含单元测试、研究脚本和结果记录；阅读时需区分测试验证与实验入口。
-- 当前代码引用 `continuous_trajectory.hpp`。`continues_trajectory.hpp` 与其定义了同名类型并共用 include guard，后续清理时应先核对外部使用情况。
+- 连续轨迹类型统一定义在 `continuous_trajectory.hpp`；旧包含路径 `continues_trajectory.hpp` 仅转发到正式头文件，保留外部代码兼容性。
 - 论文基线、S–T/跟踪扩展和 MPC 案例的范围不同；五次多项式及时空联合优化保留为研究代码，当前暂停推进。
 
 ## 构建与运行

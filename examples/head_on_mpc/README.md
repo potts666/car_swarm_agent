@@ -14,6 +14,13 @@ MP4可以下载后用系统播放器/VLC播放。GitHub是否内嵌显示由其�
 
 每一次模拟包含七项：提交版本、地图与初值、控制周期、通信设置、原始日志与图片、RViz2回放、可播放视频。代码只保留本案例需要的仿真、导出、回放与验证，独立于父工程的规划器和旧演示。
 
+
+## 自动检测、释放与原任务返回（独立增量实验）
+
+[实现协议与证据边界](recovery_protocol.md) · [E0–E4八组对照报告](results/recovery_001/report.md) · [独立日志验收](results/recovery_001/validation.json)
+
+入口 `scripts/run_recovery.py` 复用已有QP、完整退出候选和实际通过/释放流程，增加持续互阻检测、锁定选角、返回双方原任务，以及可选联合切换见证。旧入口和历史报告保留。完整运行、验证、报告及测试命令见新报告末尾；当前结果是离线完整预演，未声称在线实时或递归可行证明。
+
 ## 当前研究：无占用权调度的双车死锁
 
 新增独立入口 `scripts/run_deadlock.py`，不使用原来固定 A 优先的让行状态机。配置见 [deadlock.json](config/deadlock.json)，已生成结果见 [复现报告](results/deadlock_001/report.md) 和 [轨迹图](results/deadlock_001/head_on_deadlock/overview.png)。旧三种策略仍由 `run_study.py` 运行。
@@ -51,6 +58,12 @@ ROS_DOMAIN_ID=83 python3 tests/check_ros_replay.py \
 ```
 
 所有离线测试：`OPENBLAS_NUM_THREADS=1 python3 -m unittest discover -s tests -p 'test_*.py'`。新增测试覆盖实际双向速度可行性、双方互等、对方后退后能够前进，以及到达目标后的正常停车不会被判为死锁。
+
+## 代码与工件维护
+
+完成与中止分支共用 `pass_release_core.write_branch_logs()` 写出原始工件；未进入保持阶段时，`hold_prechecks.json` 为空数组。独立验证器按实际通行权授予事件检查后续阶段，EXIT 或 PARKED_READY 失败仍检查已执行轨迹的动力学、道路与间距，不要求不存在的通过状态。
+
+报告中的几何、车长、释放裕度、保持时长和控制时序取自本轮配置及保存的 `geometry`，不另维护固定默认值。历史结果目录保持原样；源码变化后需要使用新目录重跑，不能为通过哈希检查而改写旧 `provenance.json`。
 
 ## 最新：CLEARED_HOLD 保持约束补齐
 

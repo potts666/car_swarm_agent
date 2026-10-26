@@ -28,6 +28,22 @@ def json_finite(value):
     return value
 
 
+def write_branch_logs(directory, *, config, actual, solves, path_checks,
+                      predictions, events, hold_prechecks=()):
+    """Keep the artifact contract identical for completed and aborted branches."""
+    for name, data in (('config.json', config), ('solves.json', json_finite(solves)),
+                       ('path_checks.json', path_checks), ('hold_prechecks.json', json_finite(hold_prechecks))):
+        write_json(directory/name, data)
+    with (directory/'actual.csv').open('w') as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(actual[0]))
+        writer.writeheader()
+        writer.writerows(actual)
+    for name, entries in (('predictions.jsonl', predictions), ('events.jsonl', events)):
+        with (directory/name).open('w') as stream:
+            for entry in entries:
+                stream.write(json.dumps(entry, allow_nan=False)+'\n')
+
+
 def geometry(scene, cfg, options):
     channel = scene['channel']
     road = scene['road']
@@ -80,7 +96,7 @@ def parked_check(motion, reference, role, scene, cfg, options):
     return {'passed': bool(passed), 'finite': finite, 'residuals': residuals}
 
 
-def pair_check(motions, controls, scene, cfg, role, reference, options):
+def pair_check(motions, controls, scene, cfg, role, reference, options, require_parked=True):
     finite = all(np.all(np.isfinite(m)) for m in motions.values())
     if not finite:
         return {'passed': False, 'finite': False, 'reasons': ['nonfinite'], 'residuals': {}, 'parked': {'passed': False}}
@@ -96,7 +112,7 @@ def pair_check(motions, controls, scene, cfg, role, reference, options):
         if residuals[key] > cfg.tolerance:
             reasons.append(key)
     parked = parked_check(motions[role], reference, role, scene, cfg, options)
-    if not parked['passed']:
+    if require_parked and not parked['passed']:
         reasons.append('parked_hold')
     return dict(passed=not reasons, finite=True, reasons=reasons, residuals=residuals,
                 minimum_gap_m=gap, parked=parked)
@@ -245,7 +261,7 @@ def precheck_hold(states, lanes, now, previous, warm, packets, role, passer, tar
                 before=before, after=snapshot(states, lanes, now, previous, warm))
 
 
-def run_branch(directory, exit_directory, scene, policy, options, selection_wait, hold_constraints=False):
+def run_branch(directory, exit_directory, scene, policy, options, selection_wait, hold_constraints=False, return_to_tasks=False, transition_guard=None):
     """Role is fixed before this call. No access to the other role's PASS."""
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=False)
@@ -256,6 +272,7 @@ def run_branch(directory, exit_directory, scene, policy, options, selection_wait
     role = exit_summary['role']
     passer = 'B' if role == 'A' else 'A'
     start = now
+    exit_start = float(exit_rows[0]['absolute_time_s'])
     before = snapshot(states, lanes, now, previous, warm)
     # This snapshot is the source of the actual parked reference, including v.
     reference = np.array(before['states'][role], float)
@@ -276,13 +293,19 @@ def run_branch(directory, exit_directory, scene, policy, options, selection_wait
         rows.append(dict(absolute_time_s=float(r['absolute_time_s']), car=r['car'], x=float(r['x']), vx=float(r['vx']),
                          y=float(r['y']), acceleration=float(r['acceleration']), stage='EXIT', exit_subphase=r['phase'],
                          role=role, passer=passer, right_holder=''))
-    events = [dict(kind='stage', to='EXIT', absolute_time_s=cfg.epoch, role=role),
+    events = [dict(kind='stage', to='EXIT', absolute_time_s=exit_start, role=role),
               dict(kind='stage', to='PARKED_READY', absolute_time_s=now, checkpoint=before, ready_check=gate)]
     current = lambda: {c: [*map(float, states[c]), float(lane_y(lanes[c], [now])[0])] for c in CARS}
     after = snapshot(states, lanes, now, previous, warm)
     continuity_check = continuity(before, after)
     if not gate['passed'] or not continuity_check['passed']:
         failure, failure_phase = 'parked_ready_or_continuity_failed', 'PARKED_READY'
+    if not failure and transition_guard is not None:
+        last={c:next(r['controls'] for r in reversed(records) if r['car']==c and not r.get('diagnostic')) for c in CARS}
+        switch=transition_guard.check('PARKED_READY','PASS',before,last,
+            {role:float(reference[0]),passer:geo['passing_stop_targets_x'][passer]},(),role,reference.tolist())
+        events.append(dict(kind='switch_check',**switch))
+        if not switch['allowed']:failure,failure_phase='switch_guard_rejected','PARKED_READY'
     if not failure:
         stage, holder, grant, pass_start = 'PASS', passer, now, now
         events.append(dict(kind='grant', to='PASS', absolute_time_s=now, holder=holder, states=current(), ready_check=gate,
@@ -294,8 +317,6 @@ def run_branch(directory, exit_directory, scene, policy, options, selection_wait
                              passer=passer, right_holder=holder or ''))
     packets = {c: prediction(states[c], warm[c], lanes[c], now, cfg) for c in CARS}
     next_cycle = max(r['cycle'] for r in records)+1
-    pass_records_start = len(records)
-    pass_paths_start = len(paths)
     stage_computation = {'PASS': 0., 'CLEARED_HOLD': 0.}
     stage_calls = {'PASS': 0, 'CLEARED_HOLD': 0}
     passed_prediction = False
@@ -431,6 +452,13 @@ def run_branch(directory, exit_directory, scene, policy, options, selection_wait
                     hold_entry_ok = precheck['passed'] and precheck['before'] == precheck['after']
                     events.append(dict(kind='hold_mode_precheck', absolute_time_s=now, passed=hold_entry_ok,
                                        precheck_index=len(hold_prechecks)-1, states=actual))
+                if hold_entry_ok and transition_guard is not None:
+                    switch=transition_guard.check('PASS','CLEARED_HOLD',snapshot(states,lanes,now,previous,warm),
+                        {c:u.tolist() for c,u in controls.items()},
+                        {role:float(reference[0]),passer:geo['passing_stop_targets_x'][passer]},(passer,),role,reference.tolist(),
+                        fresh_controls={r['car']:r['controls'] for r in precheck['records']} if hold_constraints else None)
+                    events.append(dict(kind='switch_check',**switch))
+                    hold_entry_ok=switch['allowed']
                 if hold_entry_ok:
                     cleared_since, stop_candidate, stage = now, now, 'CLEARED_HOLD'
                     events.append(dict(kind='stage', to=stage, absolute_time_s=now, states=actual, check=release_gate))
@@ -463,7 +491,7 @@ def run_branch(directory, exit_directory, scene, policy, options, selection_wait
                    exit_success=exit_summary['feasible'], pass_success=stop_confirm is not None,
                    released=complete, overall_success=complete and exit_summary['feasible'], both_tasks_completed=False,
                    simulation_terminated=bool(failure), verified_physical_safe_stop=False,
-                   exit_simulation_s=start-cfg.epoch, pass_simulation_s=(stop_confirm-start) if stop_confirm else None,
+                   exit_simulation_s=start-exit_start, pass_simulation_s=(stop_confirm-start) if stop_confirm else None,
                    pass_plus_hold_simulation_s=now-start, initial_to_release_simulation_s=(release_time-cfg.epoch) if release_time else None,
                    retreat_distance_m=exit_summary['retreat_distance_m'],
                    passing_distance_m=abs(states[passer][0]-before['states'][passer][0]),
@@ -483,19 +511,23 @@ def run_branch(directory, exit_directory, scene, policy, options, selection_wait
                    hold_constraints_enabled=hold_constraints, hold_precheck_count=len(hold_prechecks),
                    hold_precheck_failures=sum(not p['passed'] for p in hold_prechecks),
                    final_actual_states=current(), continuous_safety_certified=False, steering_feasibility_tested=False)
-    write_json(directory/'config.json', dict(scene=scene, options=options, geometry=geo, policy=policy, role=role))
-    write_json(directory/'summary.json', summary)
-    write_json(directory/'solves.json', json_finite(records))
-    write_json(directory/'path_checks.json', paths)
-    write_json(directory/'hold_prechecks.json', json_finite(hold_prechecks))
-    with (directory/'actual.csv').open('w') as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
-        writer.writeheader()
-        writer.writerows(rows)
-    for name, data in (('predictions.jsonl', predictions), ('events.jsonl', events)):
-        with (directory/name).open('w') as stream:
-            for entry in data:
-                stream.write(json.dumps(entry, allow_nan=False)+'\n')
+    if complete and return_to_tasks:
+        from recovery_core import return_to_original_tasks
+        checkpoint = snapshot(states, lanes, now, previous, warm)
+        last_controls = {c: next(r['controls'] for r in reversed(records)
+                                if r['car']==c and not r.get('diagnostic')) for c in CARS}
+        returned = return_to_original_tasks(checkpoint, last_controls, scene, options, role, reference,
+                                            next_cycle, rows, records, paths, predictions, events, transition_guard=transition_guard)
+        summary.update(returned)
+        summary['overall_success'] = summary['both_tasks_completed']
+        summary['minimum_executed_gap_m'] = min(
+            a.get('minimum_gap_m', a.get('minimum_sampled_gap_m')) for a in paths
+            if (a.get('kind')=='executed_segment' and a.get('applied_to_simulation',True)) or a.get('kind') is None)
+        summary['minimum_predicted_gap_m'] = min(
+            a.get('minimum_gap_m', a.get('minimum_sampled_gap_m')) for a in paths if a.get('kind')=='whole_prediction')
+    write_branch_logs(directory, config=dict(scene=scene, options=options, geometry=geo, policy=policy, role=role),
+                      actual=rows, solves=records, path_checks=paths, predictions=predictions,
+                      events=events, hold_prechecks=hold_prechecks)
     summary['branch_total_wall_s_including_log_write'] = time.perf_counter()-branch_started
     write_json(directory/'summary.json', summary)
     return summary

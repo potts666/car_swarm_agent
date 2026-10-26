@@ -47,9 +47,9 @@ def check_path(motions, accelerations, scene, cfg, waiter, waiting_x):
             'minimum_sampled_gap_m': float(np.min(gap)), 'samples_per_car': len(gap)}
 
 
-def validate_start(scene, cfg):
+def validate_start(scene, cfg, speed_tolerance=1e-10):
     states = {c: np.array([[*s, 0.]], float) for c, s in scene['initial_states_x_v'].items()}
-    if any(abs(s[1]) > 1e-10 for s in scene['initial_states_x_v'].values()):
+    if any(abs(s[1]) > speed_tolerance for s in scene['initial_states_x_v'].values()):
         raise ValueError('Exit screening requires two stationary cars')
     if not states['A'][0, 0] < states['B'][0, 0]:
         raise ValueError('A must be left of B')
@@ -57,11 +57,11 @@ def validate_start(scene, cfg):
         raise ValueError('Initial state must satisfy road, limits and padded separation')
 
 
-def generate_exit(directory, scene, role, qp_crosscheck=False, solver_backend="slsqp"):
+def generate_exit(directory, scene, role, qp_crosscheck=False, solver_backend="slsqp", checkpoint=None):
     """Roll out to the external bay, then enter it fully, with peer stopped."""
     generation_started = time.perf_counter()
     cfg = Settings(**scene['settings'])
-    validate_start(scene, cfg)
+    validate_start(scene, cfg, speed_tolerance=cfg.tolerance if checkpoint is not None else 1e-10)
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=False)
     waiter = 'B' if role == 'A' else 'A'
@@ -69,15 +69,22 @@ def generate_exit(directory, scene, role, qp_crosscheck=False, solver_backend="s
     waiting_x = float(states[waiter][0])
     warm = {c: np.zeros(cfg.horizon) for c in states}
     previous = dict.fromkeys(states, 0.)
-    lane = [0., 0., cfg.epoch, cfg.lateral_seconds]
+    start_time = cfg.epoch
+    if checkpoint is not None:
+        start_time = checkpoint['absolute_time_s']
+        for c in states:
+            np.testing.assert_array_equal(states[c], checkpoint['states'][c][:2])
+            previous[c] = checkpoint['previous_acceleration'][c]
+            warm[c] = np.array(checkpoint['warm_controls'][c], float)
+    lane = [0., 0., start_time, cfg.lateral_seconds]
     phase, failure, end_time, complete = 'retreat', None, 0., False
     records, rows, audits, predictions = [], [], [], []
     initial = {c: np.array([[*s, 0.]]) for c, s in states.items()}
     audits.append(check_path(initial, {'A': [0.], 'B': [0.]}, scene, cfg, waiter, waiting_x))
     for c, m in initial.items():
-        rows.append([cfg.epoch, c, *m[0], 0., phase])
+        rows.append([start_time, c, *m[0], previous[c], phase])
     for cycle in range(int(scene['duration_s']/cfg.dt)):
-        now = cfg.epoch+cycle*cfg.dt
+        now = start_time+cycle*cfg.dt
         at_bay = (abs(states[role][0]-scene['retreat_x'][role]) <= scene['arrival_position_tolerance_m'] and
                   abs(states[role][1]) <= scene['arrival_speed_tolerance_m_s'])
         if phase == 'retreat' and at_bay:
@@ -147,7 +154,7 @@ def generate_exit(directory, scene, role, qp_crosscheck=False, solver_backend="s
         if not audit['passed']:
             failure = 'executed_path_rejected'
             break
-    terminal = {c: np.array([[*s, lane_y(lane, [cfg.epoch+end_time])[0] if c == role else 0.]])
+    terminal = {c: np.array([[*s, lane_y(lane, [start_time+end_time])[0] if c == role else 0.]])
                 for c, s in states.items()}
     terminal_audit = check_path(terminal, {'A': [0.], 'B': [0.]}, scene, cfg, waiter, waiting_x)
     terminal_audit['exit_residuals'] = {
@@ -175,7 +182,7 @@ def generate_exit(directory, scene, role, qp_crosscheck=False, solver_backend="s
                    final_states_x_v={c: s.tolist() for c, s in states.items()},
                    terminal_check=terminal_audit, continuous_safety_certified=False)
     write_json(directory/'config.json', {**scene, 'role': role, 'waiter': waiter,
-               'qp_crosscheck': qp_crosscheck, 'acceptance_rule': summary['acceptance_rule']})
+               'qp_crosscheck': qp_crosscheck, 'acceptance_rule': summary['acceptance_rule'], 'initial_checkpoint': checkpoint})
     write_json(directory/'summary.json', summary)
     write_json(directory/'path_checks.json', audits)
     write_json(directory/'solves.json', records)

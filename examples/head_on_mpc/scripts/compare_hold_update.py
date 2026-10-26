@@ -42,7 +42,7 @@ def compare(old, new):
                                       unchanged_state=pre['before']==pre['after']))
             if before['failure']:
                 hold0=next(r for r in reversed(r0) if r['stage']=='CLEARED_HOLD' and r['car']==before['passer'])
-                v0=before['final_actual_states'][before['passer']][1];dt=.4;sign=1 if v0>=0 else -1
+                v0=before['final_actual_states'][before['passer']][1];dt=.4
                 acceleration.append(dict(case=i,policy=policy,car=before['passer'],v0_m_s=v0,
                     old_u0_m_s2=hold0['controls'][0],old_end_v_m_s=v0+dt*hold0['controls'][0],
                     signed_acceleration_upper_m_s2=(.025-abs(v0))/dt,

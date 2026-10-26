@@ -189,18 +189,7 @@ private:
     config.allow_reverse = true;
     config.analytic_expansion = true;
 // 函数配置 Hybrid A* 规划器：允许倒车、启用解析扩展，并显式设置最大搜索迭代次数
-    config.map.resolution = 0.5;
-    config.map.origin_x = -30.0;
-    config.map.origin_y = -30.0;
-    config.map.width = 120;
-    config.map.height = 120;
-
-    config.map.cells.assign(
-      static_cast<std::size_t>(config.map.width) *
-      static_cast<std::size_t>(config.map.height),
-      0);
-
-    car_swarm_agent::addUShapedObstacle(config.map);
+    config.map = car_swarm_agent::makeUShapedDemoMap();
 
     // 保存一份 ROS 地图消息，供 RViz 显示。
     map_message_.header.frame_id = "map";

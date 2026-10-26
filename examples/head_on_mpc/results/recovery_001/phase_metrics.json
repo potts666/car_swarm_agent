@@ -1,0 +1,1026 @@
+[
+  {
+    "case": "case_000",
+    "variant": "E0",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.7962067799994657
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_000",
+    "variant": "E1",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 15.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 14.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 78,
+      "PASS": 76,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.7706963010000436,
+      "PASS": 0.6197648860024856,
+      "CLEARED_HOLD": 0.02083406699966872,
+      "EXIT": 0.5475293259996761
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_000",
+    "variant": "E2",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 15.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 14.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 78,
+      "PASS": 76,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.7912350200003857,
+      "PASS": 0.649587514999439,
+      "CLEARED_HOLD": 0.02250760899960369,
+      "EXIT": 0.5600701430007575
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_000",
+    "variant": "E3",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 15.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 14.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 23.19999999999999,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 78,
+      "PASS": 76,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 116
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.6718222040017281,
+      "RETURN": 1.2261144520025482,
+      "EXIT": 0.5900547690007443,
+      "NAVIGATE": 3.894213086999116,
+      "RETURN_MERGE": 0.09962355500147169,
+      "CLEARED_HOLD": 0.02458846400031689
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_000",
+    "variant": "E4",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 15.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 14.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 23.19999999999999,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 78,
+      "PASS": 76,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 116
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.695389419001458,
+      "RETURN": 1.2775119490006546,
+      "EXIT": 0.5783713090004312,
+      "NAVIGATE": 4.080460607999612,
+      "RETURN_MERGE": 0.08297261899997466,
+      "CLEARED_HOLD": 0.023876136999660957
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_001",
+    "variant": "E0",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 4.098915435998606
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_001",
+    "variant": "E1",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 14.0,
+      "PARKED_READY": 0.0,
+      "PASS": 14.399999999999991,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 70,
+      "PASS": 74,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 4.109758208998755,
+      "PASS": 0.527194383997994,
+      "CLEARED_HOLD": 0.019496108000566892,
+      "EXIT": 0.3027073320013187
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_001",
+    "variant": "E2",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 14.0,
+      "PARKED_READY": 0.0,
+      "PASS": 14.399999999999991,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 70,
+      "PASS": 74,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 4.49965180900017,
+      "PASS": 0.30431293099672985,
+      "CLEARED_HOLD": 0.011321136999413284,
+      "EXIT": 0.23523334900119153
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_001",
+    "variant": "E3",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 14.0,
+      "PARKED_READY": 0.0,
+      "PASS": 14.399999999999991,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 22.0,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 70,
+      "PASS": 74,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 110
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.3174234189964409,
+      "RETURN": 0.5599029189952489,
+      "EXIT": 0.2289809990024878,
+      "NAVIGATE": 4.026862964001339,
+      "RETURN_MERGE": 0.07570300200040947,
+      "CLEARED_HOLD": 0.011586249999709253
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_001",
+    "variant": "E4",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 14.0,
+      "PARKED_READY": 0.0,
+      "PASS": 14.399999999999991,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 22.0,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 70,
+      "PASS": 74,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 110
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.34510200099839494,
+      "RETURN": 0.5982348049997199,
+      "EXIT": 0.24662409899929116,
+      "NAVIGATE": 3.991842709001048,
+      "RETURN_MERGE": 0.08628325300060169,
+      "CLEARED_HOLD": 0.011700528000346821
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_002",
+    "variant": "E0",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 4.104179299000407
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_002",
+    "variant": "E1",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 17.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 16.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 88,
+      "PASS": 86,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.9156575750007505,
+      "PASS": 0.8044963109978198,
+      "CLEARED_HOLD": 0.024230409000210784,
+      "EXIT": 0.5145366240017211
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_002",
+    "variant": "E2",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 17.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 16.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 88,
+      "PASS": 86,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.836926103998394,
+      "PASS": 0.802908108000338,
+      "CLEARED_HOLD": 0.02136928199979593,
+      "EXIT": 0.5416620690016316
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_002",
+    "variant": "E3",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 17.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 16.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 27.19999999999999,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 88,
+      "PASS": 86,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 136
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.817017018001934,
+      "RETURN": 1.176590732000932,
+      "EXIT": 0.5294895419997374,
+      "NAVIGATE": 3.877035387999058,
+      "RETURN_MERGE": 0.08494307099999787,
+      "CLEARED_HOLD": 0.024881097000616137
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_002",
+    "variant": "E4",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 17.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 16.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 27.19999999999999,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 88,
+      "PASS": 86,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 136
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.7395501840005636,
+      "RETURN": 1.0893812929994056,
+      "EXIT": 0.48705050199805555,
+      "NAVIGATE": 3.7023041779993946,
+      "RETURN_MERGE": 0.07091842300042117,
+      "CLEARED_HOLD": 0.01976342900070449
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_003",
+    "variant": "E0",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.5374558560001788
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_003",
+    "variant": "E1",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 16.0,
+      "PARKED_READY": 0.0,
+      "PASS": 16.39999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 80,
+      "PASS": 84,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.473973381000178,
+      "PASS": 0.3656210069998451,
+      "CLEARED_HOLD": 0.009953450000011799,
+      "EXIT": 0.22440635200337056
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_003",
+    "variant": "E2",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 16.0,
+      "PARKED_READY": 0.0,
+      "PASS": 16.39999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 80,
+      "PASS": 84,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.5117060010006753,
+      "PASS": 0.35844668200070373,
+      "CLEARED_HOLD": 0.009725434999381832,
+      "EXIT": 0.23068890399872544
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_003",
+    "variant": "E3",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 16.0,
+      "PARKED_READY": 0.0,
+      "PASS": 16.39999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 26.0,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 80,
+      "PASS": 84,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 130
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.3418627319974803,
+      "RETURN": 0.6041361229986251,
+      "EXIT": 0.22239165499786395,
+      "NAVIGATE": 3.4178325249999943,
+      "RETURN_MERGE": 0.0646477010009221,
+      "CLEARED_HOLD": 0.009074265999515774
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_003",
+    "variant": "E4",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 16.0,
+      "PARKED_READY": 0.0,
+      "PASS": 16.39999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 26.0,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 80,
+      "PASS": 84,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 130
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.3872454190004646,
+      "RETURN": 0.7183946330001163,
+      "EXIT": 0.2225389489990448,
+      "NAVIGATE": 3.4542094660000657,
+      "RETURN_MERGE": 0.07131003399990732,
+      "CLEARED_HOLD": 0.009807205000015529
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_004",
+    "variant": "E0",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.5266226270005063
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_004",
+    "variant": "E1",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 17.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 18.39999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 88,
+      "PASS": 94,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.589588200000435,
+      "PASS": 0.8994878290009183,
+      "CLEARED_HOLD": 0.009643831000175851,
+      "EXIT": 0.5771516570002859
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_004",
+    "variant": "E2",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 15.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 14.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 78,
+      "PASS": 76,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.636776605996147,
+      "PASS": 0.6009549729992614,
+      "CLEARED_HOLD": 0.021434718000364228,
+      "EXIT": 0.47763141699851985
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_004",
+    "variant": "E3",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 15.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 14.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 23.19999999999999,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 78,
+      "PASS": 76,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 116
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.6222708690038417,
+      "RETURN": 1.1098950339960538,
+      "EXIT": 0.5045819009992556,
+      "NAVIGATE": 3.6379827629993997,
+      "RETURN_MERGE": 0.07521294900016073,
+      "CLEARED_HOLD": 0.022905767999418458
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_004",
+    "variant": "E4",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 15.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 14.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 23.19999999999999,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 78,
+      "PASS": 76,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 116
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.5944919679996019,
+      "RETURN": 1.056544942997789,
+      "EXIT": 0.5039837240010456,
+      "NAVIGATE": 3.6923738109985607,
+      "RETURN_MERGE": 0.0693435369994404,
+      "CLEARED_HOLD": 0.02014637899992522
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_005",
+    "variant": "E0",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.5372384760016757
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_005",
+    "variant": "E1",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 17.200000000000003,
+      "PARKED_READY": 0.0,
+      "PASS": 17.19999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 86,
+      "PASS": 88,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.5545422950008287,
+      "PASS": 0.3640294200004064,
+      "CLEARED_HOLD": 0.009673685000961996,
+      "EXIT": 0.2745715710011609
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_005",
+    "variant": "E2",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 14.0,
+      "PARKED_READY": 0.0,
+      "PASS": 14.399999999999991,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 70,
+      "PASS": 74,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.4802744240009815,
+      "PASS": 0.28029056600007607,
+      "CLEARED_HOLD": 0.009424650000255497,
+      "EXIT": 0.20549968599834756
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_005",
+    "variant": "E3",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 14.0,
+      "PARKED_READY": 0.0,
+      "PASS": 14.399999999999991,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 22.0,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 70,
+      "PASS": 74,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 110
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.28002364100075283,
+      "RETURN": 0.49820073100090667,
+      "EXIT": 0.2049599440019847,
+      "NAVIGATE": 3.521229938997749,
+      "RETURN_MERGE": 0.06747287700000015,
+      "CLEARED_HOLD": 0.009922647000166762
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_005",
+    "variant": "E4",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 14.0,
+      "PARKED_READY": 0.0,
+      "PASS": 14.399999999999991,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 22.0,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 70,
+      "PASS": 74,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 110
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.3066548089996104,
+      "RETURN": 0.5847692890015423,
+      "EXIT": 0.21222104099933858,
+      "NAVIGATE": 3.5625273599998764,
+      "RETURN_MERGE": 0.0768657190005797,
+      "CLEARED_HOLD": 0.011470649998955196
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_006",
+    "variant": "E0",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.8027682860001732
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_006",
+    "variant": "E1",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 19.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 20.39999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 98,
+      "PASS": 104,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 4.013316826000846,
+      "PASS": 0.9618035890011924,
+      "CLEARED_HOLD": 0.011636457998974947,
+      "EXIT": 0.6846057340017069
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_006",
+    "variant": "E2",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 17.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 16.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 88,
+      "PASS": 86,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 4.076691966000453,
+      "PASS": 0.9102615380015777,
+      "CLEARED_HOLD": 0.025007129999721656,
+      "EXIT": 0.6467967319999843
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_006",
+    "variant": "E3",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 17.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 16.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 27.19999999999999,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 88,
+      "PASS": 86,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 136
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.7577235899993866,
+      "RETURN": 1.100777710994862,
+      "EXIT": 0.48693374200274775,
+      "NAVIGATE": 3.9540916249989095,
+      "RETURN_MERGE": 0.06975636899915116,
+      "CLEARED_HOLD": 0.0201306170006319
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_006",
+    "variant": "E4",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 17.599999999999994,
+      "PARKED_READY": 0.0,
+      "PASS": 16.799999999999997,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 27.19999999999999,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 88,
+      "PASS": 86,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 136
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.7495753730017896,
+      "RETURN": 1.1317304950007383,
+      "EXIT": 0.5284484359999624,
+      "NAVIGATE": 3.879326362001848,
+      "RETURN_MERGE": 0.06639735800035851,
+      "CLEARED_HOLD": 0.020707567000044946
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_007",
+    "variant": "E0",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.615912508000747
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_007",
+    "variant": "E1",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 19.200000000000003,
+      "PARKED_READY": 0.0,
+      "PASS": 19.19999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 96,
+      "PASS": 98,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.6036622279993935,
+      "PASS": 0.4008769499992013,
+      "CLEARED_HOLD": 0.008817845000066882,
+      "EXIT": 0.30943711100235305
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_007",
+    "variant": "E2",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 16.0,
+      "PARKED_READY": 0.0,
+      "PASS": 16.39999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 80,
+      "PASS": 84,
+      "CLEARED_HOLD": 4
+    },
+    "root_selected_execution_solver_wall_s": {
+      "NAVIGATE": 3.54624880900019,
+      "PASS": 0.3576758689991948,
+      "CLEARED_HOLD": 0.008833326999592828,
+      "EXIT": 0.23230656400301086
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_007",
+    "variant": "E3",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 16.0,
+      "PARKED_READY": 0.0,
+      "PASS": 16.39999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 26.0,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 80,
+      "PASS": 84,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 130
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.3829649590002191,
+      "RETURN": 0.6748555940012011,
+      "EXIT": 0.2157314889986992,
+      "NAVIGATE": 3.4639112610002485,
+      "RETURN_MERGE": 0.07387702799996987,
+      "CLEARED_HOLD": 0.009563271999923018
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  },
+  {
+    "case": "case_007",
+    "variant": "E4",
+    "executed_log_stage_spans_s": {
+      "NAVIGATE": 5.200000000000003,
+      "EXIT": 16.0,
+      "PARKED_READY": 0.0,
+      "PASS": 16.39999999999999,
+      "CLEARED_HOLD": 0.8000000000000114,
+      "RELEASED": 0.0,
+      "RETURN_MERGE": 6.0,
+      "RETURN": 26.0,
+      "BOTH_TASKS_COMPLETED": 0.0
+    },
+    "root_selected_execution_solve_counts": {
+      "NAVIGATE": 28,
+      "EXIT": 80,
+      "PASS": 84,
+      "CLEARED_HOLD": 4,
+      "RETURN_MERGE": 30,
+      "RETURN": 130
+    },
+    "root_selected_execution_solver_wall_s": {
+      "PASS": 0.4144820629994683,
+      "RETURN": 0.6078537210000832,
+      "EXIT": 0.22197195699936856,
+      "NAVIGATE": 3.5377147189992684,
+      "RETURN_MERGE": 0.06365702300126941,
+      "CLEARED_HOLD": 0.008845894999467419
+    },
+    "note": "root solve log includes selected EXIT only; total candidate cost and extra diagnostics are counted separately in summary and selection"
+  }
+]

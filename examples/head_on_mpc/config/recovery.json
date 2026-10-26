@@ -1,0 +1,13 @@
+{
+  "navigation_timeout_s": 12.0,
+  "return_timeout_s": 100.0,
+  "total_timeout_s": 200.0,
+  "detector": {
+    "window_s": 5.0,
+    "actual_progress_m": 0.01,
+    "prediction_endpoint_change_m": 0.01,
+    "prediction_tail_displacement_m": 0.01,
+    "active_neighbor_slack_m": 0.01,
+    "minimum_blocked_fraction": 0.8
+  }
+}

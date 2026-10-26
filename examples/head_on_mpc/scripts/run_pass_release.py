@@ -14,7 +14,7 @@ import numpy as np
 import scipy
 
 from head_on_core import Settings, write_json
-from pass_release_core import geometry, run_branch
+from pass_release_core import geometry, run_branch, write_branch_logs
 from run_comparison import ROOT, make_scene
 from run_exit_screening import generate_exit, select_baselines
 
@@ -30,13 +30,6 @@ def failed_exit_branch(directory, source, scene, policy, role, wait):
     stamp=max(r['absolute_time_s'] for r in rows)
     for c in ('A','B'):
         rows.append({**next(r for r in reversed(rows) if r['car']==c),'stage':'FAILED'})
-    with (directory/'actual.csv').open('w') as stream:
-        w=csv.DictWriter(stream,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
-    for name in ('solves.json','path_checks.json'):
-        write_json(directory/name,[{**r,'stage':'EXIT'} for r in json.loads((source/name).read_text())])
-    with (directory/'predictions.jsonl').open('w') as stream:
-        for line in (source/'predictions.jsonl').read_text().splitlines():
-            stream.write(json.dumps({**json.loads(line),'stage':'EXIT','role':role})+'\n')
     paired={}
     for row in rows:paired.setdefault(row['absolute_time_s'],{})[row['car']]=row
     cfg=Settings(**scene['settings'])
@@ -52,10 +45,16 @@ def failed_exit_branch(directory, source, scene, policy, role, wait):
                    phase_compute_wall_s={'EXIT': result['generation_compute_wall_seconds'],'PASS':0.,'CLEARED_HOLD':0.},
                    phase_primary_calls={'EXIT':result['primary_solve_calls'],'PASS':0,'CLEARED_HOLD':0},
                    phase_diagnostic_calls={'EXIT':0,'PASS':0,'CLEARED_HOLD':0},phase_retry_counts={'EXIT':0,'PASS':0,'CLEARED_HOLD':0},diagnostic_calls=0,retries=0)
+    records=[{**r, 'stage': 'EXIT'} for r in json.loads((source/'solves.json').read_text())]
+    paths=[{**r, 'stage': 'EXIT'} for r in checks]
+    predictions=[{**json.loads(line), 'stage': 'EXIT', 'role': role}
+                 for line in (source/'predictions.jsonl').read_text().splitlines()]
+    events=[dict(kind='failure', absolute_time_s=stamp, failure_phase='EXIT', failure=summary['failure'],
+                 states={c: [paired[stamp][c][key] for key in ('x', 'vx', 'y')] for c in ('A', 'B')},
+                 simulation_terminated=True, verified_physical_safe_stop=False)]
+    write_branch_logs(directory, config=dict(scene=scene, policy=policy, role=role), actual=rows,
+                      solves=records, path_checks=paths, predictions=predictions, events=events)
     write_json(directory/'summary.json', summary)
-    write_json(directory/'config.json',dict(scene=scene,policy=policy,role=role))
-    (directory/'events.jsonl').write_text(json.dumps(dict(kind='failure',absolute_time_s=stamp,phase='EXIT',reason=summary['failure'],
-        simulation_terminated=True,verified_physical_safe_stop=False))+'\n')
     return summary
 
 
@@ -126,7 +125,7 @@ def main():
             for policy,b in r['branches'].items():
                 w.writerow({k:(r['case'] if k=='case' else b.get(k)) for k in columns})
     import osqp
-    sources=[ROOT/'scripts'/n for n in ('pass_release_core.py','run_pass_release.py','run_exit_screening.py','trajectory_acceptance.py','head_on_core.py','run_comparison.py','verify_pass_release.py')]+[args.config,args.options,ROOT/'pass_release_protocol.md',ROOT/'tests/test_pass_release.py',ROOT/'tests/test_hold_constraints.py',ROOT/'scripts/compare_hold_update.py']
+    sources=[ROOT/'scripts'/n for n in ('pass_release_core.py','run_pass_release.py','run_exit_screening.py','trajectory_acceptance.py','head_on_core.py','run_comparison.py','verify_pass_release.py')]+[args.config,args.options,ROOT/'pass_release_protocol.md',ROOT/'tests/test_pass_release.py',ROOT/'tests/test_hold_constraints.py',ROOT/'tests/test_pass_release_artifacts.py',ROOT/'scripts/compare_hold_update.py']
     write_json(args.output/'provenance.json',dict(source_sha256={str(p.resolve()):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
         python=platform.python_version(),numpy=np.__version__,scipy=scipy.__version__,osqp=osqp.__version__,openblas_threads='1 requested by command',
         model='longitudinal double integrator and prescribed lateral occupancy; offline full rehearsal',
@@ -135,14 +134,28 @@ def main():
 
 
 def report(output, results):
-    options=json.loads((output/'study_config.json').read_text())['options']
-    holding_enabled=json.loads((output/'study_config.json').read_text()).get('hold_constraints', False)
+    study=json.loads((output/'study_config.json').read_text())
+    options=study['options']
+    cfg=Settings(**study['base']['settings'])
+    holding_enabled=study.get('hold_constraints', False)
     lines=[f'保持QP硬约束与进入前预检查：{holding_enabled}。', '', '# 退出停驻 → 对方实际通过 → 释放通行权', '',
       '完整离线闭环模拟预演。本次只验证一辆退让、另一辆通过、释放指定冲突区域的占用权；不启动退让车回归，不标记双方任务完成。', '',
       '## 几何、目标与释放', '',
-      'R为原单通道主路矩形：[channel.xmin,channel.xmax] × [road.ymin,road.ymax]。通道长20/28 m时R纵向为[-10,10]/[-14,14] m，横向[-1.4,1.4] m。使用原道路、原退让区和原goals_x，不移动边界。',
-      'A朝+x通过、B朝−x通过。停驻目标分别为±21.75 m或±25.75 m，仍须全车身容纳。释放裕度明确为0.5 m；A要求x−2.35≥R.xmax+0.5，B要求x+2.35≤R.xmin−0.5。',
-      '释放还要求实际到目标±0.08 m内、速度≤0.025 m/s，并连续保持0.8 s；退让车保持实际停驻参考，配对实际与最新全预测通过，预测未来也不会重新进入R，通行权持有者匹配。', '',
+      'R为原单通道主路矩形，几何与停驻目标按各初值保存的geometry列于下表。沿用原道路和退让区，不移动边界。',
+      f'车长 {cfg.length:g} m；释放裕度配置为 {options["release_margin_m"]:g} m。'
+      f'A朝+x通过要求x−{cfg.length/2:g}≥R.xmax+{options["release_margin_m"]:g}，'
+      f'B朝−x通过要求x+{cfg.length/2:g}≤R.xmin−{options["release_margin_m"]:g}。',
+      f'实际到达表中目标容差且低速后，连续保持 {options["cleared_hold_s"]:g} s；'
+      '退让车保持实际停驻参考，配对实际与最新全预测通过，预测未来也不会重新进入R，通行权持有者匹配。', '',
+      '|初值|通道x区间 m|R的x/y区间 m|A/B停驻目标 m|释放裕度 m|位置/速度容差 m、m/s|',
+      '|---|---|---|---|---|---|']
+    for r in results:
+        g=r['geometry'];channel=g['channel'];region=g['conflict_region'];targets=g['passing_stop_targets_x']
+        lines.append(f'|{r["case"]:03d}|[{channel["xmin"]:g}, {channel["xmax"]:g}]|'
+                     f'[{region["xmin"]:g}, {region["xmax"]:g}] / [{region["ymin"]:g}, {region["ymax"]:g}]|'
+                     f'{targets["A"]:g} / {targets["B"]:g}|{g["release_margin_m"]:g}|'
+                     f'{g["arrival_position_tolerance_m"]:g} / {g["arrival_speed_tolerance_m_s"]:g}|')
+    lines+=['',
       '## 逐初值、逐基线', '',
       '|初值|相遇中心 m|通道长 m|加减速 m/s²|策略|退让角色|EXIT|PASS|RELEASED|失败|',
       '|---|---|---|---|---|---|---|---|---|---|']
@@ -189,10 +202,10 @@ def report(output, results):
     lines+=['','同角色案例的actual.csv完全一致：'+str({r['case']:r['same_role_check']['identical'] for r in results if r['same_role_check']})+'。']
     lines+=['','每个策略目录保存 EXIT 至终态的 actual.csv、predictions.jsonl、solves.json、path_checks.json、events.jsonl、summary.json。选择结果在任何PASS模拟前写入 case_*/selection.json；只依据完整退出成功和退让距离。相同角色的两基线独立继续积分，actual.csv哈希一致性见summary.json的same_role_check。',
        '两条EXIT来自同初值的独立候选；所选候选实际执行日志作为各策略EXIT前缀，后续从该日志终态继承时间、x/v/y、上一实际加速度及warm controls。没有重置状态、覆盖速度或控制。通过期间退让参考取实际终态，非理想退让点。',
-       '邻车掩码按横向占用几何重算并逐样本记录，保留原纵向邻车线性约束的掩码构造；PASS时横向间距3 m超过2.5 m纵向约束激活阈值，外部配对车身检查始终生效。',
+       f'邻车掩码按实际横向占用逐样本重算并记录，激活阈值为车宽+裕度={cfg.width+cfg.margin:g} m；外部配对车身检查始终生效。',
        '局部独立分项验收、配对全预测、实际执行子步、阶段完成条件均必须通过。预测提前清空不产生释放；实际车尾清空时间另记，停驻确认和释放更晚。', '',
        '## 时间、预算与边界','',
-       f'选角前墙钟等待范围 {min(r["selection_wait_wall_s"] for r in results):.6f}–{max(r["selection_wait_wall_s"] for r in results):.6f} s，包含两条完整EXIT预演与日志写入，不含进程启动。控制周期0.4 s、预测6.4 s、检查间隔0.1 s；主OSQP每次20000迭代上限；保持进入前诊断调用合计 {sum(b.get("diagnostic_calls",0) for r in results for b in r["branches"].values())}，无重试。',
+       f'选角前墙钟等待范围 {min(r["selection_wait_wall_s"] for r in results):.6f}–{max(r["selection_wait_wall_s"] for r in results):.6f} s，包含两条完整EXIT预演与日志写入，不含进程启动。控制周期{cfg.dt:g} s、预测{cfg.horizon*cfg.dt:g} s、检查间隔{cfg.dt/cfg.substeps:g} s；每次主求解预算见solves.json；保持进入前诊断调用合计 {sum(b.get("diagnostic_calls",0) for r in results for b in r["branches"].values())}，无重试。',
        f'EXIT/PASS/整个模拟超时分别{options["exit_timeout_s"]}/{options["pass_timeout_s"]}/{options["total_timeout_s"]} s；PASS超时包括CLEARED_HOLD。超时终止模拟，未实现实时deadline中断或物理备用停车。各阶段计算墙钟时间和主调用详见每分支summary.json，候选生成公共成本见selection.json，不能把公共生成成本与每条分支的EXIT重计为实际CPU总量。',
        '模拟时间与计算墙钟时间分别报告，未相加成部署恢复时间。方法仍为离线预演，未补偿真实车辆等待期间的环境变化，不能声称满足在线实时预算。',
        '数值残差仅支持返回解在给定容差下通过独立验收；采样安全仅支持本组实际执行样本通过模型道路与间距检查；阶段结果只支持本组初值、当前模型下的一次完整退出/通过/释放。未证明连续时间安全、转向可达性、递归可行性或双方任务完成。']
