@@ -1,0 +1,86 @@
+{
+  "approach_stop": {
+    "passed": true,
+    "residuals": {
+      "A": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.3322676295501878e-15,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      }
+    },
+    "minimum_gap_m": null,
+    "final_state": [
+      -34.00000000000004,
+      0.0,
+      0.0,
+      -1.1102230246251565e-16,
+      0.0
+    ],
+    "duration_s": 5.0,
+    "controls_within_limits": true
+  },
+  "waiting_entry": {
+    "passed": true,
+    "residuals": {
+      "A": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      }
+    },
+    "minimum_gap_m": null,
+    "final_state": [
+      -22.062746066885275,
+      2.999999999970108,
+      4.529613862620247e-17,
+      2.7755575615628914e-17,
+      2.6020852139652106e-16
+    ],
+    "duration_s": 13.0,
+    "controls_within_limits": true
+  },
+  "reverse_exit": {
+    "passed": true,
+    "residuals": {
+      "A": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 4.440892098500626e-16,
+        "steering_rad": 0.0
+      }
+    },
+    "minimum_gap_m": null,
+    "final_state": [
+      -29.999999999999456,
+      0.0,
+      0.0,
+      9.020562075079397e-17,
+      0.0
+    ],
+    "duration_s": 31.0,
+    "controls_within_limits": true
+  },
+  "waiting_return": {
+    "passed": true,
+    "residuals": {
+      "A": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      }
+    },
+    "minimum_gap_m": null,
+    "final_state": [
+      -14.125492133770553,
+      2.1928042345435577e-15,
+      1.2392749170805069e-16,
+      2.7755575615628914e-17,
+      1.734723475976807e-17
+    ],
+    "duration_s": 13.0,
+    "controls_within_limits": true
+  }
+}

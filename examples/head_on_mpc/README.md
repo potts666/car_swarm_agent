@@ -236,3 +236,30 @@ git diff --cached --stat
 ```
 
 审阅后按自己的流程提交并推送。这里只准备第一个方向，第二个方向不混入本次提交范围。
+
+## 入口互斥预防与相遇后恢复：同构自行车模型单组对照
+
+本轮独立入口采用后轴五状态运动学自行车及加速度/转角速率输入，
+通过受限转向和圆弧机动实际积分，不调用旧预设横向日程。
+两策略共享配置、车身、控制器与原目标，只比较入口协调与遇阻恢复。
+原窄暂停区上的所测机动失败被保留，新公共转弯区地图单独保存；
+不能把结果归为旧地图复现或DMPC优越性证据。
+
+[变量表](entry_bicycle_variables.md) · [实测报告](results/entry_bicycle_001/report.md) ·
+[独立验收](results/entry_bicycle_001/validation.json) · [运动动画](results/entry_bicycle_001/motion.gif)
+
+在本目录执行，输出目录必须不存在：
+
+```bash
+OPENBLAS_NUM_THREADS=1 python3 -m unittest discover -s tests -p test_entry_bicycle.py -v
+OPENBLAS_NUM_THREADS=1 python3 scripts/run_entry_bicycle.py --output results/entry_bicycle_rerun
+OPENBLAS_NUM_THREADS=1 python3 scripts/verify_entry_bicycle.py --run results/entry_bicycle_rerun
+```
+
+新增模块：`bicycle_core.py`负责车辆积分、共同运动原语和旋转矩形验收；
+`run_entry_bicycle.py`负责单车门禁、两条主运行、完整退出候选、许可与释放；
+`verify_entry_bicycle.py`重读轨迹独立积分和重算指标；
+`report_entry_bicycle.py`生成报告、轨迹图、时间线、控制界曲线及动画。
+只需已有NumPy、Matplotlib及其Pillow依赖；复用旧BlockingDetector及候选排序规则，
+旧E3/E4横移执行层不能沿用，新版释放另用双方完整未来轨迹见证。
+离线模拟在预演计算时冻结，未验证连续时间安全、实时调度或实车动力学。

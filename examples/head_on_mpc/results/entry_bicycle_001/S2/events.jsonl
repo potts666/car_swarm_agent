@@ -1,0 +1,11 @@
+{"time_s": 126.4, "kind": "mutual_blocking_detected", "evidence": {"status": "mutual_blocking", "triggered": true, "absolute_time_s": 126.4, "mode": "NAVIGATE", "window_observed_s": 5.0, "accumulated_stall_s": 5.0, "unfinished": {"A": true, "B": true}, "actual_position_span_m": {"A": 0.020000000000000018, "B": 0.020000000000002238}, "endpoint_span_m": {"A": 0.0, "B": 0.0}, "maximum_prediction_tail_displacement_m": {"A": 0.0, "B": 0.0}, "blocked_fraction": {"A": 1.0, "B": 1.0}, "blocking_metric": "longitudinal hard-neighbor slack near activation AND goal points toward peer; not paper w_ij", "thresholds": {"window_s": 5.0, "actual_progress_m": 0.03, "prediction_endpoint_change_m": 0.03, "prediction_tail_displacement_m": 0.02, "minimum_blocked_fraction": 0.8}, "strict_deadlock_proof": false, "planning_stamp_s": 126.4}}
+{"time_s": 126.4, "kind": "role_selected", "role": "B", "selection_wait_wall_s": 0.22332422699992094}
+{"time_s": 150.4, "kind": "motion_stage_change", "car": "B", "previous": "RETREAT", "next": "ENTRY", "effective_time_s": 150.6}
+{"time_s": 163.6, "kind": "exit_complete", "car": "B"}
+{"time_s": 163.6, "kind": "pass_started", "car": "A"}
+{"time_s": 179.0, "kind": "release", "car": "A", "actual_body_tail_x": 26.74513274336291, "release_plane_abs_x": 26.0, "future_check_index": 791, "future_assumption": "execute accepted full remaining paths then stay at distinct goals; no extra reversal"}
+{"time_s": 179.0, "kind": "return_started", "car": "B"}
+{"time_s": 188.2, "kind": "car_completed", "car": "A"}
+{"time_s": 191.8, "kind": "motion_stage_change", "car": "B", "previous": "RETURN", "next": "DEPART", "effective_time_s": 192.0}
+{"time_s": 223.2, "kind": "car_completed", "car": "B"}
+{"time_s": 223.2, "kind": "both_tasks_completed"}

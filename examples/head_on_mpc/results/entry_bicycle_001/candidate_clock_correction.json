@@ -1,0 +1,16 @@
+{
+  "corrections": {
+    "A": {
+      "original_preview_sha256": "04d94f4803d0ef48ac0984a9dc70ec81eecf6979a463383b3c9a215a5ce32ee6",
+      "absolute_preview_sha256": "6e5568042f7a29771978c50e74595caf2d36282351175c7dc57b0a935ca17345",
+      "offset_s": 26.400000000000006
+    },
+    "B": {
+      "original_preview_sha256": "767cc9ff18452a448df6c45ca75dcc2547ff24ae4e537cb0864f97d924092f97",
+      "absolute_preview_sha256": "21b20bcac8cb3b66f63e2397c9bf5849bb0a943c758ceb6d637aa28d3479b5d9",
+      "offset_s": 26.400000000000006
+    }
+  },
+  "physical_trajectories_unchanged": true,
+  "reason": "explicit map from preview-local clock to frozen actual checkpoint clock"
+}

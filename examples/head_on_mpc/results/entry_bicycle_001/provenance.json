@@ -1,0 +1,16 @@
+{
+  "git_head": "69205e8554f50574840da159e5ba700c174fb3a1",
+  "sha256": {
+    "scripts/bicycle_core.py": "83de302c3ee2e7ab7f082c62dbcb8bce572001f63124f7a4a6b58caff76ab390",
+    "scripts/verify_entry_bicycle.py": "fac6be07a27ba9a9493554834dc77f6c204e5ae0e0009872fb20552125a632ae",
+    "scripts/run_entry_bicycle.py": "f817643e801db856729a00c2f767c703fa186c2bcce8cc4a8067271f31214eef",
+    "scripts/report_entry_bicycle.py": "4bcebbff75e64031258f334dc4a3373d94a18be55e8cb78e4f71865815961ba0",
+    "tests/test_entry_bicycle.py": "007ed9585c8cf291fbad4e9dfcb33f88b0806c419c794bb62944abdbec39a17d",
+    "config/entry_bicycle.json": "4b24c46180edc717cd6d7a4575d1e2847108059208cc56890e6d7485e3d18fdc",
+    "scripts/recovery_core.py": "5b70b4be795b0286be74dc31e7762f94920d0da9802a4dcc3f5cdaa6c2b14f7f"
+  },
+  "python": "3.12.3",
+  "numpy": "1.26.4",
+  "command": "python3 scripts/run_entry_bicycle.py --output examples/head_on_mpc/results/entry_bicycle_001",
+  "hardware_calibrated": false
+}

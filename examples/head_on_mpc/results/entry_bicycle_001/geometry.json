@@ -1,0 +1,48 @@
+{
+  "waiting_regions": {
+    "A": [
+      -28.0,
+      -18.0,
+      1.5,
+      5.0
+    ],
+    "B": [
+      18.0,
+      28.0,
+      -5.0,
+      -1.5
+    ]
+  },
+  "waiting_poses": {
+    "A": [
+      -22.062746066806227,
+      3.0,
+      0.0
+    ],
+    "B": [
+      22.062746066806227,
+      -3.0,
+      3.141592653589793
+    ]
+  },
+  "return_merge_poses": {
+    "A": [
+      -14.125492133612456,
+      0.0,
+      0.0
+    ],
+    "B": [
+      14.125492133612456,
+      0.0,
+      3.141592653589793
+    ]
+  },
+  "admission_rectangle": [
+    -18.0,
+    18.0,
+    -1.4,
+    1.4
+  ],
+  "occupation_definition": "rotating body intersection area exceeds 1e-5 m^2; sampled every 0.02s",
+  "reservation_definition": "one owner reserves channel during intervals with non-null owner"
+}

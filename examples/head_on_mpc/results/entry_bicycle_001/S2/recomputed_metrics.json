@@ -1,0 +1,109 @@
+{
+  "per_car": {
+    "A": {
+      "distance_m": 83.99999999999964,
+      "longitudinal_distance_m": 83.99999999999964,
+      "reverse_distance_m": 3.788636071533347e-15,
+      "waiting_sim_s": {
+        "mutex_queue": 0.0,
+        "mutual_blocking_detection": 4.8,
+        "retreat_park": 0.0,
+        "recovery_peer_hold": 37.2,
+        "maneuver_stops": 0.0
+      },
+      "stationary_per_stage_s": {
+        "BLOCKED_HOLD": 4.8,
+        "COMPLETE": 35.0,
+        "NAVIGATE": 0.06,
+        "PASS": 0.06,
+        "WAIT_PEER": 37.2
+      },
+      "waiting_region_occupancy_s": 0.0
+    },
+    "B": {
+      "distance_m": 137.87110716772065,
+      "longitudinal_distance_m": 136.39999999999816,
+      "reverse_distance_m": 23.199999999999253,
+      "waiting_sim_s": {
+        "mutex_queue": 0.0,
+        "mutual_blocking_detection": 4.8,
+        "retreat_park": 15.4,
+        "recovery_peer_hold": 0.0,
+        "maneuver_stops": 4.64
+      },
+      "stationary_per_stage_s": {
+        "BLOCKED_HOLD": 4.8,
+        "DEPART": 0.06,
+        "ENTRY": 2.32,
+        "NAVIGATE": 0.06,
+        "RETREAT": 0.06,
+        "RETREAT_PARK": 15.4,
+        "RETURN": 2.32
+      },
+      "waiting_region_occupancy_s": 34.94
+    }
+  },
+  "total_distance_m": 221.8711071677203,
+  "total_reverse_distance_m": 23.199999999999257,
+  "channel_physically_occupied_s": 68.8,
+  "waiting_sim_s": 66.84,
+  "first_body_channel_entry_sim_s": {
+    "A": 14.260000000000005,
+    "B": 17.260000000000005
+  },
+  "A_enters_first": true,
+  "communication": {
+    "messages": 1236,
+    "payload_bytes": 3086588,
+    "by_type": {
+      "current_prediction": {
+        "count": 1232,
+        "payload_bytes": 3086188
+      },
+      "role_assignment": {
+        "count": 2,
+        "payload_bytes": 228
+      },
+      "release_and_return": {
+        "count": 2,
+        "payload_bytes": 172
+      }
+    },
+    "definition": "estimated logical protocol messages; compact UTF-8 JSON envelope+payload; no actual network measurement"
+  },
+  "timing": {
+    "main_planning": {
+      "count": 616,
+      "total_s": 7.373129609994294,
+      "mean_s": 0.011969366249990737,
+      "max_s": 0.12485849700010476,
+      "over_h": 0
+    },
+    "cycle_total": {
+      "count": 616,
+      "total_s": 9.023087778996342,
+      "mean_s": 0.014647869771097957,
+      "max_s": 0.24926046699988547,
+      "over_h": 1
+    },
+    "diagnostic": {
+      "count": 1234,
+      "total_s": 1.2883624280041204,
+      "mean_s": 0.0010440538314458025,
+      "max_s": 0.09313660600014373,
+      "over_h": 0
+    },
+    "candidate": {
+      "count": 2,
+      "total_s": 0.22159594899994772,
+      "mean_s": 0.11079797449997386,
+      "max_s": 0.11105358300005719,
+      "over_h": 0
+    }
+  },
+  "channel_reserved_s_recomputed": 0.0,
+  "first_terminal_tolerance_entry_s": {
+    "A": 88.18,
+    "B": 123.18
+  }
+}

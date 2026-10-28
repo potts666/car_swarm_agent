@@ -1,0 +1,64 @@
+{
+  "results": {
+    "S1": {
+      "policy": "S1",
+      "status": "both_completed",
+      "both_completed": true,
+      "T_complete_sim_s": 79.0,
+      "completion_per_car_s": {
+        "A": 44.0,
+        "B": 79.0
+      },
+      "stop_time_sim_s": 79.0,
+      "failure": null,
+      "role": null,
+      "selection_wait_wall_s": 0.0,
+      "simulation_frozen_during_selection": true,
+      "initial_motion_build_wall_s": 5.186599992157426e-05,
+      "channel_reserved_s": 65.8000000000004,
+      "main_planning_calls": 395,
+      "optimization_solver_calls": 0,
+      "retries": 0,
+      "candidate_count": 0,
+      "diagnostic_calls": 792,
+      "minimum_actual_gap_m": 1.199999999970243,
+      "minimum_predicted_gap_m": 1.199999999970243,
+      "continuous_time_safety_proved": false,
+      "computation_mode": "offline",
+      "total_policy_wall_s": 5.698787824999954
+    },
+    "S2": {
+      "policy": "S2",
+      "status": "both_completed",
+      "both_completed": true,
+      "T_complete_sim_s": 123.19999999999999,
+      "completion_per_car_s": {
+        "A": 88.19999999999999,
+        "B": 123.19999999999999
+      },
+      "stop_time_sim_s": 123.19999999999999,
+      "failure": null,
+      "role": "B",
+      "selection_wait_wall_s": 0.22332422699992094,
+      "simulation_frozen_during_selection": true,
+      "initial_motion_build_wall_s": 7.030200004010112e-05,
+      "channel_reserved_s": 0.0,
+      "main_planning_calls": 616,
+      "optimization_solver_calls": 0,
+      "retries": 0,
+      "candidate_count": 2,
+      "diagnostic_calls": 1234,
+      "minimum_actual_gap_m": 0.6000000000013817,
+      "minimum_predicted_gap_m": 0.6000000000013817,
+      "continuous_time_safety_proved": false,
+      "computation_mode": "offline",
+      "total_policy_wall_s": 9.308686122000154
+    }
+  },
+  "paired_simulation_and_logging_wall_s": 15.216710552999984,
+  "original_full_pipeline_wall_estimate_s": 79.965238369,
+  "original_full_pipeline_wall_estimate_method": "file timestamp span: first scene.json write through original final report.md write; excludes process startup and exit; approximate, not monotonic instrumentation",
+  "final_independent_verification_wall_s": 32.157535397999936,
+  "final_render_wall_s": 28.05963188999999,
+  "final_postprocessing_process_wall_s": 60.22224555699995
+}

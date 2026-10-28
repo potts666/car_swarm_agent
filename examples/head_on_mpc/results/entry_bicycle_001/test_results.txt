@@ -1,0 +1,16 @@
+test_arc_geometry_and_return_continuity (test_entry_bicycle.BicycleTests.test_arc_geometry_and_return_continuity) ... ok
+test_atomic_simultaneous_requests (test_entry_bicycle.BicycleTests.test_atomic_simultaneous_requests) ... ok
+test_candidate_logging_keeps_checkpoint_time_and_initial_state (test_entry_bicycle.BicycleTests.test_candidate_logging_keeps_checkpoint_time_and_initial_state) ... ok
+test_detector_rejects_stale_failure_and_intentional_wait (test_entry_bicycle.BicycleTests.test_detector_rejects_stale_failure_and_intentional_wait) ... ok
+test_full_body_not_rear_axle (test_entry_bicycle.BicycleTests.test_full_body_not_rear_axle) ... ok
+test_invalid_scene_and_illegal_actuator_rejected (test_entry_bicycle.BicycleTests.test_invalid_scene_and_illegal_actuator_rejected) ... ok
+test_no_motion_from_steering_at_rest (test_entry_bicycle.BicycleTests.test_no_motion_from_steering_at_rest) ... ok
+test_park_does_not_block_goal_or_mutate_checkpoint (test_entry_bicycle.BicycleTests.test_park_does_not_block_goal_or_mutate_checkpoint) ... ok
+test_replay_detects_pose_reset (test_entry_bicycle.BicycleTests.test_replay_detects_pose_reset) ... ok
+test_reverse_crosses_zero_and_curves_with_heading (test_entry_bicycle.BicycleTests.test_reverse_crosses_zero_and_curves_with_heading) ... ok
+test_unauthorized_entry_uses_front_and_release_uses_tail (test_entry_bicycle.BicycleTests.test_unauthorized_entry_uses_front_and_release_uses_tail) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.116s
+
+OK

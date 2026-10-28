@@ -1,0 +1,27 @@
+{
+  "policy": "S2",
+  "status": "both_completed",
+  "both_completed": true,
+  "T_complete_sim_s": 123.19999999999999,
+  "completion_per_car_s": {
+    "A": 88.19999999999999,
+    "B": 123.19999999999999
+  },
+  "stop_time_sim_s": 123.19999999999999,
+  "failure": null,
+  "role": "B",
+  "selection_wait_wall_s": 0.22332422699992094,
+  "simulation_frozen_during_selection": true,
+  "initial_motion_build_wall_s": 7.030200004010112e-05,
+  "channel_reserved_s": 0.0,
+  "main_planning_calls": 616,
+  "optimization_solver_calls": 0,
+  "retries": 0,
+  "candidate_count": 2,
+  "diagnostic_calls": 1234,
+  "minimum_actual_gap_m": 0.6000000000013817,
+  "minimum_predicted_gap_m": 0.6000000000013817,
+  "continuous_time_safety_proved": false,
+  "computation_mode": "offline",
+  "total_policy_wall_s": 9.308686122000154
+}

@@ -1,0 +1,22 @@
+{
+  "sha256": {
+    "scripts/bicycle_core.py": "6d272725086c93618910c6b1f295d382745ba62533682fedb4de6ca988a34be4",
+    "scripts/verify_entry_bicycle.py": "7ecc0bb00da12ce72396c448152f6214675e793ced4e2d03fa2a6e45757a438b",
+    "scripts/run_entry_bicycle.py": "7afe935a8ec5e6ad82e7e287ca522ab1e38fa49549abd071ea7a9ca305bc19c8",
+    "scripts/report_entry_bicycle.py": "745ad10e8141b2452b407190f9969f7878bd8817d1d7d126d859298fdbdeb1b6",
+    "tests/test_entry_bicycle.py": "acbc65be4e188633c4f2c4035dfa030f2a2130a0af83df63d100e9802920a1e5",
+    "config/entry_bicycle.json": "4b24c46180edc717cd6d7a4575d1e2847108059208cc56890e6d7485e3d18fdc",
+    "entry_bicycle_variables.md": "c07fc83ed67bada937eedd28101d4e6120f759cfe93ec43b46d78b3bce1dbefe"
+  },
+  "actual_trajectory_sha256": {
+    "S1": "0e23430784fd0e34e5bdd2ffb53bb5afa8b2d03a5e0b04a00bd5a80312a8f54f",
+    "S2": "7374f1dd703dca164c025a9453302ef49c91befbf0143c94d56c237e35ca6a2f"
+  },
+  "original_command_as_executed": "OPENBLAS_NUM_THREADS=1 python3 examples/head_on_mpc/scripts/run_entry_bicycle.py --output examples/head_on_mpc/results/entry_bicycle_001",
+  "main_run_count": 2,
+  "postprocessing_only": true,
+  "last_visual_export_wall_s": 31.895249914000033,
+  "final_tests_passed": 11,
+  "final_validation_passed": true,
+  "candidate_clock_mapping_record": "candidate_clock_correction.json"
+}

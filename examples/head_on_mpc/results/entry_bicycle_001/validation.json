@@ -1,0 +1,485 @@
+{
+  "passed": true,
+  "serialized_scene_identical": true,
+  "single_vehicle": {
+    "approach_stop": {
+      "equations": {
+        "passed": true,
+        "residuals": {
+          "x_m": 7.105427357601002e-15,
+          "y_m": 0.0,
+          "psi_rad": 0.0,
+          "v_m_s": 2.7755575615628914e-17,
+          "delta_rad": 0.0,
+          "time_s": 1.0231399061311208e-14,
+          "acceleration_m_s2": 0.0,
+          "steering_rate_rad_s": 0.0,
+          "body_length_m": 0.0,
+          "body_width_m": 0.0
+        },
+        "gear_sign_jump": false
+      },
+      "road": {
+        "passed": true,
+        "residuals": {
+          "A": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 1.3322676295501878e-15,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    },
+    "waiting_return": {
+      "equations": {
+        "passed": true,
+        "residuals": {
+          "x_m": 8.171241461241152e-13,
+          "y_m": 4.569677969357144e-13,
+          "psi_rad": 1.1102230246251565e-16,
+          "v_m_s": 1.1102230246251565e-16,
+          "delta_rad": 2.7755575615628914e-17,
+          "time_s": 1.0231399061311208e-14,
+          "acceleration_m_s2": 0.0,
+          "steering_rate_rad_s": 0.0,
+          "body_length_m": 4.440892098500626e-15,
+          "body_width_m": 1.5543122344752192e-15
+        },
+        "gear_sign_jump": false
+      },
+      "road": {
+        "passed": true,
+        "residuals": {
+          "A": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    },
+    "waiting_entry": {
+      "equations": {
+        "passed": true,
+        "residuals": {
+          "x_m": 8.171241461241152e-13,
+          "y_m": 4.569677969357144e-13,
+          "psi_rad": 1.1102230246251565e-16,
+          "v_m_s": 1.1102230246251565e-16,
+          "delta_rad": 2.7755575615628914e-17,
+          "time_s": 1.0231399061311208e-14,
+          "acceleration_m_s2": 0.0,
+          "steering_rate_rad_s": 0.0,
+          "body_length_m": 3.552713678800501e-15,
+          "body_width_m": 2.220446049250313e-15
+        },
+        "gear_sign_jump": false
+      },
+      "road": {
+        "passed": true,
+        "residuals": {
+          "A": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    },
+    "reverse_exit": {
+      "equations": {
+        "passed": true,
+        "residuals": {
+          "x_m": 3.552713678800501e-15,
+          "y_m": 0.0,
+          "psi_rad": 0.0,
+          "v_m_s": 2.7755575615628914e-17,
+          "delta_rad": 0.0,
+          "time_s": 1.81903103690928e-14,
+          "acceleration_m_s2": 0.0,
+          "steering_rate_rad_s": 0.0,
+          "body_length_m": 8.881784197001252e-16,
+          "body_width_m": 0.0
+        },
+        "gear_sign_jump": false
+      },
+      "road": {
+        "passed": true,
+        "residuals": {
+          "A": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 4.440892098500626e-16,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    }
+  },
+  "policies": {
+    "S1": {
+      "passed": true,
+      "trajectory": {
+        "passed": true,
+        "residuals": {
+          "A": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 1.3322676295501878e-15,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 1.3322676295501878e-15,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "pair_gap_m": 0.0
+        },
+        "minimum_gap_m": 1.199999999970243
+      },
+      "component_equations": {
+        "A": {
+          "passed": true,
+          "residuals": {
+            "x_m": 7.105427357601002e-15,
+            "y_m": 0.0,
+            "psi_rad": 0.0,
+            "v_m_s": 2.7755575615628914e-17,
+            "delta_rad": 0.0,
+            "time_s": 1.81903103690928e-14,
+            "acceleration_m_s2": 0.0,
+            "steering_rate_rad_s": 0.0,
+            "body_length_m": 8.881784197001252e-16,
+            "body_width_m": 0.0
+          },
+          "gear_sign_jump": false
+        },
+        "B": {
+          "passed": true,
+          "residuals": {
+            "x_m": 8.171241461241152e-13,
+            "y_m": 4.569677969357144e-13,
+            "psi_rad": 4.440892098500626e-16,
+            "v_m_s": 1.1102230246251565e-16,
+            "delta_rad": 2.7755575615628914e-17,
+            "time_s": 1.81903103690928e-14,
+            "acceleration_m_s2": 6.661338147750939e-16,
+            "steering_rate_rad_s": 0.0,
+            "body_length_m": 3.552713678800501e-15,
+            "body_width_m": 2.4424906541753444e-15
+          },
+          "gear_sign_jump": false
+        }
+      },
+      "predictions_passed": true,
+      "minimum_replayed_prediction_gap_m": 1.199999999970243,
+      "prediction_state_max_error": 3.7122305229786434e-11,
+      "initial_same": true,
+      "protocol_errors": [],
+      "unauthorized_entry_absent": true,
+      "release_full_body_and_future_passed": true,
+      "candidate_replay_passed": true,
+      "reported_success_consistent": true,
+      "terminal": {
+        "A": true,
+        "B": true
+      },
+      "message_bytes_valid": true,
+      "metrics": {
+        "per_car": {
+          "A": {
+            "distance_m": 83.99999999999866,
+            "longitudinal_distance_m": 83.99999999999866,
+            "reverse_distance_m": 3.157196726277789e-15,
+            "waiting_sim_s": {
+              "mutex_queue": 0.0,
+              "mutual_blocking_detection": 0.0,
+              "retreat_park": 0.0,
+              "recovery_peer_hold": 0.0,
+              "maneuver_stops": 0.0
+            },
+            "stationary_per_stage_s": {
+              "COMPLETE": 35.0,
+              "NAVIGATE": 0.06
+            },
+            "waiting_region_occupancy_s": 0.0
+          },
+          "B": {
+            "distance_m": 91.47110716772185,
+            "longitudinal_distance_m": 89.99999999999936,
+            "reverse_distance_m": 5.845324224651449e-15,
+            "waiting_sim_s": {
+              "mutex_queue": 9.700000000000001,
+              "mutual_blocking_detection": 0.0,
+              "retreat_park": 0.0,
+              "recovery_peer_hold": 0.0,
+              "maneuver_stops": 4.64
+            },
+            "stationary_per_stage_s": {
+              "DEPART": 0.06,
+              "ENTRY": 2.32,
+              "MUTEX_WAIT": 9.6,
+              "NAVIGATE": 0.02,
+              "QUEUE_APPROACH": 0.06,
+              "QUEUE_BRAKE": 0.04,
+              "RETURN": 2.32
+            },
+            "waiting_region_occupancy_s": 29.14
+          }
+        },
+        "total_distance_m": 175.4711071677205,
+        "total_reverse_distance_m": 9.002520950929239e-15,
+        "channel_physically_occupied_s": 24.740000000000002,
+        "waiting_sim_s": 14.34,
+        "first_body_channel_entry_sim_s": {
+          "A": 14.260000000000005,
+          "B": 48.94
+        },
+        "A_enters_first": true,
+        "communication": {
+          "messages": 10,
+          "payload_bytes": 809,
+          "by_type": {
+            "request": {
+              "count": 3,
+              "payload_bytes": 270
+            },
+            "grant": {
+              "count": 2,
+              "payload_bytes": 148
+            },
+            "deny": {
+              "count": 1,
+              "payload_bytes": 73
+            },
+            "cleared": {
+              "count": 2,
+              "payload_bytes": 148
+            },
+            "release": {
+              "count": 2,
+              "payload_bytes": 170
+            }
+          },
+          "definition": "estimated logical protocol messages; compact UTF-8 JSON envelope+payload; no actual network measurement"
+        },
+        "timing": {
+          "main_planning": {
+            "count": 395,
+            "total_s": 4.653277635999757,
+            "mean_s": 0.01178044971139179,
+            "max_s": 0.11201491199994962,
+            "over_h": 0
+          },
+          "cycle_total": {
+            "count": 395,
+            "total_s": 5.52622575399937,
+            "mean_s": 0.013990444946833847,
+            "max_s": 0.11394500300002619,
+            "over_h": 0
+          },
+          "diagnostic": {
+            "count": 792,
+            "total_s": 0.8384683759986729,
+            "mean_s": 0.0010586721919175163,
+            "max_s": 0.0800140870001087,
+            "over_h": 0
+          }
+        },
+        "channel_reserved_s_recomputed": 65.8,
+        "first_terminal_tolerance_entry_s": {
+          "A": 43.97999999999999,
+          "B": 78.97999999999999
+        }
+      }
+    },
+    "S2": {
+      "passed": true,
+      "trajectory": {
+        "passed": true,
+        "residuals": {
+          "A": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 1.3322676295501878e-15,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 1.3322676295501878e-15,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "pair_gap_m": 0.0
+        },
+        "minimum_gap_m": 0.6000000000013817
+      },
+      "component_equations": {
+        "A": {
+          "passed": true,
+          "residuals": {
+            "x_m": 7.105427357601002e-15,
+            "y_m": 0.0,
+            "psi_rad": 0.0,
+            "v_m_s": 2.220446049250313e-16,
+            "delta_rad": 0.0,
+            "time_s": 1.81903103690928e-14,
+            "acceleration_m_s2": 0.0,
+            "steering_rate_rad_s": 0.0,
+            "body_length_m": 3.552713678800501e-15,
+            "body_width_m": 0.0
+          },
+          "gear_sign_jump": false
+        },
+        "B": {
+          "passed": true,
+          "residuals": {
+            "x_m": 8.171241461241152e-13,
+            "y_m": 4.569677969357144e-13,
+            "psi_rad": 4.440892098500626e-16,
+            "v_m_s": 1.1102230246251565e-16,
+            "delta_rad": 2.7755575615628914e-17,
+            "time_s": 1.81903103690928e-14,
+            "acceleration_m_s2": 0.0,
+            "steering_rate_rad_s": 0.0,
+            "body_length_m": 3.552713678800501e-15,
+            "body_width_m": 2.4424906541753444e-15
+          },
+          "gear_sign_jump": false
+        }
+      },
+      "predictions_passed": true,
+      "minimum_replayed_prediction_gap_m": 0.6000000000013799,
+      "prediction_state_max_error": 3.7122305229786434e-11,
+      "initial_same": true,
+      "protocol_errors": [],
+      "unauthorized_entry_absent": true,
+      "release_full_body_and_future_passed": true,
+      "candidate_replay_passed": true,
+      "reported_success_consistent": true,
+      "terminal": {
+        "A": true,
+        "B": true
+      },
+      "message_bytes_valid": true,
+      "metrics": {
+        "per_car": {
+          "A": {
+            "distance_m": 83.99999999999964,
+            "longitudinal_distance_m": 83.99999999999964,
+            "reverse_distance_m": 3.788636071533347e-15,
+            "waiting_sim_s": {
+              "mutex_queue": 0.0,
+              "mutual_blocking_detection": 4.8,
+              "retreat_park": 0.0,
+              "recovery_peer_hold": 37.2,
+              "maneuver_stops": 0.0
+            },
+            "stationary_per_stage_s": {
+              "BLOCKED_HOLD": 4.8,
+              "COMPLETE": 35.0,
+              "NAVIGATE": 0.06,
+              "PASS": 0.06,
+              "WAIT_PEER": 37.2
+            },
+            "waiting_region_occupancy_s": 0.0
+          },
+          "B": {
+            "distance_m": 137.87110716772065,
+            "longitudinal_distance_m": 136.39999999999816,
+            "reverse_distance_m": 23.199999999999253,
+            "waiting_sim_s": {
+              "mutex_queue": 0.0,
+              "mutual_blocking_detection": 4.8,
+              "retreat_park": 15.4,
+              "recovery_peer_hold": 0.0,
+              "maneuver_stops": 4.64
+            },
+            "stationary_per_stage_s": {
+              "BLOCKED_HOLD": 4.8,
+              "DEPART": 0.06,
+              "ENTRY": 2.32,
+              "NAVIGATE": 0.06,
+              "RETREAT": 0.06,
+              "RETREAT_PARK": 15.4,
+              "RETURN": 2.32
+            },
+            "waiting_region_occupancy_s": 34.94
+          }
+        },
+        "total_distance_m": 221.8711071677203,
+        "total_reverse_distance_m": 23.199999999999257,
+        "channel_physically_occupied_s": 68.8,
+        "waiting_sim_s": 66.84,
+        "first_body_channel_entry_sim_s": {
+          "A": 14.260000000000005,
+          "B": 17.260000000000005
+        },
+        "A_enters_first": true,
+        "communication": {
+          "messages": 1236,
+          "payload_bytes": 3086588,
+          "by_type": {
+            "current_prediction": {
+              "count": 1232,
+              "payload_bytes": 3086188
+            },
+            "role_assignment": {
+              "count": 2,
+              "payload_bytes": 228
+            },
+            "release_and_return": {
+              "count": 2,
+              "payload_bytes": 172
+            }
+          },
+          "definition": "estimated logical protocol messages; compact UTF-8 JSON envelope+payload; no actual network measurement"
+        },
+        "timing": {
+          "main_planning": {
+            "count": 616,
+            "total_s": 7.373129609994294,
+            "mean_s": 0.011969366249990737,
+            "max_s": 0.12485849700010476,
+            "over_h": 0
+          },
+          "cycle_total": {
+            "count": 616,
+            "total_s": 9.023087778996342,
+            "mean_s": 0.014647869771097957,
+            "max_s": 0.24926046699988547,
+            "over_h": 1
+          },
+          "diagnostic": {
+            "count": 1234,
+            "total_s": 1.2883624280041204,
+            "mean_s": 0.0010440538314458025,
+            "max_s": 0.09313660600014373,
+            "over_h": 0
+          },
+          "candidate": {
+            "count": 2,
+            "total_s": 0.22159594899994772,
+            "mean_s": 0.11079797449997386,
+            "max_s": 0.11105358300005719,
+            "over_h": 0
+          }
+        },
+        "channel_reserved_s_recomputed": 0.0,
+        "first_terminal_tolerance_entry_s": {
+          "A": 88.18,
+          "B": 123.18
+        }
+      }
+    }
+  },
+  "scope": "dense 0.02s sampled replay; no continuous-time safety proof; successful completion is a separate outcome"
+}
