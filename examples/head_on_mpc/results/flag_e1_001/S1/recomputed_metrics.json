@@ -1,0 +1,107 @@
+{
+  "per_car": {
+    "A": {
+      "distance_m": 83.99999999999866,
+      "longitudinal_distance_m": 83.99999999999866,
+      "reverse_distance_m": 3.157196726277789e-15,
+      "waiting_sim_s": {
+        "mutex_queue": 0.0,
+        "mutual_blocking_detection": 0.0,
+        "retreat_park": 0.0,
+        "recovery_peer_hold": 0.0,
+        "maneuver_stops": 0.0
+      },
+      "stationary_per_stage_s": {
+        "COMPLETE": 35.0,
+        "NAVIGATE": 0.06
+      },
+      "waiting_region_occupancy_s": 0.0
+    },
+    "B": {
+      "distance_m": 91.47110716772185,
+      "longitudinal_distance_m": 89.99999999999936,
+      "reverse_distance_m": 5.845324224651449e-15,
+      "waiting_sim_s": {
+        "mutex_queue": 9.700000000000001,
+        "mutual_blocking_detection": 0.0,
+        "retreat_park": 0.0,
+        "recovery_peer_hold": 0.0,
+        "maneuver_stops": 4.64
+      },
+      "stationary_per_stage_s": {
+        "DEPART": 0.06,
+        "ENTRY": 2.32,
+        "MUTEX_WAIT": 9.6,
+        "NAVIGATE": 0.02,
+        "QUEUE_APPROACH": 0.06,
+        "QUEUE_BRAKE": 0.04,
+        "RETURN": 2.32
+      },
+      "waiting_region_occupancy_s": 29.14
+    }
+  },
+  "total_distance_m": 175.4711071677205,
+  "total_reverse_distance_m": 9.002520950929239e-15,
+  "channel_physically_occupied_s": 24.740000000000002,
+  "waiting_sim_s": 14.34,
+  "first_body_channel_entry_sim_s": {
+    "A": 14.260000000000005,
+    "B": 48.94
+  },
+  "A_enters_first": true,
+  "communication": {
+    "messages": 8,
+    "payload_bytes": 645,
+    "by_type": {
+      "request": {
+        "count": 2,
+        "payload_bytes": 180
+      },
+      "grant": {
+        "count": 1,
+        "payload_bytes": 74
+      },
+      "deny": {
+        "count": 1,
+        "payload_bytes": 73
+      },
+      "cleared": {
+        "count": 2,
+        "payload_bytes": 148
+      },
+      "release": {
+        "count": 2,
+        "payload_bytes": 170
+      }
+    },
+    "definition": "estimated logical protocol messages; compact UTF-8 JSON envelope+payload; no actual network measurement"
+  },
+  "timing": {
+    "main_planning": {
+      "count": 395,
+      "total_s": 30.64562380199368,
+      "mean_s": 0.07758385772656627,
+      "max_s": 0.2885007410000071,
+      "over_h": 9
+    },
+    "cycle_total": {
+      "count": 395,
+      "total_s": 31.474463279988413,
+      "mean_s": 0.079682185518958,
+      "max_s": 0.29068510999968566,
+      "over_h": 13
+    },
+    "diagnostic": {
+      "count": 792,
+      "total_s": 0.8226881459954711,
+      "mean_s": 0.0010387476590851907,
+      "max_s": 0.0852916600001663,
+      "over_h": 0
+    }
+  },
+  "channel_reserved_s_recomputed": 65.8,
+  "first_terminal_tolerance_entry_s": {
+    "A": 43.97999999999999,
+    "B": 78.97999999999999
+  }
+}

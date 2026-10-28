@@ -125,7 +125,7 @@ def candidate(states, car, scene, directory, checkpoint_time):
     return result
 
 
-def run_policy(scene, policy, directory):
+def run_policy(scene, policy, directory, transport=None):
     directory.mkdir()
     started=time.perf_counter();states={c:np.array(scene['initial'][c],float) for c in CARS}
     events=[];messages=[];forecasts=[];checks=[];planning=[];rows=[];detections=[]
@@ -149,7 +149,7 @@ def run_policy(scene, policy, directory):
 
     def grant_requests(requests):
         nonlocal owner
-        owner,grants=arbitrate(owner,requests)
+        owner,grants=(transport.request(requests) if transport else arbitrate(owner,requests))
         for stamp,c in requests:
             event('request',car=c,request_stamp_s=stamp)
             message(c,'manager','request',dict(car=c,stamp_s=stamp))
@@ -162,6 +162,8 @@ def run_policy(scene, policy, directory):
 
     for cycle in range(round(scene['timeout_s']/scene['h'])):
         now=scene['epoch_s']+cycle*scene['h'];cycle_started=time.perf_counter()
+        if transport:
+            transport.cycle=cycle
         if policy=='S1':
             requests=[(now,c) for c in CARS if c not in requested and SIGN[c]*states[c][0]>=-scene['request_rear_axle_abs_x']-1e-8]
             requested.update(c for _,c in requests)
@@ -172,6 +174,8 @@ def run_policy(scene, policy, directory):
                 done[c]=now-scene['epoch_s'];status[c]='COMPLETE';event('car_completed',car=c)
             elif not queues[c] and status[c]=='QUEUE_MANEUVER':
                 status[c]='MUTEX_WAIT';event('waiting_ready',car=c,pose=states[c].tolist())
+                if transport:
+                    transport.ready(c)
         if policy=='S2' and mode=='EXIT' and not queues[role]:
             status[role]='RETREAT_PARK';passer='B' if role=='A' else 'A'
             queues[passer]=deque(drive(SIGN[passer]*(scene['goals'][passer][0]-states[passer][0]),scene,'PASS'))
@@ -199,6 +203,11 @@ def run_policy(scene, policy, directory):
                     final={c:witness[c][-1].tolist() for c in CARS},check=proof)])
                 if policy=='S1':
                     message(holder,'manager','cleared',dict(car=holder));owner=None
+                    if transport:
+                        owner=transport.release(holder,proof)
+                        if owner==waiting and status[waiting]=='MUTEX_WAIT':
+                            queues[waiting]=deque(return_plan(states[waiting],waiting,scene));status[waiting]='RETURNING'
+                            event('grant',car=waiting,owner=owner)
                     message('manager',waiting,'release',dict(previous_owner=holder))
                     if status[waiting]=='MUTEX_WAIT':
                         grant_requests([(now,waiting)])
@@ -215,6 +224,8 @@ def run_policy(scene, policy, directory):
             fallback=status[c] if status[c]!='NAVIGATE' else 'BLOCKED_HOLD'
             controls[c]+=[(0.,0.,fallback)]*max(0,scene['N']-len(controls[c]))
         forecast={c:rollout(states[c],controls[c],scene,cycles=scene['N']) for c in CARS}
+        if transport:
+            transport.constraints(states,queues,forecast,status,scene)
         plan_wall=time.perf_counter()-cycle_started
         check_started=time.perf_counter();check=audit(forecast,scene)
         check_wall=time.perf_counter()-check_started

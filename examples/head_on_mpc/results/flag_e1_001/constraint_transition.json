@@ -1,0 +1,114 @@
+{
+  "passed": true,
+  "B_wait": {
+    "car": "B",
+    "effective_cycle": 126,
+    "receive_cycle": 126,
+    "state_version": 4,
+    "prediction_accepted": true,
+    "g_i": 0,
+    "phase": "MUTEX_WAIT",
+    "mode": "WAIT",
+    "s_origin_m": 0.0,
+    "s_min_m": 0.0,
+    "s_max_m": 0.0,
+    "reference_end_s_m": 0.0,
+    "terminal_stop": true,
+    "forbidden_body_rectangle": [
+      -18.0,
+      18.0,
+      -1.4,
+      1.4
+    ],
+    "road_rectangles": [
+      [
+        -52.0,
+        52.0,
+        -1.4,
+        1.4
+      ],
+      [
+        -42.0,
+        -10.0,
+        -5.5,
+        5.5
+      ],
+      [
+        10.0,
+        42.0,
+        -5.5,
+        5.5
+      ]
+    ],
+    "vehicle_limits": {
+      "length": 4.5,
+      "width": 1.8,
+      "L": 2.7,
+      "front": 0.8,
+      "rear": 1.0,
+      "v_fwd": 2.0,
+      "v_rev": 1.0,
+      "a_min": -1.0,
+      "a_max": 1.0,
+      "delta_max": 0.5,
+      "omega_max": 1.0
+    },
+    "pair_minimum_gap_m": 0.5,
+    "sample_s": 0.02,
+    "qp_implemented": false
+  },
+  "B_granted": {
+    "car": "B",
+    "effective_cycle": 174,
+    "receive_cycle": 174,
+    "state_version": 5,
+    "prediction_accepted": true,
+    "g_i": 1,
+    "phase": "RETURNING",
+    "mode": "PASS",
+    "s_origin_m": 0.0,
+    "s_min_m": 0.0,
+    "s_max_m": 66.79829965074552,
+    "reference_end_s_m": 66.79829965074552,
+    "terminal_stop": false,
+    "forbidden_body_rectangle": null,
+    "road_rectangles": [
+      [
+        -52.0,
+        52.0,
+        -1.4,
+        1.4
+      ],
+      [
+        -42.0,
+        -10.0,
+        -5.5,
+        5.5
+      ],
+      [
+        10.0,
+        42.0,
+        -5.5,
+        5.5
+      ]
+    ],
+    "vehicle_limits": {
+      "length": 4.5,
+      "width": 1.8,
+      "L": 2.7,
+      "front": 0.8,
+      "rear": 1.0,
+      "v_fwd": 2.0,
+      "v_rev": 1.0,
+      "a_min": -1.0,
+      "a_max": 1.0,
+      "delta_max": 0.5,
+      "omega_max": 1.0
+    },
+    "pair_minimum_gap_m": 0.5,
+    "sample_s": 0.02,
+    "qp_implemented": false
+  },
+  "release_A_cycle": 174,
+  "grant_B_cycle": 174
+}

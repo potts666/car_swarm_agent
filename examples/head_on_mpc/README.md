@@ -263,3 +263,7 @@ OPENBLAS_NUM_THREADS=1 python3 scripts/verify_entry_bicycle.py --run results/ent
 只需已有NumPy、Matplotlib及其Pillow依赖；复用旧BlockingDetector及候选排序规则，
 旧E3/E4横移执行层不能沿用，新版释放另用双方完整未来轨迹见证。
 离线模拟在预演计算时冻结，未验证连续时间安全、实时调度或实车动力学。
+
+## E1：真实 ROS 2 通道许可接入
+
+[最小接口及复现命令](flag_e1_interface.md) · [独立结果](results/flag_e1_001/report.md)。入口 `scripts/run_flag_e1.py` 复用原 `entry_bicycle.json` 与非线性自行车控制，使用三个 ROS 2 节点实际投递请求、通道状态、等待就绪及释放报告。车辆订阅的许可映射为固定参考进度边界和车身保护区约束；E2/E3 的 QP 求解与优化闭环另行实施。

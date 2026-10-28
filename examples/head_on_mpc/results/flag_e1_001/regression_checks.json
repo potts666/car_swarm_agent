@@ -1,0 +1,14 @@
+{
+  "interface_tests_passed": 3,
+  "original_bicycle_tests_passed": 11,
+  "baseline_both_completed": true,
+  "baseline_actual_csv_identical": true,
+  "baseline_directory": "/tmp/e1_baseline_tinky8hi/S1",
+  "commands": [
+    "source /opt/ros/jazzy/setup.bash && OPENBLAS_NUM_THREADS=1 python3 -m unittest discover -s tests -p test_flag_e1.py",
+    "source /opt/ros/jazzy/setup.bash && OPENBLAS_NUM_THREADS=1 python3 -m unittest discover -s tests -p test_entry_bicycle.py"
+  ],
+  "ros_package_build_passed": true,
+  "build_command": "source /opt/ros/jazzy/setup.bash && colcon --log-base /tmp/e1_colcon_log build --base-paths examples/head_on_mpc --packages-select head_on_mpc --build-base /tmp/e1_colcon_build --install-base /tmp/e1_colcon_install",
+  "git_diff_check_passed": true
+}

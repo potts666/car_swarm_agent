@@ -1,0 +1,476 @@
+diff --git a/examples/head_on_mpc/README.md b/examples/head_on_mpc/README.md
+index 84e83e5..5798eef 100644
+--- a/examples/head_on_mpc/README.md
++++ b/examples/head_on_mpc/README.md
+@@ -263,3 +263,7 @@ OPENBLAS_NUM_THREADS=1 python3 scripts/verify_entry_bicycle.py --run results/ent
+ 只需已有NumPy、Matplotlib及其Pillow依赖；复用旧BlockingDetector及候选排序规则，
+ 旧E3/E4横移执行层不能沿用，新版释放另用双方完整未来轨迹见证。
+ 离线模拟在预演计算时冻结，未验证连续时间安全、实时调度或实车动力学。
++
++## E1：真实 ROS 2 通道许可接入
++
++[最小接口及复现命令](flag_e1_interface.md) · [独立结果](results/flag_e1_001/report.md)。入口 `scripts/run_flag_e1.py` 复用原 `entry_bicycle.json` 与非线性自行车控制，使用三个 ROS 2 节点实际投递请求、通道状态、等待就绪及释放报告。车辆订阅的许可映射为固定参考进度边界和车身保护区约束；E2/E3 的 QP 求解与优化闭环另行实施。
+diff --git a/examples/head_on_mpc/package.xml b/examples/head_on_mpc/package.xml
+index 0c8bd8d..31ee6dd 100644
+--- a/examples/head_on_mpc/package.xml
++++ b/examples/head_on_mpc/package.xml
+@@ -7,6 +7,7 @@
+   <license>Apache-2.0</license>
+   <buildtool_depend>ament_cmake</buildtool_depend>
+   <exec_depend>rclpy</exec_depend>
++  <exec_depend>std_msgs</exec_depend>
+   <exec_depend>geometry_msgs</exec_depend>
+   <exec_depend>visualization_msgs</exec_depend>
+   <exec_depend>tf2_ros</exec_depend>
+diff --git a/examples/head_on_mpc/scripts/run_entry_bicycle.py b/examples/head_on_mpc/scripts/run_entry_bicycle.py
+index 3ab1118..57a51ac 100644
+--- a/examples/head_on_mpc/scripts/run_entry_bicycle.py
++++ b/examples/head_on_mpc/scripts/run_entry_bicycle.py
+@@ -125,7 +125,7 @@ def candidate(states, car, scene, directory, checkpoint_time):
+     return result
+ 
+ 
+-def run_policy(scene, policy, directory):
++def run_policy(scene, policy, directory, transport=None):
+     directory.mkdir()
+     started=time.perf_counter();states={c:np.array(scene['initial'][c],float) for c in CARS}
+     events=[];messages=[];forecasts=[];checks=[];planning=[];rows=[];detections=[]
+@@ -149,7 +149,7 @@ def run_policy(scene, policy, directory):
+ 
+     def grant_requests(requests):
+         nonlocal owner
+-        owner,grants=arbitrate(owner,requests)
++        owner,grants=(transport.request(requests) if transport else arbitrate(owner,requests))
+         for stamp,c in requests:
+             event('request',car=c,request_stamp_s=stamp)
+             message(c,'manager','request',dict(car=c,stamp_s=stamp))
+@@ -162,6 +162,8 @@ def run_policy(scene, policy, directory):
+ 
+     for cycle in range(round(scene['timeout_s']/scene['h'])):
+         now=scene['epoch_s']+cycle*scene['h'];cycle_started=time.perf_counter()
++        if transport:
++            transport.cycle=cycle
+         if policy=='S1':
+             requests=[(now,c) for c in CARS if c not in requested and SIGN[c]*states[c][0]>=-scene['request_rear_axle_abs_x']-1e-8]
+             requested.update(c for _,c in requests)
+@@ -172,6 +174,8 @@ def run_policy(scene, policy, directory):
+                 done[c]=now-scene['epoch_s'];status[c]='COMPLETE';event('car_completed',car=c)
+             elif not queues[c] and status[c]=='QUEUE_MANEUVER':
+                 status[c]='MUTEX_WAIT';event('waiting_ready',car=c,pose=states[c].tolist())
++                if transport:
++                    transport.ready(c)
+         if policy=='S2' and mode=='EXIT' and not queues[role]:
+             status[role]='RETREAT_PARK';passer='B' if role=='A' else 'A'
+             queues[passer]=deque(drive(SIGN[passer]*(scene['goals'][passer][0]-states[passer][0]),scene,'PASS'))
+@@ -199,6 +203,11 @@ def run_policy(scene, policy, directory):
+                     final={c:witness[c][-1].tolist() for c in CARS},check=proof)])
+                 if policy=='S1':
+                     message(holder,'manager','cleared',dict(car=holder));owner=None
++                    if transport:
++                        owner=transport.release(holder,proof)
++                        if owner==waiting and status[waiting]=='MUTEX_WAIT':
++                            queues[waiting]=deque(return_plan(states[waiting],waiting,scene));status[waiting]='RETURNING'
++                            event('grant',car=waiting,owner=owner)
+                     message('manager',waiting,'release',dict(previous_owner=holder))
+                     if status[waiting]=='MUTEX_WAIT':
+                         grant_requests([(now,waiting)])
+@@ -215,6 +224,8 @@ def run_policy(scene, policy, directory):
+             fallback=status[c] if status[c]!='NAVIGATE' else 'BLOCKED_HOLD'
+             controls[c]+=[(0.,0.,fallback)]*max(0,scene['N']-len(controls[c]))
+         forecast={c:rollout(states[c],controls[c],scene,cycles=scene['N']) for c in CARS}
++        if transport:
++            transport.constraints(states,queues,forecast,status,scene)
+         plan_wall=time.perf_counter()-cycle_started
+         check_started=time.perf_counter();check=audit(forecast,scene)
+         check_wall=time.perf_counter()-check_started
+diff --git a/examples/head_on_mpc/scripts/flag_constraints.py b/examples/head_on_mpc/scripts/flag_constraints.py
+new file mode 100644
+index 0000000..3cccd44
+--- /dev/null
++++ b/examples/head_on_mpc/scripts/flag_constraints.py
+@@ -0,0 +1,32 @@
++"""E1 fixed-reference progress bounds; no QP solver is claimed here."""
++import numpy as np
++from bicycle_core import corners, clipped_area, rollout
++
++
++def construct(car, g, state, commands, phase, scene):
++    if car not in ('A', 'B') or type(g) is not int or g not in (0, 1):
++        raise ValueError('invalid vehicle or received permission')
++    reference = rollout(state, list(commands), scene)
++    # Progress is cumulative rear-axle arc length on this fixed remaining reference.
++    progress = np.r_[0., np.cumsum(np.linalg.norm(np.diff(reference[:, :2], axis=0), axis=1))]
++    region = [-scene['admission_protection_abs_x'], scene['admission_protection_abs_x'],
++              -scene['W']/2, scene['W']/2]
++    overlap = np.array([clipped_area(b, region) for b in corners(reference, scene['vehicle'])])
++    bad = np.flatnonzero(overlap > scene['tolerance'])
++    upper = float(progress[max(0, bad[0]-1)] if len(bad) else progress[-1]) if not g else float(progress[-1])
++    return dict(g_i=g, phase=phase, mode='PASS' if g else 'WAIT',
++                s_origin_m=0., s_min_m=0., s_max_m=upper,
++                reference_end_s_m=float(progress[-1]), terminal_stop=not g,
++                forbidden_body_rectangle=None if g else region,
++                road_rectangles=scene['road_rectangles'], vehicle_limits=scene['vehicle'],
++                pair_minimum_gap_m=scene['s_min'], sample_s=scene['sample_s'],
++                qp_implemented=False)
++
++
++def accepts(parameters, prediction, scene):
++    progress = float(np.linalg.norm(np.diff(prediction[:, :2], axis=0), axis=1).sum())
++    if progress > parameters['s_max_m'] + scene['tolerance']:
++        return False
++    region = parameters['forbidden_body_rectangle']
++    return region is None or all(clipped_area(b, region) <= scene['tolerance']
++                                 for b in corners(prediction, scene['vehicle']))
+diff --git a/examples/head_on_mpc/scripts/ros_flag.py b/examples/head_on_mpc/scripts/ros_flag.py
+new file mode 100644
+index 0000000..d757489
+--- /dev/null
++++ b/examples/head_on_mpc/scripts/ros_flag.py
+@@ -0,0 +1,156 @@
++"""Three ROS 2 nodes, reliable DDS topics, cycle-synchronous ideal communication."""
++import json
++import time
++import rclpy
++from rclpy.node import Node
++from rclpy.executors import SingleThreadedExecutor
++from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
++from std_msgs.msg import String
++from flag_constraints import construct, accepts
++
++
++class Channel:
++    def __init__(self):
++        self.owner = None
++        self.pending = {}
++        self.ready = set()
++        self.released = set()
++        self.first = True
++
++    def request(self, car, cycle):
++        if car not in ('A', 'B') or car in self.released:
++            raise ValueError('invalid requesting vehicle')
++        self.pending.setdefault(car, cycle)
++
++    def release(self, car, checks):
++        if car != self.owner or checks.get('passed') is not True or checks.get('both_future_goals') is not True:
++            raise ValueError('release requires owner and accepted full future check')
++        self.released.add(car)
++        self.owner = None
++
++    def grant(self):
++        eligible = [c for c in self.pending if self.first or c in self.ready]
++        if self.owner is None and eligible:
++            self.owner = min(eligible, key=lambda c: (self.pending[c], c))
++            del self.pending[self.owner]
++            self.first = False
++        return self.owner
++
++
++class RosFlag:
++    def __init__(self):
++        rclpy.init()
++        self.cycle = 0
++        self.log = []
++        self.constraint_log = []
++        self.channel = Channel()
++        self.received = {c: None for c in ('A', 'B')}
++        self.version = 0
++        self.manager = Node('e1_channel')
++        self.cars = {c: Node('e1_vehicle_'+c.lower()) for c in ('A', 'B')}
++        self.executor = SingleThreadedExecutor()
++        for node in [self.manager, *self.cars.values()]:
++            self.executor.add_node(node)
++        qos = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
++        state_qos = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
++                              durability=DurabilityPolicy.TRANSIENT_LOCAL)
++        self.pub_state = self.manager.create_publisher(String, '/e1/channel/state', state_qos)
++        self.subs = []
++        self.publishers = {}
++        self.count = 0
++        for kind in ('request', 'ready', 'release'):
++            self.subs.append(self.manager.create_subscription(String, '/e1/channel/'+kind,
++                lambda msg, k=kind: self.on_channel(k, msg), qos))
++            for car, node in self.cars.items():
++                self.publishers[car, kind] = node.create_publisher(String, '/e1/channel/'+kind, qos)
++        for car, node in self.cars.items():
++            self.subs.append(node.create_subscription(String, '/e1/channel/state',
++                lambda msg, c=car: self.on_state(c, msg), state_qos))
++        self.wait(lambda: self.pub_state.get_subscription_count()==2 and
++                  all(p.get_subscription_count()==1 for p in self.publishers.values()))
++        self.publish_state()
++
++    def record(self, kind, **fields):
++        self.log.append(dict(sequence=len(self.log), cycle=self.cycle,
++                             wall_monotonic_ns=time.monotonic_ns(), kind=kind, **fields))
++
++    def wait(self, predicate):
++        end = time.monotonic()+10
++        while not predicate():
++            if time.monotonic() > end:
++                raise TimeoutError('ROS 2 discovery/delivery timeout')
++            self.executor.spin_once(timeout_sec=0.01)
++
++    def send(self, car, kind, payload):
++        self.record('publish_'+kind, vehicle_id=car, payload=payload)
++        self.publishers[car, kind].publish(String(data=json.dumps(payload)))
++
++    def on_channel(self, kind, msg):
++        packet = json.loads(msg.data)
++        car = packet['vehicle_id']
++        self.record('receive_'+kind, vehicle_id=car, payload=packet)
++        if kind == 'request':
++            self.channel.request(car, self.cycle)
++        elif kind == 'ready':
++            if car not in self.channel.pending:
++                raise ValueError('ready without pending request')
++            self.channel.ready.add(car)
++        else:
++            self.channel.release(car, packet['checks'])
++        self.count += 1
++
++    def on_state(self, car, msg):
++        packet = json.loads(msg.data)
++        if type(packet['occupied']) is not bool or packet['occupied'] != (packet['owner_id'] in ('A', 'B')):
++            raise ValueError('inconsistent channel flag')
++        self.received[car] = dict(**packet, receive_cycle=self.cycle)
++        self.record('receive_state', vehicle_id=car, **self.received[car])
++
++    def publish_state(self):
++        self.channel.grant()
++        self.version += 1
++        packet = dict(occupied=self.channel.owner is not None, owner_id=self.channel.owner,
++                      version=self.version, publish_cycle=self.cycle)
++        self.record('publish_state', **packet)
++        self.pub_state.publish(String(data=json.dumps(packet)))
++        self.wait(lambda: all(v and v['version']==self.version for v in self.received.values()))
++
++    def request(self, requests):
++        target = self.count+len(requests)
++        for _, car in requests:
++            self.send(car, 'request', dict(vehicle_id=car))
++        self.wait(lambda: self.count==target)
++        self.publish_state()
++        owner = self.received['A']['owner_id']
++        return owner, {car: self.received[car]['owner_id']==car for _, car in requests}
++
++    def ready(self, car):
++        target = self.count+1
++        self.send(car, 'ready', dict(vehicle_id=car))
++        self.wait(lambda: self.count==target)
++        self.publish_state()
++
++    def release(self, car, checks):
++        target = self.count+1
++        self.send(car, 'release', dict(vehicle_id=car, checks=checks))
++        self.wait(lambda: self.count==target)
++        self.publish_state()
++        return self.received[car]['owner_id']
++
++    def constraints(self, states, queues, forecast, status, scene):
++        for car in ('A', 'B'):
++            received = self.received[car]
++            g = int(received['owner_id']==car)
++            params = construct(car, g, states[car], queues[car], status[car], scene)
++            accepted = accepts(params, forecast[car], scene)
++            self.constraint_log.append(dict(car=car, effective_cycle=self.cycle,
++                receive_cycle=received['receive_cycle'], state_version=received['version'],
++                prediction_accepted=accepted, **params))
++            if not accepted:
++                raise ValueError('received permission constraint rejected prediction: '+car)
++
++    def close(self):
++        self.executor.shutdown()
++        for node in [self.manager, *self.cars.values()]:
++            node.destroy_node()
++        rclpy.shutdown()
+diff --git a/examples/head_on_mpc/scripts/run_flag_e1.py b/examples/head_on_mpc/scripts/run_flag_e1.py
+new file mode 100644
+index 0000000..82d5062
+--- /dev/null
++++ b/examples/head_on_mpc/scripts/run_flag_e1.py
+@@ -0,0 +1,96 @@
++#!/usr/bin/env python3
++"""E1 real ROS 2 permission integration using existing bicycle execution."""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import shutil
++import subprocess
++import time
++
++from bicycle_core import validate_scene
++from run_entry_bicycle import run_policy, write, jsonl, ROOT
++from ros_flag import RosFlag
++from verify_entry_bicycle import verify_policy
++
++
++def verify_messages(messages, constraints):
++    grants = [m['owner_id'] for m in messages if m['kind']=='publish_state' and m['owner_id']]
++    assert list(dict.fromkeys(grants)) == ['A', 'B'], grants
++    release_a = next(m for m in messages if m['kind']=='receive_release' and m['vehicle_id']=='A')
++    grant_b = next(m for m in messages if m['kind']=='publish_state' and m['owner_id']=='B')
++    ready_b = next(m for m in messages if m['kind']=='receive_ready' and m['vehicle_id']=='B')
++    assert release_a['sequence'] < grant_b['sequence'] and ready_b['sequence'] < grant_b['sequence']
++    for p in constraints:
++        state = next(m for m in messages if m['kind']=='receive_state' and
++                     m['vehicle_id']==p['car'] and m['version']==p['state_version'])
++        assert p['g_i']==int(state['owner_id']==p['car'])
++        assert state['cycle']==p['receive_cycle']<=p['effective_cycle']
++        assert p['prediction_accepted']
++    before = next(p for p in constraints if p['car']=='B' and p['phase']=='MUTEX_WAIT')
++    after = next(p for p in constraints if p['car']=='B' and p['g_i']==1)
++    assert before['g_i']==0 and before['s_max_m']<1e-5
++    assert after['s_max_m']>before['s_max_m'] and after['phase']=='RETURNING'
++    return dict(passed=True, B_wait=before, B_granted=after,
++                release_A_cycle=release_a['cycle'], grant_B_cycle=grant_b['cycle'])
++
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--output', type=Path, required=True)
++    args=parser.parse_args()
++    scene=json.loads((ROOT/'config/entry_bicycle.json').read_text());validate_scene(scene)
++    args.output.mkdir(parents=True, exist_ok=False)
++    write(args.output/'scene.json', scene)
++    snapshot=args.output/'source';snapshot.mkdir()
++    sources=[*Path(__file__).parent.glob('*.py'), ROOT/'config/entry_bicycle.json',
++             ROOT/'tests/test_flag_e1.py', ROOT/'CMakeLists.txt', ROOT/'package.xml']
++    for p in sources:
++        shutil.copy2(p, snapshot/p.name)
++    write(args.output/'provenance.json', dict(
++        git_head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
++        git_diff=subprocess.check_output(['git','diff'],text=True),
++        source_sha256={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
++        command='source /opt/ros/jazzy/setup.bash; ROS_DOMAIN_ID=91 OPENBLAS_NUM_THREADS=1 python3 scripts/run_flag_e1.py --output '+str(args.output),
++        transport='rclpy / DDS reliable topics; three nodes in one process',
++        execution='original nonlinear bicycle primitives; simulation freezes during communication'))
++    bus=RosFlag();started=time.perf_counter()
++    try:
++        summary=run_policy(scene,'S1',args.output/'S1',transport=bus)
++    finally:
++        jsonl(args.output/'ros_messages.jsonl',bus.log)
++        jsonl(args.output/'constraints.jsonl',bus.constraint_log)
++        bus.close()
++    print('Motion completed:',summary['both_completed'],flush=True)
++    verification=verify_policy(args.output/'S1',scene)
++    verification['logical_message_log_scope']='S1/messages.jsonl is inherited logical diagnostics; actual DDS evidence is ros_messages.jsonl'
++    write(args.output/'validation.json',verification)
++    protocol=verify_messages(bus.log,bus.constraint_log)
++    write(args.output/'constraint_transition.json',protocol)
++    timing=json.loads((args.output/'S1/planning.json').read_text())
++    result=dict(communication_complete=protocol['passed'], constraint_interface_complete=True,
++        optimization_closed_loop_complete=False, both_tasks_completed=summary['both_completed'],
++        validation_passed=verification['passed'], wall_s=time.perf_counter()-started,
++        cycle_mean_s=sum(p['total_cycle_wall_s'] for p in timing)/len(timing),
++        cycle_max_s=max(p['total_cycle_wall_s'] for p in timing),
++        cycle_over_h=sum(p['total_cycle_wall_s']>scene['h'] for p in timing),
++        control_period_s=scene['h'], optimized_solver_calls=0)
++    write(args.output/'summary.json',result)
++    (args.output/'report.md').write_text('# E1 ROS 2 Flag 接入结果\n\n'+
++        '通信接入：完成。约束接口：完成。实际优化闭环：未完成，属于 E2/E3。\n\n'+
++        '原场景使用三个 ROS 2 节点，经 DDS 完成申请、通道状态接收、等待就绪、完整未来检查后释放与交接。'+
++        '车辆按实际订阅的 owner_id 构造 g_i，约束先验收全预测再执行。\n\n'+
++        '原控制器为非线性自行车运动原语，优化求解次数为零。纵向 QP 接口给出相对于剩余固定参考的弧长进度上界；'+
++        '等待终点停车，许可后开放返回与通行路径。道路并集和保护区排除仍是几何接口，未声称已转成凸走廊矩阵。\n\n'+
++        'B 停驻等待上界：'+str(protocol['B_wait']['s_max_m'])+' m；获准后：'+str(protocol['B_granted']['s_max_m'])+' m。'+
++        '接收周期 '+str(protocol['B_granted']['receive_cycle'])+'，控制生效周期 '+str(protocol['B_granted']['effective_cycle'])+'。\n\n'+
++        '详细验收与计时：summary.json、validation.json；实际消息序列：ros_messages.jsonl；'+
++        '逐周期约束：constraints.jsonl；原轨迹、预测、释放见证：S1/；源码版本、快照和命令：provenance.json、source/。\n\n'+
++        '理想通信、单进程三节点、仿真等待消息时暂停。仅 0.02 s 采样验收，不证明连续时间安全或在线实时性。\n',encoding='utf-8')
++    print(json.dumps(result),flush=True)
++    if not summary['both_completed'] or not verification['passed']:
++        raise SystemExit(1)
++
++
++if __name__=='__main__':
++    main()
+diff --git a/examples/head_on_mpc/tests/test_flag_e1.py b/examples/head_on_mpc/tests/test_flag_e1.py
+new file mode 100644
+index 0000000..e7cfa62
+--- /dev/null
++++ b/examples/head_on_mpc/tests/test_flag_e1.py
+@@ -0,0 +1,45 @@
++import json
++from pathlib import Path
++import sys
++import unittest
++import numpy as np
++sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
++from ros_flag import Channel
++from flag_constraints import construct, accepts
++from bicycle_core import bay_entry, rollout, return_plan
++
++SCENE=json.loads((Path(__file__).resolve().parents[1]/'config/entry_bicycle.json').read_text())
++
++
++class FlagTests(unittest.TestCase):
++    def test_time_id_and_ready(self):
++        c=Channel();c.request('B',2);c.request('A',2)
++        self.assertEqual(c.grant(),'A')
++        c.release('A',dict(passed=True,both_future_goals=True))
++        self.assertIsNone(c.grant())
++        c.ready.add('B');self.assertEqual(c.grant(),'B')
++        self.assertEqual(c.grant(),'B')
++        other=Channel();other.request('B',1);other.request('A',2)
++        self.assertEqual(other.grant(),'B')
++
++    def test_reject_invalid_release(self):
++        c=Channel();c.request('A',0);c.grant()
++        for car,checks in [('B',dict(passed=True,both_future_goals=True)),('A',dict(passed=False)),('A',dict(passed=True))]:
++            with self.assertRaises(ValueError):c.release(car,checks)
++        self.assertEqual(c.owner,'A')
++
++    def test_wait_and_pass_constraints(self):
++        z=np.array([30.,0.,np.pi,0.,0.]);entry=bay_entry(z,'B',SCENE)
++        parked=rollout(z,entry,SCENE)[-1]
++        waiting=construct('B',0,parked,[],'MUTEX_WAIT',SCENE)
++        self.assertEqual(waiting['s_max_m'],0.)
++        commands=return_plan(parked,'B',SCENE)
++        predicted=rollout(parked,commands,SCENE)
++        self.assertFalse(accepts(waiting,predicted,SCENE))
++        allowed=construct('B',1,parked,commands,'RETURNING',SCENE)
++        self.assertTrue(accepts(allowed,predicted,SCENE))
++        self.assertGreater(allowed['s_max_m'],0.)
++        with self.assertRaises(ValueError):construct('B',2,parked,[],'WAIT',SCENE)
++
++
++if __name__=='__main__':unittest.main()
+diff --git a/examples/head_on_mpc/flag_e1_interface.md b/examples/head_on_mpc/flag_e1_interface.md
+new file mode 100644
+index 0000000..78312c9
+--- /dev/null
++++ b/examples/head_on_mpc/flag_e1_interface.md
+@@ -0,0 +1,32 @@
++# E1 ROS 2 Flag 与约束接口
++
++实际工程：`car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc`，为 Git 独立 worktree 中的 ROS 2 `ament_cmake` 包。历史 `results/*/source`、`final_source` 不作为开发入口。新增结果独立保存至 `results/flag_e1_001`。
++
++从包目录运行：
++
++```bash
++source /opt/ros/jazzy/setup.bash
++OPENBLAS_NUM_THREADS=1 python3 -m unittest discover -s tests -p 'test_flag_e1.py'
++ROS_DOMAIN_ID=91 OPENBLAS_NUM_THREADS=1 python3 scripts/run_flag_e1.py --output results/flag_e1_rerun
++```
++
++输出目录必须不存在。使用系统 Python 的 rclpy、std_msgs、NumPy 和 SciPy，无新增 pip 依赖。
++
++三个实际 ROS 2 节点为 `e1_channel`、`e1_vehicle_a`、`e1_vehicle_b`。单进程执行器通过 DDS 实际投递，不启用进程内消息直传；仿真在消息传递和检查期间暂停，不模拟网络延迟。控制状态和原语仿真由同一协调循环推进；不是三个独立进程的车辆部署。
++
++| Topic | ROS 类型 | JSON 内容 | 发布 / 订阅 |
++|---|---|---|---|
++| `/e1/channel/request` | std_msgs/String | vehicle_id | 车辆 / 通道 |
++| `/e1/channel/state` | std_msgs/String | occupied、owner_id、version、publish_cycle | 通道 / 两车 |
++| `/e1/channel/ready` | std_msgs/String | vehicle_id | 停靠完成车辆 / 通道 |
++| `/e1/channel/release` | std_msgs/String | vehicle_id、checks（passed、both_future_goals 等原验收结果） | 当前 owner / 通道 |
++
++均使用 reliable QoS，状态额外使用 transient local。理想通信场景以控制周期内接收作为请求时间，同周期请求按 ID 排序。首次授权允许接近车辆通行，之后的等待车辆必须报告原机动已停靠就绪。当前 owner 及完整未来检查结果匹配才释放，释放后自动从保留的申请中授权，不重复申请。无消息到达时最多等待 10 秒，随后中止并保存已收日志。
++
++`Channel` 只存在于通道端；车辆约束的输入来自 `on_state` 订阅结果。`run_policy(..., transport=None)` 保留原行为；E1 注入 `RosFlag`。原 `S1/messages.jsonl` 仍为旧逻辑诊断，实际 DDS 发布/接收证据在顶层 `ros_messages.jsonl`，按 sequence 和单调墙钟记录顺序。
++
++`flag_constraints.construct(car, g, state, remaining_commands, phase, scene)` 返回固定剩余参考上的 `0 <= s <= s_max_m`、末端停车标记、道路区域、车身禁入保护区和车辆能力。s 是后轴二维路径累计弧长，原点每次构造置为当前状态。等待参考来自既有制动、接近及入位原语，整车扫掠遇保护区时上界截断到上一个采样；停驻时 s_max=0。获准时切换原返回及通行参考，上界扩展到原任务终点。已释放车虽 g=0，仍可沿保护区外的剩余原参考完成原目标。
++
++`accepts` 在执行前验收整段预测的进度和旋转车身保护区排除；原道路、双方间距、执行子采样、原目标及完整未来释放验收继续生效。该上界仅对所给固定参考有效，E2 的优化轨迹须沿同一参考并在阶段切换时保持进度一致。道路并集及保护区排除没有转换成 E3 的凸走廊矩阵，E3 还须按机动阶段及车身支撑量构造走廊。
++
++`constraints.jsonl` 保存实际收到的状态版本、receive_cycle、effective_cycle、g_i 和具体约束；`constraint_transition.json` 摘录 B 停驻前后变化。通信完成、约束接口完成、实际优化闭环未完成分别写入 summary.json；当前没有调用 QP，不能称为优化闭环结果。
