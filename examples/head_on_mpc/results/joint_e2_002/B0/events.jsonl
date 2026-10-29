@@ -1,0 +1,15 @@
+{"time_s": 104.0, "kind": "request", "car": "A", "request_stamp_s": 104.0}
+{"time_s": 104.0, "kind": "grant", "car": "A", "owner": "A"}
+{"time_s": 107.0, "kind": "request", "car": "B", "request_stamp_s": 107.0}
+{"time_s": 107.0, "kind": "deny", "car": "B", "owner": "A"}
+{"time_s": 108.8, "kind": "motion_stage_change", "car": "B", "previous": "QUEUE_BRAKE", "next": "QUEUE_APPROACH", "effective_time_s": 109.0}
+{"time_s": 112.0, "kind": "motion_stage_change", "car": "B", "previous": "QUEUE_APPROACH", "next": "ENTRY", "effective_time_s": 112.2}
+{"time_s": 125.2, "kind": "waiting_ready", "car": "B", "pose": [22.062746066885367, -2.9999999999702434, 3.141592653589793, -4.163336342344337e-16, 2.6020852139652106e-16]}
+{"time_s": 134.8, "kind": "release", "car": "A", "actual_body_tail_x": 26.599999999998957, "release_plane_abs_x": 26.0, "future_check_index": 348, "future_assumption": "execute accepted full remaining paths then stay at distinct goals; no extra reversal"}
+{"time_s": 134.8, "kind": "grant", "car": "B", "owner": "B"}
+{"time_s": 134.8, "kind": "return_started", "car": "B"}
+{"time_s": 144.0, "kind": "car_completed", "car": "A"}
+{"time_s": 147.6, "kind": "motion_stage_change", "car": "B", "previous": "RETURN", "next": "DEPART", "effective_time_s": 147.79999999999998}
+{"time_s": 169.8, "kind": "release", "car": "B", "actual_body_tail_x": -26.677087825447565, "release_plane_abs_x": 26.0, "future_check_index": 699, "future_assumption": "execute accepted full remaining paths then stay at distinct goals; no extra reversal"}
+{"time_s": 179.0, "kind": "car_completed", "car": "B"}
+{"time_s": 179.0, "kind": "both_tasks_completed"}

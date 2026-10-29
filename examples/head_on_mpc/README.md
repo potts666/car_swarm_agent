@@ -267,3 +267,9 @@ OPENBLAS_NUM_THREADS=1 python3 scripts/verify_entry_bicycle.py --run results/ent
 ## E1：真实 ROS 2 通道许可接入
 
 [最小接口及复现命令](flag_e1_interface.md) · [独立结果](results/flag_e1_001/report.md)。入口 `scripts/run_flag_e1.py` 复用原 `entry_bicycle.json` 与非线性自行车控制，使用三个 ROS 2 节点实际投递请求、通道状态、等待就绪及释放报告。车辆订阅的许可映射为固定参考进度边界和车身保护区约束；E2/E3 的 QP 求解与优化闭环另行实施。
+
+## E2：固定路径纵向联合 QP（B1）
+
+[QP 数学定义与复现命令](longitudinal_joint_qp.md) · [B0/B1 正式对照](results/joint_e2_002/report.md) · [轨迹及速度图](results/joint_e2_002/comparison.png) · [首轮验收失败记录](results/joint_e2_001/report.md)。
+
+B1 固定原直线与双圆弧路径、A→B 的 ROS Flag 顺序，采用 N=32 的两车联合纵向 QP，原非线性自行车实际积分后再独立重放验收。修正停车数值残速的物理制动衔接后，统一验收通过；B0/B1 分别在仿真 79.0/81.2 s 完成任务，最小采样车身间距均约 1.20 m。B1 主数值优化已接入闭环，但释放前完整未来预演使最长周期约 4.60 s，尚不满足在线实时周期；没有建立真实车辆可行证明。代码、原始日志、数学参数、Hessian/仿射残差、执行映射误差与失败证据均位于独立结果目录。

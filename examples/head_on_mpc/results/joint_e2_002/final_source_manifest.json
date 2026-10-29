@@ -1,0 +1,12 @@
+{
+  "note": "source/ preserves exact executed sources. Controller and tests are byte-identical to runtime snapshot. final_source/ updates report generation, actual solver counters, runtime ROS domain recording and future-execution consistency postprocessing; no trajectory generation changed.",
+  "sha256": {
+    "examples/head_on_mpc/scripts/longitudinal_joint.py": "9511075c84f9f9607d7d85de3e729325541fb8f7792b7f2dda3c49abf8a32d17",
+    "examples/head_on_mpc/scripts/run_joint_e2.py": "ef80975b248a690cb5677e30a1ae7f1a1f0fd16ffed235e8406f458881afa11b",
+    "examples/head_on_mpc/tests/test_longitudinal_joint.py": "0d7505ded9a3d99fc697938ffb5ea5e6ab2523f9a5a3b5c9fd8237f88d959dc3",
+    "examples/head_on_mpc/longitudinal_joint_qp.md": "31ca60debc38f935ff7eb8fc5690dc5d8de03deeb7228bf45d7453e4cd666d4a",
+    "examples/head_on_mpc/README.md": "9b04730151a9833b7403a44feccb590969768e0c58d93eaae5d12c75dc79c81a",
+    "examples/head_on_mpc/config/entry_bicycle.json": "4b24c46180edc717cd6d7a4575d1e2847108059208cc56890e6d7485e3d18fdc",
+    "examples/head_on_mpc/requirements-qp.txt": "765d05c85e4b9ef79bdcee92ad6b3a83fabcd5342d12c3a3b8b5f923a75a12ec"
+  }
+}

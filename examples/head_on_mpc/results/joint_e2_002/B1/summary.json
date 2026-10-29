@@ -1,0 +1,19 @@
+{
+  "policy": "S1",
+  "controller": "B1",
+  "both_completed": true,
+  "T_complete_sim_s": 81.19999999999999,
+  "completion_per_car_s": {
+    "A": 44.19999999999999,
+    "B": 81.19999999999999
+  },
+  "channel_reserved_s": 67.60000000000042,
+  "optimization_solver_calls": 401,
+  "future_diagnostic_qp_calls": 274,
+  "future_diagnostic_wall_s": 5.478963187999852,
+  "failure": null,
+  "total_policy_wall_s": 16.166331492999916,
+  "continuous_time_safety_proved": false,
+  "qp_build_calls": 406,
+  "future_diagnostic_qp_build_calls": 280
+}

@@ -1,0 +1,730 @@
+diff --git a/examples/head_on_mpc/README.md b/examples/head_on_mpc/README.md
+index 5798eef..23ce61e 100644
+--- a/examples/head_on_mpc/README.md
++++ b/examples/head_on_mpc/README.md
+@@ -267,3 +267,9 @@ OPENBLAS_NUM_THREADS=1 python3 scripts/verify_entry_bicycle.py --run results/ent
+ ## E1：真实 ROS 2 通道许可接入
+ 
+ [最小接口及复现命令](flag_e1_interface.md) · [独立结果](results/flag_e1_001/report.md)。入口 `scripts/run_flag_e1.py` 复用原 `entry_bicycle.json` 与非线性自行车控制，使用三个 ROS 2 节点实际投递请求、通道状态、等待就绪及释放报告。车辆订阅的许可映射为固定参考进度边界和车身保护区约束；E2/E3 的 QP 求解与优化闭环另行实施。
++
++## E2：固定路径纵向联合 QP（B1）
++
++[QP 数学定义与复现命令](longitudinal_joint_qp.md) · [B0/B1 正式对照](results/joint_e2_002/report.md) · [轨迹及速度图](results/joint_e2_002/comparison.png) · [首轮验收失败记录](results/joint_e2_001/report.md)。
++
++B1 固定原直线与双圆弧路径、A→B 的 ROS Flag 顺序，采用 N=32 的两车联合纵向 QP，原非线性自行车实际积分后再独立重放验收。修正停车数值残速的物理制动衔接后，统一验收通过；B0/B1 分别在仿真 79.0/81.2 s 完成任务，最小采样车身间距均约 1.20 m。B1 主数值优化已接入闭环，但释放前完整未来预演使最长周期约 4.60 s，尚不满足在线实时周期；没有建立真实车辆可行证明。代码、原始日志、数学参数、Hessian/仿射残差、执行映射误差与失败证据均位于独立结果目录。
+diff --git a/examples/head_on_mpc/scripts/longitudinal_joint.py b/examples/head_on_mpc/scripts/longitudinal_joint.py
+new file mode 100644
+index 0000000..94982be
+--- /dev/null
++++ b/examples/head_on_mpc/scripts/longitudinal_joint.py
+@@ -0,0 +1,293 @@
++"""Fixed primitive geometry, affine two-car longitudinal QP and bicycle mapping."""
++import copy
++import math
++import time
++import numpy as np
++from scipy.linalg import block_diag
++from scipy.sparse import csc_matrix, eye, vstack
++import osqp
++from bicycle_core import (CARS, audit, clipped_area, corners, rollout, steer,
++                          shift_advance)
++
++WEIGHTS = dict(progress=1., speed=0.1, acceleration=0.1, input_change=0.05, terminal_progress=10.)
++
++
++def pose(start, length, delta, direction, vehicle):
++    q = np.array(start, float).copy()
++    kappa = math.tan(delta)/vehicle['L']
++    distance = direction*np.asarray(length)
++    if abs(kappa)<1e-12:
++        q[0] += float(distance)*math.cos(q[2]);q[1] += float(distance)*math.sin(q[2])
++    else:
++        yaw=q[2]+float(distance)*kappa
++        q[0] += (math.sin(yaw)-math.sin(q[2]))/kappa
++        q[1] += (math.cos(q[2])-math.cos(yaw))/kappa
++        q[2]=yaw
++    q[3]=0.;q[4]=delta
++    return q
++
++
++def routes(scene):
++    r=scene['turn_radius_m'];d=math.atan(scene['vehicle']['L']/r)
++    arc=r*math.acos(1-scene['bay_offset_local_y']/(2*r))
++    advance=shift_advance(scene)
++    spec={'A':[(84.,0.,'NAVIGATE')],
++          'B':[(scene['initial']['B'][0]-scene['waiting_anchor_abs_x'],0.,'QUEUE_APPROACH'),
++               (arc,d,'ENTRY'),(arc,-d,'ENTRY'),
++               (arc,-d,'RETURN'),(arc,d,'RETURN'),
++               (scene['waiting_anchor_abs_x']-2*advance-scene['goals']['B'][0],0.,'DEPART')]}
++    spec['A'][0]=(scene['goals']['A'][0]-scene['initial']['A'][0],0.,'NAVIGATE')
++    result={}
++    for c in CARS:
++        origin=np.array(scene['initial'][c],float);path=[];offset=0.
++        for index,(distance,delta,stage) in enumerate(spec[c]):
++            direction=1 if distance>=0 else -1;length=abs(distance)
++            samples=np.linspace(0,length,max(2,math.ceil(length/.01)+1))
++            reference=np.array([pose(origin,s,delta,direction,scene['vehicle']) for s in samples])
++            body=corners(reference,scene['vehicle'])
++            protection=[-scene['admission_protection_abs_x'],scene['admission_protection_abs_x'],-scene['W']/2,scene['W']/2]
++            occupied=[j for j,b in enumerate(body) if clipped_area(b,protection)>scene['tolerance']]
++            admission=float(samples[max(0,occupied[0]-1)]) if occupied else length
++            cap=min(scene['vehicle']['v_fwd'] if direction==1 else scene['vehicle']['v_rev'],
++                    1. if abs(delta)>1e-12 else 2.)
++            check=audit({c:reference},scene)
++            if not check['passed']:
++                raise ValueError('fixed swept route outside road: '+c+str(index))
++            path.append(dict(length=length,delta=delta,direction=direction,stage=stage,
++                start=origin.tolist(),end=reference[-1].tolist(),offset=offset,
++                speed_cap=cap,admission_bound=admission,
++                body_xmin=float(body[:,:,0].min()),body_xmax=float(body[:,:,0].max()),
++                sweep_step_m=float(samples[1]-samples[0]),sweep_check=check))
++            offset+=length;origin=reference[-1]
++        result[c]=path
++    return result
++
++
++class Agent:
++    def __init__(self, car, path, scene):
++        self.car=car;self.path=path;self.scene=scene
++        self.z=np.array(scene['initial'][car],float)
++        self.index=0;self.s=0.;self.previous=0.;self.ready=False
++        self.mode='MOVE';self.steering=[];self.stop_steps=None
++
++    @property
++    def segment(self):
++        return self.path[min(self.index,len(self.path)-1)]
++
++    @property
++    def finished(self):
++        return self.index==len(self.path)
++
++    def advance(self, permission):
++        if self.mode=='MOVE' and self.s>=self.segment['length']-1e-6 and abs(self.z[3])<1e-6:
++            if abs(self.z[3])>1e-12:
++                self.stop_steps=1
++                return
++            old_length=self.segment['length']
++            self.index+=1;self.s=old_length if self.finished else 0.;self.previous=0.;self.stop_steps=None
++            if self.car=='B' and self.index==3:
++                self.ready=True;self.mode='WAIT'
++            else:
++                self.mode='STEER'
++        if self.mode=='WAIT' and permission:
++            self.mode='STEER'
++        if self.mode=='STEER' or (self.mode=='WAIT' and not self.steering and abs(self.z[4])>1e-7):
++            target=0. if self.finished or self.mode=='WAIT' else self.segment['delta']
++            if not self.steering:
++                self.steering=steer(self.z[4],target,self.scene,'MUTEX_WAIT' if self.mode=='WAIT' else self.segment['stage'])
++            if not self.steering and self.mode=='STEER':
++                self.mode='DONE' if self.finished else 'MOVE'
++
++    def parameters(self, g):
++        if self.mode!='MOVE':
++            return dict(s0=self.s,v0=0.,end=self.s,upper=self.s,cap=0.,direction=1,stop_at_end=True,stop_index=0)
++        p=self.segment
++        sign=1 if self.car=='A' else -1
++        cleared=sign*self.z[0]-self.scene['vehicle']['rear']>=self.scene['release_plane_abs_x']+self.scene['release_margin_m']
++        upper=p['length'] if g or cleared else p['admission_bound']
++        T=self.scene['h']*self.scene['N'];cap=p['speed_cap']
++        a=min(self.scene['vehicle']['a_max'],-self.scene['vehicle']['a_min'])
++        close=upper-self.s<=cap*max(0.,T-2*cap/a)
++        if close and self.stop_steps is None:
++            self.stop_steps=self.scene['N']
++        return dict(s0=self.s,v0=p['direction']*self.z[3],end=upper,upper=upper,
++                    cap=cap,direction=p['direction'],stop_at_end=self.stop_steps is not None,stop_index=self.stop_steps or self.scene['N'])
++
++
++def response(times, h, N):
++    relative=np.asarray(times)[:,None]-np.arange(N)[None,:]*h
++    return .5*(np.maximum(relative,0.)**2-np.maximum(relative-h,0.)**2),np.clip(relative,0.,h)
++
++
++def build_qp(agents, permissions, scene):
++    N=scene['N'];h=scene['h'];T=N*h
++    times=np.arange(1,N+1)*h;P,V=response(times,h,N)
++    # Nonnegative nodal speeds imply monotone s between ticks under constant a.
++    dense_times=times;Pd,Vd=P,V
++    w=WEIGHTS;D=np.eye(N)-np.eye(N,k=-1)
++    Hs=[];qs=[];A=[];lo=[];hi=[];E=[];b=[];bounds=[];parameters={}
++    def row(car, mat, lower, upper):
++        full=np.zeros((len(mat),2*N));full[:,CARS.index(car)*N:(CARS.index(car)+1)*N]=mat
++        A.extend(full);lo.extend(np.broadcast_to(lower,len(mat)));hi.extend(np.broadcast_to(upper,len(mat)))
++    for c in CARS:
++        agent=agents[c];p=agent.parameters(permissions[c]);parameters[c]=p
++        base=p['s0']+times*p['v0'];densebase=p['s0']+dense_times*p['v0']
++        H=2*(w['progress']*P.T@P+w['speed']*V.T@V+w['acceleration']*np.eye(N)+w['input_change']*D.T@D+w['terminal_progress']*np.outer(P[-1],P[-1]))
++        previous=np.r_[agent.previous,np.zeros(N-1)]
++        q=2*(w['progress']*P.T@(base-p['end'])+w['speed']*V.T@(np.full(N,p['v0'])-p['cap'])-w['input_change']*D.T@previous+w['terminal_progress']*P[-1]*(base[-1]-p['end']))
++        Hs.append(H);qs.append(q)
++        if p['cap']==0.:
++            bounds.extend([(0.,0.)]*N)
++        else:
++            d=p['direction'];v=scene['vehicle']
++            amin,amax=(v['a_min'],v['a_max']) if d==1 else (-v['a_max'],-v['a_min'])
++            K=p['stop_index']
++            if p['stop_at_end'] and K==1:
++                bounds.extend([(-p['v0']/h,-p['v0']/h)]+[(0.,0.)]*(N-1))
++            else:
++                bounds.extend([(amin,amax)]*K+[(0.,0.)]*(N-K))
++            count=K-1 if p['stop_at_end'] else K
++            row(c,Pd[:count],-densebase[:count],p['upper']-densebase[:count])
++            row(c,Vd[:max(0,K-1)],-p['v0'],p['cap']-p['v0'])
++            if not (p['stop_at_end'] and K==1):
++                full=np.zeros(2*N);full[CARS.index(c)*N:(CARS.index(c)+1)*N]=V[K-1]
++                E.append(full);b.append(-p['v0'])
++                if p['stop_at_end']:
++                    full=np.zeros(2*N);full[CARS.index(c)*N:(CARS.index(c)+1)*N]=P[K-1]
++                    E.append(full);b.append(p['upper']-base[K-1])
++    # Fixed spatial separating envelopes avoid decision-dependent collision masks.
++    aa,bb=agents['A'],agents['B'];pa,pb=parameters['A'],parameters['B']
++    supports=scene['vehicle']['L']+scene['vehicle']['front']
++    if not bb.ready:
++        if bb.index==0:
++            full=np.hstack((Pd,Pd))
++            upper=scene['initial']['B'][0]-scene['initial']['A'][0]-2*supports-scene['s_min']
++            base=pa['s0']+dense_times*pa['v0']+pb['s0']+dense_times*pb['v0']
++            A.extend(full);lo.extend(np.full(len(full),-np.inf));hi.extend(upper-base)
++        else:
++            xmin=min(p['body_xmin'] for p in bb.path[1:3])
++            bound=xmin-scene['s_min']-supports-scene['initial']['A'][0]
++            row('A',Pd,-np.inf,bound-pa['s0']-dense_times*pa['v0'])
++    elif bb.index>=3 and bb.mode not in ('WAIT',):
++        xmax=max(p['body_xmax'] for p in bb.path[3:])
++        lower=xmax+scene['s_min']+scene['vehicle']['rear']-scene['initial']['A'][0]
++        row('A',Pd,lower-pa['s0']-dense_times*pa['v0'],np.inf)
++    H=block_diag(*Hs);q=np.concatenate(qs)
++    A=np.array(A).reshape(-1,2*N);lo=np.array(lo);hi=np.array(hi)
++    E=np.array(E).reshape(-1,2*N);b=np.array(b)
++    return H,q,A,lo,hi,E,b,bounds,parameters
++
++
++def solve(agents, permissions, scene):
++    started=time.perf_counter()
++    H,q,A,lo,hi,E,b,bounds,parameters=build_qp(agents,permissions,scene)
++    scale=max(1.,np.max(np.abs(q)),np.max(np.abs(H)))
++    matrix=vstack([csc_matrix(A),csc_matrix(E),eye(len(q))],format='csc')
++    lower=np.r_[lo,b,[z[0] for z in bounds]];upper=np.r_[hi,b,[z[1] for z in bounds]]
++    fixed=np.array([i for i,(l,u) in enumerate(bounds) if l==u],int)
++    free=np.array([i for i,(l,u) in enumerate(bounds) if l!=u],int)
++    x=np.zeros(len(q));x[fixed]=[bounds[i][0] for i in fixed]
++    status='all inputs fixed';status_val=1;iterations=0;primal=0.;dual=0.
++    if len(free):
++        offset=np.asarray(matrix@x).ravel()
++        reduced=matrix[:,free]
++        norms=np.asarray(abs(reduced).sum(axis=1)).ravel()
++        keep=norms>1e-12
++        if np.any(lower[~keep]-offset[~keep]>scene['tolerance']) or np.any(offset[~keep]-upper[~keep]>scene['tolerance']):
++            raise ValueError('inconsistent fixed-input affine constraint')
++        row_scale=np.maximum(1.,norms[keep])
++        reduced=csc_matrix(reduced[keep].multiply(1./row_scale[:,None]))
++        solver=osqp.OSQP()
++        solver.setup(P=csc_matrix(H[np.ix_(free,free)]/scale),q=(q+H@x)[free]/scale,
++            A=reduced,l=(lower-offset)[keep]/row_scale,u=(upper-offset)[keep]/row_scale,
++            eps_abs=1e-8,eps_rel=1e-8,max_iter=20000,polishing=True,verbose=False,
++            adaptive_rho_interval=50)
++        result=solver.solve(raise_error=False)
++        if result.x is not None:x[free]=result.x
++        status=result.info.status;status_val=result.info.status_val;iterations=result.info.iter
++        primal=result.info.prim_res;dual=result.info.dual_res
++    finite=bool(np.isfinite(x).all())
++    residual=matrix@x
++    violation=max(0.,float(np.max(lower-residual,initial=0.)),float(np.max(residual-upper,initial=0.)))
++    for i,c in enumerate(CARS):
++        p=parameters[c]
++        if p['cap'] and p['stop_at_end']:
++            K=p['stop_index'];Pk,Vk=response([K*scene['h']],scene['h'],scene['N'])
++            ui=x[i*scene['N']:(i+1)*scene['N']]
++            violation=max(violation,abs(float(p['s0']+K*scene['h']*p['v0']+(Pk@ui)[0]-p['upper'])),abs(float(p['v0']+(Vk@ui)[0])))
++    minimum=float(np.linalg.eigvalsh(H)[0])
++    record=dict(solver='OSQP '+osqp.__version__,solver_success=status_val in (1,2),
++        message=status,iterations=int(iterations),solve_wall_s=time.perf_counter()-started,
++        affine_violation=violation,hessian_min_eigenvalue=minimum,affine_constraints=True,
++        variables=len(q),inequality_rows=len(A),equality_rows=len(E),parameters=parameters,
++        accepted=bool(status_val in (1,2) and finite and violation<=scene['tolerance'] and minimum>=-1e-10),
++        objective_without_constant=float(.5*x@H@x+q@x),solution=x.tolist(),
++        primal_residual=float(primal),dual_residual=float(dual),free_variables=len(free))
++    return {c:x[i*scene['N']:(i+1)*scene['N']] for i,c in enumerate(CARS)},record
++
++
++class Controller:
++    def __init__(self, scene, path):
++        self.scene=scene;self.agents={c:Agent(c,path[c],scene) for c in CARS}
++
++    def prepare(self, permissions):
++        for c,a in self.agents.items():a.advance(permissions[c])
++
++    def predict(self, permissions):
++        accelerations,record=solve(self.agents,permissions,self.scene)
++        controls={};predictions={};errors={}
++        for c,agent in self.agents.items():
++            p=record['parameters'][c];stage=agent.segment['stage']
++            if agent.mode=='MOVE':
++                controls[c]=[(float(p['direction']*a),0.,stage) for a in accelerations[c]]
++            else:
++                commands=agent.steering[:self.scene['N']]
++                fallback='COMPLETE' if agent.mode=='DONE' else 'MUTEX_WAIT' if agent.mode=='WAIT' else stage
++                controls[c]=commands+[(0.,0.,fallback)]*(self.scene['N']-len(commands))
++            predictions[c]=rollout(agent.z,controls[c],self.scene)
++            n=round(self.scene['h']/self.scene['sample_s']);T=self.scene['N']*self.scene['h']
++            ticks=np.arange(1,round(T/self.scene['sample_s'])+1)*self.scene['sample_s']
++            P,V=response(ticks,self.scene['h'],self.scene['N'])
++            sp=p['s0']+ticks*p['v0']+P@accelerations[c]
++            vp=p['v0']+V@accelerations[c]
++            expected=np.array([pose(agent.segment['start'],s,agent.segment['delta'],agent.segment['direction'],self.scene['vehicle']) for s in sp]) if agent.mode=='MOVE' else predictions[c][1:].copy()
++            errors[c]=dict(position_m=float(np.max(np.linalg.norm(expected[:,:2]-predictions[c][1:,:2],axis=1))),
++                heading_rad=float(np.max(np.abs(expected[:,2]-predictions[c][1:,2]))),
++                speed_m_s=float(np.max(np.abs(p['direction']*vp-predictions[c][1:,3]))),
++                path_s_end_m=float(sp[-1]))
++        record['mapping_errors']=errors
++        return controls,predictions,record
++
++    def commit(self, controls, predictions, record):
++        n=round(self.scene['h']/self.scene['sample_s']);h=self.scene['h']
++        for c,agent in self.agents.items():
++            if agent.mode=='MOVE':
++                p=record['parameters'][c];a=record['solution'][CARS.index(c)*self.scene['N']]
++                agent.s += h*p['v0']+.5*h*h*a
++                agent.previous=float(a)
++                if agent.stop_steps is not None:agent.stop_steps-=1
++            elif agent.steering:
++                agent.steering.pop(0)
++            agent.z=predictions[c][n].copy()
++
++    def future_witness(self):
++        begun=time.perf_counter();future=copy.deepcopy(self);commands={c:[] for c in CARS};records=[]
++        permissions={'A':False,'B':True}
++        failure=None
++        for _ in range(round(self.scene['timeout_s']/self.scene['h'])):
++            future.prepare(permissions)
++            if all(a.mode=='DONE' for a in future.agents.values()):break
++            controls,predictions,record=future.predict(permissions);records.append(record)
++            if not record['accepted'] or not audit(predictions,self.scene)['passed'] or any(max(e[k] for k in ('position_m','heading_rad','speed_m_s'))>self.scene['tolerance'] for e in record['mapping_errors'].values()):
++                failure='future_QP_or_prediction_rejected';break
++            for c in CARS:commands[c].append(controls[c][0])
++            future.commit(controls,predictions,record)
++        else:failure='future_timeout'
++        motions={c:rollout(self.agents[c].z,commands[c],self.scene) for c in CARS}
++        proof=audit(motions,self.scene)
++        from bicycle_core import completed
++        proof['both_future_goals']=all(completed(motions[c][-1],self.scene['goals'][c],self.scene) for c in CARS)
++        proof['passed'] &= proof['both_future_goals'] and failure is None
++        return dict(commands=commands,check=proof,states={c:a.z.tolist() for c,a in self.agents.items()},
++                    final={c:z[-1].tolist() for c,z in motions.items()},failure=failure,
++                    qp_calls=len(records),wall_s=time.perf_counter()-begun,solves=records)
+diff --git a/examples/head_on_mpc/scripts/run_joint_e2.py b/examples/head_on_mpc/scripts/run_joint_e2.py
+new file mode 100644
+index 0000000..0391399
+--- /dev/null
++++ b/examples/head_on_mpc/scripts/run_joint_e2.py
+@@ -0,0 +1,276 @@
++#!/usr/bin/env python3
++"""B0/B1 fixed-scene comparison with ROS 2 Flag and bicycle execution."""
++import argparse
++import csv
++import hashlib
++import json
++from pathlib import Path
++import platform
++import os
++import shutil
++import subprocess
++import time
++import numpy as np
++import scipy
++import osqp
++
++from bicycle_core import CARS,SIGN,audit,completed,clipped_area,corners,rollout,validate_scene
++from longitudinal_joint import Controller,WEIGHTS,routes
++from ros_flag import RosFlag
++from run_entry_bicycle import ROOT,run_policy,rows_for,save_rows,write,jsonl
++from verify_entry_bicycle import verify_policy
++
++
++def run_b1(scene,path,directory,bus):
++    directory.mkdir();controller=Controller(scene,path)
++    rows=[];events=[];forecasts=[];checks=[];planning=[];solves=[];constraints=[];witnesses=[]
++    owner=None;requested=set();released=set();ready_sent=False;done={};reserved=0.;failure=None
++    begun=time.perf_counter();now=scene['epoch_s']
++    def event(kind,**fields):events.append(dict(time_s=now,kind=kind,**fields))
++    try:
++        for cycle in range(round(scene['timeout_s']/scene['h'])):
++            cycle_started=time.perf_counter();now=round(scene['epoch_s']+cycle*scene['h'],10);bus.cycle=cycle
++            requests=[(now,c) for c,a in controller.agents.items() if c not in requested and
++                      SIGN[c]*a.z[0]>=-scene['request_rear_axle_abs_x']-1e-8]
++            if requests:
++                owner,grants=bus.request(requests)
++                for _,c in requests:
++                    requested.add(c);event('request',car=c)
++                    event('grant' if grants[c] else 'deny',car=c,owner=owner)
++            permissions={c:bus.received[c]['owner_id']==c for c in CARS}
++            controller.prepare(permissions)
++            b=controller.agents['B']
++            if b.mode=='WAIT' and not b.steering and abs(b.z[4])<1e-7 and not ready_sent:
++                bus.ready('B');ready_sent=True;event('waiting_ready',car='B',pose=b.z.tolist())
++            for c,a in controller.agents.items():
++                if a.mode=='DONE' and c not in done:
++                    if not completed(a.z,scene['goals'][c],scene):raise ValueError('completed phase missed original goal')
++                    done[c]=now-scene['epoch_s'];event('car_completed',car=c)
++            if owner and owner not in released:
++                a=controller.agents[owner]
++                tail=SIGN[owner]*a.z[0]-scene['vehicle']['rear']
++                if tail>=scene['release_plane_abs_x']+scene['release_margin_m'] and (owner=='B' or ready_sent):
++                    witness=controller.future_witness();witnesses.append(dict(time_s=now,holder=owner,**witness))
++                    checks.append(dict(time_s=now,kind='complete_future_release_witness',wall_s=witness['wall_s'],**witness['check']))
++                    if not witness['check']['passed']:
++                        failure='full_future_release_QP_rejected';event('failure',reason=failure);break
++                    jsonl(directory/f'release_witness_{owner}.jsonl',[{k:v for k,v in witness.items() if k!='solves'}])
++                    event('release',car=owner,actual_body_tail_x=float(a.z[0]-SIGN[owner]*scene['vehicle']['rear']))
++                    released.add(owner);owner=bus.release(owner,witness['check'])
++                    if owner:
++                        event('grant',car=owner,owner=owner);event('return_started',car=owner)
++                    permissions={c:bus.received[c]['owner_id']==c for c in CARS};controller.prepare(permissions)
++            if len(done)==2:
++                event('both_tasks_completed');break
++            states={c:a.z.copy() for c,a in controller.agents.items()}
++            controls,predictions,record=controller.predict(permissions)
++            record.update(time_s=now,cycle=cycle)
++            solves.append(record)
++            for c in CARS:
++                constraints.append(dict(car=c,cycle=cycle,g_i=int(permissions[c]),
++                    receive_cycle=bus.received[c]['receive_cycle'],state_version=bus.received[c]['version'],
++                    phase=controller.agents[c].mode,segment=controller.agents[c].index,**record['parameters'][c]))
++            if not record['accepted']:
++                failure='joint_QP_rejected';event('failure',reason=failure);break
++            if any(max(v for k,v in e.items() if k!='path_s_end_m')>scene['tolerance'] for e in record['mapping_errors'].values()):
++                failure='QP_bicycle_mapping_error';event('failure',reason=failure);break
++            planning_wall=time.perf_counter()-cycle_started
++            start=time.perf_counter();check=audit(predictions,scene)
++            checks.append(dict(time_s=now,kind='dense_prediction',wall_s=time.perf_counter()-start,**check))
++            n=round(scene['h']/scene['sample_s'])
++            forecasts.append(dict(time_s=now,states={c:z.tolist() for c,z in states.items()},commands=controls,
++                predicted_states={c:z[n::n].tolist() for c,z in predictions.items()},owner=owner))
++            if not check['passed']:
++                failure='prediction_acceptance_rejected';event('failure',reason=failure);break
++            protection=[-scene['admission_protection_abs_x'],scene['admission_protection_abs_x'],-scene['W']/2,scene['W']/2]
++            for c in CARS:
++                if not permissions[c] and any(clipped_area(body,protection)>scene['tolerance'] for body in corners(predictions[c],scene['vehicle'])):
++                    failure='unauthorized_prediction';event('failure',reason=failure,car=c);break
++            if failure:break
++            motions={c:z[:n+1] for c,z in predictions.items()}
++            executed=audit(motions,scene);checks.append(dict(time_s=now,kind='executed_segment',wall_s=0.,**executed))
++            if not executed['passed']:
++                failure='actual_acceptance_rejected';event('failure',reason=failure);break
++            rows.extend(rows_for(motions,{c:[controls[c][0]] for c in CARS},now,scene,owner))
++            controller.commit(controls,predictions,record);reserved+=scene['h']*(owner is not None)
++            planning.append(dict(time_s=now,planning_wall_s=planning_wall,acceptance_wall_s=time.perf_counter()-start,
++                total_cycle_wall_s=time.perf_counter()-cycle_started,optimization_solver_calls=int(record['free_variables']>0),retries=0))
++        else:
++            failure='timeout';event('failure',reason=failure)
++    except (ValueError,TimeoutError) as exc:
++        failure=type(exc).__name__+': '+str(exc);event('failure',reason=failure)
++    if not rows:
++        rows=rows_for({c:np.array([a.z]) for c,a in controller.agents.items()},{c:[] for c in CARS},scene['epoch_s'],scene)
++    save_rows(directory/'actual.csv',rows)
++    for name,values in [('events',events),('predictions',forecasts),('checks',checks),('solves',solves),
++                        ('constraints',constraints),('future_diagnostics',witnesses),('messages',[]),('detections',[])]:
++        jsonl(directory/(name+'.jsonl'),values)
++    jsonl(directory/'ros_messages.jsonl',bus.log)
++    write(directory/'planning.json',planning);write(directory/'config.json',dict(scene=scene,policy='S1',controller='B1'))
++    summary=dict(policy='S1',controller='B1',both_completed=len(done)==2 and failure is None,
++        T_complete_sim_s=max(done.values()) if len(done)==2 and failure is None else None,
++        completion_per_car_s=done,channel_reserved_s=reserved,optimization_solver_calls=sum(r['free_variables']>0 for r in solves),qp_build_calls=len(solves),
++        future_diagnostic_qp_calls=sum(sum(r['free_variables']>0 for r in w['solves']) for w in witnesses),
++        future_diagnostic_qp_build_calls=sum(w['qp_calls'] for w in witnesses),
++        future_diagnostic_wall_s=sum(w['wall_s'] for w in witnesses),failure=failure,
++        total_policy_wall_s=time.perf_counter()-begun,continuous_time_safety_proved=False)
++    write(directory/'summary.json',summary)
++    return summary
++
++
++def verify_ros(directory):
++    messages=[json.loads(l) for l in (directory/'ros_messages.jsonl').read_text().splitlines()]
++    states=[m for m in messages if m['kind']=='publish_state' and m['owner_id']]
++    order=list(dict.fromkeys(m['owner_id'] for m in states))
++    errors=[]
++    if order!=['A','B']:errors.append('grant order or incomplete handoff: '+str(order))
++    if 'B' in order:
++        grant=next(m for m in states if m['owner_id']=='B')
++        released=[m for m in messages if m['kind']=='receive_release' and m['vehicle_id']=='A']
++        ready=[m for m in messages if m['kind']=='receive_ready' and m['vehicle_id']=='B']
++        if not released or not ready or not (released[0]['sequence']<grant['sequence'] and ready[0]['sequence']<grant['sequence']):
++            errors.append('B granted before ready or A release')
++    constraints=[json.loads(l) for l in (directory/'constraints.jsonl').read_text().splitlines()]
++    for p in constraints:
++        version=p['state_version'];car=p.get('car')
++        received=[m for m in messages if m['kind']=='receive_state' and m['vehicle_id']==car and m['version']==version]
++        effective=p.get('effective_cycle',p.get('cycle'))
++        if not received or p['g_i']!=int(received[-1]['owner_id']==car) or received[-1]['cycle']>effective:
++            errors.append('constraint does not match received permission');break
++    result=dict(passed=not errors,grant_order=order,errors=errors,actual_DDS_log=True)
++    write(directory/'ros_validation.json',result)
++    return result
++
++
++def verify_future_execution(directory, scene):
++    rows=list(csv.DictReader((directory/'actual.csv').open()))
++    witnesses=[json.loads(l) for l in (directory/'future_diagnostics.jsonl').read_text().splitlines()]
++    checks=[]
++    for witness in witnesses:
++        residuals={}
++        for car in CARS:
++            actual=[r for r in rows if r['car']==car and float(r['time_s'])>=witness['time_s']-1e-8]
++            expected=rollout(witness['states'][car],witness['commands'][car],scene)
++            states=np.array([[float(r[k]) for k in ('x','y','psi','v','delta')] for r in actual])
++            count=min(len(states),len(expected))
++            residuals[car]=dict(actual_samples=len(states),witness_samples=len(expected),
++                max_state_error=float(np.max(np.abs(states[:count]-expected[:count]))) if count else None)
++        checks.append(dict(time_s=witness['time_s'],holder=witness['holder'],residuals=residuals))
++    passed=len(checks)==2 and all(r['actual_samples']==r['witness_samples'] and r['max_state_error'] is not None and
++        r['max_state_error']<=scene['tolerance'] for check in checks for r in check['residuals'].values())
++    result=dict(passed=passed,checks=checks)
++    write(directory.parent/'future_execution_consistency.json',result)
++    return result
++
++
++def comparison(directory):
++    result={}
++    for name in ('B0','B1'):
++        d=directory/name;s=json.loads((d/'summary.json').read_text());v=json.loads((d/'validation.json').read_text())
++        planning=json.loads((d/'planning.json').read_text());solves=[json.loads(l) for l in (d/'solves.jsonl').read_text().splitlines()] if (d/'solves.jsonl').exists() else []
++        compute=[p['total_cycle_wall_s'] for p in planning];solve_time=[p['solve_wall_s'] for p in solves]
++        metrics=v.get('metrics',{})
++        result[name]=dict(completed=s['both_completed'],validation_passed=v['passed'] and json.loads((d/'ros_validation.json').read_text())['passed'],failure=s['failure'],
++            completion_sim_s=s.get('T_complete_sim_s'),minimum_sampled_gap_m=v.get('trajectory',{}).get('minimum_gap_m'),
++            distance_m=metrics.get('total_distance_m'),reverse_distance_m=metrics.get('total_reverse_distance_m'),
++            planning_calls=len(planning),QP_build_calls=s.get('qp_build_calls',0),QP_calls=s.get('optimization_solver_calls',0),
++            future_diagnostic_QP_calls=s.get('future_diagnostic_qp_calls',0),
++            future_diagnostic_QP_build_calls=s.get('future_diagnostic_qp_build_calls',0),
++            future_diagnostic_wall_s=s.get('future_diagnostic_wall_s',0.),
++            cycle_mean_ms=float(np.mean(compute)*1000) if compute else None,cycle_max_ms=max(compute,default=0.)*1000,
++            cycle_over_200ms=sum(t>.2 for t in compute),solve_mean_ms=float(np.mean(solve_time)*1000) if solve_time else None,
++            solve_max_ms=max(solve_time,default=0.)*1000,
++            min_hessian_eigenvalue=min((r['hessian_min_eigenvalue'] for r in solves),default=None),
++            maximum_affine_violation=max((r['affine_violation'] for r in solves),default=None),
++            maximum_mapping_position_m=max((e['position_m'] for r in solves for e in r['mapping_errors'].values()),default=None),
++            maximum_mapping_speed_m_s=max((e['speed_m_s'] for r in solves for e in r['mapping_errors'].values()),default=None),
++            maximum_mapping_heading_rad=max((e['heading_rad'] for r in solves for e in r['mapping_errors'].values()),default=None),
++            solve_rejections=sum(not r['accepted'] for r in solves))
++    write(directory/'comparison.json',result)
++    constraints=[json.loads(l) for l in (directory/'B1/constraints.jsonl').read_text().splitlines()]
++    b=[p for p in constraints if p['car']=='B']
++    if any(p['phase']=='WAIT' for p in b) and any(p['g_i']==1 and p['phase']=='MOVE' for p in b):
++        write(directory/'permission_transition.json',dict(wait=next(p for p in b if p['phase']=='WAIT' and p['g_i']==0),
++            granted=next(p for p in b if p['g_i']==1),first_return_motion=next(p for p in b if p['g_i']==1 and p['phase']=='MOVE')))
++    fields=['completed','validation_passed','failure','completion_sim_s','minimum_sampled_gap_m','distance_m',
++            'reverse_distance_m','QP_build_calls','QP_calls','future_diagnostic_QP_calls','cycle_mean_ms','cycle_max_ms',
++            'cycle_over_200ms','solve_mean_ms','solve_max_ms','min_hessian_eigenvalue',
++            'maximum_affine_violation','maximum_mapping_position_m','maximum_mapping_speed_m_s',
++            'maximum_mapping_heading_rad','solve_rejections']
++    table=['|指标|B0 原控制|B1 联合 QP|','|---|---|---|']
++    for f in fields:
++        values=[result[n][f] for n in ('B0','B1')]
++        table.append('|'+f+'|'+'|'.join(f'{v:.9g}' if isinstance(v,float) else str(v) for v in values)+'|')
++    report=['# E2 固定路径纵向联合 QP：B0/B1','','\n'.join(table),'',
++        '同一 entry_bicycle.json、初态、地图、车辆能力与目标；Flag 均为 A→B，实际 ROS 2 三节点消息。B0 每次重新运行，不读取历史轨迹作为成功依据。',
++        'B1 的几何路径为原直线/双圆弧；B0 申请后的制动及接近合并为同一直线上的纵向优化。B1 在曲率断点停车转向，固定 N=32、h=0.2 s，不优化几何、顺序或时域。',
++        '联合 QP 在 B 初始直线阶段包含双方进度的耦合间距行；圆弧阶段采用整段车身扫掠的保守固定 x 分离界；B 停靠后采用已检验的横向净空。模型定义见 mathematics.md。',
++        '速度是沿固定段的非负路径速度，映射自行车有符号 v=d*v_path、a=d*a_path；运动时 delta 固定、omega=0，段间在静止时按原 steer() 限速转向。没有直接把路径坐标作为车辆位置写回。',
++        '全部控制通过原 RK4 非线性自行车积分，以 0.02 s 采样重放分量方程、旋转车身、道路、双方间距、原目标、未授权进入及完整未来释放见证。',
++        '释放前的完整未来见证再次以同一 QP 和自行车模型滚动至双方目标，诊断成本单独报告；该计算纳入所在执行周期的总墙钟，不能只用 QP 单次耗时声称实时。',
++        '本轮为单场景、理想通信、仿真冻结计算的集中式 B1。道路扫掠边界是 0.01 m 几何采样，执行是 0.02 s 采样；不构成连续时间安全、递归可行性或真实车辆可行证明。',
++        'QP_calls 统计有自由输入时的实际 OSQP 数值调用；QP_build_calls 还包括所有输入已固定、直接求值的阶段。solve_mean_ms 是每轮 QP 构造、求解及残差检查墙钟均值，不含后续自行车全预测和映射检查。',
++        '源码/配置哈希、版本、环境与命令见 provenance.json/source/；逐次失败原样保留在 solves.jsonl、events.jsonl。']
++    (directory/'report.md').write_text('\n\n'.join(report)+'\n')
++    render(directory)
++    return result
++
++
++def render(directory):
++    import matplotlib
++    matplotlib.use('Agg')
++    import matplotlib.pyplot as plt
++    import csv
++    fig,axes=plt.subplots(2,2,figsize=(12,8))
++    for col,name in enumerate(('B0','B1')):
++        rows=list(csv.DictReader((directory/name/'actual.csv').open()))
++        for c,color in [('A','tab:blue'),('B','tab:orange')]:
++            rr=[r for r in rows if r['car']==c]
++            axes[0,col].plot([float(r['x']) for r in rr],[float(r['y']) for r in rr],color=color,label=c)
++            axes[1,col].plot([float(r['time_s'])-100 for r in rr],[float(r['v']) for r in rr],color=color,label=c)
++        axes[0,col].set(title=name+' rear axle path',xlabel='x (m)',ylabel='y (m)',ylim=(-6,6))
++        axes[1,col].set(xlabel='simulation time (s)',ylabel='signed speed (m/s)')
++        for ax in axes[:,col]:ax.grid(True);ax.legend()
++    fig.tight_layout();fig.savefig(directory/'comparison.png',dpi=150);plt.close(fig)
++
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True)
++    args=parser.parse_args();args.output.mkdir(parents=True,exist_ok=False)
++    scene=json.loads((ROOT/'config/entry_bicycle.json').read_text());validate_scene(scene);write(args.output/'scene.json',scene)
++    path=routes(scene);write(args.output/'paths.json',path)
++    source=args.output/'source';source.mkdir()
++    files=[*Path(__file__).parent.glob('*.py'),ROOT/'config/entry_bicycle.json',ROOT/'tests/test_longitudinal_joint.py',ROOT/'longitudinal_joint_qp.md',ROOT/'requirements-qp.txt']
++    for p in files:shutil.copy2(p,source/p.name)
++    shutil.copy2(ROOT/'longitudinal_joint_qp.md',args.output/'mathematics.md')
++    write(args.output/'provenance.json',dict(git_head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
++        git_diff=subprocess.check_output(['git','diff'],text=True),source_sha256={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
++        python=platform.python_version(),numpy=np.__version__,scipy=scipy.__version__,osqp=osqp.__version__,weights=WEIGHTS,
++        command='source /opt/ros/jazzy/setup.bash && PYTHONPATH=/tmp/e2_qp_deps:$PYTHONPATH ROS_DOMAIN_ID='+os.environ.get('ROS_DOMAIN_ID','0')+' OPENBLAS_NUM_THREADS=1 python3 scripts/run_joint_e2.py --output '+str(args.output),
++        solver='OSQP 1.1.3, max_iter 20000, eps_abs=eps_rel=1e-8, polishing=True; cold start; no retries',
++        communication='three rclpy nodes, reliable DDS, ideal cycle-synchronous; simulation frozen during computation'))
++    for name in ('B0','B1'):
++        print('Running',name,flush=True);bus=RosFlag()
++        try:
++            if name=='B0':
++                run_policy(scene,'S1',args.output/name,transport=bus)
++                jsonl(args.output/name/'ros_messages.jsonl',bus.log)
++                jsonl(args.output/name/'constraints.jsonl',bus.constraint_log)
++            else:run_b1(scene,path,args.output/name,bus)
++        finally:bus.close()
++        try:
++            validation=verify_policy(args.output/name,scene)
++        except (ValueError,KeyError,StopIteration) as exc:
++            validation=dict(passed=False,validation_error=type(exc).__name__+': '+str(exc))
++        if name=='B1':
++            consistency=verify_future_execution(args.output/name,scene)
++            validation['future_execution_matches_witness']=consistency['passed']
++            validation['passed'] &= consistency['passed']
++        write(args.output/name/'validation.json',validation)
++        verify_ros(args.output/name)
++        print(name,'verification',validation['passed'],flush=True)
++    result=comparison(args.output);print(json.dumps(result),flush=True)
++    if not all(v['completed'] and v['validation_passed'] for v in result.values()):raise SystemExit(1)
++
++
++if __name__=='__main__':main()
+diff --git a/examples/head_on_mpc/tests/test_longitudinal_joint.py b/examples/head_on_mpc/tests/test_longitudinal_joint.py
+new file mode 100644
+index 0000000..12cc03b
+--- /dev/null
++++ b/examples/head_on_mpc/tests/test_longitudinal_joint.py
+@@ -0,0 +1,66 @@
++import copy
++import json
++from pathlib import Path
++import sys
++import unittest
++import numpy as np
++sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
++from bicycle_core import audit, rollout
++from longitudinal_joint import Controller, build_qp, pose, routes, solve
++SCENE=json.loads((Path(__file__).resolve().parents[1]/'config/entry_bicycle.json').read_text())
++
++
++class JointQPTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):cls.path=routes(SCENE)
++
++    def test_routes_and_original_goals(self):
++        for car in ('A','B'):
++            np.testing.assert_allclose(self.path[car][-1]['end'][:3],SCENE['goals'][car][:3],atol=1e-9)
++            self.assertTrue(all(p['sweep_check']['passed'] for p in self.path[car]))
++        self.assertAlmostEqual(self.path['B'][2]['end'][1],-3.)
++
++    def test_hessian_affine_and_terminal_stop(self):
++        ctrl=Controller(SCENE,self.path);g={'A':False,'B':False}
++        H,q,A,lo,hi,E,b,bounds,params=build_qp(ctrl.agents,g,SCENE)
++        self.assertGreater(np.linalg.eigvalsh(H)[0],0.)
++        x=np.arange(len(q))*.001;y=-x*.3
++        np.testing.assert_allclose(A@(x+y),A@x+A@y,atol=1e-13)
++        u,record=solve(ctrl.agents,g,SCENE)
++        self.assertTrue(record['accepted'],record)
++        self.assertLess(record['affine_violation'],1e-5)
++        self.assertEqual(H.shape,(64,64))
++        self.assertLess(params['A']['upper'],self.path['A'][0]['length'])
++
++    def test_reverse_mapping_and_curved_execution(self):
++        scene=copy.deepcopy(SCENE)
++        z=np.array([0.,0.,.2,0.,.3])
++        controls=[(-.2,0.,'REVERSE')]*10
++        trajectory=rollout(z,controls,scene)
++        length=0.5*.2*(10*scene['h'])**2
++        expected=pose(z,length,.3,-1,scene['vehicle'])
++        np.testing.assert_allclose(trajectory[-1,:3],expected[:3],atol=1e-8)
++
++    def test_numerical_rest_residual_is_braked_without_state_reset(self):
++        ctrl=Controller(SCENE,self.path);b=ctrl.agents['B']
++        b.s=self.path['B'][0]['length']-1e-8
++        b.z=pose(self.path['B'][0]['start'],b.s,0.,1,SCENE['vehicle'])
++        b.z[3]=-2e-8
++        before=b.z.copy();b.advance(False)
++        np.testing.assert_array_equal(b.z,before)
++        self.assertEqual(b.mode,'MOVE');self.assertEqual(b.stop_steps,1)
++        commands,predictions,record=ctrl.predict({'A':False,'B':False})
++        self.assertTrue(record['accepted'])
++        ctrl.commit(commands,predictions,record)
++        self.assertLess(abs(b.z[3]),1e-12)
++        b.advance(False);self.assertEqual(b.mode,'STEER')
++
++    def test_wait_gate_holds_and_permission_changes_phase(self):
++        ctrl=Controller(SCENE,self.path);b=ctrl.agents['B']
++        b.index=3;b.z=np.array(self.path['B'][2]['end']);b.z[4]=0.;b.mode='WAIT';b.ready=True
++        b.advance(False);self.assertEqual(b.mode,'WAIT')
++        self.assertEqual(b.parameters(False)['cap'],0.)
++        b.advance(True);self.assertEqual(b.mode,'STEER');self.assertTrue(b.steering)
++
++
++if __name__=='__main__':unittest.main()
+diff --git a/examples/head_on_mpc/longitudinal_joint_qp.md b/examples/head_on_mpc/longitudinal_joint_qp.md
+new file mode 100644
+index 0000000..feb5cc5
+--- /dev/null
++++ b/examples/head_on_mpc/longitudinal_joint_qp.md
+@@ -0,0 +1,57 @@
++# E2 B1：固定路径纵向联合 QP
++
++场景与执行参数固定为 `config/entry_bicycle.json`。B0 为 E1 接入 ROS 的原 S1 控制；B1 为集中式两车联合纵向 QP。每轮重跑两者，原 Flag 顺序 A→B；不固定交接绝对时刻。
++
++## 几何、方向与固定速度界
++
++A 路径是原后轴直线 (-40,0)→(44,0)。B 路径为原后轴直线 (46,0)→(30,0)、原半径 R=6 m 的双圆弧入位、停靠等待、反向曲率双圆弧返回、原主路直线至 (-44,0)。每段 `paths.json` 记录起终点、长度、曲率、累计弧长 offset、车身扫掠范围。B0 原制动后的短直线与前一段共线，B1 合并优化其时间参数，不改变几何。
++
++每段用非负局部路径进度 s、非负路径速度 v，固定方向 d∈{−1,+1}。全程累计进度=offset+s。当前场景各移动段 d=+1；通用执行映射的倒车分支由测试覆盖。段内曲率 κ=tan(δ)/L 为常数，后轴路径导数为 d[cosψ,sinψ]，ψ(s)=ψ0+dκs，精确圆弧定义见 `pose()`。
++
++直线固定 vmax=min(车辆该方向速度上限,2 m/s)，圆弧固定 vmax=min(该方向速度上限,1 m/s)。这些界根据已选定整段常曲率设置，**不依赖决策变量 s**。圆弧上 |v²κ|≤1/6 m/s²，仅为该限速的结果，没有建立轮胎/侧倾约束或硬件标定。在曲率变化处要求停车，调用原 `steer()` 在 ωmax=1 rad/s 内静止转向。移动时 δ 常值、ω=0；无行驶中曲率跳变。
++
++整车尺寸仍为 4.5×1.8 m，轴距 2.7 m，后悬 1 m、前悬 0.8 m。每条已固定参考以≤0.01 m 间隔计算旋转车身与道路并集、准入保护区的交叠；仅接受原道路内的路径。未授权进度上界是首次车身保护区交叠前的采样点，非后轴直接到保护边界。采样界不是连续空间证明。
++
++## 每周期 QP
++
++固定 h=0.2 s、N=32（6.4 s），两车共同决策向量 u=[a_A,0…a_A,31,a_B,0…a_B,31]，64 维。仿射离散模型：
++
++s_{j+1}=s_j+h v_j+½h²a_j，v_{j+1}=v_j+h a_j。
++
++用解析零阶保持凝聚矩阵 P(τ)、V(τ)：s(τ)=s0+τv0+P(τ)u_i，v(τ)=v0+V(τ)u_i。所有系数在本次求解前固定。进度、速度与分离约束在 h 节点以仿射行给出；节点速度非负且段内加速度恒定，故段内速度非负、进度单调，节点进度界也覆盖段内。非线性车身验收仍使用 0.02 s 子采样。
++
++约束：0≤s(τ)≤s_upper；0≤v(τ)≤vmax；amin≤a≤amax。固定段方向 d=+1 时 a 界沿用原 [-1,1] m/s²，d=−1 时为 [-amax,−amin]。g_i 由车辆实际 ROS 状态订阅得到：获准开放当前几何段到末端，未获准使用车身扫掠限定的准入上界；B 停靠等待时 s_upper=s0、vmax=0。B 收到许可后才开放返回段。已释放车在释放平面外继续沿原方向完成剩余目标。
++
++每次预测末端 v_N=0。若阶段端点进入保守可达范围 remaining≤vmax·max(0,Nh−2vmax/amin_abs)，固定该阶段停车到达周期为当前周期+N，后续不后移。到达前 K 个周期时加 s_K=s_upper、v_K=0，K 后 a=0；故固定 N 预测内到达后保持。K=1 时两条一致终端等式对应唯一加速度 a0=−v0/h，直接固定该输入，避免对一个变量重复施加两个等式；实际端点残差另行检查。不重置车辆姿态、速度或实际进度。近端点识别阈值为 1e-6 m、1e-6 m/s；若仍有大于 1e-12 m/s 的数值残速，固定 K=1，使用 a0=−v0/h 的实际制动周期再进入下一段，保留原非线性积分，不直接清零速度或覆盖状态。此时端点/非负速度允许的数值残差仍受统一 1e-5 容差约束。先前试验中每周期重新把端点固定在 N 的做法会渐近停车，故采用固定到达周期。
++
++凸二次目标（j=1…N，D 为一阶差分，a_{−1}为上次执行输入）：
++
++Σ_j [1·(s_j−s_upper)²+0.1·(v_j−vmax)²+0.1·a_{j−1}²+0.05·(a_{j−1}−a_{j−2})²]+10·(s_N−s_upper)²。
++
++等待/转向段 u=0，进度恒定。H=2(PᵀP+0.1VᵀV+0.1I+0.05DᵀD+10P_NᵀP_N)，两车分块对角；因 0.1I，H 正定，故半正定验收成立。q 由当前状态、阶段目标与上次输入形成。目标整体按固定正标量归一，固定输入消元并作正比例约束行缩放，去除已由固定输入和终端等式蕴含的重复行，不改变最优解。不存在互补条件、整数变量、决策相关掩码或非线性约束。
++
++## 两车耦合与分离假设
++
++B 初始直线、A 直线时，用实际车头支持量 3.5 m 与间距 0.5 m 构造 s_A(τ)+s_B(τ)≤46−(−40)−2·3.5−0.5=78.5 m，两车变量出现在同一仿射行。
++
++B 进入圆弧时，对其整个入位路径的采样车身取 x_min，要求 A 车头+间距≤x_min，为保守固定空间分离界，不追踪未知圆弧进度。B 已入位时，原停靠车身与主路行驶车存在固定横向间隙；全预测仍逐采样检查真实车身欧氏距离。B 开始返回后，取其整个返回/出发路径车身 x_max，要求 A 车尾≥x_max+间距。由固定 A→B 顺序以及原释放平面触发，保证对应约束模式已建立。
++
++这些分离界只服务当前固定路径与顺序，不声称可用于任意路径、任意通行次序。B1 可较 B0 因静态包络和额外停车时间更保守。
++
++## 模型到执行器
++
++移动段自行车输入为 a_vehicle=d·a_path、ω=0，初始有符号速度 v_vehicle=d·v_path，转角为该段已实际转到的 δ。转向阶段在停车状态使用原 steer() 的限幅 ω。执行只提交第一个 h 段，经原 bicycle_core.step() 的 RK4 以 0.02 s 积分；没有把 QP 的 s 反写成实际姿态，没有覆盖实际速度。解析路径上的预期姿态与非线性积分得到的整段预测逐样本比较，误差超过 1e-5 就终止，不执行拒绝段。
++
++释放沿用实际车尾超过±26 m释放平面加0.5 m裕度，并通过完整未来检查。B1 的未来见证从实际状态复制，再用同一 QP、固定路径及自行车模型完整滚动到双方原目标；B 的返回使用拟授予的许可。见证要通过原道路、车身间距与原目标验收。见证不修改实际状态。其调用数与墙钟时间单列，同时计入触发周期总耗时；不是免费的在线可用信息。
++
++## 运行、记录与边界
++
++```bash
++source /opt/ros/jazzy/setup.bash
++PYTHONPATH=/tmp/e2_qp_deps:$PYTHONPATH OPENBLAS_NUM_THREADS=1 python3 -m unittest discover -s tests -p test_longitudinal_joint.py
++PYTHONPATH=/tmp/e2_qp_deps:$PYTHONPATH ROS_DOMAIN_ID=92 OPENBLAS_NUM_THREADS=1 python3 scripts/run_joint_e2.py --output results/joint_e2_rerun
++```
++
++使用工程 requirements-qp.txt 已声明的 OSQP 1.1.3 求解显式凸 QP，max_iter=20000、eps_abs=eps_rel=1e-8、polishing=True、零初值、无重试。当前系统无 pip/venv，实验把 PyPI 校验过 SHA256 的 OSQP wheel 及依赖 joblib 1.4.2 仅解包到 /tmp/e2_qp_deps；不修改系统。常规环境可安装 requirements-qp.txt 后省略 PYTHONPATH。每次保存求解状态、最小 Hessian 特征值、仿射约束违反量、完整加速度解、执行映射误差。成功要求求解器成功、有限解、残差≤1e-5，并通过独立非线性验收。OSQP 成功标志不代替几何/动力学检查。早期 SLSQP 自检出现数值拒绝，不将其解释为物理不可行，探索记录另列。
++
++实际 DDS 日志位于两分支的 ros_messages.jsonl；每车收到许可和生效约束在 B1/constraints.jsonl。B0/B1 均用原 verify_policy() 从日志重新积分并核验原初态、完整预测、旋转车身道路与双方间距、权限、完整未来释放、原目标及任务完成。失败原样保留，模拟中止不等于硬件安全停车。单场景的采样闭环成功不等于真实车辆可行、连续时间安全或递归可行证明。

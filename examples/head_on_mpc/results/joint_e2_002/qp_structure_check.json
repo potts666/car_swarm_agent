@@ -1,0 +1,29 @@
+{
+  "variables": 64,
+  "hessian_min_eigenvalue": 0.24398091546026185,
+  "hessian_symmetry_error": 0.0,
+  "first_logged_solution_affine_violation": 4.147793219999585e-13,
+  "parameters": {
+    "A": {
+      "s0": 0.0,
+      "v0": 0.0,
+      "end": 18.5,
+      "upper": 18.5,
+      "cap": 2.0,
+      "direction": 1,
+      "stop_at_end": false,
+      "stop_index": 32
+    },
+    "B": {
+      "s0": 0.0,
+      "v0": 0.0,
+      "end": 16.0,
+      "upper": 16.0,
+      "cap": 2.0,
+      "direction": 1,
+      "stop_at_end": false,
+      "stop_index": 32
+    }
+  },
+  "matrices": "initial_qp_matrices.npz"
+}

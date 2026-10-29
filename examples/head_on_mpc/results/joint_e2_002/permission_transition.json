@@ -1,0 +1,53 @@
+{
+  "wait": {
+    "car": "B",
+    "cycle": 122,
+    "g_i": 0,
+    "receive_cycle": 35,
+    "state_version": 3,
+    "phase": "WAIT",
+    "segment": 3,
+    "s0": 0.0,
+    "v0": 0.0,
+    "end": 0.0,
+    "upper": 0.0,
+    "cap": 0.0,
+    "direction": 1,
+    "stop_at_end": true,
+    "stop_index": 0
+  },
+  "granted": {
+    "car": "B",
+    "cycle": 174,
+    "g_i": 1,
+    "receive_cycle": 174,
+    "state_version": 5,
+    "phase": "STEER",
+    "segment": 3,
+    "s0": 0.0,
+    "v0": 0.0,
+    "end": 0.0,
+    "upper": 0.0,
+    "cap": 0.0,
+    "direction": 1,
+    "stop_at_end": true,
+    "stop_index": 0
+  },
+  "first_return_motion": {
+    "car": "B",
+    "cycle": 177,
+    "g_i": 1,
+    "receive_cycle": 174,
+    "state_version": 5,
+    "phase": "MOVE",
+    "segment": 3,
+    "s0": 0.0,
+    "v0": 3.3152734030261755e-15,
+    "end": 4.336405486880494,
+    "upper": 4.336405486880494,
+    "cap": 1.0,
+    "direction": 1,
+    "stop_at_end": true,
+    "stop_index": 32
+  }
+}
