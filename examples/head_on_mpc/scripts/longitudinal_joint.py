@@ -178,12 +178,12 @@ def build_qp(agents, permissions, scene):
     return H,q,A,lo,hi,E,b,bounds,parameters
 
 
-def solve(agents, permissions, scene):
+def solve(agents, permissions, scene,feasibility_band=0.):
     started=time.perf_counter()
     H,q,A,lo,hi,E,b,bounds,parameters=build_qp(agents,permissions,scene)
     scale=max(1.,np.max(np.abs(q)),np.max(np.abs(H)))
     matrix=vstack([csc_matrix(A),csc_matrix(E),eye(len(q))],format='csc')
-    lower=np.r_[lo,b,[z[0] for z in bounds]];upper=np.r_[hi,b,[z[1] for z in bounds]]
+    lower=np.r_[lo-feasibility_band,b-feasibility_band,[z[0] for z in bounds]];upper=np.r_[hi+feasibility_band,b+feasibility_band,[z[1] for z in bounds]]
     fixed=np.array([i for i,(l,u) in enumerate(bounds) if l==u],int)
     free=np.array([i for i,(l,u) in enumerate(bounds) if l!=u],int)
     x=np.zeros(len(q));x[fixed]=[bounds[i][0] for i in fixed]
@@ -218,7 +218,7 @@ def solve(agents, permissions, scene):
     minimum=float(np.linalg.eigvalsh(H)[0])
     record=dict(solver='OSQP '+osqp.__version__,solver_success=status_val in (1,2),
         message=status,iterations=int(iterations),solve_wall_s=time.perf_counter()-started,
-        affine_violation=violation,hessian_min_eigenvalue=minimum,affine_constraints=True,
+        affine_violation=violation,feasibility_band=feasibility_band,hessian_min_eigenvalue=minimum,affine_constraints=True,
         variables=len(q),inequality_rows=len(A),equality_rows=len(E),parameters=parameters,
         accepted=bool(status_val in (1,2) and finite and violation<=scene['tolerance'] and minimum>=-1e-10),
         objective_without_constant=float(.5*x@H@x+q@x),solution=x.tolist(),
@@ -234,7 +234,13 @@ class Controller:
         for c,a in self.agents.items():a.advance(permissions[c])
 
     def predict(self, permissions):
-        accelerations,record=solve(self.agents,permissions,self.scene)
+        accelerations,record=solve(self.agents,permissions,self.scene,getattr(self,'reference_feasibility_band',0.))
+        if not record['accepted']:
+            controls={c:[(0.,0.,'REJECTED')]*self.scene['N'] for c in CARS}
+            predictions={c:rollout(a.z,controls[c],self.scene) for c,a in self.agents.items()}
+            record['mapping_errors']={c:dict(position_m=0.,heading_rad=0.,speed_m_s=0.) for c in CARS}
+            record['mapping_evaluated']=False
+            return controls,predictions,record
         controls={};predictions={};errors={}
         for c,agent in self.agents.items():
             p=record['parameters'][c];stage=agent.segment['stage']
@@ -275,10 +281,12 @@ class Controller:
         permissions={'A':False,'B':True}
         failure=None
         for _ in range(round(self.scene['timeout_s']/self.scene['h'])):
+            if time.perf_counter()-begun>getattr(self,'future_deadline_s',float('inf')):
+                failure='future_wall_deadline';break
             future.prepare(permissions)
             if all(a.mode=='DONE' for a in future.agents.values()):break
             controls,predictions,record=future.predict(permissions);records.append(record)
-            if not record['accepted'] or not audit(predictions,self.scene)['passed'] or any(max(e[k] for k in ('position_m','heading_rad','speed_m_s'))>self.scene['tolerance'] for e in record['mapping_errors'].values()):
+            if not record['accepted'] or not audit(predictions,self.scene)['passed'] or any(max(e[k] for k in ('position_m','heading_rad','speed_m_s'))>getattr(self,'mapping_tolerance',self.scene['tolerance']) for e in record['mapping_errors'].values()):
                 failure='future_QP_or_prediction_rejected';break
             for c in CARS:commands[c].append(controls[c][0])
             future.commit(controls,predictions,record)

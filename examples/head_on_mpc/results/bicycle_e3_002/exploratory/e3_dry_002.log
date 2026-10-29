@@ -1,0 +1,23 @@
+UPDATES 1
+0 [(0, 'MOVE'), (0, 'MOVE')]
+53 [(0, 'MOVE'), (1, 'STEER')]
+56 [(0, 'MOVE'), (1, 'MOVE')]
+87 [(0, 'MOVE'), (2, 'STEER')]
+92 [(0, 'MOVE'), (2, 'MOVE')]
+123 [(0, 'MOVE'), (3, 'WAIT')]
+174 [(0, 'MOVE'), (3, 'STEER')]
+177 [(0, 'MOVE'), (3, 'MOVE')]
+208 [(0, 'MOVE'), (4, 'STEER')]
+213 [(0, 'MOVE'), (4, 'MOVE')]
+223 [(1, 'DONE'), (4, 'MOVE')]
+Traceback (most recent call last):
+  File "<stdin>", line 16, in <module>
+  File "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/linearized_joint.py", line 187, in predict
+    reference_controls,reference_dense,ref_record=super().predict(permissions)
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/longitudinal_joint.py", line 247, in predict
+    predictions[c]=rollout(agent.z,controls[c],self.scene)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/bicycle_core.py", line 33, in rollout
+    raise ValueError('non-finite state or actuator command outside configured bounds')
+ValueError: non-finite state or actuator command outside configured bounds

@@ -1,0 +1,150 @@
+{
+  "passed": true,
+  "trajectory": {
+    "passed": true,
+    "residuals": {
+      "A": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 2.2155831524983682e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.4712575957531726e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "pair_gap_m": 0.0
+    },
+    "minimum_gap_m": 42.60330383993883
+  },
+  "component_equations": {
+    "A": {
+      "passed": true,
+      "residuals": {
+        "x_m": 7.105427357601002e-15,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 4.440892098500626e-16,
+        "delta_rad": 0.0,
+        "time_s": 1.0231399061311208e-14,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 3.552713678800501e-15,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    },
+    "B": {
+      "passed": true,
+      "residuals": {
+        "x_m": 7.105427357601002e-15,
+        "y_m": 3.944304526105059e-31,
+        "psi_rad": 0.0,
+        "v_m_s": 4.440892098500626e-16,
+        "delta_rad": 2.7755575615628914e-17,
+        "time_s": 1.0231399061311208e-14,
+        "acceleration_m_s2": 6.309975097984477e-08,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 3.552713678800501e-15,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    }
+  },
+  "predictions_passed": true,
+  "minimum_replayed_prediction_gap_m": 32.20963837726183,
+  "prediction_state_max_error": 6.181721801112872e-13,
+  "initial_same": true,
+  "protocol_errors": [],
+  "unauthorized_entry_absent": true,
+  "release_full_body_and_future_passed": true,
+  "candidate_replay_passed": true,
+  "reported_success_consistent": true,
+  "terminal": {
+    "A": false,
+    "B": false
+  },
+  "message_bytes_valid": true,
+  "metrics": {
+    "per_car": {
+      "A": {
+        "distance_m": 20.396696048155555,
+        "longitudinal_distance_m": 20.396696048155555,
+        "reverse_distance_m": 0.0,
+        "waiting_sim_s": {
+          "mutex_queue": 0.0,
+          "mutual_blocking_detection": 0.0,
+          "retreat_park": 0.0,
+          "recovery_peer_hold": 0.0,
+          "maneuver_stops": 0.0
+        },
+        "stationary_per_stage_s": {
+          "NAVIGATE": 0.02
+        },
+        "waiting_region_occupancy_s": 0.0
+      },
+      "B": {
+        "distance_m": 16.000000111905614,
+        "longitudinal_distance_m": 16.000000111905614,
+        "reverse_distance_m": 0.0,
+        "waiting_sim_s": {
+          "mutex_queue": 0.48,
+          "mutual_blocking_detection": 0.0,
+          "retreat_park": 0.0,
+          "recovery_peer_hold": 0.0,
+          "maneuver_stops": 0.6
+        },
+        "stationary_per_stage_s": {
+          "ENTRY": 0.6,
+          "QUEUE_APPROACH": 0.48
+        },
+        "waiting_region_occupancy_s": 0.0
+      }
+    },
+    "total_distance_m": 36.39669616006117,
+    "total_reverse_distance_m": 0.0,
+    "channel_physically_occupied_s": 0.0,
+    "waiting_sim_s": 1.08,
+    "first_body_channel_entry_sim_s": {
+      "A": null,
+      "B": null
+    },
+    "A_enters_first": false,
+    "communication": {
+      "messages": 0,
+      "payload_bytes": 0,
+      "by_type": {},
+      "definition": "estimated logical protocol messages; compact UTF-8 JSON envelope+payload; no actual network measurement"
+    },
+    "timing": {
+      "main_planning": {
+        "count": 56,
+        "total_s": 4.181627405002473,
+        "mean_s": 0.07467191794647274,
+        "max_s": 0.12023123700055294,
+        "over_h": 0
+      },
+      "cycle_total": {
+        "count": 56,
+        "total_s": 4.5312995250014865,
+        "mean_s": 0.08091606294645512,
+        "max_s": 0.1278216139999131,
+        "over_h": 0
+      },
+      "diagnostic": {
+        "count": 112,
+        "total_s": 0.07804035200024373,
+        "mean_s": 0.0006967888571450333,
+        "max_s": 0.002291773000251851,
+        "over_h": 0
+      }
+    },
+    "channel_reserved_s_recomputed": 7.0,
+    "first_terminal_tolerance_entry_s": {
+      "A": null,
+      "B": null
+    }
+  }
+}

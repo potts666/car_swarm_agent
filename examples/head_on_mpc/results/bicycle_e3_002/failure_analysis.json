@@ -1,0 +1,48 @@
+{
+  "B2_single": {
+    "failed_cycle": 56,
+    "elapsed_sim_s": 11.200000000000003,
+    "rejection": "nonlinear replay/trust rejection after update limit",
+    "reference_status": "solved",
+    "reference_iterations": 1925,
+    "reference_primal_residual": 1.5879207504454484e-08,
+    "reference_dual_residual": 7.658626163808968e-10,
+    "model_errors": {
+      "A": {
+        "position_m": 3.1441516057384433e-13,
+        "heading_rad": 0.0,
+        "speed_m_s": 1.2129186544029835e-14,
+        "steering_rad": 0.0
+      },
+      "B": {
+        "position_m": 1.3117484111416375e-05,
+        "heading_rad": 3.7413596580826436e-06,
+        "speed_m_s": 2.6645352591003757e-15,
+        "steering_rad": 8.326672684688674e-16
+      }
+    },
+    "executed_prefix_is_not_full_task": true
+  },
+  "B2_sequence": {
+    "failed_cycle": 121,
+    "elapsed_sim_s": 24.200000000000003,
+    "rejection": "reference QP rejected",
+    "reference_status": "maximum iterations reached",
+    "reference_iterations": 20000,
+    "reference_primal_residual": 2.6160110242271165e-08,
+    "reference_dual_residual": 1.1946652340999453e-07,
+    "model_errors": {
+      "A": {
+        "position_m": 0.0,
+        "heading_rad": 0.0,
+        "speed_m_s": 0.0
+      },
+      "B": {
+        "position_m": 0.0,
+        "heading_rad": 0.0,
+        "speed_m_s": 0.0
+      }
+    },
+    "executed_prefix_is_not_full_task": true
+  }
+}

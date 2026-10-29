@@ -1,0 +1,60 @@
+{
+  "completed": true,
+  "unified_validation_passed": true,
+  "executed_prefix_validation_passed": true,
+  "ROS_validation_passed": true,
+  "failure": null,
+  "completion_sim_s": 81.19999999999999,
+  "attempted_control_cycles": 406,
+  "executed_control_cycles": 406,
+  "accepted_control_cycles": 406,
+  "reference_rejections": 0,
+  "rejected_subproblems": 0,
+  "cycle_acceptance_fraction": 1.0,
+  "minimum_sampled_gap_m": 1.1999999999741777,
+  "normalized_execution_effort": 20.696924559086334,
+  "endpoint_errors": {
+    "A": {
+      "position_m": 2.1316282072803006e-13,
+      "heading_rad": 0.0,
+      "speed_m_s": 3.979282181543198e-14,
+      "steering_rad": 0.0
+    },
+    "B": {
+      "position_m": 1.0437940257363888e-10,
+      "heading_rad": 3.810285420513537e-13,
+      "speed_m_s": 1.809457589959748e-25,
+      "steering_rad": 2.7755575615628914e-16
+    }
+  },
+  "maximum_model_interface_errors": {
+    "position_m": 1.4451195797459266e-10,
+    "heading_rad": 3.810285420513537e-13,
+    "speed_m_s": 3.979282181543198e-14,
+    "steering_rad": 0.0
+  },
+  "maximum_position_model_error_m": 1.4451195797459266e-10,
+  "maximum_heading_model_error_rad": 3.810285420513537e-13,
+  "maximum_speed_model_error_m_s": 3.979282181543198e-14,
+  "main_reference_numeric_QPs": 401,
+  "main_bicycle_numeric_QPs": 0,
+  "future_reference_numeric_QPs": 274,
+  "future_bicycle_numeric_QPs": 0,
+  "update_count_histogram": {
+    "0": 406
+  },
+  "accepted_subproblems": 406,
+  "attempted_subproblems": 406,
+  "maximum_QPs_per_main_cycle": 1,
+  "sequential_update_cycles": 0,
+  "deadline_rejections": 0,
+  "hessian_min_eigenvalue": 0.24398091546026185,
+  "maximum_affine_violation": 9.752892982106687e-08,
+  "cycle_mean_ms": 40.36881833497704,
+  "cycle_max_ms": 4737.770132000151,
+  "cycles_over_200ms": 2,
+  "prediction_planning_mean_ms": 34.41759050738614,
+  "future_check_wall_s": 5.685694842000885,
+  "total_policy_wall_s": 16.59006754999973,
+  "scope": "one scene; fractions are cycle counts, not scenario success probabilities"
+}

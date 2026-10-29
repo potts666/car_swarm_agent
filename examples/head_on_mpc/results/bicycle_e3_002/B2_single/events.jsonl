@@ -1,0 +1,5 @@
+{"time_s": 104.2, "kind": "request", "car": "A"}
+{"time_s": 104.2, "kind": "grant", "car": "A", "owner": "A"}
+{"time_s": 107.2, "kind": "request", "car": "B"}
+{"time_s": 107.2, "kind": "deny", "car": "B", "owner": "A"}
+{"time_s": 111.2, "kind": "failure", "reason": "joint_QP_rejected"}

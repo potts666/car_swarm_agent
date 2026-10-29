@@ -21,8 +21,8 @@ from run_entry_bicycle import ROOT,run_policy,rows_for,save_rows,write,jsonl
 from verify_entry_bicycle import verify_policy
 
 
-def run_b1(scene,path,directory,bus):
-    directory.mkdir();controller=Controller(scene,path)
+def run_b1(scene,path,directory,bus,controller=None):
+    directory.mkdir();controller=controller if controller is not None else Controller(scene,path)
     rows=[];events=[];forecasts=[];checks=[];planning=[];solves=[];constraints=[];witnesses=[]
     owner=None;requested=set();released=set();ready_sent=False;done={};reserved=0.;failure=None
     begun=time.perf_counter();now=scene['epoch_s']
@@ -72,7 +72,7 @@ def run_b1(scene,path,directory,bus):
                     phase=controller.agents[c].mode,segment=controller.agents[c].index,**record['parameters'][c]))
             if not record['accepted']:
                 failure='joint_QP_rejected';event('failure',reason=failure);break
-            if any(max(v for k,v in e.items() if k!='path_s_end_m')>scene['tolerance'] for e in record['mapping_errors'].values()):
+            if any(max(v for k,v in e.items() if k!='path_s_end_m')>getattr(controller,'mapping_tolerance',scene['tolerance']) for e in record['mapping_errors'].values()):
                 failure='QP_bicycle_mapping_error';event('failure',reason=failure);break
             planning_wall=time.perf_counter()-cycle_started
             start=time.perf_counter();check=audit(predictions,scene)

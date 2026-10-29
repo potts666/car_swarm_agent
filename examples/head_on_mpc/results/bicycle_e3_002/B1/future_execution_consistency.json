@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "time_s": 134.8,
+      "holder": "A",
+      "residuals": {
+        "A": {
+          "actual_samples": 2321,
+          "witness_samples": 2321,
+          "max_state_error": 0.0
+        },
+        "B": {
+          "actual_samples": 2321,
+          "witness_samples": 2321,
+          "max_state_error": 0.0
+        }
+      }
+    },
+    {
+      "time_s": 171.6,
+      "holder": "B",
+      "residuals": {
+        "A": {
+          "actual_samples": 481,
+          "witness_samples": 481,
+          "max_state_error": 0.0
+        },
+        "B": {
+          "actual_samples": 481,
+          "witness_samples": 481,
+          "max_state_error": 0.0
+        }
+      }
+    }
+  ]
+}

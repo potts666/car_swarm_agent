@@ -1,0 +1,80 @@
+{
+  "per_car": {
+    "A": {
+      "distance_m": 20.396696048155555,
+      "longitudinal_distance_m": 20.396696048155555,
+      "reverse_distance_m": 0.0,
+      "waiting_sim_s": {
+        "mutex_queue": 0.0,
+        "mutual_blocking_detection": 0.0,
+        "retreat_park": 0.0,
+        "recovery_peer_hold": 0.0,
+        "maneuver_stops": 0.0
+      },
+      "stationary_per_stage_s": {
+        "NAVIGATE": 0.02
+      },
+      "waiting_region_occupancy_s": 0.0
+    },
+    "B": {
+      "distance_m": 16.000000111905614,
+      "longitudinal_distance_m": 16.000000111905614,
+      "reverse_distance_m": 0.0,
+      "waiting_sim_s": {
+        "mutex_queue": 0.48,
+        "mutual_blocking_detection": 0.0,
+        "retreat_park": 0.0,
+        "recovery_peer_hold": 0.0,
+        "maneuver_stops": 0.6
+      },
+      "stationary_per_stage_s": {
+        "ENTRY": 0.6,
+        "QUEUE_APPROACH": 0.48
+      },
+      "waiting_region_occupancy_s": 0.0
+    }
+  },
+  "total_distance_m": 36.39669616006117,
+  "total_reverse_distance_m": 0.0,
+  "channel_physically_occupied_s": 0.0,
+  "waiting_sim_s": 1.08,
+  "first_body_channel_entry_sim_s": {
+    "A": null,
+    "B": null
+  },
+  "A_enters_first": false,
+  "communication": {
+    "messages": 0,
+    "payload_bytes": 0,
+    "by_type": {},
+    "definition": "estimated logical protocol messages; compact UTF-8 JSON envelope+payload; no actual network measurement"
+  },
+  "timing": {
+    "main_planning": {
+      "count": 56,
+      "total_s": 4.181627405002473,
+      "mean_s": 0.07467191794647274,
+      "max_s": 0.12023123700055294,
+      "over_h": 0
+    },
+    "cycle_total": {
+      "count": 56,
+      "total_s": 4.5312995250014865,
+      "mean_s": 0.08091606294645512,
+      "max_s": 0.1278216139999131,
+      "over_h": 0
+    },
+    "diagnostic": {
+      "count": 112,
+      "total_s": 0.07804035200024373,
+      "mean_s": 0.0006967888571450333,
+      "max_s": 0.002291773000251851,
+      "over_h": 0
+    }
+  },
+  "channel_reserved_s_recomputed": 7.0,
+  "first_terminal_tolerance_entry_s": {
+    "A": null,
+    "B": null
+  }
+}

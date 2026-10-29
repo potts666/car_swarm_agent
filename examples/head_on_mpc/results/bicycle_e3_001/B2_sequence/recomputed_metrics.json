@@ -1,0 +1,80 @@
+{
+  "per_car": {
+    "A": {
+      "distance_m": 31.996694851032004,
+      "longitudinal_distance_m": 31.996694851032004,
+      "reverse_distance_m": 0.0,
+      "waiting_sim_s": {
+        "mutex_queue": 0.0,
+        "mutual_blocking_detection": 0.0,
+        "retreat_park": 0.0,
+        "recovery_peer_hold": 0.0,
+        "maneuver_stops": 0.0
+      },
+      "stationary_per_stage_s": {
+        "NAVIGATE": 0.02
+      },
+      "waiting_region_occupancy_s": 0.0
+    },
+    "B": {
+      "distance_m": 20.33506236161834,
+      "longitudinal_distance_m": 19.96756229784318,
+      "reverse_distance_m": 0.0,
+      "waiting_sim_s": {
+        "mutex_queue": 0.48,
+        "mutual_blocking_detection": 0.0,
+        "retreat_park": 0.0,
+        "recovery_peer_hold": 0.0,
+        "maneuver_stops": 0.68
+      },
+      "stationary_per_stage_s": {
+        "ENTRY": 0.68,
+        "QUEUE_APPROACH": 0.48
+      },
+      "waiting_region_occupancy_s": 4.38
+    }
+  },
+  "total_distance_m": 52.331757212650345,
+  "total_reverse_distance_m": 0.0,
+  "channel_physically_occupied_s": 2.7600000000000002,
+  "waiting_sim_s": 1.1600000000000001,
+  "first_body_channel_entry_sim_s": {
+    "A": 14.260000000000005,
+    "B": null
+  },
+  "A_enters_first": false,
+  "communication": {
+    "messages": 0,
+    "payload_bytes": 0,
+    "by_type": {},
+    "definition": "estimated logical protocol messages; compact UTF-8 JSON envelope+payload; no actual network measurement"
+  },
+  "timing": {
+    "main_planning": {
+      "count": 85,
+      "total_s": 5.7143051269949865,
+      "mean_s": 0.0672271191411175,
+      "max_s": 0.1545384909995846,
+      "over_h": 0
+    },
+    "cycle_total": {
+      "count": 85,
+      "total_s": 6.21019097399676,
+      "mean_s": 0.07306107028231482,
+      "max_s": 0.1617455109999355,
+      "over_h": 0
+    },
+    "diagnostic": {
+      "count": 170,
+      "total_s": 0.11300173699964944,
+      "mean_s": 0.0006647160999979379,
+      "max_s": 0.00224184100079583,
+      "over_h": 0
+    }
+  },
+  "channel_reserved_s_recomputed": 12.8,
+  "first_terminal_tolerance_entry_s": {
+    "A": null,
+    "B": null
+  }
+}

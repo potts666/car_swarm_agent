@@ -1,0 +1,682 @@
+[
+  {
+    "time_s": 100.0,
+    "planning_wall_s": 0.1466059710000991,
+    "acceptance_wall_s": 0.00731957500011049,
+    "total_cycle_wall_s": 0.15392597499976546,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 100.2,
+    "planning_wall_s": 0.14334408399918175,
+    "acceptance_wall_s": 0.007782952000525256,
+    "total_cycle_wall_s": 0.15112825299911492,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 100.4,
+    "planning_wall_s": 0.12270012600038172,
+    "acceptance_wall_s": 0.007113634000234015,
+    "total_cycle_wall_s": 0.1298140720000447,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 100.6,
+    "planning_wall_s": 0.1311274780000531,
+    "acceptance_wall_s": 0.007321710999349307,
+    "total_cycle_wall_s": 0.13844991000041773,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 100.8,
+    "planning_wall_s": 0.10142318499947578,
+    "acceptance_wall_s": 0.006891440999424958,
+    "total_cycle_wall_s": 0.10831517899987375,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 101.0,
+    "planning_wall_s": 0.08692171099937696,
+    "acceptance_wall_s": 0.007329777999984799,
+    "total_cycle_wall_s": 0.09425192399976368,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 101.2,
+    "planning_wall_s": 0.09032248699986667,
+    "acceptance_wall_s": 0.006954206000045815,
+    "total_cycle_wall_s": 0.09727740099970106,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 101.4,
+    "planning_wall_s": 0.08585762799975782,
+    "acceptance_wall_s": 0.006957806999707827,
+    "total_cycle_wall_s": 0.09281596799974068,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 101.6,
+    "planning_wall_s": 0.0892760470005669,
+    "acceptance_wall_s": 0.007111782000720268,
+    "total_cycle_wall_s": 0.09638842999993358,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 101.8,
+    "planning_wall_s": 0.06556169600025896,
+    "acceptance_wall_s": 0.00676139100050932,
+    "total_cycle_wall_s": 0.0723235030000069,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 102.0,
+    "planning_wall_s": 0.06024949599941465,
+    "acceptance_wall_s": 0.006960642000194639,
+    "total_cycle_wall_s": 0.06721054499939783,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 102.2,
+    "planning_wall_s": 0.057450188000075286,
+    "acceptance_wall_s": 0.006745507999767142,
+    "total_cycle_wall_s": 0.06419612299941946,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 102.4,
+    "planning_wall_s": 0.054069490999609116,
+    "acceptance_wall_s": 0.007068503000482451,
+    "total_cycle_wall_s": 0.0611384169997109,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 102.6,
+    "planning_wall_s": 0.05618123000022024,
+    "acceptance_wall_s": 0.0071882760003063595,
+    "total_cycle_wall_s": 0.06337019900001906,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 102.8,
+    "planning_wall_s": 0.05464795999978378,
+    "acceptance_wall_s": 0.0070743149999543675,
+    "total_cycle_wall_s": 0.06172270000024582,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 103.0,
+    "planning_wall_s": 0.056078627999340824,
+    "acceptance_wall_s": 0.006968835000407125,
+    "total_cycle_wall_s": 0.0630479439996634,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 103.2,
+    "planning_wall_s": 0.05708497700015869,
+    "acceptance_wall_s": 0.00713144299970736,
+    "total_cycle_wall_s": 0.06421684300039487,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 103.4,
+    "planning_wall_s": 0.05516132399952767,
+    "acceptance_wall_s": 0.007218083000225306,
+    "total_cycle_wall_s": 0.06238023100013379,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 103.6,
+    "planning_wall_s": 0.05493500699958531,
+    "acceptance_wall_s": 0.0069053619999976945,
+    "total_cycle_wall_s": 0.061840863999350404,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 103.8,
+    "planning_wall_s": 0.05577824500051065,
+    "acceptance_wall_s": 0.006920347999766818,
+    "total_cycle_wall_s": 0.06269904300006601,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 104.0,
+    "planning_wall_s": 0.05836070900022605,
+    "acceptance_wall_s": 0.00677331899987621,
+    "total_cycle_wall_s": 0.06513443999938318,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 104.2,
+    "planning_wall_s": 0.061747137000566,
+    "acceptance_wall_s": 0.005089698999654502,
+    "total_cycle_wall_s": 0.06683723000060127,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 104.4,
+    "planning_wall_s": 0.06198828500055242,
+    "acceptance_wall_s": 0.005088349000288872,
+    "total_cycle_wall_s": 0.06707704800010106,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 104.6,
+    "planning_wall_s": 0.06046785699982138,
+    "acceptance_wall_s": 0.004853910000747419,
+    "total_cycle_wall_s": 0.06532217699987086,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 104.8,
+    "planning_wall_s": 0.06437408600049821,
+    "acceptance_wall_s": 0.005175205999876198,
+    "total_cycle_wall_s": 0.06954984700041678,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 105.0,
+    "planning_wall_s": 0.06336689299951104,
+    "acceptance_wall_s": 0.004996413000299071,
+    "total_cycle_wall_s": 0.06836370499968325,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 105.2,
+    "planning_wall_s": 0.06350211199969635,
+    "acceptance_wall_s": 0.005172223999579728,
+    "total_cycle_wall_s": 0.0686746769997626,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 105.4,
+    "planning_wall_s": 0.06367816800047876,
+    "acceptance_wall_s": 0.005157709999366489,
+    "total_cycle_wall_s": 0.0688361040001837,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 105.6,
+    "planning_wall_s": 0.0639036809998288,
+    "acceptance_wall_s": 0.005184691000067687,
+    "total_cycle_wall_s": 0.06908886800010805,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 105.8,
+    "planning_wall_s": 0.06176487100037775,
+    "acceptance_wall_s": 0.0058689360002972535,
+    "total_cycle_wall_s": 0.06763434200001939,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 106.0,
+    "planning_wall_s": 0.06367333300022437,
+    "acceptance_wall_s": 0.0050747189998219255,
+    "total_cycle_wall_s": 0.06874839800002519,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 106.2,
+    "planning_wall_s": 0.060017804999915825,
+    "acceptance_wall_s": 0.005451185000310943,
+    "total_cycle_wall_s": 0.06547012900045956,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 106.4,
+    "planning_wall_s": 0.061393261999910465,
+    "acceptance_wall_s": 0.005892936000236659,
+    "total_cycle_wall_s": 0.06728672600002028,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 106.6,
+    "planning_wall_s": 0.06201907000013307,
+    "acceptance_wall_s": 0.005159661999641685,
+    "total_cycle_wall_s": 0.06717926300007093,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 106.8,
+    "planning_wall_s": 0.06463456799974665,
+    "acceptance_wall_s": 0.005146468000020832,
+    "total_cycle_wall_s": 0.06978141899980983,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 107.0,
+    "planning_wall_s": 0.0659134659999836,
+    "acceptance_wall_s": 0.005316653000591032,
+    "total_cycle_wall_s": 0.0712305719998767,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 107.2,
+    "planning_wall_s": 0.06893067099917971,
+    "acceptance_wall_s": 0.005351776999305002,
+    "total_cycle_wall_s": 0.07428276799964806,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 107.4,
+    "planning_wall_s": 0.06988247699973726,
+    "acceptance_wall_s": 0.004939450999700057,
+    "total_cycle_wall_s": 0.07482225700005074,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 107.6,
+    "planning_wall_s": 0.06613618599931215,
+    "acceptance_wall_s": 0.0063899200004016166,
+    "total_cycle_wall_s": 0.07252663899998879,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 107.8,
+    "planning_wall_s": 0.06879814400053874,
+    "acceptance_wall_s": 0.00509502800014161,
+    "total_cycle_wall_s": 0.0738934959999824,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 108.0,
+    "planning_wall_s": 0.07497158299975126,
+    "acceptance_wall_s": 0.005838719000166748,
+    "total_cycle_wall_s": 0.08081096000023535,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 108.2,
+    "planning_wall_s": 0.0838919320003697,
+    "acceptance_wall_s": 0.005135981000421452,
+    "total_cycle_wall_s": 0.08902841100007208,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 108.4,
+    "planning_wall_s": 0.10326606800026639,
+    "acceptance_wall_s": 0.006872801000099571,
+    "total_cycle_wall_s": 0.11013946000002761,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 108.6,
+    "planning_wall_s": 0.0783201120002559,
+    "acceptance_wall_s": 0.005307954999807407,
+    "total_cycle_wall_s": 0.08362860800025373,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 108.8,
+    "planning_wall_s": 0.07729058399945643,
+    "acceptance_wall_s": 0.005214614000578877,
+    "total_cycle_wall_s": 0.08250564799982385,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 109.0,
+    "planning_wall_s": 0.0710887699997329,
+    "acceptance_wall_s": 0.005463732999487547,
+    "total_cycle_wall_s": 0.07655281999996078,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 109.2,
+    "planning_wall_s": 0.06317366300027061,
+    "acceptance_wall_s": 0.004944276000060199,
+    "total_cycle_wall_s": 0.06811822000054235,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 109.4,
+    "planning_wall_s": 0.0632364069997493,
+    "acceptance_wall_s": 0.005245631999969191,
+    "total_cycle_wall_s": 0.06848235999950703,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 109.6,
+    "planning_wall_s": 0.06180864699945232,
+    "acceptance_wall_s": 0.005845480000061798,
+    "total_cycle_wall_s": 0.06765458999961993,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 109.8,
+    "planning_wall_s": 0.055413889000192285,
+    "acceptance_wall_s": 0.004997972999262856,
+    "total_cycle_wall_s": 0.06041239699970902,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 110.0,
+    "planning_wall_s": 0.05865803199958464,
+    "acceptance_wall_s": 0.005094780000035826,
+    "total_cycle_wall_s": 0.06375383700014936,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 110.2,
+    "planning_wall_s": 0.0687565820007876,
+    "acceptance_wall_s": 0.005416746999799216,
+    "total_cycle_wall_s": 0.07417361700026959,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 110.4,
+    "planning_wall_s": 0.05073586099933891,
+    "acceptance_wall_s": 0.005182658000194351,
+    "total_cycle_wall_s": 0.05591902099968138,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 110.6,
+    "planning_wall_s": 0.04833360300017375,
+    "acceptance_wall_s": 0.005481523000526067,
+    "total_cycle_wall_s": 0.05381556600059412,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 110.8,
+    "planning_wall_s": 0.04864528100006282,
+    "acceptance_wall_s": 0.005046350000156963,
+    "total_cycle_wall_s": 0.053692014000262134,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 111.0,
+    "planning_wall_s": 0.04775401200004126,
+    "acceptance_wall_s": 0.004969948000507429,
+    "total_cycle_wall_s": 0.052724330999808444,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 111.2,
+    "planning_wall_s": 0.08254212500014546,
+    "acceptance_wall_s": 0.005465913000080036,
+    "total_cycle_wall_s": 0.0880084660002467,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 111.4,
+    "planning_wall_s": 0.0791214820001187,
+    "acceptance_wall_s": 0.005167207999875245,
+    "total_cycle_wall_s": 0.08428903999993054,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 111.6,
+    "planning_wall_s": 0.07293741300054535,
+    "acceptance_wall_s": 0.005027832999985549,
+    "total_cycle_wall_s": 0.07796555200002331,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 111.8,
+    "planning_wall_s": 0.06308291000004829,
+    "acceptance_wall_s": 0.006055601999833016,
+    "total_cycle_wall_s": 0.06913891999920452,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 112.0,
+    "planning_wall_s": 0.06284437399972376,
+    "acceptance_wall_s": 0.006182529000398063,
+    "total_cycle_wall_s": 0.06902750900007959,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 112.2,
+    "planning_wall_s": 0.058044651000273007,
+    "acceptance_wall_s": 0.005321621000803134,
+    "total_cycle_wall_s": 0.06336669299980713,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 112.4,
+    "planning_wall_s": 0.07282435299930512,
+    "acceptance_wall_s": 0.005179503999897861,
+    "total_cycle_wall_s": 0.07800422599939338,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 112.6,
+    "planning_wall_s": 0.0627822410006047,
+    "acceptance_wall_s": 0.005350679999537533,
+    "total_cycle_wall_s": 0.06813327200052299,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 112.8,
+    "planning_wall_s": 0.060430116999668826,
+    "acceptance_wall_s": 0.0051652310003191815,
+    "total_cycle_wall_s": 0.06559577699954389,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 113.0,
+    "planning_wall_s": 0.060874591000356304,
+    "acceptance_wall_s": 0.005389451999690209,
+    "total_cycle_wall_s": 0.06626443400000426,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 113.2,
+    "planning_wall_s": 0.07461563400011073,
+    "acceptance_wall_s": 0.006003587999657611,
+    "total_cycle_wall_s": 0.08061980000002222,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 113.4,
+    "planning_wall_s": 0.0604319089998171,
+    "acceptance_wall_s": 0.005201754000154324,
+    "total_cycle_wall_s": 0.06563413699950615,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 113.6,
+    "planning_wall_s": 0.06326111099951959,
+    "acceptance_wall_s": 0.00543402099992818,
+    "total_cycle_wall_s": 0.068695605999892,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 113.8,
+    "planning_wall_s": 0.062641256000461,
+    "acceptance_wall_s": 0.005055395000454155,
+    "total_cycle_wall_s": 0.06769691499994224,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 114.0,
+    "planning_wall_s": 0.06172019299992826,
+    "acceptance_wall_s": 0.005385395999837783,
+    "total_cycle_wall_s": 0.06710599400048523,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 114.2,
+    "planning_wall_s": 0.06131355599973176,
+    "acceptance_wall_s": 0.005254173000139417,
+    "total_cycle_wall_s": 0.0665685059993848,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 114.4,
+    "planning_wall_s": 0.061383077999380475,
+    "acceptance_wall_s": 0.005260367999653681,
+    "total_cycle_wall_s": 0.06664378000004945,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 114.6,
+    "planning_wall_s": 0.06137443700026779,
+    "acceptance_wall_s": 0.005674669000654831,
+    "total_cycle_wall_s": 0.06704963600077463,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 114.8,
+    "planning_wall_s": 0.061587261000568105,
+    "acceptance_wall_s": 0.005267827999887231,
+    "total_cycle_wall_s": 0.06685552100043424,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 115.0,
+    "planning_wall_s": 0.05850993100011692,
+    "acceptance_wall_s": 0.0052683330004583695,
+    "total_cycle_wall_s": 0.06377849699947546,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 115.2,
+    "planning_wall_s": 0.059151114000087546,
+    "acceptance_wall_s": 0.005830994999996619,
+    "total_cycle_wall_s": 0.06498267499955546,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 115.4,
+    "planning_wall_s": 0.05997847900016495,
+    "acceptance_wall_s": 0.005219865999606554,
+    "total_cycle_wall_s": 0.0651986359998773,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 115.6,
+    "planning_wall_s": 0.056977509999342146,
+    "acceptance_wall_s": 0.005408838000221294,
+    "total_cycle_wall_s": 0.06238691399994423,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 115.8,
+    "planning_wall_s": 0.0612121259991909,
+    "acceptance_wall_s": 0.005948376000560529,
+    "total_cycle_wall_s": 0.06716102099926502,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 116.0,
+    "planning_wall_s": 0.066859599000054,
+    "acceptance_wall_s": 0.006274534999647585,
+    "total_cycle_wall_s": 0.073134714999469,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 116.2,
+    "planning_wall_s": 0.06627099799970892,
+    "acceptance_wall_s": 0.005401315000199247,
+    "total_cycle_wall_s": 0.0716726379996544,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 116.4,
+    "planning_wall_s": 0.056382328999461606,
+    "acceptance_wall_s": 0.005782791999990877,
+    "total_cycle_wall_s": 0.062165577999621746,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 116.6,
+    "planning_wall_s": 0.05301520300054108,
+    "acceptance_wall_s": 0.0054359799996746005,
+    "total_cycle_wall_s": 0.058451617999708105,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  },
+  {
+    "time_s": 116.8,
+    "planning_wall_s": 0.053981379000106244,
+    "acceptance_wall_s": 0.005340469000657322,
+    "total_cycle_wall_s": 0.05932225499964261,
+    "optimization_solver_calls": 1,
+    "retries": 0
+  }
+]

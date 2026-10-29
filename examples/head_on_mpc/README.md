@@ -273,3 +273,11 @@ OPENBLAS_NUM_THREADS=1 python3 scripts/verify_entry_bicycle.py --run results/ent
 [QP 数学定义与复现命令](longitudinal_joint_qp.md) · [B0/B1 正式对照](results/joint_e2_002/report.md) · [轨迹及速度图](results/joint_e2_002/comparison.png) · [首轮验收失败记录](results/joint_e2_001/report.md)。
 
 B1 固定原直线与双圆弧路径、A→B 的 ROS Flag 顺序，采用 N=32 的两车联合纵向 QP，原非线性自行车实际积分后再独立重放验收。修正停车数值残速的物理制动衔接后，统一验收通过；B0/B1 分别在仿真 79.0/81.2 s 完成任务，最小采样车身间距均约 1.20 m。B1 主数值优化已接入闭环，但释放前完整未来预演使最长周期约 4.60 s，尚不满足在线实时周期；没有建立真实车辆可行证明。代码、原始日志、数学参数、Hessian/仿射残差、执行映射误差与失败证据均位于独立结果目录。
+
+## E3：线性化自行车联合 QP（B2）
+
+[线性化推导与复现命令](bicycle_joint_qp.md) · [B1/B2 同场景对照](results/bicycle_e3_002/report.md) · [模型误差与完整周期耗时](results/bicycle_e3_002/errors_timing.png) · [方法选择](results/bicycle_e3_002/method_selection.json)。
+
+B2 保留 x/y/航向/速度/转角，以固定凸走廊、保守车身包络及信赖域构造单次/最多三次更新的凸 QP，非线性重演后才执行。第二轮中，单次 B2 在11.2 s因模型位置误差超限中止；序列 B2 在6个周期通过第二次更新恢复候选，但24.2 s时参考QP达迭代上限，未完成原任务。原始失败和首轮结果均保留，未将前缀验收通过写成完整任务成功。
+
+本轮选 B1 进入后续消融，B2 保留比较。B1 在81.2 s完成任务，实际轨迹与E2逐字节一致；最长完整周期仍约4.74 s，不满足在线实时。单个B2子问题凸，不代表非线性问题或整个序列过程全局凸、全局最优或真实车辆可行。

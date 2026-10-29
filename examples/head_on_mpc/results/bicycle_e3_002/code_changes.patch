@@ -1,0 +1,703 @@
+diff --git a/examples/head_on_mpc/README.md b/examples/head_on_mpc/README.md
+index 23ce61e..5436be4 100644
+--- a/examples/head_on_mpc/README.md
++++ b/examples/head_on_mpc/README.md
+@@ -273,3 +273,11 @@ OPENBLAS_NUM_THREADS=1 python3 scripts/verify_entry_bicycle.py --run results/ent
+ [QP 数学定义与复现命令](longitudinal_joint_qp.md) · [B0/B1 正式对照](results/joint_e2_002/report.md) · [轨迹及速度图](results/joint_e2_002/comparison.png) · [首轮验收失败记录](results/joint_e2_001/report.md)。
+ 
+ B1 固定原直线与双圆弧路径、A→B 的 ROS Flag 顺序，采用 N=32 的两车联合纵向 QP，原非线性自行车实际积分后再独立重放验收。修正停车数值残速的物理制动衔接后，统一验收通过；B0/B1 分别在仿真 79.0/81.2 s 完成任务，最小采样车身间距均约 1.20 m。B1 主数值优化已接入闭环，但释放前完整未来预演使最长周期约 4.60 s，尚不满足在线实时周期；没有建立真实车辆可行证明。代码、原始日志、数学参数、Hessian/仿射残差、执行映射误差与失败证据均位于独立结果目录。
++
++## E3：线性化自行车联合 QP（B2）
++
++[线性化推导与复现命令](bicycle_joint_qp.md) · [B1/B2 同场景对照](results/bicycle_e3_002/report.md) · [模型误差与完整周期耗时](results/bicycle_e3_002/errors_timing.png) · [方法选择](results/bicycle_e3_002/method_selection.json)。
++
++B2 保留 x/y/航向/速度/转角，以固定凸走廊、保守车身包络及信赖域构造单次/最多三次更新的凸 QP，非线性重演后才执行。第二轮中，单次 B2 在11.2 s因模型位置误差超限中止；序列 B2 在6个周期通过第二次更新恢复候选，但24.2 s时参考QP达迭代上限，未完成原任务。原始失败和首轮结果均保留，未将前缀验收通过写成完整任务成功。
++
++本轮选 B1 进入后续消融，B2 保留比较。B1 在81.2 s完成任务，实际轨迹与E2逐字节一致；最长完整周期仍约4.74 s，不满足在线实时。单个B2子问题凸，不代表非线性问题或整个序列过程全局凸、全局最优或真实车辆可行。
+diff --git a/examples/head_on_mpc/scripts/longitudinal_joint.py b/examples/head_on_mpc/scripts/longitudinal_joint.py
+index 94982be..54836fc 100644
+--- a/examples/head_on_mpc/scripts/longitudinal_joint.py
++++ b/examples/head_on_mpc/scripts/longitudinal_joint.py
+@@ -178,12 +178,12 @@ def build_qp(agents, permissions, scene):
+     return H,q,A,lo,hi,E,b,bounds,parameters
+ 
+ 
+-def solve(agents, permissions, scene):
++def solve(agents, permissions, scene,feasibility_band=0.):
+     started=time.perf_counter()
+     H,q,A,lo,hi,E,b,bounds,parameters=build_qp(agents,permissions,scene)
+     scale=max(1.,np.max(np.abs(q)),np.max(np.abs(H)))
+     matrix=vstack([csc_matrix(A),csc_matrix(E),eye(len(q))],format='csc')
+-    lower=np.r_[lo,b,[z[0] for z in bounds]];upper=np.r_[hi,b,[z[1] for z in bounds]]
++    lower=np.r_[lo-feasibility_band,b-feasibility_band,[z[0] for z in bounds]];upper=np.r_[hi+feasibility_band,b+feasibility_band,[z[1] for z in bounds]]
+     fixed=np.array([i for i,(l,u) in enumerate(bounds) if l==u],int)
+     free=np.array([i for i,(l,u) in enumerate(bounds) if l!=u],int)
+     x=np.zeros(len(q));x[fixed]=[bounds[i][0] for i in fixed]
+@@ -218,7 +218,7 @@ def solve(agents, permissions, scene):
+     minimum=float(np.linalg.eigvalsh(H)[0])
+     record=dict(solver='OSQP '+osqp.__version__,solver_success=status_val in (1,2),
+         message=status,iterations=int(iterations),solve_wall_s=time.perf_counter()-started,
+-        affine_violation=violation,hessian_min_eigenvalue=minimum,affine_constraints=True,
++        affine_violation=violation,feasibility_band=feasibility_band,hessian_min_eigenvalue=minimum,affine_constraints=True,
+         variables=len(q),inequality_rows=len(A),equality_rows=len(E),parameters=parameters,
+         accepted=bool(status_val in (1,2) and finite and violation<=scene['tolerance'] and minimum>=-1e-10),
+         objective_without_constant=float(.5*x@H@x+q@x),solution=x.tolist(),
+@@ -234,7 +234,13 @@ class Controller:
+         for c,a in self.agents.items():a.advance(permissions[c])
+ 
+     def predict(self, permissions):
+-        accelerations,record=solve(self.agents,permissions,self.scene)
++        accelerations,record=solve(self.agents,permissions,self.scene,getattr(self,'reference_feasibility_band',0.))
++        if not record['accepted']:
++            controls={c:[(0.,0.,'REJECTED')]*self.scene['N'] for c in CARS}
++            predictions={c:rollout(a.z,controls[c],self.scene) for c,a in self.agents.items()}
++            record['mapping_errors']={c:dict(position_m=0.,heading_rad=0.,speed_m_s=0.) for c in CARS}
++            record['mapping_evaluated']=False
++            return controls,predictions,record
+         controls={};predictions={};errors={}
+         for c,agent in self.agents.items():
+             p=record['parameters'][c];stage=agent.segment['stage']
+@@ -275,10 +281,12 @@ class Controller:
+         permissions={'A':False,'B':True}
+         failure=None
+         for _ in range(round(self.scene['timeout_s']/self.scene['h'])):
++            if time.perf_counter()-begun>getattr(self,'future_deadline_s',float('inf')):
++                failure='future_wall_deadline';break
+             future.prepare(permissions)
+             if all(a.mode=='DONE' for a in future.agents.values()):break
+             controls,predictions,record=future.predict(permissions);records.append(record)
+-            if not record['accepted'] or not audit(predictions,self.scene)['passed'] or any(max(e[k] for k in ('position_m','heading_rad','speed_m_s'))>self.scene['tolerance'] for e in record['mapping_errors'].values()):
++            if not record['accepted'] or not audit(predictions,self.scene)['passed'] or any(max(e[k] for k in ('position_m','heading_rad','speed_m_s'))>getattr(self,'mapping_tolerance',self.scene['tolerance']) for e in record['mapping_errors'].values()):
+                 failure='future_QP_or_prediction_rejected';break
+             for c in CARS:commands[c].append(controls[c][0])
+             future.commit(controls,predictions,record)
+diff --git a/examples/head_on_mpc/scripts/run_joint_e2.py b/examples/head_on_mpc/scripts/run_joint_e2.py
+index 0391399..d5e49e8 100644
+--- a/examples/head_on_mpc/scripts/run_joint_e2.py
++++ b/examples/head_on_mpc/scripts/run_joint_e2.py
+@@ -21,8 +21,8 @@ from run_entry_bicycle import ROOT,run_policy,rows_for,save_rows,write,jsonl
+ from verify_entry_bicycle import verify_policy
+ 
+ 
+-def run_b1(scene,path,directory,bus):
+-    directory.mkdir();controller=Controller(scene,path)
++def run_b1(scene,path,directory,bus,controller=None):
++    directory.mkdir();controller=controller if controller is not None else Controller(scene,path)
+     rows=[];events=[];forecasts=[];checks=[];planning=[];solves=[];constraints=[];witnesses=[]
+     owner=None;requested=set();released=set();ready_sent=False;done={};reserved=0.;failure=None
+     begun=time.perf_counter();now=scene['epoch_s']
+@@ -72,7 +72,7 @@ def run_b1(scene,path,directory,bus):
+                     phase=controller.agents[c].mode,segment=controller.agents[c].index,**record['parameters'][c]))
+             if not record['accepted']:
+                 failure='joint_QP_rejected';event('failure',reason=failure);break
+-            if any(max(v for k,v in e.items() if k!='path_s_end_m')>scene['tolerance'] for e in record['mapping_errors'].values()):
++            if any(max(v for k,v in e.items() if k!='path_s_end_m')>getattr(controller,'mapping_tolerance',scene['tolerance']) for e in record['mapping_errors'].values()):
+                 failure='QP_bicycle_mapping_error';event('failure',reason=failure);break
+             planning_wall=time.perf_counter()-cycle_started
+             start=time.perf_counter();check=audit(predictions,scene)
+diff --git a/examples/head_on_mpc/scripts/linearized_joint.py b/examples/head_on_mpc/scripts/linearized_joint.py
+new file mode 100644
+index 0000000..059fced
+--- /dev/null
++++ b/examples/head_on_mpc/scripts/linearized_joint.py
+@@ -0,0 +1,250 @@
++"""Time-varying affine bicycle QPs with frozen corridors and bounded updates."""
++import math
++import time
++import numpy as np
++import osqp
++from scipy.linalg import block_diag
++from scipy.sparse import csc_matrix,eye,vstack
++from bicycle_core import CARS,derivative,step,rollout,corners,audit
++from longitudinal_joint import Controller,response,pose
++
++STATE_TRUST=np.array([.15,.15,.02,.25,.03])
++INPUT_TRUST=np.array([.3,.25])
++ERROR_LIMIT=dict(position_m=.00001,heading_rad=.000005,speed_m_s=1e-6,steering_rad=1e-6)
++STATE_WEIGHT=np.array([10.,40.,100.,1.,10.])
++INPUT_WEIGHT=np.array([.05,.05])
++DEADLINE_S=.5
++MAX_UPDATES=3
++NUMERICAL_BAND=1e-7
++
++
++def continuous_jacobians(z,vehicle):
++    _,_,psi,v,delta=z;L=vehicle['L']
++    A=np.zeros((5,5));B=np.zeros((5,2))
++    A[0,2]=-v*math.sin(psi);A[0,3]=math.cos(psi)
++    A[1,2]=v*math.cos(psi);A[1,3]=math.sin(psi)
++    A[2,3]=math.tan(delta)/L;A[2,4]=v/(L*math.cos(delta)**2)
++    B[3,0]=1.;B[4,1]=1.
++    return A,B
++
++
++def rk4_jacobians(z,u,h,vehicle):
++    """Differentiate all four RK4 stages by the chain rule."""
++    I=np.eye(5);F,G=continuous_jacobians(z,vehicle)
++    k1=derivative(z,u,vehicle);Az1=F;Bu1=G
++    z2=z+h*k1/2;F,G=continuous_jacobians(z2,vehicle)
++    k2=derivative(z2,u,vehicle);Az2=F@(I+h*Az1/2);Bu2=F@(h*Bu1/2)+G
++    z3=z+h*k2/2;F,G=continuous_jacobians(z3,vehicle)
++    k3=derivative(z3,u,vehicle);Az3=F@(I+h*Az2/2);Bu3=F@(h*Bu2/2)+G
++    z4=z+h*k3;F,G=continuous_jacobians(z4,vehicle)
++    Az4=F@(I+h*Az3);Bu4=F@(h*Bu3)+G
++    return I+h*(Az1+2*Az2+2*Az3+Az4)/6,h*(Bu1+2*Bu2+2*Bu3+Bu4)/6
++
++
++def condensed(z0,reference,inputs,scene):
++    N=scene['N'];M=np.zeros((5,2*N));base=np.array(z0,float)
++    maps=[];bases=[];jacobians=[]
++    for k in range(N):
++        A,B=rk4_jacobians(reference[k],inputs[k],scene['h'],scene['vehicle'])
++        # Nominal endpoint comes from dense RK4; the defect matches it exactly.
++        defect=reference[k+1]-A@reference[k]-B@inputs[k]
++        M=A@M;M[:,2*k:2*k+2]+=B;base=A@base+defect
++        maps.append(M.copy());bases.append(base.copy());jacobians.append((A,B,defect))
++    return np.array(bases),np.array(maps),jacobians
++
++
++def body_support(heading,vehicle):
++    body=corners([[0.,0.,heading,0.,0.]],vehicle)[0]
++    radius=math.hypot(vehicle['L']+vehicle['front'],vehicle['width']/2)
++    inflation=radius*STATE_TRUST[2]
++    return np.r_[body.min(axis=0)-inflation,body.max(axis=0)+inflation]
++
++
++def freeze_corridors(reference,permissions,scene,agents):
++    corridors={};pair=[]
++    protection=[-scene['admission_protection_abs_x'],scene['admission_protection_abs_x'],-scene['W']/2,scene['W']/2]
++    for c in CARS:
++        corridors[c]=[]
++        for z in reference[c][1:]:
++            support=body_support(z[2],scene['vehicle']);low=support[:2];high=support[2:]
++            candidates=[]
++            for rect in scene['road_rectangles']:
++                lower=np.array([rect[0],rect[2]])-low;upper=np.array([rect[1],rect[3]])-high
++                margin=float(np.min(np.r_[z[:2]-lower,upper-z[:2]]))
++                candidates.append((margin,lower,upper,rect))
++            _,lower,upper,rect=max(candidates,key=lambda t:t[0])
++            guard=None
++            if not permissions[c]:
++                options=[(protection[0]-z[0]-high[0],0,-1,protection[0]-high[0]),
++                         (z[0]+low[0]-protection[1],0,1,protection[1]-low[0]),
++                         (protection[2]-z[1]-high[1],1,-1,protection[2]-high[1]),
++                         (z[1]+low[1]-protection[3],1,1,protection[3]-low[1])]
++                _,axis,side,bound=max(options)
++                if side==1:lower[axis]=max(lower[axis],bound)
++                else:upper[axis]=min(upper[axis],bound)
++                guard=dict(axis=axis,side=side,bound=bound)
++            corridors[c].append(dict(lower=lower,upper=upper,support=support,road=rect,guard=guard))
++    b=agents['B']
++    for k in range(scene['N']):
++        if not b.ready:axis,left,right=0,'A','B'
++        elif b.mode=='WAIT':axis,left,right=1,'B','A'
++        else:axis,left,right=0,'B','A'
++        l=corridors[left][k]['support'][2+axis];r=corridors[right][k]['support'][axis]
++        pair.append(dict(axis=axis,left=left,right=right,upper=float(r-l-scene['s_min'])))
++    return corridors,pair
++
++
++def subproblem(agents,linear_reference,linear_inputs,target,target_inputs,desired,corridors,pair,parameters,scene,end):
++    N=scene['N'];n=4*N;Hs=[];qs=[];maps={};bases={};rows=[];lower=[];upper=[];bounds=[]
++    def row(c,values,lo,hi):
++        full=np.zeros(n);i=CARS.index(c)*2*N;full[i:i+2*N]=values
++        rows.append(full);lower.append(lo);upper.append(hi)
++    for c in CARS:
++        a=agents[c];p=parameters[c]
++        base,M,_=condensed(a.z,linear_reference[c],linear_inputs[c],scene);bases[c]=base;maps[c]=M
++        weights=np.tile(STATE_WEIGHT,N);weights[-5:]*=10.
++        flat=M.reshape(5*N,2*N);offset=(base-desired[c][1:]).ravel()
++        D=np.eye(N)-np.eye(N,k=-1);smooth=np.kron(D,np.eye(2))
++        R=np.diag(np.tile(INPUT_WEIGHT,N))+.02*smooth.T@smooth
++        H=2*(flat.T@(weights[:,None]*flat)+R)
++        q=2*flat.T@(weights*offset)
++        Hs.append(H);qs.append(q)
++        for k in range(N):
++            trust_low=np.maximum(target[c][k+1]-STATE_TRUST,linear_reference[c][k+1]-STATE_TRUST)
++            trust_high=np.minimum(target[c][k+1]+STATE_TRUST,linear_reference[c][k+1]+STATE_TRUST)
++            trust_low[0:2]=np.maximum(trust_low[:2],corridors[c][k]['lower'])
++            trust_high[0:2]=np.minimum(trust_high[:2],corridors[c][k]['upper'])
++            d=a.segment['direction'] if a.mode=='MOVE' else 1
++            vlo,vhi=(0.,p['cap']) if d==1 else (-p['cap'],0.)
++            trust_low[3]=max(trust_low[3],vlo);trust_high[3]=min(trust_high[3],vhi)
++            trust_low[4]=max(trust_low[4],-scene['vehicle']['delta_max']);trust_high[4]=min(trust_high[4],scene['vehicle']['delta_max'])
++            for j in range(5):row(c,M[k,j],trust_low[j]-base[k,j],trust_high[j]-base[k,j])
++            v=scene['vehicle'];lo=np.maximum([v['a_min'],-v['omega_max']],np.maximum(target_inputs[c][k]-INPUT_TRUST,linear_inputs[c][k]-INPUT_TRUST))
++            hi=np.minimum([v['a_max'],v['omega_max']],np.minimum(target_inputs[c][k]+INPUT_TRUST,linear_inputs[c][k]+INPUT_TRUST))
++            if a.mode!='MOVE':lo=target_inputs[c][k].copy();hi=lo.copy()
++            elif p['stop_at_end']:
++                K=p['stop_index']
++                if K==1:lo[0]=hi[0]=target_inputs[c][k,0]
++                elif k>=K:lo[0]=hi[0]=0.
++                if k>=K:lo[1]=hi[1]=0.
++            bounds.extend(zip(lo,hi))
++        if a.mode=='MOVE':
++            times=np.arange(1,N+1)*scene['h'];P,_=response(times,scene['h'],N)
++            progress=np.zeros((N,2*N));progress[:,::2]=a.segment['direction']*P
++            baseline=p['s0']+times*p['v0']
++            for j in range(N):row(c,progress[j],-baseline[j],p['upper']-baseline[j])
++            K=p['stop_index'] if p['stop_at_end'] else N
++            if p['stop_at_end']:row(c,progress[K-1],p['upper']-baseline[K-1],p['upper']-baseline[K-1])
++            row(c,M[K-1,3],-base[K-1,3],-base[K-1,3])
++            if p['stop_at_end']:
++                endpoint=np.array(a.segment['end'])
++                # Stop-to-turn geometry is a small terminal box, not a pose reset.
++                for j,tol in ((0,.005),(1,.005),(2,.003)):
++                    row(c,M[K-1,j],endpoint[j]-tol-base[K-1,j],endpoint[j]+tol-base[K-1,j])
++                row(c,M[K-1,4],a.segment['delta']-base[K-1,4],a.segment['delta']-base[K-1,4])
++    for k,p in enumerate(pair):
++        values=np.zeros(n);axis=p['axis'];l=p['left'];r=p['right']
++        values[CARS.index(l)*2*N:(CARS.index(l)+1)*2*N]=maps[l][k,axis]
++        values[CARS.index(r)*2*N:(CARS.index(r)+1)*2*N]=-maps[r][k,axis]
++        rows.append(values);lower.append(-np.inf);upper.append(p['upper']-bases[l][k,axis]+bases[r][k,axis])
++    H=block_diag(*Hs);q=np.r_[tuple(qs)];A=np.array(rows);lo=np.array(lower);hi=np.array(upper)
++    bounds=np.array(bounds);matrix=vstack([csc_matrix(A),eye(n)],format='csc');lo=np.r_[lo-NUMERICAL_BAND,bounds[:,0]];hi=np.r_[hi+NUMERICAL_BAND,bounds[:,1]]
++    fixed=np.flatnonzero(bounds[:,0]==bounds[:,1]);free=np.flatnonzero(bounds[:,0]!=bounds[:,1]);u=np.zeros(n);u[fixed]=bounds[fixed,0]
++    offset=np.asarray(matrix@u).ravel();reduced=matrix[:,free];norms=np.asarray(abs(reduced).sum(axis=1)).ravel();keep=norms>1e-12
++    status='all inputs fixed';ok=True;iterations=0;raw_wall=0.
++    if np.any(lo[~keep]-offset[~keep]>scene['tolerance']) or np.any(offset[~keep]-hi[~keep]>scene['tolerance']):
++        ok=False;status='fixed-input constraint inconsistent'
++    elif np.any(lo>hi+1e-12):ok=False;status='empty trust/corridor intersection'
++    elif len(free):
++        remaining=end-time.perf_counter()
++        if remaining<=0:ok=False;status='deadline before solver'
++        else:
++            scale=max(1.,np.max(np.abs(q)),np.max(np.abs(H)));scales=np.maximum(1.,norms[keep])
++            solver=osqp.OSQP();started=time.perf_counter()
++            solver.setup(P=csc_matrix(H[np.ix_(free,free)]/scale),q=(q+H@u)[free]/scale,
++                A=csc_matrix(reduced[keep].multiply(1./scales[:,None])),l=(lo-offset)[keep]/scales,u=(hi-offset)[keep]/scales,
++                max_iter=10000,eps_abs=1e-7,eps_rel=1e-7,polishing=True,verbose=False,time_limit=max(1e-6,end-time.perf_counter()),adaptive_rho_interval=50)
++            nominal=np.r_[target_inputs['A'].ravel(),target_inputs['B'].ravel()];solver.warm_start(x=nominal[free])
++            result=solver.solve(raise_error=False);raw_wall=time.perf_counter()-started
++            status=result.info.status;iterations=int(result.info.iter);ok=result.info.status_val in (1,2)
++            if result.x is not None:u[free]=result.x
++    residual=matrix@u;violation=max(0.,float(np.max(lo-residual)),float(np.max(residual-hi)))
++    eig=float(np.linalg.eigvalsh(H)[0]);ok=bool(ok and np.isfinite(u).all() and violation<=scene['tolerance'] and eig>=-1e-10)
++    predicted={c:np.vstack((agents[c].z,bases[c]+np.einsum('kij,j->ki',maps[c],u[i*2*N:(i+1)*2*N]))) for i,c in enumerate(CARS)}
++    controls={c:u[i*2*N:(i+1)*2*N].reshape(N,2) for i,c in enumerate(CARS)}
++    return controls,predicted,dict(accepted=ok,message=status,iterations=iterations,affine_violation=violation,
++        hessian_min_eigenvalue=eig,variables=n,free_variables=len(free),affine_constraints=True,solver_wall_s=raw_wall,
++        objective_without_constant=float(.5*u@H@u+q@u),solution=u.tolist(),solver_called=bool(raw_wall>0))
++
++
++class BicycleController(Controller):
++    mapping_tolerance=.00001
++    future_deadline_s=30.
++    reference_feasibility_band=10*NUMERICAL_BAND
++    def __init__(self,scene,path,updates):
++        super().__init__(scene,path);self.updates=updates
++
++    def predict(self,permissions):
++        started=time.perf_counter();end=started+DEADLINE_S
++        reference_controls,reference_dense,ref_record=super().predict(permissions)
++        if not ref_record['accepted']:
++            return reference_controls,reference_dense,{**ref_record,'accepted':False,'message':'reference QP rejected','qp_updates':0,
++                'bicycle_numeric_qp_calls':0,'reference_numeric_qp_calls':int(ref_record['free_variables']>0),
++                'reference_record':ref_record,'subproblems':[],'deadline_exceeded':time.perf_counter()>end}
++        N=self.scene['N'];n=round(self.scene['h']/self.scene['sample_s'])
++        target={c:z[::n] for c,z in reference_dense.items()}
++        target_inputs={c:np.array([[u[0],u[1]] for u in reference_controls[c]]) for c in CARS}
++        desired={c:z.copy() for c,z in target.items()}
++        times=np.arange(1,N+1)*self.scene['h'];P,V=response(times,self.scene['h'],N)
++        for i,c in enumerate(CARS):
++            agent=self.agents[c];p=ref_record['parameters'][c]
++            if agent.mode=='MOVE':
++                acceleration=np.array(ref_record['solution'][i*N:(i+1)*N])
++                progress=p['s0']+times*p['v0']+P@acceleration
++                desired[c][1:]=np.array([pose(agent.segment['start'],s,agent.segment['delta'],agent.segment['direction'],self.scene['vehicle']) for s in progress])
++                desired[c][1:,3]=agent.segment['direction']*(p['v0']+V@acceleration)
++        center={c:z.copy() for c,z in target.items()};inputs={c:u.copy() for c,u in target_inputs.items()}
++        corridors,pair=freeze_corridors(target,permissions,self.scene,self.agents)
++        records=[];controls=reference_controls;dense=reference_dense;errors={};linear=target;accepted=False
++        for iteration in range(self.updates):
++            if time.perf_counter()>=end:break
++            proposed,linear,record=subproblem(self.agents,center,inputs,target,target_inputs,desired,corridors,pair,ref_record['parameters'],self.scene,end)
++            records.append(record)
++            if not record['accepted']:break
++            controls={c:[(float(a),float(w),reference_controls[c][j][2]) for j,(a,w) in enumerate(proposed[c])] for c in CARS}
++            dense={c:rollout(self.agents[c].z,controls[c],self.scene) for c in CARS}
++            errors={c:dict(position_m=float(np.max(np.linalg.norm(linear[c][:,:2]-dense[c][::n,:2],axis=1))),
++                heading_rad=float(np.max(np.abs(linear[c][:,2]-dense[c][::n,2]))),
++                speed_m_s=float(np.max(np.abs(linear[c][:,3]-dense[c][::n,3]))),
++                steering_rad=float(np.max(np.abs(linear[c][:,4]-dense[c][::n,4])))) for c in CARS}
++            error_ok=all(e[k]<=v for e in errors.values() for k,v in ERROR_LIMIT.items())
++            trust_ok=all(np.all(np.abs(dense[c][::n]-target[c])<=STATE_TRUST+self.scene['tolerance']) for c in CARS)
++            safety=audit(dense,self.scene)
++            record.update(mapping_errors=errors,nonlinear_safety_passed=safety['passed'],trust_replay_passed=bool(trust_ok))
++            if error_ok and trust_ok and safety['passed']:
++                accepted=True;break
++            center={c:dense[c][::n].copy() for c in CARS};inputs=proposed
++        elapsed=time.perf_counter()-started
++        record=records[-1] if records else dict(affine_violation=0.,hessian_min_eigenvalue=0.,free_variables=0,solution=[])
++        result={**record,'parameters':ref_record['parameters'],'accepted':bool(accepted and elapsed<=DEADLINE_S),
++            'mapping_errors':errors or {c:dict(position_m=0.,heading_rad=0.,speed_m_s=0.,steering_rad=0.) for c in CARS},
++            'solver':'OSQP bicycle affine QP','solve_wall_s':elapsed,'qp_updates':len(records),
++            'bicycle_numeric_qp_calls':sum(r['solver_called'] for r in records),'reference_numeric_qp_calls':int(ref_record['free_variables']>0),
++            'reference_record':ref_record,'subproblems':records,'deadline_s':DEADLINE_S,'deadline_exceeded':elapsed>DEADLINE_S,
++            'linear_states':{c:z.tolist() for c,z in linear.items()},
++            'corridors':{c:[{k:(v.tolist() if isinstance(v,np.ndarray) else v) for k,v in p.items()} for p in ps] for c,ps in corridors.items()},
++            'pair_separating_rows':pair}
++        if elapsed>DEADLINE_S:result['message']='planning deadline exceeded'
++        elif not accepted and records and records[-1]['accepted']:result['message']='nonlinear replay/trust rejection after update limit'
++        return controls,dense,result
++
++    def commit(self,controls,predictions,record):
++        n=round(self.scene['h']/self.scene['sample_s']);h=self.scene['h']
++        for c,a in self.agents.items():
++            if a.mode=='MOVE':
++                acceleration=a.segment['direction']*controls[c][0][0]
++                a.s+=h*a.segment['direction']*a.z[3]+.5*h*h*acceleration
++                a.previous=acceleration
++                if a.stop_steps is not None:a.stop_steps-=1
++            elif a.steering:a.steering.pop(0)
++            a.z=predictions[c][n].copy()
+diff --git a/examples/head_on_mpc/scripts/run_bicycle_e3.py b/examples/head_on_mpc/scripts/run_bicycle_e3.py
+new file mode 100644
+index 0000000..28c55a3
+--- /dev/null
++++ b/examples/head_on_mpc/scripts/run_bicycle_e3.py
+@@ -0,0 +1,185 @@
++#!/usr/bin/env python3
++"""Same-scene B1/B2 single-linearization/bounded-update comparison."""
++import argparse
++import csv
++import hashlib
++import json
++import os
++from pathlib import Path
++import platform
++import shutil
++import subprocess
++import time
++import numpy as np
++import scipy
++import osqp
++from bicycle_core import validate_scene,CARS
++from longitudinal_joint import Controller,routes
++from linearized_joint import BicycleController,STATE_TRUST,INPUT_TRUST,ERROR_LIMIT,STATE_WEIGHT,INPUT_WEIGHT,DEADLINE_S,MAX_UPDATES,NUMERICAL_BAND
++from ros_flag import RosFlag
++from run_joint_e2 import run_b1,verify_ros,verify_future_execution
++from run_entry_bicycle import ROOT,write
++from verify_entry_bicycle import verify_policy
++
++
++def read_lines(path):return [json.loads(line) for line in path.read_text().splitlines()]
++
++
++def summarize(directory,scene):
++    summary=json.loads((directory/'summary.json').read_text());validation=json.loads((directory/'validation.json').read_text())
++    ros=json.loads((directory/'ros_validation.json').read_text());solves=read_lines(directory/'solves.jsonl')
++    planning=json.loads((directory/'planning.json').read_text());witnesses=read_lines(directory/'future_diagnostics.jsonl')
++    is_b2=directory.name!='B1';subproblems=[r for s in solves for r in s.get('subproblems',[])]
++    future_solves=[s for w in witnesses for s in w['solves']]
++    times=[p['total_cycle_wall_s'] for p in planning];effort=0.;endpoint={}
++    rows=list(csv.DictReader((directory/'actual.csv').open()))
++    for car in CARS:
++        rr=[r for r in rows if r['car']==car]
++        for r in rr[1:]:effort+=scene['sample_s']*(float(r['a'])**2+float(r['omega'])**2)
++        final=np.array([float(rr[-1][k]) for k in ('x','y','psi','v','delta')]);goal=np.array(scene['goals'][car])
++        endpoint[car]=dict(position_m=float(np.linalg.norm(final[:2]-goal[:2])),heading_rad=float(abs(final[2]-goal[2])),speed_m_s=float(abs(final[3])),steering_rad=float(abs(final[4])))
++    errors={k:max((e.get(k,0.) for s in solves for e in s.get('mapping_errors',{}).values()),default=0.) for k in ('position_m','heading_rad','speed_m_s','steering_rad')}
++    if is_b2:
++        main_reference=sum(s.get('reference_numeric_qp_calls',0) for s in solves)
++        main_bicycle=sum(s.get('bicycle_numeric_qp_calls',0) for s in solves)
++        future_reference=sum(s.get('reference_numeric_qp_calls',0) for s in future_solves)
++        future_bicycle=sum(s.get('bicycle_numeric_qp_calls',0) for s in future_solves)
++        histogram={str(k):sum(s.get('qp_updates',0)==k for s in solves) for k in range(MAX_UPDATES+1)}
++        accepted_sub=sum(r['accepted'] for r in subproblems)
++    else:
++        main_reference=sum(s['free_variables']>0 for s in solves);main_bicycle=0
++        future_reference=sum(s['free_variables']>0 for s in future_solves);future_bicycle=0
++        histogram={'0':len(solves)};accepted_sub=sum(s['accepted'] for s in solves)
++    accepted_cycles=sum(s['accepted'] for s in solves)
++    result=dict(completed=summary['both_completed'],unified_validation_passed=bool(validation['passed'] and summary['both_completed'] and ros['passed']),executed_prefix_validation_passed=validation['passed'],ROS_validation_passed=ros['passed'],
++        failure=summary['failure'],completion_sim_s=summary.get('T_complete_sim_s'),attempted_control_cycles=len(solves),executed_control_cycles=len(planning),
++        accepted_control_cycles=accepted_cycles,reference_rejections=sum(not s.get('reference_record',s)['accepted'] for s in solves),rejected_subproblems=sum(not r['accepted'] for r in subproblems),cycle_acceptance_fraction=accepted_cycles/len(solves) if solves else 0.,
++        minimum_sampled_gap_m=validation.get('trajectory',{}).get('minimum_gap_m'),
++        normalized_execution_effort=effort,endpoint_errors=endpoint,maximum_model_interface_errors=errors,maximum_position_model_error_m=errors['position_m'],maximum_heading_model_error_rad=errors['heading_rad'],maximum_speed_model_error_m_s=errors['speed_m_s'],
++        main_reference_numeric_QPs=main_reference,main_bicycle_numeric_QPs=main_bicycle,
++        future_reference_numeric_QPs=future_reference,future_bicycle_numeric_QPs=future_bicycle,
++        update_count_histogram=histogram,accepted_subproblems=accepted_sub,attempted_subproblems=len(subproblems) if is_b2 else len(solves),
++        maximum_QPs_per_main_cycle=max((s.get('reference_numeric_qp_calls',0)+s.get('bicycle_numeric_qp_calls',0) for s in solves),default=0) if is_b2 else 1,
++        sequential_update_cycles=sum(s.get('qp_updates',0)>1 for s in solves),
++        deadline_rejections=sum(s.get('deadline_exceeded',False) for s in solves),
++        hessian_min_eigenvalue=min((r['hessian_min_eigenvalue'] for r in (subproblems if is_b2 else solves)),default=None),
++        maximum_affine_violation=max((r['affine_violation'] for r in (subproblems if is_b2 else solves)),default=None),
++        cycle_mean_ms=float(np.mean(times)*1000) if times else None,cycle_max_ms=max(times,default=0.)*1000,
++        cycles_over_200ms=sum(t>scene['h'] for t in times),
++        prediction_planning_mean_ms=float(np.mean([p['planning_wall_s'] for p in planning])*1000) if planning else None,
++        future_check_wall_s=sum(w['wall_s'] for w in witnesses),
++        total_policy_wall_s=summary['total_policy_wall_s'],scope='one scene; fractions are cycle counts, not scenario success probabilities')
++    write(directory/'metrics_e3.json',result)
++    return result
++
++
++def report(output,results):
++    fields=['completed','unified_validation_passed','executed_prefix_validation_passed','ROS_validation_passed','failure','completion_sim_s',
++        'cycle_acceptance_fraction','maximum_position_model_error_m','maximum_heading_model_error_rad','maximum_speed_model_error_m_s','minimum_sampled_gap_m','normalized_execution_effort',
++        'main_reference_numeric_QPs','main_bicycle_numeric_QPs','future_reference_numeric_QPs','future_bicycle_numeric_QPs',
++        'sequential_update_cycles','reference_rejections','rejected_subproblems','deadline_rejections','hessian_min_eigenvalue','maximum_affine_violation',
++        'prediction_planning_mean_ms','cycle_mean_ms','cycle_max_ms','cycles_over_200ms','future_check_wall_s']
++    table=['|指标|B1|B2 单次|B2 最多三次更新|','|---|---|---|---|']
++    names=['B1','B2_single','B2_sequence']
++    for key in fields:
++        vals=[results[n][key] for n in names]
++        table.append('|'+key+'|'+'|'.join(f'{v:.9g}' if isinstance(v,float) else str(v) for v in vals)+'|')
++    write(output/'comparison.json',results)
++    with (output/'comparison.csv').open('w') as stream:
++        writer=csv.DictWriter(stream,fieldnames=['method',*fields]);writer.writeheader()
++        for n in names:writer.writerow(dict(method=n,**{key:results[n][key] for key in fields}))
++    eligible=[n for n in names if results[n]['completed'] and results[n]['unified_validation_passed'] and results[n]['ROS_validation_passed']]
++    selected=min(eligible,key=lambda n:(results[n]['cycle_max_ms'],results[n]['prediction_planning_mean_ms'])) if eligible else None
++    # Lower worst-cycle cost wins only after full task and independent validation.
++    recommendation=dict(selected_inner_method=selected,rule='complete original tasks, pass unified and ROS validation, then minimum measured maximum full cycle cost; ties by mean prediction-planning cost',
++        retained_comparators=[n for n in names if n!=selected],real_time_proved=False,single_scene_only=True)
++    write(output/'method_selection.json',recommendation)
++    write(output/'summary.json',dict(experiment_completed=True,bicycle_QP_implementation_complete=True,
++        B1_full_task_passed=results['B1']['unified_validation_passed'],B2_single_full_task_passed=results['B2_single']['unified_validation_passed'],
++        B2_sequence_full_task_passed=results['B2_sequence']['unified_validation_passed'],selected_inner_method=selected,real_vehicle_feasibility_proved=False))
++    lines=['# E3：时变仿射自行车联合 QP 对照','','\n'.join(table),'',
++        '同一原场景、地图、目标、车辆能力、固定路径阶段和 A→B ROS Flag 顺序。B1 重新运行；B2_single 与 B2_sequence 仅在线性化更新次数上不同，误差阈值和走廊/信赖域相同。',
++        'B2 先调用一次 B1 纵向参考 QP，再求解保留 x/y/ψ/v/δ 的 128 输入变量联合 QP。参考生成的 QP 数量和耗时计入全部主周期与未来诊断成本，不能把 B2 称为只需一次总 QP。',
++        '每轮固定全部凸道路走廊、保护区分离半空间、双方分离轴及初始参考的航向车身包络。序列更新只重建仿射动态与局部信赖域，不在子问题内优化走廊选择。',
++        '单次与序列采用相同非线性误差阈值：位置 1e-5 m、航向 5e-6 rad、速度及转角 1e-6。阶段衔接的原停车/转向和完整未来释放检查保留。',
++        'prediction_planning_mean_ms 来自共用入口，含阶段/ROS处理、完整未来释放预演、参考生成、走廊、所有更新及预测重演。cycle_max_ms 还包含随后执行段验收与提交；不能用子问题求解耗时声称在线实时。',
++        'normalized_execution_effort=Σ sample_s·[(a/1 m/s²)²+(ω/1 rad/s)²]，各方法同口径。内部优化目标不同，不直接比较内部 objective_without_constant。失败分支的控制成本和最小间距只覆盖已执行前缀，不能当作完成任务的收益。',
++        '每周期 QP 数、每次更新状态/残差/模型误差见各分支 solves.jsonl；线性预测、固定走廊、信赖域与实际控制均保存。单场景的周期验收比例不是场景成功概率。',
++        '单个子问题是凸 QP；序列求解不表示原非线性问题全局凸或全局最优。统一验收为原非线性方程、旋转车身、道路/双方间距/权限、原目标和完整未来见证的 0.02 s 采样重放。',
++        '本轮依据完整任务验收后最小实测最长完整周期选择后续内层方法：'+str(selected)+'；其余保留对照。选择限于当前场景，不是一般性能排序。',
++        'unified_validation_passed 同时要求完整任务和 ROS 正常交接；executed_prefix_validation_passed 只描述已执行前缀的原物理验收。中止模拟不等于已验证硬件安全停车。',
++        '数学推导、有效域和固定参数见 mathematics.md；版本、准确命令和源码快照见 provenance.json/source/。']
++    (output/'report.md').write_text('\n\n'.join(lines)+'\n')
++    render(output,names)
++
++
++def render(output,names):
++    import matplotlib
++    matplotlib.use('Agg')
++    import matplotlib.pyplot as plt
++    fig,axes=plt.subplots(3,3,figsize=(16,11))
++    for col,name in enumerate(names):
++        rows=list(csv.DictReader((output/name/'actual.csv').open()))
++        for car,color in [('A','tab:blue'),('B','tab:orange')]:
++            rr=[r for r in rows if r['car']==car];t=[float(r['time_s'])-100 for r in rr]
++            axes[0,col].plot([float(r['x']) for r in rr],[float(r['y']) for r in rr],color=color,label=car)
++            axes[1,col].plot(t,[float(r['v']) for r in rr],color=color,label=car)
++            axes[2,col].plot(t,[float(r['delta']) for r in rr],color=color,label=car)
++        state=json.loads((output/name/'summary.json').read_text())
++        title=name+(' (completed)' if state['both_completed'] else ' (stopped prefix)')
++        axes[0,col].set(title=title,xlabel='x (m)',ylabel='y (m)',ylim=(-6,6))
++        axes[1,col].set(xlabel='simulation time (s)',ylabel='speed (m/s)')
++        axes[2,col].set(xlabel='simulation time (s)',ylabel='steering (rad)')
++        for ax in axes[:,col]:ax.grid(True);ax.legend()
++    fig.tight_layout();fig.savefig(output/'comparison.png',dpi=140);plt.close(fig)
++    fig,axes=plt.subplots(3,1,figsize=(11,10))
++    for name in names:
++        solves=read_lines(output/name/'solves.jsonl')
++        axes[0].semilogy([r['time_s']-100 for r in solves],[max(1e-13,max(e['position_m'] for e in r['mapping_errors'].values())) if r.get('mapping_evaluated',True) else np.nan for r in solves],label=name)
++        planning=json.loads((output/name/'planning.json').read_text())
++        axes[1].semilogy([r['time_s']-100 for r in planning],[r['total_cycle_wall_s']*1000 for r in planning],label=name)
++        counts=[r.get('reference_numeric_qp_calls',int(r['free_variables']>0))+r.get('bicycle_numeric_qp_calls',0) for r in solves]
++        axes[2].step([r['time_s']-100 for r in solves],counts,where='post',label=name)
++    axes[0].axhline(ERROR_LIMIT['position_m'],color='black',linestyle='--',label='B2 error threshold')
++    axes[0].set(ylabel='native model / replay error (m)')
++    axes[1].axhline(200.,color='black',linestyle='--',label='control period')
++    axes[1].set(ylabel='full executed cycle cost (ms)')
++    axes[2].set(ylabel='main numerical QPs (reference included)',xlabel='simulation time (s)')
++    for ax in axes:ax.grid(True);ax.legend()
++    fig.tight_layout();fig.savefig(output/'errors_timing.png',dpi=140);plt.close(fig)
++
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True);args=parser.parse_args()
++    args.output.mkdir(parents=True,exist_ok=False)
++    scene=json.loads((ROOT/'config/entry_bicycle.json').read_text());validate_scene(scene);path=routes(scene)
++    write(args.output/'scene.json',scene);write(args.output/'paths.json',path)
++    files=[*Path(__file__).parent.glob('*.py'),ROOT/'config/entry_bicycle.json',ROOT/'tests/test_linearized_joint.py',ROOT/'bicycle_joint_qp.md',ROOT/'requirements-qp.txt']
++    source=args.output/'source';source.mkdir()
++    for p in files:shutil.copy2(p,source/p.name)
++    shutil.copy2(ROOT/'bicycle_joint_qp.md',args.output/'mathematics.md')
++    write(args.output/'provenance.json',dict(git_head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
++        source_sha256={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in files},python=platform.python_version(),numpy=np.__version__,scipy=scipy.__version__,osqp=osqp.__version__,
++        command='source /opt/ros/jazzy/setup.bash && PYTHONPATH=/tmp/e2_qp_deps:$PYTHONPATH ROS_DOMAIN_ID='+os.environ.get('ROS_DOMAIN_ID','0')+' OPENBLAS_NUM_THREADS=1 python3 scripts/run_bicycle_e3.py --output '+str(args.output),
++        state_trust=STATE_TRUST.tolist(),input_trust=INPUT_TRUST.tolist(),error_limits=ERROR_LIMIT,state_weights=STATE_WEIGHT.tolist(),input_weights=INPUT_WEIGHT.tolist(),
++        prediction_deadline_s=DEADLINE_S,maximum_updates=MAX_UPDATES,numerical_state_band=NUMERICAL_BAND,reference_numerical_band=10*NUMERICAL_BAND,solver_eps_abs=1e-7,solver_eps_rel=1e-7,solver_max_iterations=10000,future_check_deadline_s=30.,no_realtime_or_global_optimality_claim=True))
++    results={}
++    for name,updates in [('B1',0),('B2_single',1),('B2_sequence',MAX_UPDATES)]:
++        print('Running',name,flush=True);bus=RosFlag()
++        try:
++            controller=Controller(scene,path) if not updates else BicycleController(scene,path,updates)
++            run_b1(scene,path,args.output/name,bus,controller=controller)
++        finally:bus.close()
++        config=json.loads((args.output/name/'config.json').read_text());config['controller']=name;write(args.output/name/'config.json',config)
++        try:validation=verify_policy(args.output/name,scene)
++        except (ValueError,KeyError,StopIteration,IndexError) as exc:validation=dict(passed=False,validation_error=type(exc).__name__+': '+str(exc))
++        consistency=verify_future_execution(args.output/name,scene);write(args.output/name/'future_execution_consistency.json',consistency)
++        write(args.output/name/'validation.json',validation);verify_ros(args.output/name)
++        results[name]=summarize(args.output/name,scene)
++        print(name,json.dumps(results[name]),flush=True)
++    write(args.output/'future_execution_consistency.json',{n:json.loads((args.output/n/'future_execution_consistency.json').read_text()) for n in results})
++    report(args.output,results)
++    if not results['B1']['completed'] or not results['B1']['unified_validation_passed']:raise SystemExit(1)
++
++
++if __name__=='__main__':main()
+diff --git a/examples/head_on_mpc/tests/test_linearized_joint.py b/examples/head_on_mpc/tests/test_linearized_joint.py
+new file mode 100644
+index 0000000..4e69ada
+--- /dev/null
++++ b/examples/head_on_mpc/tests/test_linearized_joint.py
+@@ -0,0 +1,83 @@
++import copy
++import json
++from pathlib import Path
++import sys
++import unittest
++from unittest.mock import patch
++import numpy as np
++sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
++from bicycle_core import step,rollout,corners
++from longitudinal_joint import routes
++from linearized_joint import (BicycleController,rk4_jacobians,condensed,body_support,
++    STATE_TRUST,freeze_corridors)
++SCENE=json.loads((Path(__file__).resolve().parents[1]/'config/entry_bicycle.json').read_text())
++
++
++class LinearizedTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):cls.path=routes(SCENE)
++
++    def test_rk4_derivatives_match_independent_finite_difference(self):
++        z=np.array([2.,1.,.4,1.2,.3]);u=np.array([.2,-.1]);h=.2;p=SCENE['vehicle']
++        A,B=rk4_jacobians(z,u,h,p);eps=1e-6
++        numeric=np.column_stack([(step(z+eps*np.eye(5)[j],u,h,p)-step(z-eps*np.eye(5)[j],u,h,p))/(2*eps) for j in range(5)])
++        np.testing.assert_allclose(A,numeric,atol=3e-10)
++        numeric=np.column_stack([(step(z,u+eps*np.eye(2)[j],h,p)-step(z,u-eps*np.eye(2)[j],h,p))/(2*eps) for j in range(2)])
++        np.testing.assert_allclose(B,numeric,atol=3e-10)
++
++    def test_affine_nominal_defect_matches_dense_reference(self):
++        inputs=np.tile([.1,.01],(SCENE['N'],1));z=np.array([0.,0.,.2,.5,.2])
++        dense=rollout(z,[(a,w,'TEST') for a,w in inputs],SCENE);reference=dense[::10]
++        base,M,_=condensed(z,reference,inputs,SCENE)
++        predicted=base+np.einsum('kij,j->ki',M,inputs.ravel())
++        np.testing.assert_allclose(predicted,reference[1:],atol=1e-12)
++
++    def test_heading_box_body_envelope_contains_rotating_corners(self):
++        for heading in (0.,.7,np.pi):
++            support=body_support(heading,SCENE['vehicle'])
++            for yaw in np.linspace(heading-STATE_TRUST[2],heading+STATE_TRUST[2],21):
++                body=corners([[0.,0.,yaw,0.,0.]],SCENE['vehicle'])[0]
++                self.assertTrue(np.all(body>=support[:2]-1e-12))
++                self.assertTrue(np.all(body<=support[2:]+1e-12))
++
++    def test_deadline_rejects_instead_of_executing_reference(self):
++        controller=BicycleController(SCENE,self.path,3)
++        with patch('linearized_joint.DEADLINE_S',1e-12):
++            _,_,record=controller.predict({'A':False,'B':False})
++        self.assertFalse(record['accepted'])
++        self.assertTrue(record['deadline_exceeded'])
++        self.assertEqual(record['bicycle_numeric_qp_calls'],0)
++
++    def test_rejected_reference_is_logged_before_rollout(self):
++        controller=BicycleController(SCENE,self.path,1)
++        solution={c:np.full(SCENE['N'],1e9) for c in ('A','B')}
++        diagnostic=dict(accepted=False,message='test rejected',free_variables=64)
++        with patch('longitudinal_joint.solve',return_value=(solution,diagnostic)):
++            _,_,record=controller.predict({'A':False,'B':False})
++        self.assertFalse(record['accepted'])
++        self.assertEqual(record['message'],'reference QP rejected')
++        self.assertEqual(record['bicycle_numeric_qp_calls'],0)
++
++    def test_second_linearization_recovers_same_curve_checkpoint(self):
++        records=[]
++        for updates in (1,3):
++            controller=BicycleController(SCENE,self.path,updates);b=controller.agents['B']
++            b.index=1;b.z=np.array(self.path['B'][1]['start']);b.z[4]=self.path['B'][1]['delta']
++            _,_,record=controller.predict({'A':True,'B':False});records.append(record)
++        self.assertFalse(records[0]['accepted'])
++        self.assertTrue(records[1]['accepted'])
++        self.assertEqual(records[1]['qp_updates'],2)
++        self.assertLess(records[1]['mapping_errors']['B']['position_m'],1e-5)
++
++    def test_initial_qp_is_convex_affine_and_replayed(self):
++        controller=BicycleController(SCENE,self.path,1)
++        _,_,record=controller.predict({'A':False,'B':False})
++        self.assertTrue(record['accepted'],record['message'])
++        self.assertEqual(record['qp_updates'],1)
++        self.assertGreater(record['hessian_min_eigenvalue'],0.)
++        self.assertTrue(record['affine_constraints'])
++        self.assertLess(record['affine_violation'],1e-5)
++        self.assertEqual(record['variables'],128)
++
++
++if __name__=='__main__':unittest.main()
+diff --git a/examples/head_on_mpc/bicycle_joint_qp.md b/examples/head_on_mpc/bicycle_joint_qp.md
+new file mode 100644
+index 0000000..698e716
+--- /dev/null
++++ b/examples/head_on_mpc/bicycle_joint_qp.md
+@@ -0,0 +1,64 @@
++# E3：时变仿射自行车联合 QP（B2）
++
++## 实验范围
++
++同一 entry_bicycle.json、两车原初态/目标/能力、N=32、h=0.2 s、0.02 s 非线性执行采样，ROS 2 Flag 顺序 A→B。重新运行 B1、B2_single（每周期最多1次自行车 QP）、B2_sequence（最多3次）。不修改原车身、道路、双方间距、权限、原目标和释放验收容差。
++
++B2 使用 B1 的纵向联合 QP 生成参考进度与速度，沿原直线/双圆弧构造五维几何跟踪目标。初始线性化中心为从实际状态按参考输入非线性积分得到的轨迹，而跟踪目标在原几何路径上；两者不能混用，否则小航向偏差会随长直线累积。参考 QP 的调用与耗时单独记录并计入总数；B2 不是独立于参考优化的单次总 QP。
++
++## 连续模型与导数
++
++z=[x,y,ψ,v,δ]ᵀ，u=[a,ω]ᵀ：
++
++f(z,u)=[v cosψ,v sinψ,v tanδ/L,a,ω]ᵀ。
++
++非零状态导数：F₁₃=−v sinψ，F₁₄=cosψ；F₂₃=v cosψ，F₂₄=sinψ；F₃₄=tanδ/L，F₃₅=v/(L cos²δ)。输入导数 G₄₁=1，G₅₂=1，其余为零。
++
++代码按链式法则微分单个 h 的四阶 RK4 四个阶段。例如 k₁=f(z,u)、z₂=z+h k₁/2，J₂,z=F(z₂)(I+h J₁,z/2)、J₂,u=F(z₂)h J₁,u/2+G；其余阶段同理。A=I+h(J₁,z+2J₂,z+2J₃,z+J₄,z)/6，B=h(J₁,u+2J₂,u+2J₃,u+J₄,u)/6。测试用独立中心有限差分核对 A、B。
++
++实际参考端点 z̄_{j+1} 来自每个 h 内10次0.02 s的原 RK4 积分。设置缺陷 c_j=z̄_{j+1}−A_j z̄_j−B_j ū_j，形成 z_{j+1}=A_j z_j+B_j u_j+c_j。故名义轨迹精确匹配；A、B 是单个 h RK4 的导数，并非10次子积分复合映射的精确导数。该积分灵敏度差异及非线性高阶项都由非线性重演误差检查覆盖，不隐藏为精确模型。
++
++每车5维状态全部保留在时变仿射状态映射 z_j=b_j+M_j U_i 中；通过凝聚只以两车2×N×2=128个输入为决策变量，不删除位置、航向或转角状态。
++
++## 凸二次目标与仿射约束
++
++目标为 Σ_j ||z_j−z_target,j||²_Q + Σ_j ||u_j||²_R +0.02 Σ_j ||u_j−u_{j−1}||²，Q=diag(10,40,100,1,10)，R=diag(0.05,0.05)，最后状态的 Q 乘10。差分首项以零为参考。H=2(MᵀQM+R+Dᵀ0.02D)，H≽0.1I；固定输入消元后仍正定。所报内部目标省略常数，不可跨 B1/B2 比较。
++
++每个子问题的 A_j、B_j、c_j、走廊、包络、目标与信赖域中心均为常数，所有约束为 l≤AU≤u。B2 的状态/阶段约束装配采用1e-7数值带，参考生成采用1e-6数值带（覆盖前一级1e-7装配及求解残差），输入物理界保持原值；用于避免停车时纳米级进度/速度不一致形成空的精确等式系统。B1 对照仍使用原0数值带。原非线性物理验收1e-5容差不变；每个子问题显式记录数值装配及仿射残差。OSQP使用eps_abs=eps_rel=1e-7。物理速度界沿用当前固定段的直线2 m/s、圆弧1 m/s与正反向限制；a∈[−1,1] m/s²、|ω|≤1 rad/s、|δ|≤0.5 rad。等待/静止转向阶段的输入固定为原阶段原语；移动阶段同时优化 a、ω。
++
++辅助阶段进度 s 按 ds/dt=d·v、s_{j+1}=s_j+h d v_j+½h² d a_j 累积，仅用于许可和阶段切换。其边界、固定停车到达周期、末端速度0、到达后输入0沿用 E2；该进度并不强制实际二维轨迹等于原几何路径。停车阶段同时使用原段端点的 x/y±0.005 m、ψ±0.003 rad终端盒和 δ 等式。最终任务仍须满足原目标容差。没有覆盖实际姿态、速度或进度。
++
++## 固定凸走廊及车身包络
++
++每个预测时刻，在原道路矩形中选择一块与初始参考车身余量最大的矩形，不在 QP 内优化道路并集。相对于参考航向 ψ̄_j，旋转车身的 x/y 支撑区间各端扩张 r·εψ，r=√(3.5²+0.9²)，εψ=0.02 rad。由 |R(ψ)p−R(ψ̄)p|≤||p||·|ψ−ψ̄|，该轴对齐包络覆盖航向信赖域内的完整矩形车身。
++
++把包络限制在固定道路矩形内，得到后轴位置 x/y 的仿射盒约束。g=0 时，从保护矩形外的四个分离半空间中按初始参考选定一个，收紧位置盒；获准后允许通过。双方分离轴按既有阶段固定：入位前采用 x 轴 A左B右；停靠等待采用 y 轴 B下A上；返回后采用 x 轴 B左A右。加入双方位置与各自保守车身支撑的仿射间距行，保留0.5 m间距。所有轴与包络在本周期的所有序列更新中固定。
++
++## 有效域、非线性检查与截止限制
++
++全局状态信赖域相对于本周期初始实际参考为 [0.15 m,0.15 m,0.02 rad,0.25 m/s,0.03 rad]；输入域为 [0.3 m/s²,0.25 rad/s]。每次序列更新还与新线性化中心同半径信赖域求交，不能逐轮走出最初航向包络。航向保持局部展开，不在 QP 内做角度取模。
++
++信赖域只是候选适用范围，不保证其中所有点的近似误差都小。每个候选必须以原非线性模型重演整个6.4 s预测，节点模型误差须满足：最大位置1e-5 m、航向5e-6 rad、速度及转角1e-6；重演节点仍须在初始全局信赖域内，并通过原0.02 s稠密车身、道路及双方间距检查。实际执行前还由共用入口检查无许可车身不进入保护区。连续时间安全未获证明。
++
++single只构造1次自行车QP；sequence仅在非线性误差、信赖域或安全重演拒绝时，围绕候选非线性轨迹更新动态并继续，最多3次。原走廊与目标保持固定，不自动放松约束或阈值，不回退为B1执行。原始子问题不可行时本轮中止。
++
++每次预测规划预算0.5 s（包含参考生成、构造、所有QP更新和非线性重演）；每个OSQP最多10000次迭代，time_limit使用剩余预算。Python构造和重演无法硬抢占，超预算在返回时拒绝并记录实际耗时。该预算大于0.2 s控制周期，因此不是实时保证。完整未来释放见证仍复制实际状态、按同一控制器滚动到双方原目标；另限30 s墙钟和原最大仿真步数，超限终止，不能绕过释放检查。
++
++## 验收、计时与方法选择
++
++独立 verify_policy() 重读日志，用独立积分重放分量方程、预测与实际执行，检查原初态、旋转车身/道路/间距、权限、原目标、车尾清空及完整未来见证。模型近似阈值不替换原物理验收阈值。未来见证与随后执行的一致性另存诊断；闭环存在序列重新求解，不能仅凭一个候选见证声称任意后续重规划安全。
++
++每周期记录参考QP与自行车QP的实际调用数、构造/更新时间、接受和拒绝原因、线性状态、非线性误差、固定走廊及双方分离行。主周期和完整未来诊断成本分列，总周期包含释放见证。求解可行率按实际子问题/控制周期计数，不把单场景周期比例解释为多场景成功率。
++
++统一执行成本为 ∫[(a/1 m/s²)²+(ω/1 rad/s)²]dt，另报任务完成时间及端点误差。失败分支只记录已执行前缀成本，不能当作任务完成收益。候选内层先满足完整任务、统一验收及实际ROS交接，再按本轮实测最长完整周期、预测规划均值排序；另一个保留对照。单个子问题凸不表示原非线性问题或整个序列过程全局凸/全局最优。
++
++## 运行
++
++```bash
++source /opt/ros/jazzy/setup.bash
++export PYTHONPATH=/tmp/e2_qp_deps:$PYTHONPATH  # 若系统已装 requirements-qp.txt 可省略
++OPENBLAS_NUM_THREADS=1 python3 -m unittest discover -s tests -p test_linearized_joint.py
++ROS_DOMAIN_ID=94 OPENBLAS_NUM_THREADS=1 python3 scripts/run_bicycle_e3.py --output results/bicycle_e3_rerun
++```
++
++复用 E2 已声明的 OSQP 1.1.3、NumPy、SciPy 与 ROS rclpy/std_msgs，不新增依赖。开发自检失败另归档，不计入正式同场景分支样本。

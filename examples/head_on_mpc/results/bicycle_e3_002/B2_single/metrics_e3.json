@@ -1,0 +1,63 @@
+{
+  "completed": false,
+  "unified_validation_passed": false,
+  "executed_prefix_validation_passed": true,
+  "ROS_validation_passed": false,
+  "failure": "joint_QP_rejected",
+  "completion_sim_s": null,
+  "attempted_control_cycles": 57,
+  "executed_control_cycles": 56,
+  "accepted_control_cycles": 56,
+  "reference_rejections": 0,
+  "rejected_subproblems": 0,
+  "cycle_acceptance_fraction": 0.9824561403508771,
+  "minimum_sampled_gap_m": 42.60330383993883,
+  "normalized_execution_effort": 6.0283695233017935,
+  "endpoint_errors": {
+    "A": {
+      "position_m": 63.603303951844445,
+      "heading_rad": 0.0,
+      "speed_m_s": 2.0000001000000007,
+      "steering_rad": 0.0
+    },
+    "B": {
+      "position_m": 73.99999988809438,
+      "heading_rad": 0.0,
+      "speed_m_s": 1.3234889800848443e-23,
+      "steering_rad": 0.42285392613294076
+    }
+  },
+  "maximum_model_interface_errors": {
+    "position_m": 1.3117484111416375e-05,
+    "heading_rad": 3.7413596580826436e-06,
+    "speed_m_s": 2.2870594307278225e-14,
+    "steering_rad": 8.326672684688674e-16
+  },
+  "maximum_position_model_error_m": 1.3117484111416375e-05,
+  "maximum_heading_model_error_rad": 3.7413596580826436e-06,
+  "maximum_speed_model_error_m_s": 2.2870594307278225e-14,
+  "main_reference_numeric_QPs": 57,
+  "main_bicycle_numeric_QPs": 57,
+  "future_reference_numeric_QPs": 0,
+  "future_bicycle_numeric_QPs": 0,
+  "update_count_histogram": {
+    "0": 0,
+    "1": 57,
+    "2": 0,
+    "3": 0
+  },
+  "accepted_subproblems": 57,
+  "attempted_subproblems": 57,
+  "maximum_QPs_per_main_cycle": 2,
+  "sequential_update_cycles": 0,
+  "deadline_rejections": 0,
+  "hessian_min_eigenvalue": 0.22215387476451268,
+  "maximum_affine_violation": 2.44290622841703e-07,
+  "cycle_mean_ms": 80.91606294645511,
+  "cycle_max_ms": 127.8216139999131,
+  "cycles_over_200ms": 0,
+  "prediction_planning_mean_ms": 74.67191794647273,
+  "future_check_wall_s": 0,
+  "total_policy_wall_s": 4.6901854509997065,
+  "scope": "one scene; fractions are cycle counts, not scenario success probabilities"
+}

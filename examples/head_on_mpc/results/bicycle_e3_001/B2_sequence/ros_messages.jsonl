@@ -1,0 +1,13 @@
+{"sequence": 0, "cycle": 0, "wall_monotonic_ns": 4192015817024, "kind": "publish_state", "occupied": false, "owner_id": null, "version": 1, "publish_cycle": 0}
+{"sequence": 1, "cycle": 0, "wall_monotonic_ns": 4192016350977, "kind": "receive_state", "vehicle_id": "A", "occupied": false, "owner_id": null, "version": 1, "publish_cycle": 0, "receive_cycle": 0}
+{"sequence": 2, "cycle": 0, "wall_monotonic_ns": 4192016411931, "kind": "receive_state", "vehicle_id": "B", "occupied": false, "owner_id": null, "version": 1, "publish_cycle": 0, "receive_cycle": 0}
+{"sequence": 3, "cycle": 21, "wall_monotonic_ns": 4193854977775, "kind": "publish_request", "vehicle_id": "A", "payload": {"vehicle_id": "A"}}
+{"sequence": 4, "cycle": 21, "wall_monotonic_ns": 4193855634789, "kind": "receive_request", "vehicle_id": "A", "payload": {"vehicle_id": "A"}}
+{"sequence": 5, "cycle": 21, "wall_monotonic_ns": 4193855657190, "kind": "publish_state", "occupied": true, "owner_id": "A", "version": 2, "publish_cycle": 21}
+{"sequence": 6, "cycle": 21, "wall_monotonic_ns": 4193855962906, "kind": "receive_state", "vehicle_id": "A", "occupied": true, "owner_id": "A", "version": 2, "publish_cycle": 21, "receive_cycle": 21}
+{"sequence": 7, "cycle": 21, "wall_monotonic_ns": 4193856009522, "kind": "receive_state", "vehicle_id": "B", "occupied": true, "owner_id": "A", "version": 2, "publish_cycle": 21, "receive_cycle": 21}
+{"sequence": 8, "cycle": 36, "wall_monotonic_ns": 4194881110954, "kind": "publish_request", "vehicle_id": "B", "payload": {"vehicle_id": "B"}}
+{"sequence": 9, "cycle": 36, "wall_monotonic_ns": 4194881696436, "kind": "receive_request", "vehicle_id": "B", "payload": {"vehicle_id": "B"}}
+{"sequence": 10, "cycle": 36, "wall_monotonic_ns": 4194881716832, "kind": "publish_state", "occupied": true, "owner_id": "A", "version": 3, "publish_cycle": 36}
+{"sequence": 11, "cycle": 36, "wall_monotonic_ns": 4194882001860, "kind": "receive_state", "vehicle_id": "A", "occupied": true, "owner_id": "A", "version": 3, "publish_cycle": 36, "receive_cycle": 36}
+{"sequence": 12, "cycle": 36, "wall_monotonic_ns": 4194882047585, "kind": "receive_state", "vehicle_id": "B", "occupied": true, "owner_id": "A", "version": 3, "publish_cycle": 36, "receive_cycle": 36}

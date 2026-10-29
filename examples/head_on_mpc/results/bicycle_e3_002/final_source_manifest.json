@@ -1,0 +1,12 @@
+{
+  "note": "source/ preserves exact executed version. Controller, reference QP and shared execution runner are byte-identical. final_source/ adds the curve-recovery regression and completes report labels, matrix/plot artifacts and per-prefix/full-task distinction; actuation is unchanged.",
+  "sha256": {
+    "examples/head_on_mpc/scripts/linearized_joint.py": "812ce1600d5de0734b0f0df660fcd3127b46d98930c619c1aa6289c5660bc6eb",
+    "examples/head_on_mpc/scripts/longitudinal_joint.py": "b9e39339f2ba9d68cde1dc5584d1b5c139d35cf8b2a41d9455ca79b9e0f32011",
+    "examples/head_on_mpc/scripts/run_joint_e2.py": "9647261011b48f97920bd91033a1a5f27f2b1b815204dd29b8930b73e2d0a0a2",
+    "examples/head_on_mpc/scripts/run_bicycle_e3.py": "508c960d52c4216bc837e61690fc7cf4a9336a5c65e297469fc2118622843552",
+    "examples/head_on_mpc/tests/test_linearized_joint.py": "93aac51fe88d1a82fd23c5db8c1bfe38a22a64b1378f5998129a97938f2f5dde",
+    "examples/head_on_mpc/bicycle_joint_qp.md": "05da4083bdce50c755b7eb910eabf9288a58e638e1f5fa95c049c27d577e85eb",
+    "examples/head_on_mpc/README.md": "4301e3317171ad6b1c76301424a966000ace9ab94601e6d0012c704705450e02"
+  }
+}

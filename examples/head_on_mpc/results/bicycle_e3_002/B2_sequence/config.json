@@ -1,0 +1,124 @@
+{
+  "scene": {
+    "name": "homogeneous_A_near_B_far",
+    "seed": 0,
+    "epoch_s": 100.0,
+    "parameter_source": "wheelbase, dimensions and steering from config/planner_params.yaml; omega from TrackingOptions; remaining limits are simulation assumptions, not hardware calibration",
+    "vehicle": {
+      "length": 4.5,
+      "width": 1.8,
+      "L": 2.7,
+      "front": 0.8,
+      "rear": 1.0,
+      "v_fwd": 2.0,
+      "v_rev": 1.0,
+      "a_min": -1.0,
+      "a_max": 1.0,
+      "delta_max": 0.5,
+      "omega_max": 1.0
+    },
+    "h": 0.2,
+    "N": 32,
+    "sample_s": 0.02,
+    "s_min": 0.5,
+    "tolerance": 1e-05,
+    "terminal": {
+      "position_m": 0.08,
+      "speed_m_s": 0.025,
+      "yaw_rad": 0.01,
+      "steering_rad": 0.01
+    },
+    "initial": {
+      "A": [
+        -40.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "B": [
+        46.0,
+        0.0,
+        3.141592653589793,
+        0.0,
+        0.0
+      ]
+    },
+    "previous_input": {
+      "A": [
+        0.0,
+        0.0
+      ],
+      "B": [
+        0.0,
+        0.0
+      ]
+    },
+    "goals": {
+      "A": [
+        44.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "B": [
+        -44.0,
+        0.0,
+        3.141592653589793,
+        0.0,
+        0.0
+      ]
+    },
+    "D": 20.0,
+    "W": 2.8,
+    "g": 34.0,
+    "d_A": 26.5,
+    "d_B": 32.5,
+    "road_rectangles": [
+      [
+        -52.0,
+        52.0,
+        -1.4,
+        1.4
+      ],
+      [
+        -42.0,
+        -10.0,
+        -5.5,
+        5.5
+      ],
+      [
+        10.0,
+        42.0,
+        -5.5,
+        5.5
+      ]
+    ],
+    "request_rear_axle_abs_x": 34.0,
+    "admission_protection_abs_x": 18.0,
+    "release_plane_abs_x": 26.0,
+    "release_margin_m": 0.5,
+    "waiting_anchor_abs_x": 30.0,
+    "bay_offset_local_y": 3.0,
+    "turn_radius_m": 6.0,
+    "detector": {
+      "window_s": 5.0,
+      "actual_progress_m": 0.03,
+      "prediction_endpoint_change_m": 0.03,
+      "prediction_tail_displacement_m": 0.02,
+      "minimum_blocked_fraction": 0.8
+    },
+    "navigation_gap_m": 0.6,
+    "timeout_s": 180.0,
+    "assumptions": [
+      "ideal consistent communication",
+      "no gear dwell; sign changes through rest",
+      "stop before changing primitive curvature",
+      "offline time frozen during planning and candidate screening",
+      "shared deterministic stop-to-stop time scaling, no MPC optimality claim"
+    ]
+  },
+  "policy": "S1",
+  "controller": "B2_sequence"
+}
