@@ -178,8 +178,8 @@ def build_qp(agents, permissions, scene):
     return H,q,A,lo,hi,E,b,bounds,parameters
 
 
-def solve(agents, permissions, scene,feasibility_band=0.):
-    started=time.perf_counter()
+def solve(agents, permissions, scene,feasibility_band=0.,warm=None):
+    started=time.perf_counter();solver_wall=0.;setup_wall=0.;warm_used=False
     H,q,A,lo,hi,E,b,bounds,parameters=build_qp(agents,permissions,scene)
     scale=max(1.,np.max(np.abs(q)),np.max(np.abs(H)))
     matrix=vstack([csc_matrix(A),csc_matrix(E),eye(len(q))],format='csc')
@@ -197,12 +197,19 @@ def solve(agents, permissions, scene,feasibility_band=0.):
             raise ValueError('inconsistent fixed-input affine constraint')
         row_scale=np.maximum(1.,norms[keep])
         reduced=csc_matrix(reduced[keep].multiply(1./row_scale[:,None]))
-        solver=osqp.OSQP()
+        solver=osqp.OSQP();setup_started=time.perf_counter()
         solver.setup(P=csc_matrix(H[np.ix_(free,free)]/scale),q=(q+H@x)[free]/scale,
             A=reduced,l=(lower-offset)[keep]/row_scale,u=(upper-offset)[keep]/row_scale,
             eps_abs=1e-8,eps_rel=1e-8,max_iter=20000,polishing=True,verbose=False,
             adaptive_rho_interval=50)
-        result=solver.solve(raise_error=False)
+        if warm is not None:
+            warm=np.asarray(warm,float)
+            if warm.shape!=q.shape or not np.isfinite(warm).all():
+                raise ValueError('invalid reference warm-start seed')
+            warm=np.clip(warm,np.array(bounds)[:,0],np.array(bounds)[:,1])
+            solver.warm_start(x=warm[free]);warm_used=True
+        setup_wall=time.perf_counter()-setup_started;solver_started=time.perf_counter()
+        result=solver.solve(raise_error=False);solver_wall=time.perf_counter()-solver_started
         if result.x is not None:x[free]=result.x
         status=result.info.status;status_val=result.info.status_val;iterations=result.info.iter
         primal=result.info.prim_res;dual=result.info.dual_res
@@ -222,19 +229,31 @@ def solve(agents, permissions, scene,feasibility_band=0.):
         variables=len(q),inequality_rows=len(A),equality_rows=len(E),parameters=parameters,
         accepted=bool(status_val in (1,2) and finite and violation<=scene['tolerance'] and minimum>=-1e-10),
         objective_without_constant=float(.5*x@H@x+q@x),solution=x.tolist(),
-        primal_residual=float(primal),dual_residual=float(dual),free_variables=len(free))
+        primal_residual=float(primal),dual_residual=float(dual),free_variables=len(free),
+        setup_wall_s=setup_wall,solver_wall_s=solver_wall,warm_start_used=warm_used,
+        warm_start_solution=warm.tolist() if warm_used else None)
     return {c:x[i*scene['N']:(i+1)*scene['N']] for i,c in enumerate(CARS)},record
 
 
 class Controller:
-    def __init__(self, scene, path):
+    def __init__(self, scene, path, reference_warm_start=False):
+        self.reference_warm_start=reference_warm_start;self.reference_previous={}
         self.scene=scene;self.agents={c:Agent(c,path[c],scene) for c in CARS}
 
     def prepare(self, permissions):
         for c,a in self.agents.items():a.advance(permissions[c])
 
     def predict(self, permissions):
-        accelerations,record=solve(self.agents,permissions,self.scene,getattr(self,'reference_feasibility_band',0.))
+        seed=None
+        if self.reference_warm_start and self.reference_previous:
+            seed=[]
+            for c,a in self.agents.items():
+                previous=self.reference_previous.get(c)
+                if previous and (a.index,a.mode)==(previous['index'],previous['mode']):
+                    seed.extend(previous['solution'][1:]+[0.])
+                else:seed.extend([0.]*self.scene['N'])
+        kwargs={'warm':seed} if seed is not None else {}
+        accelerations,record=solve(self.agents,permissions,self.scene,getattr(self,'reference_feasibility_band',0.),**kwargs)
         if not record['accepted']:
             controls={c:[(0.,0.,'REJECTED')]*self.scene['N'] for c in CARS}
             predictions={c:rollout(a.z,controls[c],self.scene) for c,a in self.agents.items()}
@@ -264,7 +283,14 @@ class Controller:
         record['mapping_errors']=errors
         return controls,predictions,record
 
+    def remember_reference(self, record):
+        if self.reference_warm_start and record['accepted']:
+            reference=record.get('reference_record',record);N=self.scene['N']
+            self.reference_previous={c:dict(index=a.index,mode=a.mode,solution=reference['solution'][i*N:(i+1)*N])
+                                     for i,(c,a) in enumerate(self.agents.items())}
+
     def commit(self, controls, predictions, record):
+        self.remember_reference(record)
         n=round(self.scene['h']/self.scene['sample_s']);h=self.scene['h']
         for c,agent in self.agents.items():
             if agent.mode=='MOVE':

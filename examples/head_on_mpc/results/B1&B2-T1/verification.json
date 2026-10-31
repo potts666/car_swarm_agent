@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "derivative_instances": 8,
+  "derivative_candidate_runs": 32,
+  "parking_runs": 54,
+  "frozen_state_snapshots": 13,
+  "checks": [
+    "original/frozen/runner SHA256",
+    "composed derivative finite differences",
+    "frozen QP dimensions/bounds",
+    "cycle56 preserved rejection and two-update recovery",
+    "deterministic parking repetitions",
+    "cycle121 cold rejection and warm-start physical constraints/downstream nonlinear replay"
+  ]
+}

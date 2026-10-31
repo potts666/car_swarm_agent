@@ -1,0 +1,413 @@
+diff --git a/examples/head_on_mpc/README.md b/examples/head_on_mpc/README.md
+index 5436be4..bcd73ab 100644
+--- a/examples/head_on_mpc/README.md
++++ b/examples/head_on_mpc/README.md
+@@ -281,3 +281,15 @@ B1 固定原直线与双圆弧路径、A→B 的 ROS Flag 顺序，采用 N=32 
+ B2 保留 x/y/航向/速度/转角，以固定凸走廊、保守车身包络及信赖域构造单次/最多三次更新的凸 QP，非线性重演后才执行。第二轮中，单次 B2 在11.2 s因模型位置误差超限中止；序列 B2 在6个周期通过第二次更新恢复候选，但24.2 s时参考QP达迭代上限，未完成原任务。原始失败和首轮结果均保留，未将前缀验收通过写成完整任务成功。
+ 
+ 本轮选 B1 进入后续消融，B2 保留比较。B1 在81.2 s完成任务，实际轨迹与E2逐字节一致；最长完整周期仍约4.74 s，不满足在线实时。单个B2子问题凸，不代表非线性问题或整个序列过程全局凸、全局最优或真实车辆可行。
++
++
++## M0：回到局部DMPC与通道协议主线
++
++后续路线以用户的[mainline_plan_v1](results/M0_001/mainline_plan_v1.txt)为准：通道决定占用资格，车辆负责本地行为与运动；先双车闭环，再局部DMPC、四/六车与放行规则，最后加入延迟。通道内死锁恢复不属于当前冲突预防主线。现有B1/B2仍是集中式联合优化。
++
++[M0报告与复现命令](results/M0_001/report.md) · [对照数据](results/M0_001/comparison.csv) · [验收与失败样本](results/M0_001/diagnostics.json)。M0仅增加可选参考QP移位原始变量热启动，保留单步导数、最多三次更新、原停车/验收与完整未来释放检查；共用入口补全所有出口计时。
++
++两次原版均在24.2 s参考QP拒绝；两次热启动均在81.0 s到达双方目标，但原独立验收仍因三个约1e-7 m/s负速度样本触发速度跨零判据而失败。不能称为完整统一验收通过。两个释放预演所在周期超过200 ms，最大完整周期约13 s；尚未验证实时性或DMPC。
++
++
++M0停车衔接已完成后续修复：[新报告](results/M0_002/report.md) · [三个冻结跨零周期](results/M0_stopping_001/frozen/) · [同参考修复对照](results/M0_stopping_001/repaired/results.json)。仅在停车阶段首输入将越过零速度时，修正制动加速度为-v/h，并重新通过全部原候选验收；状态仍由RK4积分产生。热启动及原验收保持不变，两次热启动完整任务均在80.4 s通过原独立验收；补充的两次冷启动也通过。旧M0_001失败记录保留。全周期仍有约13 s的同步未来释放预演，不构成实时性或DMPC证明。
+diff --git a/examples/head_on_mpc/scripts/linearized_joint.py b/examples/head_on_mpc/scripts/linearized_joint.py
+index 059fced..d990e16 100644
+--- a/examples/head_on_mpc/scripts/linearized_joint.py
++++ b/examples/head_on_mpc/scripts/linearized_joint.py
+@@ -168,21 +168,33 @@ def subproblem(agents,linear_reference,linear_inputs,target,target_inputs,desire
+             result=solver.solve(raise_error=False);raw_wall=time.perf_counter()-started
+             status=result.info.status;iterations=int(result.info.iter);ok=result.info.status_val in (1,2)
+             if result.x is not None:u[free]=result.x
++    stop_adjustments=[]
++    if ok:
++        for i,c in enumerate(CARS):
++            agent=agents[c];j=i*2*N
++            if agent.mode=='MOVE' and parameters[c]['stop_at_end']:
++                end_speed=agent.z[3]+scene['h']*u[j]
++                if agent.segment['direction']*end_speed<0.:
++                    # Correct the applied braking input before all affine and nonlinear checks.
++                    stopping_acceleration=-agent.z[3]/scene['h']
++                    stop_adjustments.append(dict(car=c,raw_acceleration=float(u[j]),acceleration=float(stopping_acceleration),
++                        initial_speed=float(agent.z[3]),raw_end_speed=float(end_speed)))
++                    u[j]=stopping_acceleration
+     residual=matrix@u;violation=max(0.,float(np.max(lo-residual)),float(np.max(residual-hi)))
+     eig=float(np.linalg.eigvalsh(H)[0]);ok=bool(ok and np.isfinite(u).all() and violation<=scene['tolerance'] and eig>=-1e-10)
+     predicted={c:np.vstack((agents[c].z,bases[c]+np.einsum('kij,j->ki',maps[c],u[i*2*N:(i+1)*2*N]))) for i,c in enumerate(CARS)}
+     controls={c:u[i*2*N:(i+1)*2*N].reshape(N,2) for i,c in enumerate(CARS)}
+     return controls,predicted,dict(accepted=ok,message=status,iterations=iterations,affine_violation=violation,
+         hessian_min_eigenvalue=eig,variables=n,free_variables=len(free),affine_constraints=True,solver_wall_s=raw_wall,
+-        objective_without_constant=float(.5*u@H@u+q@u),solution=u.tolist(),solver_called=bool(raw_wall>0))
++        objective_without_constant=float(.5*u@H@u+q@u),solution=u.tolist(),solver_called=bool(raw_wall>0),stop_input_adjustments=stop_adjustments)
+ 
+ 
+ class BicycleController(Controller):
+     mapping_tolerance=.00001
+     future_deadline_s=30.
+     reference_feasibility_band=10*NUMERICAL_BAND
+-    def __init__(self,scene,path,updates):
+-        super().__init__(scene,path);self.updates=updates
++    def __init__(self,scene,path,updates,reference_warm_start=False):
++        super().__init__(scene,path,reference_warm_start=reference_warm_start);self.updates=updates
+ 
+     def predict(self,permissions):
+         started=time.perf_counter();end=started+DEADLINE_S
+@@ -239,6 +251,7 @@ class BicycleController(Controller):
+         return controls,dense,result
+ 
+     def commit(self,controls,predictions,record):
++        self.remember_reference(record)
+         n=round(self.scene['h']/self.scene['sample_s']);h=self.scene['h']
+         for c,a in self.agents.items():
+             if a.mode=='MOVE':
+diff --git a/examples/head_on_mpc/scripts/longitudinal_joint.py b/examples/head_on_mpc/scripts/longitudinal_joint.py
+index 54836fc..02a7105 100644
+--- a/examples/head_on_mpc/scripts/longitudinal_joint.py
++++ b/examples/head_on_mpc/scripts/longitudinal_joint.py
+@@ -178,8 +178,8 @@ def build_qp(agents, permissions, scene):
+     return H,q,A,lo,hi,E,b,bounds,parameters
+ 
+ 
+-def solve(agents, permissions, scene,feasibility_band=0.):
+-    started=time.perf_counter()
++def solve(agents, permissions, scene,feasibility_band=0.,warm=None):
++    started=time.perf_counter();solver_wall=0.;setup_wall=0.;warm_used=False
+     H,q,A,lo,hi,E,b,bounds,parameters=build_qp(agents,permissions,scene)
+     scale=max(1.,np.max(np.abs(q)),np.max(np.abs(H)))
+     matrix=vstack([csc_matrix(A),csc_matrix(E),eye(len(q))],format='csc')
+@@ -197,12 +197,19 @@ def solve(agents, permissions, scene,feasibility_band=0.):
+             raise ValueError('inconsistent fixed-input affine constraint')
+         row_scale=np.maximum(1.,norms[keep])
+         reduced=csc_matrix(reduced[keep].multiply(1./row_scale[:,None]))
+-        solver=osqp.OSQP()
++        solver=osqp.OSQP();setup_started=time.perf_counter()
+         solver.setup(P=csc_matrix(H[np.ix_(free,free)]/scale),q=(q+H@x)[free]/scale,
+             A=reduced,l=(lower-offset)[keep]/row_scale,u=(upper-offset)[keep]/row_scale,
+             eps_abs=1e-8,eps_rel=1e-8,max_iter=20000,polishing=True,verbose=False,
+             adaptive_rho_interval=50)
+-        result=solver.solve(raise_error=False)
++        if warm is not None:
++            warm=np.asarray(warm,float)
++            if warm.shape!=q.shape or not np.isfinite(warm).all():
++                raise ValueError('invalid reference warm-start seed')
++            warm=np.clip(warm,np.array(bounds)[:,0],np.array(bounds)[:,1])
++            solver.warm_start(x=warm[free]);warm_used=True
++        setup_wall=time.perf_counter()-setup_started;solver_started=time.perf_counter()
++        result=solver.solve(raise_error=False);solver_wall=time.perf_counter()-solver_started
+         if result.x is not None:x[free]=result.x
+         status=result.info.status;status_val=result.info.status_val;iterations=result.info.iter
+         primal=result.info.prim_res;dual=result.info.dual_res
+@@ -222,19 +229,31 @@ def solve(agents, permissions, scene,feasibility_band=0.):
+         variables=len(q),inequality_rows=len(A),equality_rows=len(E),parameters=parameters,
+         accepted=bool(status_val in (1,2) and finite and violation<=scene['tolerance'] and minimum>=-1e-10),
+         objective_without_constant=float(.5*x@H@x+q@x),solution=x.tolist(),
+-        primal_residual=float(primal),dual_residual=float(dual),free_variables=len(free))
++        primal_residual=float(primal),dual_residual=float(dual),free_variables=len(free),
++        setup_wall_s=setup_wall,solver_wall_s=solver_wall,warm_start_used=warm_used,
++        warm_start_solution=warm.tolist() if warm_used else None)
+     return {c:x[i*scene['N']:(i+1)*scene['N']] for i,c in enumerate(CARS)},record
+ 
+ 
+ class Controller:
+-    def __init__(self, scene, path):
++    def __init__(self, scene, path, reference_warm_start=False):
++        self.reference_warm_start=reference_warm_start;self.reference_previous={}
+         self.scene=scene;self.agents={c:Agent(c,path[c],scene) for c in CARS}
+ 
+     def prepare(self, permissions):
+         for c,a in self.agents.items():a.advance(permissions[c])
+ 
+     def predict(self, permissions):
+-        accelerations,record=solve(self.agents,permissions,self.scene,getattr(self,'reference_feasibility_band',0.))
++        seed=None
++        if self.reference_warm_start and self.reference_previous:
++            seed=[]
++            for c,a in self.agents.items():
++                previous=self.reference_previous.get(c)
++                if previous and (a.index,a.mode)==(previous['index'],previous['mode']):
++                    seed.extend(previous['solution'][1:]+[0.])
++                else:seed.extend([0.]*self.scene['N'])
++        kwargs={'warm':seed} if seed is not None else {}
++        accelerations,record=solve(self.agents,permissions,self.scene,getattr(self,'reference_feasibility_band',0.),**kwargs)
+         if not record['accepted']:
+             controls={c:[(0.,0.,'REJECTED')]*self.scene['N'] for c in CARS}
+             predictions={c:rollout(a.z,controls[c],self.scene) for c,a in self.agents.items()}
+@@ -264,7 +283,14 @@ class Controller:
+         record['mapping_errors']=errors
+         return controls,predictions,record
+ 
++    def remember_reference(self, record):
++        if self.reference_warm_start and record['accepted']:
++            reference=record.get('reference_record',record);N=self.scene['N']
++            self.reference_previous={c:dict(index=a.index,mode=a.mode,solution=reference['solution'][i*N:(i+1)*N])
++                                     for i,(c,a) in enumerate(self.agents.items())}
++
+     def commit(self, controls, predictions, record):
++        self.remember_reference(record)
+         n=round(self.scene['h']/self.scene['sample_s']);h=self.scene['h']
+         for c,agent in self.agents.items():
+             if agent.mode=='MOVE':
+diff --git a/examples/head_on_mpc/scripts/run_bicycle_e3.py b/examples/head_on_mpc/scripts/run_bicycle_e3.py
+index 28c55a3..dcbc050 100644
+--- a/examples/head_on_mpc/scripts/run_bicycle_e3.py
++++ b/examples/head_on_mpc/scripts/run_bicycle_e3.py
+@@ -52,7 +52,7 @@ def summarize(directory,scene):
+         histogram={'0':len(solves)};accepted_sub=sum(s['accepted'] for s in solves)
+     accepted_cycles=sum(s['accepted'] for s in solves)
+     result=dict(completed=summary['both_completed'],unified_validation_passed=bool(validation['passed'] and summary['both_completed'] and ros['passed']),executed_prefix_validation_passed=validation['passed'],ROS_validation_passed=ros['passed'],
+-        failure=summary['failure'],completion_sim_s=summary.get('T_complete_sim_s'),attempted_control_cycles=len(solves),executed_control_cycles=len(planning),
++        failure=summary['failure'],completion_sim_s=summary.get('T_complete_sim_s'),attempted_control_cycles=len(solves),executed_control_cycles=sum(p.get('committed',True) for p in planning),
+         accepted_control_cycles=accepted_cycles,reference_rejections=sum(not s.get('reference_record',s)['accepted'] for s in solves),rejected_subproblems=sum(not r['accepted'] for r in subproblems),cycle_acceptance_fraction=accepted_cycles/len(solves) if solves else 0.,
+         minimum_sampled_gap_m=validation.get('trajectory',{}).get('minimum_gap_m'),
+         normalized_execution_effort=effort,endpoint_errors=endpoint,maximum_model_interface_errors=errors,maximum_position_model_error_m=errors['position_m'],maximum_heading_model_error_rad=errors['heading_rad'],maximum_speed_model_error_m_s=errors['speed_m_s'],
+@@ -66,6 +66,9 @@ def summarize(directory,scene):
+         maximum_affine_violation=max((r['affine_violation'] for r in (subproblems if is_b2 else solves)),default=None),
+         cycle_mean_ms=float(np.mean(times)*1000) if times else None,cycle_max_ms=max(times,default=0.)*1000,
+         cycles_over_200ms=sum(t>scene['h'] for t in times),
++        timed_cycles=len(planning),cycle_p50_ms=float(np.percentile(times,50)*1000) if times else None,
++        cycle_p95_ms=float(np.percentile(times,95)*1000) if times else None,
++        cycle_p99_ms=float(np.percentile(times,99)*1000) if times else None,
+         prediction_planning_mean_ms=float(np.mean([p['planning_wall_s'] for p in planning])*1000) if planning else None,
+         future_check_wall_s=sum(w['wall_s'] for w in witnesses),
+         total_policy_wall_s=summary['total_policy_wall_s'],scope='one scene; fractions are cycle counts, not scenario success probabilities')
+@@ -143,7 +146,7 @@ def render(output,names):
+     axes[0].axhline(ERROR_LIMIT['position_m'],color='black',linestyle='--',label='B2 error threshold')
+     axes[0].set(ylabel='native model / replay error (m)')
+     axes[1].axhline(200.,color='black',linestyle='--',label='control period')
+-    axes[1].set(ylabel='full executed cycle cost (ms)')
++    axes[1].set(ylabel='full attempted cycle cost (ms)')
+     axes[2].set(ylabel='main numerical QPs (reference included)',xlabel='simulation time (s)')
+     for ax in axes:ax.grid(True);ax.legend()
+     fig.tight_layout();fig.savefig(output/'errors_timing.png',dpi=140);plt.close(fig)
+diff --git a/examples/head_on_mpc/scripts/run_joint_e2.py b/examples/head_on_mpc/scripts/run_joint_e2.py
+index d5e49e8..ec193cd 100644
+--- a/examples/head_on_mpc/scripts/run_joint_e2.py
++++ b/examples/head_on_mpc/scripts/run_joint_e2.py
+@@ -10,6 +10,7 @@ import os
+ import shutil
+ import subprocess
+ import time
++import sys
+ import numpy as np
+ import scipy
+ import osqp
+@@ -30,71 +31,99 @@ def run_b1(scene,path,directory,bus,controller=None):
+     try:
+         for cycle in range(round(scene['timeout_s']/scene['h'])):
+             cycle_started=time.perf_counter();now=round(scene['epoch_s']+cycle*scene['h'],10);bus.cycle=cycle
+-            requests=[(now,c) for c,a in controller.agents.items() if c not in requested and
+-                      SIGN[c]*a.z[0]>=-scene['request_rear_axle_abs_x']-1e-8]
+-            if requests:
+-                owner,grants=bus.request(requests)
+-                for _,c in requests:
+-                    requested.add(c);event('request',car=c)
+-                    event('grant' if grants[c] else 'deny',car=c,owner=owner)
+-            permissions={c:bus.received[c]['owner_id']==c for c in CARS}
+-            controller.prepare(permissions)
+-            b=controller.agents['B']
+-            if b.mode=='WAIT' and not b.steering and abs(b.z[4])<1e-7 and not ready_sent:
+-                bus.ready('B');ready_sent=True;event('waiting_ready',car='B',pose=b.z.tolist())
+-            for c,a in controller.agents.items():
+-                if a.mode=='DONE' and c not in done:
+-                    if not completed(a.z,scene['goals'][c],scene):raise ValueError('completed phase missed original goal')
+-                    done[c]=now-scene['epoch_s'];event('car_completed',car=c)
+-            if owner and owner not in released:
+-                a=controller.agents[owner]
+-                tail=SIGN[owner]*a.z[0]-scene['vehicle']['rear']
+-                if tail>=scene['release_plane_abs_x']+scene['release_margin_m'] and (owner=='B' or ready_sent):
+-                    witness=controller.future_witness();witnesses.append(dict(time_s=now,holder=owner,**witness))
+-                    checks.append(dict(time_s=now,kind='complete_future_release_witness',wall_s=witness['wall_s'],**witness['check']))
+-                    if not witness['check']['passed']:
+-                        failure='full_future_release_QP_rejected';event('failure',reason=failure);break
+-                    jsonl(directory/f'release_witness_{owner}.jsonl',[{k:v for k,v in witness.items() if k!='solves'}])
+-                    event('release',car=owner,actual_body_tail_x=float(a.z[0]-SIGN[owner]*scene['vehicle']['rear']))
+-                    released.add(owner);owner=bus.release(owner,witness['check'])
+-                    if owner:
+-                        event('grant',car=owner,owner=owner);event('return_started',car=owner)
+-                    permissions={c:bus.received[c]['owner_id']==c for c in CARS};controller.prepare(permissions)
+-            if len(done)==2:
+-                event('both_tasks_completed');break
+-            states={c:a.z.copy() for c,a in controller.agents.items()}
+-            controls,predictions,record=controller.predict(permissions)
+-            record.update(time_s=now,cycle=cycle)
+-            solves.append(record)
+-            for c in CARS:
+-                constraints.append(dict(car=c,cycle=cycle,g_i=int(permissions[c]),
+-                    receive_cycle=bus.received[c]['receive_cycle'],state_version=bus.received[c]['version'],
+-                    phase=controller.agents[c].mode,segment=controller.agents[c].index,**record['parameters'][c]))
+-            if not record['accepted']:
+-                failure='joint_QP_rejected';event('failure',reason=failure);break
+-            if any(max(v for k,v in e.items() if k!='path_s_end_m')>getattr(controller,'mapping_tolerance',scene['tolerance']) for e in record['mapping_errors'].values()):
+-                failure='QP_bicycle_mapping_error';event('failure',reason=failure);break
+-            planning_wall=time.perf_counter()-cycle_started
+-            start=time.perf_counter();check=audit(predictions,scene)
+-            checks.append(dict(time_s=now,kind='dense_prediction',wall_s=time.perf_counter()-start,**check))
+-            n=round(scene['h']/scene['sample_s'])
+-            forecasts.append(dict(time_s=now,states={c:z.tolist() for c,z in states.items()},commands=controls,
+-                predicted_states={c:z[n::n].tolist() for c,z in predictions.items()},owner=owner))
+-            if not check['passed']:
+-                failure='prediction_acceptance_rejected';event('failure',reason=failure);break
+-            protection=[-scene['admission_protection_abs_x'],scene['admission_protection_abs_x'],-scene['W']/2,scene['W']/2]
+-            for c in CARS:
+-                if not permissions[c] and any(clipped_area(body,protection)>scene['tolerance'] for body in corners(predictions[c],scene['vehicle'])):
+-                    failure='unauthorized_prediction';event('failure',reason=failure,car=c);break
+-            if failure:break
+-            motions={c:z[:n+1] for c,z in predictions.items()}
+-            executed=audit(motions,scene);checks.append(dict(time_s=now,kind='executed_segment',wall_s=0.,**executed))
+-            if not executed['passed']:
+-                failure='actual_acceptance_rejected';event('failure',reason=failure);break
+-            rows.extend(rows_for(motions,{c:[controls[c][0]] for c in CARS},now,scene,owner))
+-            controller.commit(controls,predictions,record);reserved+=scene['h']*(owner is not None)
+-            planning.append(dict(time_s=now,planning_wall_s=planning_wall,acceptance_wall_s=time.perf_counter()-start,
+-                total_cycle_wall_s=time.perf_counter()-cycle_started,optimization_solver_calls=int(record['free_variables']>0),retries=0))
++            record=None;prediction_started=None;prediction_finished=None;committed=False;witness_start=len(witnesses)
++            try:
++                requests=[(now,c) for c,a in controller.agents.items() if c not in requested and
++                          SIGN[c]*a.z[0]>=-scene['request_rear_axle_abs_x']-1e-8]
++                if requests:
++                    owner,grants=bus.request(requests)
++                    for _,c in requests:
++                        requested.add(c);event('request',car=c)
++                        event('grant' if grants[c] else 'deny',car=c,owner=owner)
++                permissions={c:bus.received[c]['owner_id']==c for c in CARS}
++                controller.prepare(permissions)
++                b=controller.agents['B']
++                if b.mode=='WAIT' and not b.steering and abs(b.z[4])<1e-7 and not ready_sent:
++                    bus.ready('B');ready_sent=True;event('waiting_ready',car='B',pose=b.z.tolist())
++                for c,a in controller.agents.items():
++                    if a.mode=='DONE' and c not in done:
++                        if not completed(a.z,scene['goals'][c],scene):raise ValueError('completed phase missed original goal')
++                        done[c]=now-scene['epoch_s'];event('car_completed',car=c)
++                if owner and owner not in released:
++                    a=controller.agents[owner]
++                    tail=SIGN[owner]*a.z[0]-scene['vehicle']['rear']
++                    if tail>=scene['release_plane_abs_x']+scene['release_margin_m'] and (owner=='B' or ready_sent):
++                        witness=controller.future_witness();witnesses.append(dict(time_s=now,holder=owner,**witness))
++                        checks.append(dict(time_s=now,kind='complete_future_release_witness',wall_s=witness['wall_s'],**witness['check']))
++                        if not witness['check']['passed']:
++                            failure='full_future_release_QP_rejected';event('failure',reason=failure);break
++                        jsonl(directory/f'release_witness_{owner}.jsonl',[{k:v for k,v in witness.items() if k!='solves'}])
++                        event('release',car=owner,actual_body_tail_x=float(a.z[0]-SIGN[owner]*scene['vehicle']['rear']))
++                        released.add(owner);owner=bus.release(owner,witness['check'])
++                        if owner:
++                            event('grant',car=owner,owner=owner);event('return_started',car=owner)
++                        permissions={c:bus.received[c]['owner_id']==c for c in CARS};controller.prepare(permissions)
++                if len(done)==2:
++                    event('both_tasks_completed');break
++                states={c:a.z.copy() for c,a in controller.agents.items()}
++                prediction_started=time.perf_counter()
++                controls,predictions,record=controller.predict(permissions)
++                prediction_finished=time.perf_counter()
++                record.update(time_s=now,cycle=cycle)
++                solves.append(record)
++                for c in CARS:
++                    constraints.append(dict(car=c,cycle=cycle,g_i=int(permissions[c]),
++                        receive_cycle=bus.received[c]['receive_cycle'],state_version=bus.received[c]['version'],
++                        phase=controller.agents[c].mode,segment=controller.agents[c].index,**record['parameters'][c]))
++                if not record['accepted']:
++                    failure='joint_QP_rejected';event('failure',reason=failure);break
++                if any(max(v for k,v in e.items() if k!='path_s_end_m')>getattr(controller,'mapping_tolerance',scene['tolerance']) for e in record['mapping_errors'].values()):
++                    failure='QP_bicycle_mapping_error';event('failure',reason=failure);break
++                planning_wall=time.perf_counter()-cycle_started
++                start=time.perf_counter();check=audit(predictions,scene)
++                checks.append(dict(time_s=now,kind='dense_prediction',wall_s=time.perf_counter()-start,**check))
++                n=round(scene['h']/scene['sample_s'])
++                forecasts.append(dict(time_s=now,states={c:z.tolist() for c,z in states.items()},commands=controls,
++                    predicted_states={c:z[n::n].tolist() for c,z in predictions.items()},owner=owner))
++                if not check['passed']:
++                    failure='prediction_acceptance_rejected';event('failure',reason=failure);break
++                protection=[-scene['admission_protection_abs_x'],scene['admission_protection_abs_x'],-scene['W']/2,scene['W']/2]
++                for c in CARS:
++                    if not permissions[c] and any(clipped_area(body,protection)>scene['tolerance'] for body in corners(predictions[c],scene['vehicle'])):
++                        failure='unauthorized_prediction';event('failure',reason=failure,car=c);break
++                if failure:break
++                motions={c:z[:n+1] for c,z in predictions.items()}
++                executed=audit(motions,scene);checks.append(dict(time_s=now,kind='executed_segment',wall_s=0.,**executed))
++                if not executed['passed']:
++                    failure='actual_acceptance_rejected';event('failure',reason=failure);break
++                rows.extend(rows_for(motions,{c:[controls[c][0]] for c in CARS},now,scene,owner))
++                controller.commit(controls,predictions,record);reserved+=scene['h']*(owner is not None)
++                committed=True
++            finally:
++                ended=time.perf_counter();exception=sys.exc_info()[1]
++                rejection=failure
++                if record is not None and not record['accepted']:
++                    if not record.get('reference_record',record)['accepted']:rejection='reference_QP'
++                    elif record.get('deadline_exceeded'):rejection='planning_deadline'
++                    elif any(not r['accepted'] for r in record.get('subproblems',[])):rejection='bicycle_QP'
++                    else:rejection='nonlinear_replay_or_trust'
++                reference=record.get('reference_record',record) if record is not None else {}
++                planning.append(dict(cycle=cycle,time_s=now,state_timestamp_s=now,
++                    start_monotonic_s=cycle_started,end_monotonic_s=ended,
++                    planning_wall_s=(prediction_finished or ended)-cycle_started,
++                    decision_communication_wall_s=(prediction_started or ended)-cycle_started,
++                    prediction_wall_s=(prediction_finished-prediction_started) if prediction_finished is not None else None,
++                    reference_build_solve_check_s=reference.get('solve_wall_s'),
++                    reference_solver_wall_s=reference.get('solver_wall_s'),
++                    acceptance_wall_s=ended-prediction_finished if prediction_finished is not None else 0.,
++                    future_check_wall_s=sum(w['wall_s'] for w in witnesses[witness_start:]),
++                    total_cycle_wall_s=ended-cycle_started,control_budget_remaining_s=scene['h']-(ended-cycle_started),
++                    prediction_budget_remaining_s=record.get('deadline_s',getattr(controller,'prediction_deadline_s',.5))-(prediction_finished-prediction_started) if prediction_finished is not None else None,
++                    outcome='exception' if exception else 'rejected' if rejection else 'committed' if committed else 'completed' if len(done)==2 else 'no_commit',
++                    rejection_layer=rejection,exception=str(exception) if exception else None,committed=committed,
++                    solver_status=record.get('message') if record else None,
++                    reference_status=reference.get('message'),model_errors=record.get('mapping_errors') if record else None,
++                    optimization_solver_calls=(record.get('reference_numeric_qp_calls',int(record['free_variables']>0))+record.get('bicycle_numeric_qp_calls',0)) if record else 0,retries=0))
+         else:
+             failure='timeout';event('failure',reason=failure)
+     except (ValueError,TimeoutError) as exc:
+diff --git a/examples/head_on_mpc/tests/test_longitudinal_joint.py b/examples/head_on_mpc/tests/test_longitudinal_joint.py
+index 12cc03b..af8423d 100644
+--- a/examples/head_on_mpc/tests/test_longitudinal_joint.py
++++ b/examples/head_on_mpc/tests/test_longitudinal_joint.py
+@@ -3,6 +3,7 @@ import json
+ from pathlib import Path
+ import sys
+ import unittest
++from unittest.mock import patch
+ import numpy as np
+ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+ from bicycle_core import audit, rollout
+@@ -55,6 +56,35 @@ class JointQPTests(unittest.TestCase):
+         self.assertLess(abs(b.z[3]),1e-12)
+         b.advance(False);self.assertEqual(b.mode,'STEER')
+ 
++    def test_shift_uses_committed_reference_and_discards_changed_phase(self):
++        ctrl=Controller(SCENE,self.path,reference_warm_start=True);N=SCENE['N']
++        reference=np.linspace(-.5,.5,2*N).tolist()
++        ctrl.remember_reference(dict(accepted=True,solution=[9.]*(4*N),reference_record={'solution':reference}))
++        ctrl.agents['B'].mode='STEER'
++        rejected=dict(accepted=False,parameters={},free_variables=64)
++        with patch('longitudinal_joint.solve',return_value=({},rejected)) as mocked:
++            ctrl.predict({'A':False,'B':False})
++        seed=mocked.call_args.kwargs['warm']
++        np.testing.assert_array_equal(seed[:N],reference[1:N]+[0.])
++        np.testing.assert_array_equal(seed[N:],np.zeros(N))
++        before=copy.deepcopy(ctrl.reference_previous)
++        ctrl.remember_reference(dict(accepted=False))
++        self.assertEqual(ctrl.reference_previous,before)
++
++    def test_warm_seed_is_projected_without_changing_qp(self):
++        ctrl=Controller(SCENE,self.path);g={'A':False,'B':False}
++        before=build_qp(ctrl.agents,g,SCENE)
++        _,record=solve(ctrl.agents,g,SCENE,warm=np.full(64,10.))
++        after=build_qp(ctrl.agents,g,SCENE)
++        for original,current in zip(before[:7],after[:7]):
++            np.testing.assert_array_equal(original,current)
++        self.assertEqual(before[7:],after[7:])
++        self.assertTrue(record['warm_start_used'])
++        limits=np.array(before[7])
++        np.testing.assert_array_equal(record['warm_start_solution'],limits[:,1])
++        with self.assertRaisesRegex(ValueError,'invalid reference warm-start'):
++            solve(ctrl.agents,g,SCENE,warm=[float('nan')]*64)
++
+     def test_wait_gate_holds_and_permission_changes_phase(self):
+         ctrl=Controller(SCENE,self.path);b=ctrl.agents['B']
+         b.index=3;b.z=np.array(self.path['B'][2]['end']);b.z[4]=0.;b.mode='WAIT';b.ready=True

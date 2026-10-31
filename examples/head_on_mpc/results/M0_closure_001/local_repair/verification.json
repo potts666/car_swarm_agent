@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "frozen_cycles": [
+    120,
+    121,
+    122,
+    123,
+    241,
+    242,
+    243,
+    244,
+    402,
+    403,
+    404
+  ],
+  "same_reference": true,
+  "no_state_write": true,
+  "original_acceptance_retained": true,
+  "source_sha256": {
+    "linearized_joint.py": "cf7631dff31518bc1bc4d2e10dd7dae1fc0a4c1025f346ca5f8e3b61c05d6785",
+    "longitudinal_joint.py": "bcea2073cb158aef4bd1eef660c93a8c67acb0085dc0b559c3a66f698fa245be",
+    "check_m0_stops.py": "2f0bae071ffa9269912e01901b35430284e31578143db69f5f9266a8f7a18d5d"
+  }
+}

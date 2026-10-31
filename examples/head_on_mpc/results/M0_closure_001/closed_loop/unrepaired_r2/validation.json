@@ -1,0 +1,154 @@
+{
+  "passed": false,
+  "trajectory": {
+    "passed": true,
+    "residuals": {
+      "A": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 2.2159059609450082e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 2.1370208402871071e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "pair_gap_m": 0.0
+    },
+    "minimum_gap_m": 1.199946687594578
+  },
+  "component_equations": {
+    "A": {
+      "passed": true,
+      "residuals": {
+        "x_m": 7.105427357601002e-15,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 4.440892098500626e-16,
+        "delta_rad": 0.0,
+        "time_s": 1.81903103690928e-14,
+        "acceleration_m_s2": 1.0183797627405511e-07,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 3.552713678800501e-15,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    },
+    "B": {
+      "passed": false,
+      "residuals": {
+        "x_m": 6.892264536872972e-13,
+        "y_m": 4.0456527017340704e-13,
+        "psi_rad": 4.440892098500626e-16,
+        "v_m_s": 4.440892098500626e-16,
+        "delta_rad": 5.551115123125783e-17,
+        "time_s": 1.81903103690928e-14,
+        "acceleration_m_s2": 1.9443039223077108e-07,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 3.552713678800501e-15,
+        "body_width_m": 2.6645352591003757e-15
+      },
+      "gear_sign_jump": true
+    }
+  },
+  "predictions_passed": true,
+  "minimum_replayed_prediction_gap_m": 1.199946687594578,
+  "prediction_state_max_error": 3.090860900556436e-11,
+  "initial_same": true,
+  "protocol_errors": [],
+  "unauthorized_entry_absent": true,
+  "release_full_body_and_future_passed": true,
+  "candidate_replay_passed": true,
+  "reported_success_consistent": true,
+  "terminal": {
+    "A": true,
+    "B": true
+  },
+  "message_bytes_valid": true,
+  "metrics": {
+    "per_car": {
+      "A": {
+        "distance_m": 84.00000012090503,
+        "longitudinal_distance_m": 84.00000012090503,
+        "reverse_distance_m": 1.2922768047687358e-08,
+        "waiting_sim_s": {
+          "mutex_queue": 0.0,
+          "mutual_blocking_detection": 0.0,
+          "retreat_park": 0.0,
+          "recovery_peer_hold": 0.0,
+          "maneuver_stops": 0.0
+        },
+        "stationary_per_stage_s": {
+          "COMPLETE": 36.4,
+          "NAVIGATE": 0.48
+        },
+        "waiting_region_occupancy_s": 0.0
+      },
+      "B": {
+        "distance_m": 91.47110779103505,
+        "longitudinal_distance_m": 90.00005831380724,
+        "reverse_distance_m": 3.494692082913292e-08,
+        "waiting_sim_s": {
+          "mutex_queue": 10.68,
+          "mutual_blocking_detection": 0.0,
+          "retreat_park": 0.0,
+          "recovery_peer_hold": 0.0,
+          "maneuver_stops": 5.12
+        },
+        "stationary_per_stage_s": {
+          "DEPART": 1.04,
+          "ENTRY": 2.56,
+          "MUTEX_WAIT": 10.200000000000001,
+          "QUEUE_APPROACH": 0.48,
+          "RETURN": 2.56
+        },
+        "waiting_region_occupancy_s": 31.560000000000002
+      }
+    },
+    "total_distance_m": 175.47110791194007,
+    "total_reverse_distance_m": 4.7869688876820275e-08,
+    "channel_physically_occupied_s": 24.72,
+    "waiting_sim_s": 15.8,
+    "first_body_channel_entry_sim_s": {
+      "A": 14.260000000000005,
+      "B": 50.52000000000001
+    },
+    "A_enters_first": true,
+    "communication": {
+      "messages": 0,
+      "payload_bytes": 0,
+      "by_type": {},
+      "definition": "estimated logical protocol messages; compact UTF-8 JSON envelope+payload; no actual network measurement"
+    },
+    "timing": {
+      "main_planning": {
+        "count": 406,
+        "total_s": 36.97532265099949,
+        "mean_s": 0.09107222327832386,
+        "max_s": 12.231700684000089,
+        "over_h": 2
+      },
+      "cycle_total": {
+        "count": 406,
+        "total_s": 39.144100514000684,
+        "mean_s": 0.09641404067487853,
+        "max_s": 12.238084336000156,
+        "over_h": 2
+      },
+      "diagnostic": {
+        "count": 812,
+        "total_s": 15.165368575002276,
+        "mean_s": 0.01867656228448556,
+        "max_s": 12.17392569499998,
+        "over_h": 2
+      }
+    },
+    "channel_reserved_s_recomputed": 67.2,
+    "first_terminal_tolerance_entry_s": {
+      "A": 44.16,
+      "B": 80.6
+    }
+  }
+}

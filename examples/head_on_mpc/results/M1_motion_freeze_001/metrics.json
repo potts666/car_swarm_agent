@@ -1,0 +1,630 @@
+{
+  "repaired_r1": {
+    "evidence_source": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1",
+    "new_experiment": false,
+    "completion_s": 80.4,
+    "per_car_completion_s": {
+      "A": 44.400000000000006,
+      "B": 80.4
+    },
+    "endpoint_errors": {
+      "A": {
+        "position_m": 1.2119119929820954e-07,
+        "heading_rad": 0.0,
+        "speed_m_s": 2.6020852139652106e-18,
+        "steering_rad": 0.0
+      },
+      "B": {
+        "position_m": 6.001864031190962e-05,
+        "heading_rad": 1.7763568394002505e-15,
+        "speed_m_s": 2.6020852139652106e-18,
+        "steering_rad": 5.73016096670151e-16
+      }
+    },
+    "minimum_gap_m": 1.1999221611504018,
+    "normalized_control_cost": 19.93486090754438,
+    "protocol_and_stops": {
+      "A": {
+        "request_s": 104.2,
+        "grant_s": 104.2,
+        "release_s": 134.8,
+        "completion_s": 144.4,
+        "request_to_grant_s": 0.0,
+        "stationary_per_stage_s": {
+          "COMPLETE": 36.0,
+          "NAVIGATE": 0.28
+        },
+        "stopped_to_moving_transitions": 1
+      },
+      "B": {
+        "request_s": 107.2,
+        "grant_s": 134.8,
+        "release_s": 171.0,
+        "completion_s": 180.4,
+        "request_to_grant_s": 27.60000000000001,
+        "stationary_per_stage_s": {
+          "DEPART": 0.84,
+          "ENTRY": 2.16,
+          "MUTEX_WAIT": 10.6,
+          "QUEUE_APPROACH": 0.48,
+          "RETURN": 2.16
+        },
+        "stopped_to_moving_transitions": 6
+      }
+    },
+    "repair_count": 6,
+    "repairs": [
+      {
+        "cycle": 85,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06653162804522277,
+        "acceleration": -0.06653159432186417,
+        "initial_speed": 0.013306318864372835,
+        "raw_end_speed": -6.744671718697526e-09
+      },
+      {
+        "cycle": 120,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06113688244795957,
+        "acceleration": -0.0611363822577413,
+        "initial_speed": 0.01222727645154826,
+        "raw_end_speed": -1.0003804365443791e-07
+      },
+      {
+        "cycle": 206,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06512007544200546,
+        "acceleration": -0.06511966945571414,
+        "initial_speed": 0.013023933891142828,
+        "raw_end_speed": -8.119725826427615e-08
+      },
+      {
+        "cycle": 221,
+        "update": 1,
+        "car": "A",
+        "raw_acceleration": -0.037250156418158306,
+        "acceleration": -0.03724937565874273,
+        "initial_speed": 0.007449875131748546,
+        "raw_end_speed": -1.561518831157474e-07
+      },
+      {
+        "cycle": 241,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06095305406798772,
+        "acceleration": -0.060952481637108896,
+        "initial_speed": 0.01219049632742178,
+        "raw_end_speed": -1.1448617576528819e-07
+      },
+      {
+        "cycle": 401,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.12185923073508953,
+        "acceleration": -0.12185881292060549,
+        "initial_speed": 0.0243717625841211,
+        "raw_end_speed": -8.356289680697127e-08
+      }
+    ],
+    "main_reference_qps": 399,
+    "main_bicycle_qps": 411,
+    "future_reference_qps": 272,
+    "future_bicycle_qps": 278,
+    "update_histogram": {
+      "0": 0,
+      "1": 390,
+      "2": 12,
+      "3": 0
+    },
+    "sequential_update_cycles": 12,
+    "reference_status_histogram": {
+      "all inputs fixed": 3,
+      "solved": 399
+    },
+    "reference_rejections": 0,
+    "bicycle_rejections": 0,
+    "prediction_deadline_rejections": 0,
+    "timing": {
+      "count": 403,
+      "p50_ms": 56.86208199995235,
+      "p95_ms": 95.71541230000089,
+      "p99_ms": 130.73071920001445,
+      "max_ms": 12393.033988999945,
+      "over_200ms": 2
+    },
+    "grouped_timing": {
+      "decision_communication_and_prepare_including_future_s": 15.142300338000723,
+      "future_witness_subset_s": 15.128294629999914,
+      "reference_build_setup_solve_check_s": 3.569773893000729,
+      "reference_OSQP_solve_only_s": 2.418079710001166,
+      "reference_OSQP_setup_s": 0.3054379779996452,
+      "bicycle_subproblem_OSQP_setup_and_solve_subset_s": 2.8701431030013964,
+      "prediction_including_reference_bicycle_and_internal_replay_s": 22.57615358099929,
+      "outer_acceptance_buffered_record_and_commit_s": 2.2557208790007053,
+      "total_cycle_s": 39.97417479800072,
+      "total_policy_including_bulk_export_s": 40.63054133300011,
+      "unavailable_separate": [
+        "bicycle assembly alone",
+        "reference rollout alone",
+        "internal nonlinear replay alone",
+        "buffered logging alone",
+        "commit alone"
+      ]
+    },
+    "acceptance": {
+      "artifact_integrity_passed": true,
+      "both_goals_reached": true,
+      "original_full_acceptance_passed": true,
+      "protocol_passed": true,
+      "timing_complete": true,
+      "observed_deadline_misses": {
+        "control_period_200ms": 2,
+        "prediction_budget_500ms": 0
+      },
+      "future_witness_and_execution_consistency_passed": true,
+      "independent_validation_reused": true,
+      "new_integration_executed": false
+    },
+    "future_update_histogram": {
+      "0": 0,
+      "1": 269,
+      "2": 6,
+      "3": 0
+    },
+    "future_repair_count": 5,
+    "future_rejections": 0,
+    "future_deadline_rejections": 0
+  },
+  "repaired_r2": {
+    "evidence_source": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2",
+    "new_experiment": false,
+    "completion_s": 80.4,
+    "per_car_completion_s": {
+      "A": 44.400000000000006,
+      "B": 80.4
+    },
+    "endpoint_errors": {
+      "A": {
+        "position_m": 1.2119119929820954e-07,
+        "heading_rad": 0.0,
+        "speed_m_s": 2.6020852139652106e-18,
+        "steering_rad": 0.0
+      },
+      "B": {
+        "position_m": 6.001864031190962e-05,
+        "heading_rad": 1.7763568394002505e-15,
+        "speed_m_s": 2.6020852139652106e-18,
+        "steering_rad": 5.73016096670151e-16
+      }
+    },
+    "minimum_gap_m": 1.1999221611504018,
+    "normalized_control_cost": 19.93486090754438,
+    "protocol_and_stops": {
+      "A": {
+        "request_s": 104.2,
+        "grant_s": 104.2,
+        "release_s": 134.8,
+        "completion_s": 144.4,
+        "request_to_grant_s": 0.0,
+        "stationary_per_stage_s": {
+          "COMPLETE": 36.0,
+          "NAVIGATE": 0.28
+        },
+        "stopped_to_moving_transitions": 1
+      },
+      "B": {
+        "request_s": 107.2,
+        "grant_s": 134.8,
+        "release_s": 171.0,
+        "completion_s": 180.4,
+        "request_to_grant_s": 27.60000000000001,
+        "stationary_per_stage_s": {
+          "DEPART": 0.84,
+          "ENTRY": 2.16,
+          "MUTEX_WAIT": 10.6,
+          "QUEUE_APPROACH": 0.48,
+          "RETURN": 2.16
+        },
+        "stopped_to_moving_transitions": 6
+      }
+    },
+    "repair_count": 6,
+    "repairs": [
+      {
+        "cycle": 85,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06653162804522277,
+        "acceleration": -0.06653159432186417,
+        "initial_speed": 0.013306318864372835,
+        "raw_end_speed": -6.744671718697526e-09
+      },
+      {
+        "cycle": 120,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06113688244795957,
+        "acceleration": -0.0611363822577413,
+        "initial_speed": 0.01222727645154826,
+        "raw_end_speed": -1.0003804365443791e-07
+      },
+      {
+        "cycle": 206,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06512007544200546,
+        "acceleration": -0.06511966945571414,
+        "initial_speed": 0.013023933891142828,
+        "raw_end_speed": -8.119725826427615e-08
+      },
+      {
+        "cycle": 221,
+        "update": 1,
+        "car": "A",
+        "raw_acceleration": -0.037250156418158306,
+        "acceleration": -0.03724937565874273,
+        "initial_speed": 0.007449875131748546,
+        "raw_end_speed": -1.561518831157474e-07
+      },
+      {
+        "cycle": 241,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06095305406798772,
+        "acceleration": -0.060952481637108896,
+        "initial_speed": 0.01219049632742178,
+        "raw_end_speed": -1.1448617576528819e-07
+      },
+      {
+        "cycle": 401,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.12185923073508953,
+        "acceleration": -0.12185881292060549,
+        "initial_speed": 0.0243717625841211,
+        "raw_end_speed": -8.356289680697127e-08
+      }
+    ],
+    "main_reference_qps": 399,
+    "main_bicycle_qps": 411,
+    "future_reference_qps": 272,
+    "future_bicycle_qps": 278,
+    "update_histogram": {
+      "0": 0,
+      "1": 390,
+      "2": 12,
+      "3": 0
+    },
+    "sequential_update_cycles": 12,
+    "reference_status_histogram": {
+      "all inputs fixed": 3,
+      "solved": 399
+    },
+    "reference_rejections": 0,
+    "bicycle_rejections": 0,
+    "prediction_deadline_rejections": 0,
+    "timing": {
+      "count": 403,
+      "p50_ms": 56.06444099998953,
+      "p95_ms": 93.00661570000553,
+      "p99_ms": 128.72518141989096,
+      "max_ms": 12808.351270000003,
+      "over_200ms": 2
+    },
+    "grouped_timing": {
+      "decision_communication_and_prepare_including_future_s": 15.256719371998543,
+      "future_witness_subset_s": 15.23573460900002,
+      "reference_build_setup_solve_check_s": 3.486985573000311,
+      "reference_OSQP_solve_only_s": 2.347488186997907,
+      "reference_OSQP_setup_s": 0.30062952700041023,
+      "bicycle_subproblem_OSQP_setup_and_solve_subset_s": 2.8129143420012497,
+      "prediction_including_reference_bicycle_and_internal_replay_s": 22.082659363001312,
+      "outer_acceptance_buffered_record_and_commit_s": 2.238909117000958,
+      "total_cycle_s": 39.57828785200081,
+      "total_policy_including_bulk_export_s": 40.239428510999915,
+      "unavailable_separate": [
+        "bicycle assembly alone",
+        "reference rollout alone",
+        "internal nonlinear replay alone",
+        "buffered logging alone",
+        "commit alone"
+      ]
+    },
+    "acceptance": {
+      "artifact_integrity_passed": true,
+      "both_goals_reached": true,
+      "original_full_acceptance_passed": true,
+      "protocol_passed": true,
+      "timing_complete": true,
+      "observed_deadline_misses": {
+        "control_period_200ms": 2,
+        "prediction_budget_500ms": 0
+      },
+      "future_witness_and_execution_consistency_passed": true,
+      "independent_validation_reused": true,
+      "new_integration_executed": false
+    },
+    "future_update_histogram": {
+      "0": 0,
+      "1": 269,
+      "2": 6,
+      "3": 0
+    },
+    "future_repair_count": 5,
+    "future_rejections": 0,
+    "future_deadline_rejections": 0
+  },
+  "unrepaired_r1": {
+    "evidence_source": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1",
+    "new_experiment": false,
+    "completion_s": 81.0,
+    "per_car_completion_s": {
+      "A": 44.599999999999994,
+      "B": 81.0
+    },
+    "endpoint_errors": {
+      "A": {
+        "position_m": 9.50594909454594e-08,
+        "heading_rad": 0.0,
+        "speed_m_s": 2.3161057151484775e-23,
+        "steering_rad": 0.0
+      },
+      "B": {
+        "position_m": 5.8246388661586934e-05,
+        "heading_rad": 3.1086244689504383e-15,
+        "speed_m_s": 3.308722450212111e-24,
+        "steering_rad": 2.1320590002819503e-15
+      }
+    },
+    "minimum_gap_m": 1.199946687594578,
+    "normalized_control_cost": 19.93467762722803,
+    "protocol_and_stops": {
+      "A": {
+        "request_s": 104.2,
+        "grant_s": 104.2,
+        "release_s": 134.8,
+        "completion_s": 144.6,
+        "request_to_grant_s": 0.0,
+        "stationary_per_stage_s": {
+          "COMPLETE": 36.4,
+          "NAVIGATE": 0.48
+        },
+        "stopped_to_moving_transitions": 1
+      },
+      "B": {
+        "request_s": 107.2,
+        "grant_s": 134.8,
+        "release_s": 171.4,
+        "completion_s": 181.0,
+        "request_to_grant_s": 27.60000000000001,
+        "stationary_per_stage_s": {
+          "DEPART": 1.04,
+          "ENTRY": 2.56,
+          "MUTEX_WAIT": 10.200000000000001,
+          "QUEUE_APPROACH": 0.48,
+          "RETURN": 2.56
+        },
+        "stopped_to_moving_transitions": 6
+      }
+    },
+    "repair_count": 0,
+    "repairs": [],
+    "main_reference_qps": 400,
+    "main_bicycle_qps": 414,
+    "future_reference_qps": 273,
+    "future_bicycle_qps": 282,
+    "update_histogram": {
+      "0": 0,
+      "1": 393,
+      "2": 12,
+      "3": 0
+    },
+    "sequential_update_cycles": 12,
+    "reference_status_histogram": {
+      "all inputs fixed": 5,
+      "solved": 399,
+      "solved inaccurate": 1
+    },
+    "reference_rejections": 0,
+    "bicycle_rejections": 0,
+    "prediction_deadline_rejections": 0,
+    "timing": {
+      "count": 406,
+      "p50_ms": 55.28731799995512,
+      "p95_ms": 95.62856274996534,
+      "p99_ms": 126.8254671000818,
+      "max_ms": 12446.056375000011,
+      "over_200ms": 2
+    },
+    "grouped_timing": {
+      "decision_communication_and_prepare_including_future_s": 14.904068929000687,
+      "future_witness_subset_s": 14.890883361999954,
+      "reference_build_setup_solve_check_s": 3.6454025779993344,
+      "reference_OSQP_solve_only_s": 2.5057581170003687,
+      "reference_OSQP_setup_s": 0.29574594999871806,
+      "bicycle_subproblem_OSQP_setup_and_solve_subset_s": 2.8026580440011912,
+      "prediction_including_reference_bicycle_and_internal_replay_s": 22.34653091899986,
+      "outer_acceptance_buffered_record_and_commit_s": 2.2661402929983296,
+      "total_cycle_s": 39.51674014099888,
+      "total_policy_including_bulk_export_s": 40.32282242499991,
+      "unavailable_separate": [
+        "bicycle assembly alone",
+        "reference rollout alone",
+        "internal nonlinear replay alone",
+        "buffered logging alone",
+        "commit alone"
+      ]
+    },
+    "acceptance": {
+      "artifact_integrity_passed": true,
+      "both_goals_reached": true,
+      "original_full_acceptance_passed": false,
+      "protocol_passed": true,
+      "timing_complete": true,
+      "observed_deadline_misses": {
+        "control_period_200ms": 2,
+        "prediction_budget_500ms": 0
+      },
+      "future_witness_and_execution_consistency_passed": true,
+      "independent_validation_reused": true,
+      "new_integration_executed": false
+    },
+    "future_update_histogram": {
+      "0": 0,
+      "1": 273,
+      "2": 6,
+      "3": 0
+    },
+    "future_repair_count": 0,
+    "future_rejections": 0,
+    "future_deadline_rejections": 0
+  },
+  "unrepaired_r2": {
+    "evidence_source": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2",
+    "new_experiment": false,
+    "completion_s": 81.0,
+    "per_car_completion_s": {
+      "A": 44.599999999999994,
+      "B": 81.0
+    },
+    "endpoint_errors": {
+      "A": {
+        "position_m": 9.50594909454594e-08,
+        "heading_rad": 0.0,
+        "speed_m_s": 2.3161057151484775e-23,
+        "steering_rad": 0.0
+      },
+      "B": {
+        "position_m": 5.8246388661586934e-05,
+        "heading_rad": 3.1086244689504383e-15,
+        "speed_m_s": 3.308722450212111e-24,
+        "steering_rad": 2.1320590002819503e-15
+      }
+    },
+    "minimum_gap_m": 1.199946687594578,
+    "normalized_control_cost": 19.93467762722803,
+    "protocol_and_stops": {
+      "A": {
+        "request_s": 104.2,
+        "grant_s": 104.2,
+        "release_s": 134.8,
+        "completion_s": 144.6,
+        "request_to_grant_s": 0.0,
+        "stationary_per_stage_s": {
+          "COMPLETE": 36.4,
+          "NAVIGATE": 0.48
+        },
+        "stopped_to_moving_transitions": 1
+      },
+      "B": {
+        "request_s": 107.2,
+        "grant_s": 134.8,
+        "release_s": 171.4,
+        "completion_s": 181.0,
+        "request_to_grant_s": 27.60000000000001,
+        "stationary_per_stage_s": {
+          "DEPART": 1.04,
+          "ENTRY": 2.56,
+          "MUTEX_WAIT": 10.200000000000001,
+          "QUEUE_APPROACH": 0.48,
+          "RETURN": 2.56
+        },
+        "stopped_to_moving_transitions": 6
+      }
+    },
+    "repair_count": 0,
+    "repairs": [],
+    "main_reference_qps": 400,
+    "main_bicycle_qps": 414,
+    "future_reference_qps": 273,
+    "future_bicycle_qps": 282,
+    "update_histogram": {
+      "0": 0,
+      "1": 393,
+      "2": 12,
+      "3": 0
+    },
+    "sequential_update_cycles": 12,
+    "reference_status_histogram": {
+      "all inputs fixed": 5,
+      "solved": 399,
+      "solved inaccurate": 1
+    },
+    "reference_rejections": 0,
+    "bicycle_rejections": 0,
+    "prediction_deadline_rejections": 0,
+    "timing": {
+      "count": 406,
+      "p50_ms": 54.010425000001305,
+      "p95_ms": 94.41415950004739,
+      "p99_ms": 129.06167455012107,
+      "max_ms": 12238.084336000156,
+      "over_200ms": 2
+    },
+    "grouped_timing": {
+      "decision_communication_and_prepare_including_future_s": 14.667412642001864,
+      "future_witness_subset_s": 14.652650236999989,
+      "reference_build_setup_solve_check_s": 3.642187305000334,
+      "reference_OSQP_solve_only_s": 2.5060133080003197,
+      "reference_OSQP_setup_s": 0.299410924997801,
+      "bicycle_subproblem_OSQP_setup_and_solve_subset_s": 2.8085838069982856,
+      "prediction_including_reference_bicycle_and_internal_replay_s": 22.307910008997624,
+      "outer_acceptance_buffered_record_and_commit_s": 2.1687778630011962,
+      "total_cycle_s": 39.144100514000684,
+      "total_policy_including_bulk_export_s": 39.85464385599994,
+      "unavailable_separate": [
+        "bicycle assembly alone",
+        "reference rollout alone",
+        "internal nonlinear replay alone",
+        "buffered logging alone",
+        "commit alone"
+      ]
+    },
+    "acceptance": {
+      "artifact_integrity_passed": true,
+      "both_goals_reached": true,
+      "original_full_acceptance_passed": false,
+      "protocol_passed": true,
+      "timing_complete": true,
+      "observed_deadline_misses": {
+        "control_period_200ms": 2,
+        "prediction_budget_500ms": 0
+      },
+      "future_witness_and_execution_consistency_passed": true,
+      "independent_validation_reused": true,
+      "new_integration_executed": false
+    },
+    "future_update_histogram": {
+      "0": 0,
+      "1": 273,
+      "2": 6,
+      "3": 0
+    },
+    "future_repair_count": 0,
+    "future_rejections": 0,
+    "future_deadline_rejections": 0
+  },
+  "B1_historical": {
+    "evidence_source": "examples/head_on_mpc/results/bicycle_e3_002/B1",
+    "new_experiment": false,
+    "comparison_role": "historical diagnostic only; no speedup/ranking",
+    "both_goals_reached": true,
+    "original_full_acceptance_passed": true,
+    "protocol_passed": true,
+    "timing_complete": false,
+    "completion_s": 81.19999999999999,
+    "normalized_control_cost": 20.696924559086234,
+    "minimum_gap_m": 1.1999999999741777,
+    "timed_cycles": 406,
+    "cycle_p50_ms": 25.277257000198006,
+    "cycle_p95_ms": 32.02134799994383,
+    "cycle_p99_ms": 53.5900301499168,
+    "cycle_max_ms": 4737.770132000151,
+    "over_200ms": 2,
+    "timing_limit": "historical recorder omits final completion exit; CPU/thread provenance incomplete; not matched to current all-exit timing",
+    "source_provenance": "examples/head_on_mpc/results/bicycle_e3_002/provenance.json"
+  }
+}

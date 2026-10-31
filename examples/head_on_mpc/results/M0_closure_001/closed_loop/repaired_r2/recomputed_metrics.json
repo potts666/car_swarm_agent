@@ -1,0 +1,84 @@
+{
+  "per_car": {
+    "A": {
+      "distance_m": 84.00000012119119,
+      "longitudinal_distance_m": 84.00000012119119,
+      "reverse_distance_m": 0.0,
+      "waiting_sim_s": {
+        "mutex_queue": 0.0,
+        "mutual_blocking_detection": 0.0,
+        "retreat_park": 0.0,
+        "recovery_peer_hold": 0.0,
+        "maneuver_stops": 0.0
+      },
+      "stationary_per_stage_s": {
+        "COMPLETE": 36.0,
+        "NAVIGATE": 0.28
+      },
+      "waiting_region_occupancy_s": 0.0
+    },
+    "B": {
+      "distance_m": 91.47110780789689,
+      "longitudinal_distance_m": 90.00006001864031,
+      "reverse_distance_m": 3.0357660829594124e-18,
+      "waiting_sim_s": {
+        "mutex_queue": 11.08,
+        "mutual_blocking_detection": 0.0,
+        "retreat_park": 0.0,
+        "recovery_peer_hold": 0.0,
+        "maneuver_stops": 4.32
+      },
+      "stationary_per_stage_s": {
+        "DEPART": 0.84,
+        "ENTRY": 2.16,
+        "MUTEX_WAIT": 10.6,
+        "QUEUE_APPROACH": 0.48,
+        "RETURN": 2.16
+      },
+      "waiting_region_occupancy_s": 31.36
+    }
+  },
+  "total_distance_m": 175.47110792908808,
+  "total_reverse_distance_m": 3.0357660829594124e-18,
+  "channel_physically_occupied_s": 24.72,
+  "waiting_sim_s": 15.4,
+  "first_body_channel_entry_sim_s": {
+    "A": 14.260000000000005,
+    "B": 50.120000000000005
+  },
+  "A_enters_first": true,
+  "communication": {
+    "messages": 0,
+    "payload_bytes": 0,
+    "by_type": {},
+    "definition": "estimated logical protocol messages; compact UTF-8 JSON envelope+payload; no actual network measurement"
+  },
+  "timing": {
+    "main_planning": {
+      "count": 403,
+      "total_s": 37.339378734999855,
+      "mean_s": 0.0926535452481386,
+      "max_s": 12.803178787999968,
+      "over_h": 2
+    },
+    "cycle_total": {
+      "count": 403,
+      "total_s": 39.57828785200081,
+      "mean_s": 0.09820915099752063,
+      "max_s": 12.808351270000003,
+      "over_h": 2
+    },
+    "diagnostic": {
+      "count": 806,
+      "total_s": 15.747232679999115,
+      "mean_s": 0.01953750952853488,
+      "max_s": 12.743869397000026,
+      "over_h": 2
+    }
+  },
+  "channel_reserved_s_recomputed": 66.8,
+  "first_terminal_tolerance_entry_s": {
+    "A": 44.16,
+    "B": 80.19999999999999
+  }
+}

@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 from bicycle_core import audit, rollout
@@ -54,6 +55,35 @@ class JointQPTests(unittest.TestCase):
         ctrl.commit(commands,predictions,record)
         self.assertLess(abs(b.z[3]),1e-12)
         b.advance(False);self.assertEqual(b.mode,'STEER')
+
+    def test_shift_uses_committed_reference_and_discards_changed_phase(self):
+        ctrl=Controller(SCENE,self.path,reference_warm_start=True);N=SCENE['N']
+        reference=np.linspace(-.5,.5,2*N).tolist()
+        ctrl.remember_reference(dict(accepted=True,solution=[9.]*(4*N),reference_record={'solution':reference}))
+        ctrl.agents['B'].mode='STEER'
+        rejected=dict(accepted=False,parameters={},free_variables=64)
+        with patch('longitudinal_joint.solve',return_value=({},rejected)) as mocked:
+            ctrl.predict({'A':False,'B':False})
+        seed=mocked.call_args.kwargs['warm']
+        np.testing.assert_array_equal(seed[:N],reference[1:N]+[0.])
+        np.testing.assert_array_equal(seed[N:],np.zeros(N))
+        before=copy.deepcopy(ctrl.reference_previous)
+        ctrl.remember_reference(dict(accepted=False))
+        self.assertEqual(ctrl.reference_previous,before)
+
+    def test_warm_seed_is_projected_without_changing_qp(self):
+        ctrl=Controller(SCENE,self.path);g={'A':False,'B':False}
+        before=build_qp(ctrl.agents,g,SCENE)
+        _,record=solve(ctrl.agents,g,SCENE,warm=np.full(64,10.))
+        after=build_qp(ctrl.agents,g,SCENE)
+        for original,current in zip(before[:7],after[:7]):
+            np.testing.assert_array_equal(original,current)
+        self.assertEqual(before[7:],after[7:])
+        self.assertTrue(record['warm_start_used'])
+        limits=np.array(before[7])
+        np.testing.assert_array_equal(record['warm_start_solution'],limits[:,1])
+        with self.assertRaisesRegex(ValueError,'invalid reference warm-start'):
+            solve(ctrl.agents,g,SCENE,warm=[float('nan')]*64)
 
     def test_wait_gate_holds_and_permission_changes_phase(self):
         ctrl=Controller(SCENE,self.path);b=ctrl.agents['B']

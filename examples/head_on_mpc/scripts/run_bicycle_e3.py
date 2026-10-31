@@ -52,7 +52,7 @@ def summarize(directory,scene):
         histogram={'0':len(solves)};accepted_sub=sum(s['accepted'] for s in solves)
     accepted_cycles=sum(s['accepted'] for s in solves)
     result=dict(completed=summary['both_completed'],unified_validation_passed=bool(validation['passed'] and summary['both_completed'] and ros['passed']),executed_prefix_validation_passed=validation['passed'],ROS_validation_passed=ros['passed'],
-        failure=summary['failure'],completion_sim_s=summary.get('T_complete_sim_s'),attempted_control_cycles=len(solves),executed_control_cycles=len(planning),
+        failure=summary['failure'],completion_sim_s=summary.get('T_complete_sim_s'),attempted_control_cycles=len(solves),executed_control_cycles=sum(p.get('committed',True) for p in planning),
         accepted_control_cycles=accepted_cycles,reference_rejections=sum(not s.get('reference_record',s)['accepted'] for s in solves),rejected_subproblems=sum(not r['accepted'] for r in subproblems),cycle_acceptance_fraction=accepted_cycles/len(solves) if solves else 0.,
         minimum_sampled_gap_m=validation.get('trajectory',{}).get('minimum_gap_m'),
         normalized_execution_effort=effort,endpoint_errors=endpoint,maximum_model_interface_errors=errors,maximum_position_model_error_m=errors['position_m'],maximum_heading_model_error_rad=errors['heading_rad'],maximum_speed_model_error_m_s=errors['speed_m_s'],
@@ -66,6 +66,9 @@ def summarize(directory,scene):
         maximum_affine_violation=max((r['affine_violation'] for r in (subproblems if is_b2 else solves)),default=None),
         cycle_mean_ms=float(np.mean(times)*1000) if times else None,cycle_max_ms=max(times,default=0.)*1000,
         cycles_over_200ms=sum(t>scene['h'] for t in times),
+        timed_cycles=len(planning),cycle_p50_ms=float(np.percentile(times,50)*1000) if times else None,
+        cycle_p95_ms=float(np.percentile(times,95)*1000) if times else None,
+        cycle_p99_ms=float(np.percentile(times,99)*1000) if times else None,
         prediction_planning_mean_ms=float(np.mean([p['planning_wall_s'] for p in planning])*1000) if planning else None,
         future_check_wall_s=sum(w['wall_s'] for w in witnesses),
         total_policy_wall_s=summary['total_policy_wall_s'],scope='one scene; fractions are cycle counts, not scenario success probabilities')
@@ -143,7 +146,7 @@ def render(output,names):
     axes[0].axhline(ERROR_LIMIT['position_m'],color='black',linestyle='--',label='B2 error threshold')
     axes[0].set(ylabel='native model / replay error (m)')
     axes[1].axhline(200.,color='black',linestyle='--',label='control period')
-    axes[1].set(ylabel='full executed cycle cost (ms)')
+    axes[1].set(ylabel='full attempted cycle cost (ms)')
     axes[2].set(ylabel='main numerical QPs (reference included)',xlabel='simulation time (s)')
     for ax in axes:ax.grid(True);ax.legend()
     fig.tight_layout();fig.savefig(output/'errors_timing.png',dpi=140);plt.close(fig)

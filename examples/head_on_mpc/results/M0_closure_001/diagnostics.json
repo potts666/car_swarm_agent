@@ -1,0 +1,176 @@
+{
+  "unrepaired_r1": {
+    "crossings": [
+      {
+        "car": "B",
+        "time_s": 124.4,
+        "before_v": 0.001275969897234368,
+        "after_v": -1.0025906851431066e-07,
+        "product": -1.2792755334901844e-10
+      },
+      {
+        "car": "B",
+        "time_s": 148.6,
+        "before_v": 0.001218439447969143,
+        "after_v": -1.169392487062465e-07,
+        "product": -1.4248339363956532e-10
+      },
+      {
+        "car": "B",
+        "time_s": 180.8,
+        "before_v": 0.002437812946376103,
+        "after_v": -8.276356999997042e-08,
+        "product": -2.0176210243423275e-10
+      }
+    ],
+    "stop_input_adjustments": [],
+    "actual_sha256": "06ee0c42a2bfd1da0f05a7bba6487b13087a6ac47c3786a01f0f251f5227995a"
+  },
+  "repaired_r1": {
+    "crossings": [],
+    "stop_input_adjustments": [
+      {
+        "cycle": 85,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06653162804522277,
+        "acceleration": -0.06653159432186417,
+        "initial_speed": 0.013306318864372835,
+        "raw_end_speed": -6.744671718697526e-09
+      },
+      {
+        "cycle": 120,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06113688244795957,
+        "acceleration": -0.0611363822577413,
+        "initial_speed": 0.01222727645154826,
+        "raw_end_speed": -1.0003804365443791e-07
+      },
+      {
+        "cycle": 206,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06512007544200546,
+        "acceleration": -0.06511966945571414,
+        "initial_speed": 0.013023933891142828,
+        "raw_end_speed": -8.119725826427615e-08
+      },
+      {
+        "cycle": 221,
+        "update": 1,
+        "car": "A",
+        "raw_acceleration": -0.037250156418158306,
+        "acceleration": -0.03724937565874273,
+        "initial_speed": 0.007449875131748546,
+        "raw_end_speed": -1.561518831157474e-07
+      },
+      {
+        "cycle": 241,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06095305406798772,
+        "acceleration": -0.060952481637108896,
+        "initial_speed": 0.01219049632742178,
+        "raw_end_speed": -1.1448617576528819e-07
+      },
+      {
+        "cycle": 401,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.12185923073508953,
+        "acceleration": -0.12185881292060549,
+        "initial_speed": 0.0243717625841211,
+        "raw_end_speed": -8.356289680697127e-08
+      }
+    ],
+    "actual_sha256": "f90e8473e8ad41de5c8dc2528e2134c77e68a7bc926e7dbf119f23a059413cfb"
+  },
+  "unrepaired_r2": {
+    "crossings": [
+      {
+        "car": "B",
+        "time_s": 124.4,
+        "before_v": 0.001275969897234368,
+        "after_v": -1.0025906851431066e-07,
+        "product": -1.2792755334901844e-10
+      },
+      {
+        "car": "B",
+        "time_s": 148.6,
+        "before_v": 0.001218439447969143,
+        "after_v": -1.169392487062465e-07,
+        "product": -1.4248339363956532e-10
+      },
+      {
+        "car": "B",
+        "time_s": 180.8,
+        "before_v": 0.002437812946376103,
+        "after_v": -8.276356999997042e-08,
+        "product": -2.0176210243423275e-10
+      }
+    ],
+    "stop_input_adjustments": [],
+    "actual_sha256": "06ee0c42a2bfd1da0f05a7bba6487b13087a6ac47c3786a01f0f251f5227995a"
+  },
+  "repaired_r2": {
+    "crossings": [],
+    "stop_input_adjustments": [
+      {
+        "cycle": 85,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06653162804522277,
+        "acceleration": -0.06653159432186417,
+        "initial_speed": 0.013306318864372835,
+        "raw_end_speed": -6.744671718697526e-09
+      },
+      {
+        "cycle": 120,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06113688244795957,
+        "acceleration": -0.0611363822577413,
+        "initial_speed": 0.01222727645154826,
+        "raw_end_speed": -1.0003804365443791e-07
+      },
+      {
+        "cycle": 206,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06512007544200546,
+        "acceleration": -0.06511966945571414,
+        "initial_speed": 0.013023933891142828,
+        "raw_end_speed": -8.119725826427615e-08
+      },
+      {
+        "cycle": 221,
+        "update": 1,
+        "car": "A",
+        "raw_acceleration": -0.037250156418158306,
+        "acceleration": -0.03724937565874273,
+        "initial_speed": 0.007449875131748546,
+        "raw_end_speed": -1.561518831157474e-07
+      },
+      {
+        "cycle": 241,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.06095305406798772,
+        "acceleration": -0.060952481637108896,
+        "initial_speed": 0.01219049632742178,
+        "raw_end_speed": -1.1448617576528819e-07
+      },
+      {
+        "cycle": 401,
+        "update": 1,
+        "car": "B",
+        "raw_acceleration": -0.12185923073508953,
+        "acceleration": -0.12185881292060549,
+        "initial_speed": 0.0243717625841211,
+        "raw_end_speed": -8.356289680697127e-08
+      }
+    ],
+    "actual_sha256": "f90e8473e8ad41de5c8dc2528e2134c77e68a7bc926e7dbf119f23a059413cfb"
+  }
+}

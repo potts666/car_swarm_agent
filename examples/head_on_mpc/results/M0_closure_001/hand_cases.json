@@ -1,0 +1,528 @@
+[
+  {
+    "name": "forward_stop_at_sample",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.02,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.02,
+        "x": 0.00030000000000000003,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.01,
+        "delta": 0.0,
+        "a": -0.5,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.04,
+        "x": 0.0004,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.0,
+        "delta": 0.0,
+        "a": -0.5,
+        "omega": 0.0
+      }
+    ],
+    "expected_passed": true,
+    "expected_sign_jump": false,
+    "meaning": "Valid braking to rest at a sample.",
+    "result": {
+      "passed": true,
+      "residuals": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 1.734723475976807e-18,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    }
+  },
+  {
+    "name": "reverse_stop_at_sample",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": -0.02,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.02,
+        "x": -0.00030000000000000003,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": -0.01,
+        "delta": 0.0,
+        "a": 0.5,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.04,
+        "x": -0.0004,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.0,
+        "delta": 0.0,
+        "a": 0.5,
+        "omega": 0.0
+      }
+    ],
+    "expected_passed": true,
+    "expected_sign_jump": false,
+    "meaning": "Valid reverse braking to rest.",
+    "result": {
+      "passed": true,
+      "residuals": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 1.734723475976807e-18,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    }
+  },
+  {
+    "name": "rest_hold",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.0,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.02,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.0,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.04,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.0,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      }
+    ],
+    "expected_passed": true,
+    "expected_sign_jump": false,
+    "meaning": "Rest without overwriting state.",
+    "result": {
+      "passed": true,
+      "residuals": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 0.0,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    }
+  },
+  {
+    "name": "reversal_with_zero_sample",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.01,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.02,
+        "x": 0.0001,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.0,
+        "delta": 0.0,
+        "a": -0.5,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.04,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": -0.01,
+        "delta": 0.0,
+        "a": -0.5,
+        "omega": 0.0
+      }
+    ],
+    "expected_passed": true,
+    "expected_sign_jump": false,
+    "meaning": "Sampled rest then reversal; not a monotone parking certificate.",
+    "result": {
+      "passed": true,
+      "residuals": {
+        "x_m": 1.3552527156068805e-20,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 0.0,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    }
+  },
+  {
+    "name": "smooth_unsampled_zero_crossing",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.005,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.02,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": -0.005,
+        "delta": 0.0,
+        "a": -0.5,
+        "omega": 0.0
+      }
+    ],
+    "expected_passed": false,
+    "expected_sign_jump": true,
+    "meaning": "Dynamics and actuator limits valid; original sampled sign policy rejects.",
+    "result": {
+      "passed": false,
+      "residuals": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 0.0,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": true
+    }
+  },
+  {
+    "name": "M0_tiny_overshoot",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.001275969897234368,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.02,
+        "x": 1.2758696381658536e-05,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": -1.002590685145275e-07,
+        "delta": 0.0,
+        "a": -0.06380350781514413,
+        "omega": 0.0
+      }
+    ],
+    "expected_passed": false,
+    "expected_sign_jump": true,
+    "meaning": "Actual M0 overshoot despite speed magnitude below 1e-5.",
+    "result": {
+      "passed": false,
+      "residuals": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 2.168404344971009e-19,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": true
+    }
+  },
+  {
+    "name": "tiny_product_crossing",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 1e-06,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.02,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": -1.0000000000000004e-06,
+        "delta": 0.0,
+        "a": -0.0001,
+        "omega": 0.0
+      }
+    ],
+    "expected_passed": true,
+    "expected_sign_jump": false,
+    "meaning": "Product threshold has a dead band; passing does not prove no reversal.",
+    "result": {
+      "passed": true,
+      "residuals": {
+        "x_m": 4.1359030627651384e-24,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 0.0,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    }
+  },
+  {
+    "name": "moving_with_WAIT_label",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.1,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0,
+        "stage": "MUTEX_WAIT"
+      },
+      {
+        "time_s": 0.02,
+        "x": 0.002,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.1,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0,
+        "stage": "MUTEX_WAIT"
+      }
+    ],
+    "expected_passed": true,
+    "expected_sign_jump": false,
+    "meaning": "Equation checker cannot authorize a phase transition from a label.",
+    "result": {
+      "passed": true,
+      "residuals": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 0.0,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    }
+  },
+  {
+    "name": "actuator_limit_violation",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.1,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.02,
+        "x": 0.0024000000000000002,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.14,
+        "delta": 0.0,
+        "a": 2.0,
+        "omega": 0.0
+      }
+    ],
+    "expected_passed": false,
+    "expected_sign_jump": false,
+    "meaning": "Dynamics consistent but acceleration outside configured limits.",
+    "result": {
+      "passed": false,
+      "residuals": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 0.0,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 1.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    }
+  },
+  {
+    "name": "velocity_reset",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.02,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.02,
+        "x": 0.0004,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.0,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      }
+    ],
+    "expected_passed": false,
+    "expected_sign_jump": false,
+    "meaning": "Forbidden state overwrite; component equations must reject.",
+    "result": {
+      "passed": false,
+      "residuals": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 0.02,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    }
+  },
+  {
+    "name": "pose_reset",
+    "rows": [
+      {
+        "time_s": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.02,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      },
+      {
+        "time_s": 0.02,
+        "x": 0.0104,
+        "y": 0.0,
+        "psi": 0.0,
+        "v": 0.02,
+        "delta": 0.0,
+        "a": 0.0,
+        "omega": 0.0
+      }
+    ],
+    "expected_passed": false,
+    "expected_sign_jump": false,
+    "meaning": "Forbidden state overwrite; component equations must reject.",
+    "result": {
+      "passed": false,
+      "residuals": {
+        "x_m": 0.01,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 0.0,
+        "delta_rad": 0.0,
+        "time_s": 0.0,
+        "acceleration_m_s2": 0.0,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 0.0,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    }
+  }
+]

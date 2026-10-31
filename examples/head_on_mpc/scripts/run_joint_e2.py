@@ -10,6 +10,7 @@ import os
 import shutil
 import subprocess
 import time
+import sys
 import numpy as np
 import scipy
 import osqp
@@ -30,71 +31,99 @@ def run_b1(scene,path,directory,bus,controller=None):
     try:
         for cycle in range(round(scene['timeout_s']/scene['h'])):
             cycle_started=time.perf_counter();now=round(scene['epoch_s']+cycle*scene['h'],10);bus.cycle=cycle
-            requests=[(now,c) for c,a in controller.agents.items() if c not in requested and
-                      SIGN[c]*a.z[0]>=-scene['request_rear_axle_abs_x']-1e-8]
-            if requests:
-                owner,grants=bus.request(requests)
-                for _,c in requests:
-                    requested.add(c);event('request',car=c)
-                    event('grant' if grants[c] else 'deny',car=c,owner=owner)
-            permissions={c:bus.received[c]['owner_id']==c for c in CARS}
-            controller.prepare(permissions)
-            b=controller.agents['B']
-            if b.mode=='WAIT' and not b.steering and abs(b.z[4])<1e-7 and not ready_sent:
-                bus.ready('B');ready_sent=True;event('waiting_ready',car='B',pose=b.z.tolist())
-            for c,a in controller.agents.items():
-                if a.mode=='DONE' and c not in done:
-                    if not completed(a.z,scene['goals'][c],scene):raise ValueError('completed phase missed original goal')
-                    done[c]=now-scene['epoch_s'];event('car_completed',car=c)
-            if owner and owner not in released:
-                a=controller.agents[owner]
-                tail=SIGN[owner]*a.z[0]-scene['vehicle']['rear']
-                if tail>=scene['release_plane_abs_x']+scene['release_margin_m'] and (owner=='B' or ready_sent):
-                    witness=controller.future_witness();witnesses.append(dict(time_s=now,holder=owner,**witness))
-                    checks.append(dict(time_s=now,kind='complete_future_release_witness',wall_s=witness['wall_s'],**witness['check']))
-                    if not witness['check']['passed']:
-                        failure='full_future_release_QP_rejected';event('failure',reason=failure);break
-                    jsonl(directory/f'release_witness_{owner}.jsonl',[{k:v for k,v in witness.items() if k!='solves'}])
-                    event('release',car=owner,actual_body_tail_x=float(a.z[0]-SIGN[owner]*scene['vehicle']['rear']))
-                    released.add(owner);owner=bus.release(owner,witness['check'])
-                    if owner:
-                        event('grant',car=owner,owner=owner);event('return_started',car=owner)
-                    permissions={c:bus.received[c]['owner_id']==c for c in CARS};controller.prepare(permissions)
-            if len(done)==2:
-                event('both_tasks_completed');break
-            states={c:a.z.copy() for c,a in controller.agents.items()}
-            controls,predictions,record=controller.predict(permissions)
-            record.update(time_s=now,cycle=cycle)
-            solves.append(record)
-            for c in CARS:
-                constraints.append(dict(car=c,cycle=cycle,g_i=int(permissions[c]),
-                    receive_cycle=bus.received[c]['receive_cycle'],state_version=bus.received[c]['version'],
-                    phase=controller.agents[c].mode,segment=controller.agents[c].index,**record['parameters'][c]))
-            if not record['accepted']:
-                failure='joint_QP_rejected';event('failure',reason=failure);break
-            if any(max(v for k,v in e.items() if k!='path_s_end_m')>getattr(controller,'mapping_tolerance',scene['tolerance']) for e in record['mapping_errors'].values()):
-                failure='QP_bicycle_mapping_error';event('failure',reason=failure);break
-            planning_wall=time.perf_counter()-cycle_started
-            start=time.perf_counter();check=audit(predictions,scene)
-            checks.append(dict(time_s=now,kind='dense_prediction',wall_s=time.perf_counter()-start,**check))
-            n=round(scene['h']/scene['sample_s'])
-            forecasts.append(dict(time_s=now,states={c:z.tolist() for c,z in states.items()},commands=controls,
-                predicted_states={c:z[n::n].tolist() for c,z in predictions.items()},owner=owner))
-            if not check['passed']:
-                failure='prediction_acceptance_rejected';event('failure',reason=failure);break
-            protection=[-scene['admission_protection_abs_x'],scene['admission_protection_abs_x'],-scene['W']/2,scene['W']/2]
-            for c in CARS:
-                if not permissions[c] and any(clipped_area(body,protection)>scene['tolerance'] for body in corners(predictions[c],scene['vehicle'])):
-                    failure='unauthorized_prediction';event('failure',reason=failure,car=c);break
-            if failure:break
-            motions={c:z[:n+1] for c,z in predictions.items()}
-            executed=audit(motions,scene);checks.append(dict(time_s=now,kind='executed_segment',wall_s=0.,**executed))
-            if not executed['passed']:
-                failure='actual_acceptance_rejected';event('failure',reason=failure);break
-            rows.extend(rows_for(motions,{c:[controls[c][0]] for c in CARS},now,scene,owner))
-            controller.commit(controls,predictions,record);reserved+=scene['h']*(owner is not None)
-            planning.append(dict(time_s=now,planning_wall_s=planning_wall,acceptance_wall_s=time.perf_counter()-start,
-                total_cycle_wall_s=time.perf_counter()-cycle_started,optimization_solver_calls=int(record['free_variables']>0),retries=0))
+            record=None;prediction_started=None;prediction_finished=None;committed=False;witness_start=len(witnesses)
+            try:
+                requests=[(now,c) for c,a in controller.agents.items() if c not in requested and
+                          SIGN[c]*a.z[0]>=-scene['request_rear_axle_abs_x']-1e-8]
+                if requests:
+                    owner,grants=bus.request(requests)
+                    for _,c in requests:
+                        requested.add(c);event('request',car=c)
+                        event('grant' if grants[c] else 'deny',car=c,owner=owner)
+                permissions={c:bus.received[c]['owner_id']==c for c in CARS}
+                controller.prepare(permissions)
+                b=controller.agents['B']
+                if b.mode=='WAIT' and not b.steering and abs(b.z[4])<1e-7 and not ready_sent:
+                    bus.ready('B');ready_sent=True;event('waiting_ready',car='B',pose=b.z.tolist())
+                for c,a in controller.agents.items():
+                    if a.mode=='DONE' and c not in done:
+                        if not completed(a.z,scene['goals'][c],scene):raise ValueError('completed phase missed original goal')
+                        done[c]=now-scene['epoch_s'];event('car_completed',car=c)
+                if owner and owner not in released:
+                    a=controller.agents[owner]
+                    tail=SIGN[owner]*a.z[0]-scene['vehicle']['rear']
+                    if tail>=scene['release_plane_abs_x']+scene['release_margin_m'] and (owner=='B' or ready_sent):
+                        witness=controller.future_witness();witnesses.append(dict(time_s=now,holder=owner,**witness))
+                        checks.append(dict(time_s=now,kind='complete_future_release_witness',wall_s=witness['wall_s'],**witness['check']))
+                        if not witness['check']['passed']:
+                            failure='full_future_release_QP_rejected';event('failure',reason=failure);break
+                        jsonl(directory/f'release_witness_{owner}.jsonl',[{k:v for k,v in witness.items() if k!='solves'}])
+                        event('release',car=owner,actual_body_tail_x=float(a.z[0]-SIGN[owner]*scene['vehicle']['rear']))
+                        released.add(owner);owner=bus.release(owner,witness['check'])
+                        if owner:
+                            event('grant',car=owner,owner=owner);event('return_started',car=owner)
+                        permissions={c:bus.received[c]['owner_id']==c for c in CARS};controller.prepare(permissions)
+                if len(done)==2:
+                    event('both_tasks_completed');break
+                states={c:a.z.copy() for c,a in controller.agents.items()}
+                prediction_started=time.perf_counter()
+                controls,predictions,record=controller.predict(permissions)
+                prediction_finished=time.perf_counter()
+                record.update(time_s=now,cycle=cycle)
+                solves.append(record)
+                for c in CARS:
+                    constraints.append(dict(car=c,cycle=cycle,g_i=int(permissions[c]),
+                        receive_cycle=bus.received[c]['receive_cycle'],state_version=bus.received[c]['version'],
+                        phase=controller.agents[c].mode,segment=controller.agents[c].index,**record['parameters'][c]))
+                if not record['accepted']:
+                    failure='joint_QP_rejected';event('failure',reason=failure);break
+                if any(max(v for k,v in e.items() if k!='path_s_end_m')>getattr(controller,'mapping_tolerance',scene['tolerance']) for e in record['mapping_errors'].values()):
+                    failure='QP_bicycle_mapping_error';event('failure',reason=failure);break
+                planning_wall=time.perf_counter()-cycle_started
+                start=time.perf_counter();check=audit(predictions,scene)
+                checks.append(dict(time_s=now,kind='dense_prediction',wall_s=time.perf_counter()-start,**check))
+                n=round(scene['h']/scene['sample_s'])
+                forecasts.append(dict(time_s=now,states={c:z.tolist() for c,z in states.items()},commands=controls,
+                    predicted_states={c:z[n::n].tolist() for c,z in predictions.items()},owner=owner))
+                if not check['passed']:
+                    failure='prediction_acceptance_rejected';event('failure',reason=failure);break
+                protection=[-scene['admission_protection_abs_x'],scene['admission_protection_abs_x'],-scene['W']/2,scene['W']/2]
+                for c in CARS:
+                    if not permissions[c] and any(clipped_area(body,protection)>scene['tolerance'] for body in corners(predictions[c],scene['vehicle'])):
+                        failure='unauthorized_prediction';event('failure',reason=failure,car=c);break
+                if failure:break
+                motions={c:z[:n+1] for c,z in predictions.items()}
+                executed=audit(motions,scene);checks.append(dict(time_s=now,kind='executed_segment',wall_s=0.,**executed))
+                if not executed['passed']:
+                    failure='actual_acceptance_rejected';event('failure',reason=failure);break
+                rows.extend(rows_for(motions,{c:[controls[c][0]] for c in CARS},now,scene,owner))
+                controller.commit(controls,predictions,record);reserved+=scene['h']*(owner is not None)
+                committed=True
+            finally:
+                ended=time.perf_counter();exception=sys.exc_info()[1]
+                rejection=failure
+                if record is not None and not record['accepted']:
+                    if not record.get('reference_record',record)['accepted']:rejection='reference_QP'
+                    elif record.get('deadline_exceeded'):rejection='planning_deadline'
+                    elif any(not r['accepted'] for r in record.get('subproblems',[])):rejection='bicycle_QP'
+                    else:rejection='nonlinear_replay_or_trust'
+                reference=record.get('reference_record',record) if record is not None else {}
+                planning.append(dict(cycle=cycle,time_s=now,state_timestamp_s=now,
+                    start_monotonic_s=cycle_started,end_monotonic_s=ended,
+                    planning_wall_s=(prediction_finished or ended)-cycle_started,
+                    decision_communication_wall_s=(prediction_started or ended)-cycle_started,
+                    prediction_wall_s=(prediction_finished-prediction_started) if prediction_finished is not None else None,
+                    reference_build_solve_check_s=reference.get('solve_wall_s'),
+                    reference_solver_wall_s=reference.get('solver_wall_s'),
+                    acceptance_wall_s=ended-prediction_finished if prediction_finished is not None else 0.,
+                    future_check_wall_s=sum(w['wall_s'] for w in witnesses[witness_start:]),
+                    total_cycle_wall_s=ended-cycle_started,control_budget_remaining_s=scene['h']-(ended-cycle_started),
+                    prediction_budget_remaining_s=record.get('deadline_s',getattr(controller,'prediction_deadline_s',.5))-(prediction_finished-prediction_started) if prediction_finished is not None else None,
+                    outcome='exception' if exception else 'rejected' if rejection else 'committed' if committed else 'completed' if len(done)==2 else 'no_commit',
+                    rejection_layer=rejection,exception=str(exception) if exception else None,committed=committed,
+                    solver_status=record.get('message') if record else None,
+                    reference_status=reference.get('message'),model_errors=record.get('mapping_errors') if record else None,
+                    optimization_solver_calls=(record.get('reference_numeric_qp_calls',int(record['free_variables']>0))+record.get('bicycle_numeric_qp_calls',0)) if record else 0,retries=0))
         else:
             failure='timeout';event('failure',reason=failure)
     except (ValueError,TimeoutError) as exc:

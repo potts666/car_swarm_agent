@@ -1,0 +1,38 @@
+{
+  "reference": {
+    "eps_abs": 1e-08,
+    "eps_rel": 1e-08,
+    "max_iter": 20000,
+    "polishing": true,
+    "adaptive_rho_interval": 50,
+    "feasibility_band": 1e-06,
+    "acceptance_tolerance": 1e-05
+  },
+  "bicycle": {
+    "eps_abs": 1e-07,
+    "eps_rel": 1e-07,
+    "max_iter": 10000,
+    "polishing": true,
+    "adaptive_rho_interval": 50,
+    "deadline_s": 0.5,
+    "numerical_band": 1e-07,
+    "model_error_limits": {
+      "position_m": 1e-05,
+      "heading_rad": 5e-06,
+      "speed_m_s": 1e-06,
+      "steering_rad": 1e-06
+    },
+    "state_trust": [
+      0.15,
+      0.15,
+      0.02,
+      0.25,
+      0.03
+    ],
+    "input_trust": [
+      0.3,
+      0.25
+    ]
+  },
+  "dual_mapping": "semantic car/kind/step; shift nodal and input rows by one, preserve terminal kind, unmatched rows zero; convert y to original objective and row units before remapping"
+}

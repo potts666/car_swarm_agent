@@ -1,0 +1,5 @@
+method,reached_both_goals,independent_full_task_passed,failure,completion_sim_s,executed_cycles,timed_cycles,sign_crossings,min_gap_m,cycle_p50_ms,cycle_p95_ms,cycle_p99_ms,cycle_max_ms,cycles_over_200ms,reference_rejections,deadline_rejections
+B2_sequence_cold_r1,False,False,joint_QP_rejected,,121,122,0,8.749890853877831,69.77933500093059,116.33549145517458,146.3544589410593,184.6559219993651,0,1,0
+B2_sequence_warm_r1,True,False,original_velocity_sign_crossing,81.0,405,406,3,1.199946687594578,57.99255699821515,102.69265024544438,138.814517650826,12972.202825003478,2,0,0
+B2_sequence_cold_r2,False,False,joint_QP_rejected,,121,122,0,8.749890853877831,68.60025250352919,113.02534419664873,133.58406056933745,141.64546599931782,0,1,0
+B2_sequence_warm_r2,True,False,original_velocity_sign_crossing,81.0,405,406,3,1.199946687594578,57.71078249745187,100.88731525138428,142.523377852558,13340.87377099786,2,0,0

@@ -1,0 +1,922 @@
+{
+  "B2_sequence_cold_r1": {
+    "acceptance_failure": null,
+    "velocity_crossings": [],
+    "per_car": {
+      "A": {
+        "request_s": 104.2,
+        "grant_s": 104.2,
+        "request_to_grant_s": 0.0,
+        "channel_entry_s": 114.26,
+        "grant_to_channel_entry_s": 10.060000000000002,
+        "last_channel_occupied_sample_s": 126.5,
+        "release_s": 134.8,
+        "completion_s": 144.4,
+        "stationary_intervals_s": [
+          {
+            "start_s": 100.0,
+            "end_s": 100.02,
+            "duration_s": 0.01999999999999602
+          },
+          {
+            "start_s": 144.16,
+            "end_s": 180.4,
+            "duration_s": 36.24000000000001
+          }
+        ],
+        "stopped_to_moving_transitions": 1
+      },
+      "B": {
+        "request_s": 107.2,
+        "grant_s": 134.8,
+        "request_to_grant_s": 27.60000000000001,
+        "channel_entry_s": 150.12,
+        "grant_to_channel_entry_s": 15.319999999999993,
+        "last_channel_occupied_sample_s": 162.56,
+        "release_s": 171.0,
+        "completion_s": 180.4,
+        "stationary_intervals_s": [
+          {
+            "start_s": 100.0,
+            "end_s": 100.02,
+            "duration_s": 0.01999999999999602
+          },
+          {
+            "start_s": 110.16,
+            "end_s": 111.22,
+            "duration_s": 1.0600000000000023
+          },
+          {
+            "start_s": 116.96,
+            "end_s": 118.22,
+            "duration_s": 1.2600000000000051
+          },
+          {
+            "start_s": 123.96,
+            "end_s": 135.42,
+            "duration_s": 11.459999999999994
+          },
+          {
+            "start_s": 141.16,
+            "end_s": 142.42,
+            "duration_s": 1.259999999999991
+          },
+          {
+            "start_s": 148.16,
+            "end_s": 149.02,
+            "duration_s": 0.8600000000000136
+          },
+          {
+            "start_s": 180.2,
+            "end_s": 180.4,
+            "duration_s": 0.20000000000001705
+          }
+        ],
+        "stopped_to_moving_transitions": 6
+      }
+    },
+    "all_cycle_exits_timed": true,
+    "final_cycle": {
+      "cycle": 402,
+      "time_s": 180.4,
+      "state_timestamp_s": 180.4,
+      "start_monotonic_s": 36163.865508034,
+      "end_monotonic_s": 36163.865546094,
+      "planning_wall_s": 3.805999585893005e-05,
+      "decision_communication_wall_s": 3.805999585893005e-05,
+      "prediction_wall_s": null,
+      "reference_build_solve_check_s": null,
+      "reference_solver_wall_s": null,
+      "acceptance_wall_s": 0.0,
+      "future_check_wall_s": 0,
+      "total_cycle_wall_s": 3.805999585893005e-05,
+      "control_budget_remaining_s": 0.19996194000414108,
+      "prediction_budget_remaining_s": null,
+      "outcome": "completed",
+      "rejection_layer": null,
+      "exception": null,
+      "committed": false,
+      "solver_status": null,
+      "reference_status": null,
+      "model_errors": null,
+      "optimization_solver_calls": 0,
+      "retries": 0
+    },
+    "reference_warm_calls": 0,
+    "reference_status_histogram": {
+      "all inputs fixed": 3,
+      "solved": 399
+    },
+    "longest_cycles": [
+      {
+        "cycle": 174,
+        "time_s": 134.8,
+        "state_timestamp_s": 134.8,
+        "start_monotonic_s": 36134.369103942,
+        "end_monotonic_s": 36147.197458094,
+        "planning_wall_s": 12.8233192100015,
+        "decision_communication_wall_s": 12.775050153999473,
+        "prediction_wall_s": 0.048269056002027355,
+        "reference_build_solve_check_s": 0.00425098100095056,
+        "reference_solver_wall_s": 0.0012761470061377622,
+        "acceptance_wall_s": 0.005034941998019349,
+        "future_check_wall_s": 12.773012028002995,
+        "total_cycle_wall_s": 12.82835415199952,
+        "control_budget_remaining_s": -12.62835415199952,
+        "prediction_budget_remaining_s": 0.45173094399797264,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 1.9184653865522705e-13,
+            "heading_rad": 0.0,
+            "speed_m_s": 4.6629367034256575e-15,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 0.0,
+            "heading_rad": 0.0,
+            "speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "optimization_solver_calls": 2,
+        "retries": 0
+      },
+      {
+        "cycle": 355,
+        "time_s": 171.0,
+        "state_timestamp_s": 171.0,
+        "start_monotonic_s": 36158.29919997,
+        "end_monotonic_s": 36160.960299546,
+        "planning_wall_s": 2.653793728997698,
+        "decision_communication_wall_s": 2.60367085699545,
+        "prediction_wall_s": 0.05012287200224819,
+        "reference_build_solve_check_s": 0.0044198059986229055,
+        "reference_solver_wall_s": 0.001506546999735292,
+        "acceptance_wall_s": 0.0073058470006799325,
+        "future_check_wall_s": 2.601935884995328,
+        "total_cycle_wall_s": 2.661099575998378,
+        "control_budget_remaining_s": -2.461099575998378,
+        "prediction_budget_remaining_s": 0.4498771279977518,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 0.0,
+            "heading_rad": 0.0,
+            "speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 1.3517631888242983e-13,
+            "heading_rad": 1.3322676295501878e-15,
+            "speed_m_s": 5.773159728050814e-15,
+            "steering_rad": 3.549874073494553e-30
+          }
+        },
+        "optimization_solver_calls": 2,
+        "retries": 0
+      },
+      {
+        "cycle": 0,
+        "time_s": 100.0,
+        "state_timestamp_s": 100.0,
+        "start_monotonic_s": 36122.189160008,
+        "end_monotonic_s": 36122.488649711,
+        "planning_wall_s": 0.26305698299984215,
+        "decision_communication_wall_s": 4.1725004848558456e-05,
+        "prediction_wall_s": 0.2630152579949936,
+        "reference_build_solve_check_s": 0.07216497699846514,
+        "reference_solver_wall_s": 0.06529613600287121,
+        "acceptance_wall_s": 0.03643272000044817,
+        "future_check_wall_s": 0,
+        "total_cycle_wall_s": 0.2994897030002903,
+        "control_budget_remaining_s": -0.09948970300029031,
+        "prediction_budget_remaining_s": 0.2369847420050064,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 7.815970093361102e-14,
+            "heading_rad": 0.0,
+            "speed_m_s": 5.773159728050814e-15,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 1.278977063919609e-13,
+            "heading_rad": 0.0,
+            "speed_m_s": 5.551115123125783e-15,
+            "steering_rad": 6.039716305598372e-31
+          }
+        },
+        "optimization_solver_calls": 2,
+        "retries": 0
+      }
+    ],
+    "failure_scope": null,
+    "actual_sha256": "ebb5c873c3ac56c659e506078106cc2b85fcb60cd406a5c0d4e0a01d06ddb629"
+  },
+  "B2_sequence_warm_r1": {
+    "acceptance_failure": null,
+    "velocity_crossings": [],
+    "per_car": {
+      "A": {
+        "request_s": 104.2,
+        "grant_s": 104.2,
+        "request_to_grant_s": 0.0,
+        "channel_entry_s": 114.26,
+        "grant_to_channel_entry_s": 10.060000000000002,
+        "last_channel_occupied_sample_s": 126.5,
+        "release_s": 134.8,
+        "completion_s": 144.4,
+        "stationary_intervals_s": [
+          {
+            "start_s": 100.0,
+            "end_s": 100.02,
+            "duration_s": 0.01999999999999602
+          },
+          {
+            "start_s": 144.16,
+            "end_s": 180.4,
+            "duration_s": 36.24000000000001
+          }
+        ],
+        "stopped_to_moving_transitions": 1
+      },
+      "B": {
+        "request_s": 107.2,
+        "grant_s": 134.8,
+        "request_to_grant_s": 27.60000000000001,
+        "channel_entry_s": 150.12,
+        "grant_to_channel_entry_s": 15.319999999999993,
+        "last_channel_occupied_sample_s": 162.56,
+        "release_s": 171.0,
+        "completion_s": 180.4,
+        "stationary_intervals_s": [
+          {
+            "start_s": 100.0,
+            "end_s": 100.02,
+            "duration_s": 0.01999999999999602
+          },
+          {
+            "start_s": 110.16,
+            "end_s": 111.22,
+            "duration_s": 1.0600000000000023
+          },
+          {
+            "start_s": 116.96,
+            "end_s": 118.22,
+            "duration_s": 1.2600000000000051
+          },
+          {
+            "start_s": 123.96,
+            "end_s": 135.42,
+            "duration_s": 11.459999999999994
+          },
+          {
+            "start_s": 141.16,
+            "end_s": 142.42,
+            "duration_s": 1.259999999999991
+          },
+          {
+            "start_s": 148.16,
+            "end_s": 149.02,
+            "duration_s": 0.8600000000000136
+          },
+          {
+            "start_s": 180.2,
+            "end_s": 180.4,
+            "duration_s": 0.20000000000001705
+          }
+        ],
+        "stopped_to_moving_transitions": 6
+      }
+    },
+    "all_cycle_exits_timed": true,
+    "final_cycle": {
+      "cycle": 402,
+      "time_s": 180.4,
+      "state_timestamp_s": 180.4,
+      "start_monotonic_s": 36219.331360275,
+      "end_monotonic_s": 36219.331392375,
+      "planning_wall_s": 3.210000431863591e-05,
+      "decision_communication_wall_s": 3.210000431863591e-05,
+      "prediction_wall_s": null,
+      "reference_build_solve_check_s": null,
+      "reference_solver_wall_s": null,
+      "acceptance_wall_s": 0.0,
+      "future_check_wall_s": 0,
+      "total_cycle_wall_s": 3.210000431863591e-05,
+      "control_budget_remaining_s": 0.19996789999568138,
+      "prediction_budget_remaining_s": null,
+      "outcome": "completed",
+      "rejection_layer": null,
+      "exception": null,
+      "committed": false,
+      "solver_status": null,
+      "reference_status": null,
+      "model_errors": null,
+      "optimization_solver_calls": 0,
+      "retries": 0
+    },
+    "reference_warm_calls": 398,
+    "reference_status_histogram": {
+      "all inputs fixed": 3,
+      "solved": 399
+    },
+    "longest_cycles": [
+      {
+        "cycle": 174,
+        "time_s": 134.8,
+        "state_timestamp_s": 134.8,
+        "start_monotonic_s": 36190.769421635,
+        "end_monotonic_s": 36203.443935199,
+        "planning_wall_s": 12.66946401000314,
+        "decision_communication_wall_s": 12.603021479000745,
+        "prediction_wall_s": 0.06644253100239439,
+        "reference_build_solve_check_s": 0.009376092995807994,
+        "reference_solver_wall_s": 0.0020941680049872957,
+        "acceptance_wall_s": 0.005049553998105694,
+        "future_check_wall_s": 12.594818402001692,
+        "total_cycle_wall_s": 12.674513564001245,
+        "control_budget_remaining_s": -12.474513564001246,
+        "prediction_budget_remaining_s": 0.4335574689976056,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 1.7763568394002505e-13,
+            "heading_rad": 0.0,
+            "speed_m_s": 4.836409051023338e-15,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 0.0,
+            "heading_rad": 0.0,
+            "speed_m_s": 0.0,
+            "steering_rad": 5.551115123125783e-17
+          }
+        },
+        "optimization_solver_calls": 2,
+        "retries": 0
+      },
+      {
+        "cycle": 355,
+        "time_s": 171.0,
+        "state_timestamp_s": 171.0,
+        "start_monotonic_s": 36214.046695222,
+        "end_monotonic_s": 36216.625129788,
+        "planning_wall_s": 2.569743660998938,
+        "decision_communication_wall_s": 2.5007648690007045,
+        "prediction_wall_s": 0.06897879199823365,
+        "reference_build_solve_check_s": 0.011787319999712054,
+        "reference_solver_wall_s": 0.0024745379996602423,
+        "acceptance_wall_s": 0.00869090500054881,
+        "future_check_wall_s": 2.4949032369986526,
+        "total_cycle_wall_s": 2.578434565999487,
+        "control_budget_remaining_s": -2.3784345659994868,
+        "prediction_budget_remaining_s": 0.43102120800176635,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 0.0,
+            "heading_rad": 0.0,
+            "speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 1.9895296213508718e-13,
+            "heading_rad": 1.3322676295501878e-15,
+            "speed_m_s": 9.992007221626409e-15,
+            "steering_rad": 3.155443620884047e-29
+          }
+        },
+        "optimization_solver_calls": 2,
+        "retries": 0
+      },
+      {
+        "cycle": 177,
+        "time_s": 135.4,
+        "state_timestamp_s": 135.4,
+        "start_monotonic_s": 36203.545859168,
+        "end_monotonic_s": 36203.680525612,
+        "planning_wall_s": 0.129650347000279,
+        "decision_communication_wall_s": 1.5493998944293708e-05,
+        "prediction_wall_s": 0.1296348530013347,
+        "reference_build_solve_check_s": 0.012380152998957783,
+        "reference_solver_wall_s": 0.009194963000481948,
+        "acceptance_wall_s": 0.005016096998588182,
+        "future_check_wall_s": 0,
+        "total_cycle_wall_s": 0.13466644399886718,
+        "control_budget_remaining_s": 0.06533355600113283,
+        "prediction_budget_remaining_s": 0.3703651469986653,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 8.526512829121202e-14,
+            "heading_rad": 0.0,
+            "speed_m_s": 8.049116928532385e-16,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 6.241400026237072e-11,
+            "heading_rad": 2.191269388163164e-11,
+            "speed_m_s": 4.884981308350689e-15,
+            "steering_rad": 8.881784197001252e-16
+          }
+        },
+        "optimization_solver_calls": 3,
+        "retries": 0
+      }
+    ],
+    "failure_scope": null,
+    "actual_sha256": "f90e8473e8ad41de5c8dc2528e2134c77e68a7bc926e7dbf119f23a059413cfb"
+  },
+  "B2_sequence_cold_r2": {
+    "acceptance_failure": null,
+    "velocity_crossings": [],
+    "per_car": {
+      "A": {
+        "request_s": 104.2,
+        "grant_s": 104.2,
+        "request_to_grant_s": 0.0,
+        "channel_entry_s": 114.26,
+        "grant_to_channel_entry_s": 10.060000000000002,
+        "last_channel_occupied_sample_s": 126.5,
+        "release_s": 134.8,
+        "completion_s": 144.4,
+        "stationary_intervals_s": [
+          {
+            "start_s": 100.0,
+            "end_s": 100.02,
+            "duration_s": 0.01999999999999602
+          },
+          {
+            "start_s": 144.16,
+            "end_s": 180.4,
+            "duration_s": 36.24000000000001
+          }
+        ],
+        "stopped_to_moving_transitions": 1
+      },
+      "B": {
+        "request_s": 107.2,
+        "grant_s": 134.8,
+        "request_to_grant_s": 27.60000000000001,
+        "channel_entry_s": 150.12,
+        "grant_to_channel_entry_s": 15.319999999999993,
+        "last_channel_occupied_sample_s": 162.56,
+        "release_s": 171.0,
+        "completion_s": 180.4,
+        "stationary_intervals_s": [
+          {
+            "start_s": 100.0,
+            "end_s": 100.02,
+            "duration_s": 0.01999999999999602
+          },
+          {
+            "start_s": 110.16,
+            "end_s": 111.22,
+            "duration_s": 1.0600000000000023
+          },
+          {
+            "start_s": 116.96,
+            "end_s": 118.22,
+            "duration_s": 1.2600000000000051
+          },
+          {
+            "start_s": 123.96,
+            "end_s": 135.42,
+            "duration_s": 11.459999999999994
+          },
+          {
+            "start_s": 141.16,
+            "end_s": 142.42,
+            "duration_s": 1.259999999999991
+          },
+          {
+            "start_s": 148.16,
+            "end_s": 149.02,
+            "duration_s": 0.8600000000000136
+          },
+          {
+            "start_s": 180.2,
+            "end_s": 180.4,
+            "duration_s": 0.20000000000001705
+          }
+        ],
+        "stopped_to_moving_transitions": 6
+      }
+    },
+    "all_cycle_exits_timed": true,
+    "final_cycle": {
+      "cycle": 402,
+      "time_s": 180.4,
+      "state_timestamp_s": 180.4,
+      "start_monotonic_s": 36274.241466826,
+      "end_monotonic_s": 36274.241504928,
+      "planning_wall_s": 3.810199996223673e-05,
+      "decision_communication_wall_s": 3.810199996223673e-05,
+      "prediction_wall_s": null,
+      "reference_build_solve_check_s": null,
+      "reference_solver_wall_s": null,
+      "acceptance_wall_s": 0.0,
+      "future_check_wall_s": 0,
+      "total_cycle_wall_s": 3.810199996223673e-05,
+      "control_budget_remaining_s": 0.19996189800003777,
+      "prediction_budget_remaining_s": null,
+      "outcome": "completed",
+      "rejection_layer": null,
+      "exception": null,
+      "committed": false,
+      "solver_status": null,
+      "reference_status": null,
+      "model_errors": null,
+      "optimization_solver_calls": 0,
+      "retries": 0
+    },
+    "reference_warm_calls": 0,
+    "reference_status_histogram": {
+      "all inputs fixed": 3,
+      "solved": 399
+    },
+    "longest_cycles": [
+      {
+        "cycle": 174,
+        "time_s": 134.8,
+        "state_timestamp_s": 134.8,
+        "start_monotonic_s": 36245.865951872,
+        "end_monotonic_s": 36258.381801288,
+        "planning_wall_s": 12.510404365995782,
+        "decision_communication_wall_s": 12.449640086997533,
+        "prediction_wall_s": 0.06076427899824921,
+        "reference_build_solve_check_s": 0.006307211995590478,
+        "reference_solver_wall_s": 0.001489579000917729,
+        "acceptance_wall_s": 0.005445050002890639,
+        "future_check_wall_s": 12.446505198000523,
+        "total_cycle_wall_s": 12.515849415998673,
+        "control_budget_remaining_s": -12.315849415998674,
+        "prediction_budget_remaining_s": 0.4392357210017508,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 1.9184653865522705e-13,
+            "heading_rad": 0.0,
+            "speed_m_s": 4.6629367034256575e-15,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 0.0,
+            "heading_rad": 0.0,
+            "speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "optimization_solver_calls": 2,
+        "retries": 0
+      },
+      {
+        "cycle": 355,
+        "time_s": 171.0,
+        "state_timestamp_s": 171.0,
+        "start_monotonic_s": 36268.92863803,
+        "end_monotonic_s": 36271.502144075,
+        "planning_wall_s": 2.565066866001871,
+        "decision_communication_wall_s": 2.490693428000668,
+        "prediction_wall_s": 0.07437343800120289,
+        "reference_build_solve_check_s": 0.006441555997298565,
+        "reference_solver_wall_s": 0.0014072889971430413,
+        "acceptance_wall_s": 0.008439179000561126,
+        "future_check_wall_s": 2.4881130530047812,
+        "total_cycle_wall_s": 2.573506045002432,
+        "control_budget_remaining_s": -2.373506045002432,
+        "prediction_budget_remaining_s": 0.4256265619987971,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 0.0,
+            "heading_rad": 0.0,
+            "speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 1.3517631888242983e-13,
+            "heading_rad": 1.3322676295501878e-15,
+            "speed_m_s": 5.773159728050814e-15,
+            "steering_rad": 3.549874073494553e-30
+          }
+        },
+        "optimization_solver_calls": 2,
+        "retries": 0
+      },
+      {
+        "cycle": 177,
+        "time_s": 135.4,
+        "state_timestamp_s": 135.4,
+        "start_monotonic_s": 36258.4877159,
+        "end_monotonic_s": 36258.624019119,
+        "planning_wall_s": 0.1314117419969989,
+        "decision_communication_wall_s": 2.7850997867062688e-05,
+        "prediction_wall_s": 0.13138389099913184,
+        "reference_build_solve_check_s": 0.013472602004185319,
+        "reference_solver_wall_s": 0.00987991700094426,
+        "acceptance_wall_s": 0.004891477001365274,
+        "future_check_wall_s": 0,
+        "total_cycle_wall_s": 0.13630321899836417,
+        "control_budget_remaining_s": 0.06369678100163584,
+        "prediction_budget_remaining_s": 0.36861610900086816,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 4.263256414560601e-14,
+            "heading_rad": 0.0,
+            "speed_m_s": 3.6914915568786455e-15,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 6.238414180435056e-11,
+            "heading_rad": 2.191935521977939e-11,
+            "speed_m_s": 4.440892098500626e-15,
+            "steering_rad": 2.4424906541753444e-15
+          }
+        },
+        "optimization_solver_calls": 3,
+        "retries": 0
+      }
+    ],
+    "failure_scope": null,
+    "actual_sha256": "ebb5c873c3ac56c659e506078106cc2b85fcb60cd406a5c0d4e0a01d06ddb629"
+  },
+  "B2_sequence_warm_r2": {
+    "acceptance_failure": null,
+    "velocity_crossings": [],
+    "per_car": {
+      "A": {
+        "request_s": 104.2,
+        "grant_s": 104.2,
+        "request_to_grant_s": 0.0,
+        "channel_entry_s": 114.26,
+        "grant_to_channel_entry_s": 10.060000000000002,
+        "last_channel_occupied_sample_s": 126.5,
+        "release_s": 134.8,
+        "completion_s": 144.4,
+        "stationary_intervals_s": [
+          {
+            "start_s": 100.0,
+            "end_s": 100.02,
+            "duration_s": 0.01999999999999602
+          },
+          {
+            "start_s": 144.16,
+            "end_s": 180.4,
+            "duration_s": 36.24000000000001
+          }
+        ],
+        "stopped_to_moving_transitions": 1
+      },
+      "B": {
+        "request_s": 107.2,
+        "grant_s": 134.8,
+        "request_to_grant_s": 27.60000000000001,
+        "channel_entry_s": 150.12,
+        "grant_to_channel_entry_s": 15.319999999999993,
+        "last_channel_occupied_sample_s": 162.56,
+        "release_s": 171.0,
+        "completion_s": 180.4,
+        "stationary_intervals_s": [
+          {
+            "start_s": 100.0,
+            "end_s": 100.02,
+            "duration_s": 0.01999999999999602
+          },
+          {
+            "start_s": 110.16,
+            "end_s": 111.22,
+            "duration_s": 1.0600000000000023
+          },
+          {
+            "start_s": 116.96,
+            "end_s": 118.22,
+            "duration_s": 1.2600000000000051
+          },
+          {
+            "start_s": 123.96,
+            "end_s": 135.42,
+            "duration_s": 11.459999999999994
+          },
+          {
+            "start_s": 141.16,
+            "end_s": 142.42,
+            "duration_s": 1.259999999999991
+          },
+          {
+            "start_s": 148.16,
+            "end_s": 149.02,
+            "duration_s": 0.8600000000000136
+          },
+          {
+            "start_s": 180.2,
+            "end_s": 180.4,
+            "duration_s": 0.20000000000001705
+          }
+        ],
+        "stopped_to_moving_transitions": 6
+      }
+    },
+    "all_cycle_exits_timed": true,
+    "final_cycle": {
+      "cycle": 402,
+      "time_s": 180.4,
+      "state_timestamp_s": 180.4,
+      "start_monotonic_s": 36329.370547903,
+      "end_monotonic_s": 36329.370583441,
+      "planning_wall_s": 3.553799615474418e-05,
+      "decision_communication_wall_s": 3.553799615474418e-05,
+      "prediction_wall_s": null,
+      "reference_build_solve_check_s": null,
+      "reference_solver_wall_s": null,
+      "acceptance_wall_s": 0.0,
+      "future_check_wall_s": 0,
+      "total_cycle_wall_s": 3.553799615474418e-05,
+      "control_budget_remaining_s": 0.19996446200384527,
+      "prediction_budget_remaining_s": null,
+      "outcome": "completed",
+      "rejection_layer": null,
+      "exception": null,
+      "committed": false,
+      "solver_status": null,
+      "reference_status": null,
+      "model_errors": null,
+      "optimization_solver_calls": 0,
+      "retries": 0
+    },
+    "reference_warm_calls": 398,
+    "reference_status_histogram": {
+      "all inputs fixed": 3,
+      "solved": 399
+    },
+    "longest_cycles": [
+      {
+        "cycle": 174,
+        "time_s": 134.8,
+        "state_timestamp_s": 134.8,
+        "start_monotonic_s": 36300.474025489,
+        "end_monotonic_s": 36313.020276297,
+        "planning_wall_s": 12.539835800998844,
+        "decision_communication_wall_s": 12.488224198001262,
+        "prediction_wall_s": 0.05161160299758194,
+        "reference_build_solve_check_s": 0.0061719860023004,
+        "reference_solver_wall_s": 0.0020477139987633564,
+        "acceptance_wall_s": 0.00641500700294273,
+        "future_check_wall_s": 12.485254284998518,
+        "total_cycle_wall_s": 12.546250808001787,
+        "control_budget_remaining_s": -12.346250808001788,
+        "prediction_budget_remaining_s": 0.44838839700241806,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 1.7763568394002505e-13,
+            "heading_rad": 0.0,
+            "speed_m_s": 4.836409051023338e-15,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 0.0,
+            "heading_rad": 0.0,
+            "speed_m_s": 0.0,
+            "steering_rad": 5.551115123125783e-17
+          }
+        },
+        "optimization_solver_calls": 2,
+        "retries": 0
+      },
+      {
+        "cycle": 355,
+        "time_s": 171.0,
+        "state_timestamp_s": 171.0,
+        "start_monotonic_s": 36323.950834399,
+        "end_monotonic_s": 36326.587144437,
+        "planning_wall_s": 2.6289844579951023,
+        "decision_communication_wall_s": 2.5659190399965155,
+        "prediction_wall_s": 0.06306541799858678,
+        "reference_build_solve_check_s": 0.005154535996553022,
+        "reference_solver_wall_s": 0.0018531169989728369,
+        "acceptance_wall_s": 0.00732558000163408,
+        "future_check_wall_s": 2.5638336100018932,
+        "total_cycle_wall_s": 2.6363100379967364,
+        "control_budget_remaining_s": -2.436310037996736,
+        "prediction_budget_remaining_s": 0.4369345820014132,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 0.0,
+            "heading_rad": 0.0,
+            "speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 1.9895296213508718e-13,
+            "heading_rad": 1.3322676295501878e-15,
+            "speed_m_s": 9.992007221626409e-15,
+            "steering_rad": 3.155443620884047e-29
+          }
+        },
+        "optimization_solver_calls": 2,
+        "retries": 0
+      },
+      {
+        "cycle": 177,
+        "time_s": 135.4,
+        "state_timestamp_s": 135.4,
+        "start_monotonic_s": 36313.125757427,
+        "end_monotonic_s": 36313.265608636,
+        "planning_wall_s": 0.13413225700060138,
+        "decision_communication_wall_s": 1.462200452806428e-05,
+        "prediction_wall_s": 0.13411763499607332,
+        "reference_build_solve_check_s": 0.012117124999349471,
+        "reference_solver_wall_s": 0.00909570099611301,
+        "acceptance_wall_s": 0.005718952001188882,
+        "future_check_wall_s": 0,
+        "total_cycle_wall_s": 0.13985120900179027,
+        "control_budget_remaining_s": 0.060148790998209745,
+        "prediction_budget_remaining_s": 0.3658823650039267,
+        "outcome": "committed",
+        "rejection_layer": null,
+        "exception": null,
+        "committed": true,
+        "solver_status": "solved",
+        "reference_status": "solved",
+        "model_errors": {
+          "A": {
+            "position_m": 8.526512829121202e-14,
+            "heading_rad": 0.0,
+            "speed_m_s": 8.049116928532385e-16,
+            "steering_rad": 0.0
+          },
+          "B": {
+            "position_m": 6.241400026237072e-11,
+            "heading_rad": 2.191269388163164e-11,
+            "speed_m_s": 4.884981308350689e-15,
+            "steering_rad": 8.881784197001252e-16
+          }
+        },
+        "optimization_solver_calls": 3,
+        "retries": 0
+      }
+    ],
+    "failure_scope": null,
+    "actual_sha256": "f90e8473e8ad41de5c8dc2528e2134c77e68a7bc926e7dbf119f23a059413cfb"
+  }
+}

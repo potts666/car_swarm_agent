@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "checks": [
+    "frozen entry --help",
+    "all local modules resolve from frozen source",
+    "ROOT/resource layout",
+    "AST parse",
+    "scene equality"
+  ],
+  "controller_predict_called": false,
+  "new_closed_loop_experiments": false,
+  "new_integrations": false,
+  "tests_are_version_references_only": true
+}

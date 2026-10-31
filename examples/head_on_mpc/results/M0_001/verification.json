@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "runs": 4,
+  "task_acceptance_passed": false,
+  "checks": [
+    "runtime source SHA256",
+    "runtime algorithms match current code",
+    "original scene unchanged",
+    "all-exit timing and committed samples",
+    "event ownership",
+    "retained acceptance outcomes",
+    "repeatable actual trajectories"
+  ],
+  "hashes": {
+    "analysis_source/report_m0.py": "e738926c59ef4e47e89741493011d9697bc0faac4990fae586a6e8ee3ffdddf1",
+    "analysis_source/test_m0.py": "61cb7fadab92edc9b8573657e3480ade86f15045944c1b84532156b6148fbc04",
+    "mainline_plan_v1.txt": "0c67e2d0024450bfddc868df22225ac3030eec8f506bb8762bc0b844b852c49f",
+    "report.md": "0e644e2d229630d4dbe8449f8234e3ddaf50f9eab761bec650d55b5367e74434",
+    "comparison.json": "fca0d61208c7f1166551fab982962b47c5e9dee27ce4797250489edbe554f55e",
+    "comparison.csv": "5f13c96c9b4568b6e0e1b94676fa1cdc2191eb62549dd3797faa7c961e5f5848",
+    "diagnostics.json": "5ca0817722dfdb433f40872950e8630ee8c15d93c671a32a527446c3ff14c2a1",
+    "repeatability.json": "b4c788fab871d50bec7bbcb2714d781415aed23e9abc3497d7eecff0cbe8eebf"
+  },
+  "regression_tests": {
+    "passed": true,
+    "count": 31
+  }
+}

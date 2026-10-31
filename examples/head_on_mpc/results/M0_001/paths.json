@@ -1,0 +1,272 @@
+{
+  "A": [
+    {
+      "length": 84.0,
+      "delta": 0.0,
+      "direction": 1,
+      "stage": "NAVIGATE",
+      "start": [
+        -40.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end": [
+        44.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "offset": 0.0,
+      "speed_cap": 2.0,
+      "admission_bound": 18.5,
+      "body_xmin": -41.0,
+      "body_xmax": 47.5,
+      "sweep_step_m": 0.01,
+      "sweep_check": {
+        "passed": true,
+        "residuals": {
+          "A": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    }
+  ],
+  "B": [
+    {
+      "length": 16.0,
+      "delta": 0.0,
+      "direction": 1,
+      "stage": "QUEUE_APPROACH",
+      "start": [
+        46.0,
+        0.0,
+        3.141592653589793,
+        0.0,
+        0.0
+      ],
+      "end": [
+        30.0,
+        1.959434878635765e-15,
+        3.141592653589793,
+        0.0,
+        0.0
+      ],
+      "offset": 0.0,
+      "speed_cap": 2.0,
+      "admission_bound": 16.0,
+      "body_xmin": 26.5,
+      "body_xmax": 47.0,
+      "sweep_step_m": 0.01,
+      "sweep_check": {
+        "passed": true,
+        "residuals": {
+          "B": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    },
+    {
+      "length": 4.336405486880494,
+      "delta": 0.4228539261329407,
+      "direction": 1,
+      "stage": "ENTRY",
+      "start": [
+        30.0,
+        1.959434878635765e-15,
+        3.141592653589793,
+        0.0,
+        0.0
+      ],
+      "end": [
+        26.031373033403113,
+        -1.4999999999999973,
+        3.8643269014032087,
+        0.0,
+        0.4228539261329407
+      ],
+      "offset": 16.0,
+      "speed_cap": 1.0,
+      "admission_bound": 4.336405486880494,
+      "body_xmin": 22.81107898841358,
+      "body_xmax": 31.0,
+      "sweep_step_m": 0.009991717711706209,
+      "sweep_check": {
+        "passed": true,
+        "residuals": {
+          "B": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    },
+    {
+      "length": 4.336405486880494,
+      "delta": -0.4228539261329407,
+      "direction": 1,
+      "stage": "ENTRY",
+      "start": [
+        26.031373033403113,
+        -1.4999999999999973,
+        3.8643269014032087,
+        0.0,
+        0.4228539261329407
+      ],
+      "end": [
+        22.062746066806227,
+        -2.9999999999999964,
+        3.141592653589793,
+        0.0,
+        -0.4228539261329407
+      ],
+      "offset": 20.336405486880494,
+      "speed_cap": 1.0,
+      "admission_bound": 4.336405486880494,
+      "body_xmin": 18.562746066806227,
+      "body_xmax": 27.376667078392646,
+      "sweep_step_m": 0.009991717711706209,
+      "sweep_check": {
+        "passed": true,
+        "residuals": {
+          "B": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    },
+    {
+      "length": 4.336405486880494,
+      "delta": -0.4228539261329407,
+      "direction": 1,
+      "stage": "RETURN",
+      "start": [
+        22.062746066806227,
+        -2.9999999999999964,
+        3.141592653589793,
+        0.0,
+        -0.4228539261329407
+      ],
+      "end": [
+        18.09411910020934,
+        -1.4999999999999964,
+        2.4188584057763776,
+        0.0,
+        -0.4228539261329407
+      ],
+      "offset": 24.67281097376099,
+      "speed_cap": 1.0,
+      "admission_bound": 1.0691137951525642,
+      "body_xmin": 14.873825055219807,
+      "body_xmax": 23.062746066806227,
+      "sweep_step_m": 0.009991717711706209,
+      "sweep_check": {
+        "passed": true,
+        "residuals": {
+          "B": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    },
+    {
+      "length": 4.336405486880494,
+      "delta": 0.4228539261329407,
+      "direction": 1,
+      "stage": "RETURN",
+      "start": [
+        18.09411910020934,
+        -1.4999999999999964,
+        2.4188584057763776,
+        0.0,
+        -0.4228539261329407
+      ],
+      "end": [
+        14.125492133612454,
+        3.552713678800501e-15,
+        3.141592653589793,
+        0.0,
+        0.4228539261329407
+      ],
+      "offset": 29.009216460641483,
+      "speed_cap": 1.0,
+      "admission_bound": 0.0,
+      "body_xmin": 10.625492133612454,
+      "body_xmax": 19.439413145198873,
+      "sweep_step_m": 0.009991717711706209,
+      "sweep_check": {
+        "passed": true,
+        "residuals": {
+          "B": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    },
+    {
+      "length": 58.125492133612454,
+      "delta": 0.0,
+      "direction": 1,
+      "stage": "DEPART",
+      "start": [
+        14.125492133612454,
+        3.552713678800501e-15,
+        3.141592653589793,
+        0.0,
+        0.4228539261329407
+      ],
+      "end": [
+        -44.0,
+        1.0671033467829816e-14,
+        3.141592653589793,
+        0.0,
+        0.0
+      ],
+      "offset": 33.34562194752198,
+      "speed_cap": 2.0,
+      "admission_bound": 0.0,
+      "body_xmin": -47.5,
+      "body_xmax": 15.125492133612454,
+      "sweep_step_m": 0.009999224519802589,
+      "sweep_check": {
+        "passed": true,
+        "residuals": {
+          "B": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          }
+        },
+        "minimum_gap_m": null
+      }
+    }
+  ]
+}

@@ -168,21 +168,33 @@ def subproblem(agents,linear_reference,linear_inputs,target,target_inputs,desire
             result=solver.solve(raise_error=False);raw_wall=time.perf_counter()-started
             status=result.info.status;iterations=int(result.info.iter);ok=result.info.status_val in (1,2)
             if result.x is not None:u[free]=result.x
+    stop_adjustments=[]
+    if ok:
+        for i,c in enumerate(CARS):
+            agent=agents[c];j=i*2*N
+            if agent.mode=='MOVE' and parameters[c]['stop_at_end']:
+                end_speed=agent.z[3]+scene['h']*u[j]
+                if agent.segment['direction']*end_speed<0.:
+                    # Correct the applied braking input before all affine and nonlinear checks.
+                    stopping_acceleration=-agent.z[3]/scene['h']
+                    stop_adjustments.append(dict(car=c,raw_acceleration=float(u[j]),acceleration=float(stopping_acceleration),
+                        initial_speed=float(agent.z[3]),raw_end_speed=float(end_speed)))
+                    u[j]=stopping_acceleration
     residual=matrix@u;violation=max(0.,float(np.max(lo-residual)),float(np.max(residual-hi)))
     eig=float(np.linalg.eigvalsh(H)[0]);ok=bool(ok and np.isfinite(u).all() and violation<=scene['tolerance'] and eig>=-1e-10)
     predicted={c:np.vstack((agents[c].z,bases[c]+np.einsum('kij,j->ki',maps[c],u[i*2*N:(i+1)*2*N]))) for i,c in enumerate(CARS)}
     controls={c:u[i*2*N:(i+1)*2*N].reshape(N,2) for i,c in enumerate(CARS)}
     return controls,predicted,dict(accepted=ok,message=status,iterations=iterations,affine_violation=violation,
         hessian_min_eigenvalue=eig,variables=n,free_variables=len(free),affine_constraints=True,solver_wall_s=raw_wall,
-        objective_without_constant=float(.5*u@H@u+q@u),solution=u.tolist(),solver_called=bool(raw_wall>0))
+        objective_without_constant=float(.5*u@H@u+q@u),solution=u.tolist(),solver_called=bool(raw_wall>0),stop_input_adjustments=stop_adjustments)
 
 
 class BicycleController(Controller):
     mapping_tolerance=.00001
     future_deadline_s=30.
     reference_feasibility_band=10*NUMERICAL_BAND
-    def __init__(self,scene,path,updates):
-        super().__init__(scene,path);self.updates=updates
+    def __init__(self,scene,path,updates,reference_warm_start=False):
+        super().__init__(scene,path,reference_warm_start=reference_warm_start);self.updates=updates
 
     def predict(self,permissions):
         started=time.perf_counter();end=started+DEADLINE_S
@@ -239,6 +251,7 @@ class BicycleController(Controller):
         return controls,dense,result
 
     def commit(self,controls,predictions,record):
+        self.remember_reference(record)
         n=round(self.scene['h']/self.scene['sample_s']);h=self.scene['h']
         for c,a in self.agents.items():
             if a.mode=='MOVE':

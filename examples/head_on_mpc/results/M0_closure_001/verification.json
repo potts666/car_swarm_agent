@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "closed_under_original_contract": true,
+  "regression_tests": {
+    "passed": true,
+    "count": 34,
+    "modules": [
+      "test_longitudinal_joint",
+      "test_linearized_joint",
+      "test_m0",
+      "test_entry_bicycle",
+      "test_flag_e1",
+      "test_stopping_acceptance"
+    ]
+  },
+  "local_frozen_states": 11,
+  "hand_computed_cases": 11,
+  "paired_warm_full_runs": 4,
+  "original_failures_reproduced": true,
+  "no_validator_or_motion_changes_in_this_closure": true,
+  "hashes": {
+    "analysis_source/report_m0_closure.py": "293d943ae55090c0f21773fcdd4696286f99f1da6964823813aa6d34ead4a8d8",
+    "analysis_source/test_stopping_acceptance.py": "d38c7a9d79e879ba64ff19fca53b8903b352bcb16e9eceae1698fc16a8801541",
+    "analysis_source/check_m0_stops.py": "5d5991a4034b3d414fbb7edd0126b3d9836470ba1ef041a3ddbd2569cea1ae49",
+    "analysis_source/freeze_m0_stops.py": "cc502938b57aea8542d2100551e8ba8e7da04f7ac38a403f50929b8a93c62663",
+    "classification.json": "398234149b8e879936821ea4117c1996e74cd110dc8dc93c2a3ab00cd5751c39",
+    "hand_cases.json": "1abbf052dddd0595ea73bf37fa02ae3e2bbbb6265e879e65a3277110808bbc31",
+    "report.md": "7ccbd701e92a3dbdef76d7d254507549d861c41406cc40f7c92434874eef9eee",
+    "comparison.csv": "1c19c9e4fe8cae51e345e9f9794548c678880c6a873aae91f94bf182b610012e",
+    "diagnostics.json": "c3bbd4a645352e706e096c0327ee199be2aa974a86f0329533a8c9b1825bf728",
+    "repeatability.json": "2597f2a5a0ae97bf3542282cdea25ad5ec9ab3c4b528312da6ad23ccf3a16630",
+    "closure.json": "f8941d68c5d6d6726fe753a7c3d30d96b6ba8384182e10864c4a473f376b96e9"
+  },
+  "evidence_origin_sha256": {
+    "examples/head_on_mpc/results/B1&B2-T1/report.md": "00e4a215db0992ea3a26f497b948c6c1f44b2df5f283f4d949d215764e4ec624",
+    "examples/head_on_mpc/results/B1&B2-T1/verification.json": "56a4cadd77b38d479f6829a8235e677368e4d274f4e63be1009eb8cf9f2f967a",
+    "examples/head_on_mpc/results/M0_001/report.md": "0e644e2d229630d4dbe8449f8234e3ddaf50f9eab761bec650d55b5367e74434",
+    "examples/head_on_mpc/results/M0_001/provenance.json": "73cb9e535a107b1cf242fe2533ee1045e2946c606fe3664661854203e236a7b7"
+  }
+}

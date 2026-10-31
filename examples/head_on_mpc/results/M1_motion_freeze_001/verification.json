@@ -1,0 +1,96 @@
+{
+  "artifact_integrity_passed": true,
+  "maintenance_runtime_equivalent": true,
+  "configuration_equivalent": true,
+  "declared_environment_equivalent": true,
+  "original_full_acceptance_passed": true,
+  "both_goals_reached": true,
+  "protocol_passed": true,
+  "timing_complete": true,
+  "observed_deadline_misses": {
+    "repaired_r1": {
+      "control_period_200ms": 2,
+      "prediction_budget_500ms": 0
+    },
+    "repaired_r2": {
+      "control_period_200ms": 2,
+      "prediction_budget_500ms": 0
+    }
+  },
+  "independent_full_acceptance_reused": true,
+  "new_independent_reintegration": false,
+  "packaging_smoke_check_passed": true,
+  "regression_evidence_reused": {
+    "count": 34,
+    "tests_version_checked": true,
+    "rerun": false
+  },
+  "per_run": {
+    "repaired_r1": {
+      "artifact_integrity_passed": true,
+      "both_goals_reached": true,
+      "original_full_acceptance_passed": true,
+      "protocol_passed": true,
+      "timing_complete": true,
+      "observed_deadline_misses": {
+        "control_period_200ms": 2,
+        "prediction_budget_500ms": 0
+      },
+      "future_witness_and_execution_consistency_passed": true,
+      "independent_validation_reused": true,
+      "new_integration_executed": false
+    },
+    "repaired_r2": {
+      "artifact_integrity_passed": true,
+      "both_goals_reached": true,
+      "original_full_acceptance_passed": true,
+      "protocol_passed": true,
+      "timing_complete": true,
+      "observed_deadline_misses": {
+        "control_period_200ms": 2,
+        "prediction_budget_500ms": 0
+      },
+      "future_witness_and_execution_consistency_passed": true,
+      "independent_validation_reused": true,
+      "new_integration_executed": false
+    },
+    "unrepaired_r1": {
+      "artifact_integrity_passed": true,
+      "both_goals_reached": true,
+      "original_full_acceptance_passed": false,
+      "protocol_passed": true,
+      "timing_complete": true,
+      "observed_deadline_misses": {
+        "control_period_200ms": 2,
+        "prediction_budget_500ms": 0
+      },
+      "future_witness_and_execution_consistency_passed": true,
+      "independent_validation_reused": true,
+      "new_integration_executed": false
+    },
+    "unrepaired_r2": {
+      "artifact_integrity_passed": true,
+      "both_goals_reached": true,
+      "original_full_acceptance_passed": false,
+      "protocol_passed": true,
+      "timing_complete": true,
+      "observed_deadline_misses": {
+        "control_period_200ms": 2,
+        "prediction_budget_500ms": 0
+      },
+      "future_witness_and_execution_consistency_passed": true,
+      "independent_validation_reused": true,
+      "new_integration_executed": false
+    }
+  },
+  "historical_B1": {
+    "artifact_integrity_passed": true,
+    "both_goals_reached": true,
+    "original_full_acceptance_passed": true,
+    "protocol_passed": true,
+    "timing_complete": false,
+    "current_environment_fair_performance_comparison": false
+  },
+  "committed_reference_seed_checks": 796,
+  "regression_test_bodies_copied": false
+}

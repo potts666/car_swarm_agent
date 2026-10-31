@@ -1,0 +1,911 @@
+{
+  "selected_implementation": "B2-C/M1-v1",
+  "versions": {
+    "source": "a9da250ab56a6da08ae417d7ab9863cb042e03e4108a63b380856a5089c5af9f",
+    "config": "3a0af019bf9d34a2cd672ed425805c26d74bc2777e2817cb49a8808bef73029a",
+    "acceptance": "4ce45e996385ae78758981e506fd4199e13169330a2a9d41cf3f5aa910c5a55d",
+    "scene": "b8777e03619411c6269f8defc72e23232fbc54b336e776bdecfa01365ae3d676"
+  },
+  "maintenance_owner": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts",
+  "authoritative_frozen_runtime": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source",
+  "frozen_snapshot_is_evidence_not_maintenance_directory": true,
+  "runtime_files": [
+    {
+      "name": "bicycle_core.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/bicycle_core.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/bicycle_core.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/bicycle_core.py",
+      "sha256": "6d272725086c93618910c6b1f295d382745ba62533682fedb4de6ca988a34be4",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "flag_constraints.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/flag_constraints.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/flag_constraints.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/flag_constraints.py",
+      "sha256": "111eba1b4d0bca6647737f12920c502f556743ebad8005dc000b8cb51c1689ef",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "head_on_core.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/head_on_core.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/head_on_core.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/head_on_core.py",
+      "sha256": "9e724e960808516bdc60e984cb46690b7a6794d91a0f7a2913568e95b16272d5",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "linearized_joint.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/linearized_joint.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/linearized_joint.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/linearized_joint.py",
+      "sha256": "cf7631dff31518bc1bc4d2e10dd7dae1fc0a4c1025f346ca5f8e3b61c05d6785",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "longitudinal_joint.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/longitudinal_joint.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/longitudinal_joint.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/longitudinal_joint.py",
+      "sha256": "bcea2073cb158aef4bd1eef660c93a8c67acb0085dc0b559c3a66f698fa245be",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "pass_release_core.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/pass_release_core.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/pass_release_core.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/pass_release_core.py",
+      "sha256": "65b23478e780e945958c3b8e1addb318dc76f2c8081c5dd5fd1800e3cdbc598f",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "recovery_core.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/recovery_core.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/recovery_core.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/recovery_core.py",
+      "sha256": "5b70b4be795b0286be74dc31e7762f94920d0da9802a4dcc3f5cdaa6c2b14f7f",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "report_entry_bicycle.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/report_entry_bicycle.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/report_entry_bicycle.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/report_entry_bicycle.py",
+      "sha256": "745ad10e8141b2452b407190f9969f7878bd8817d1d7d126d859298fdbdeb1b6",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "ros_flag.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/ros_flag.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/ros_flag.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/ros_flag.py",
+      "sha256": "d038a9efd24d2a23446f38d3f750401f34bf5f8e5927964539c6056db37384d2",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "run_bicycle_e3.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_bicycle_e3.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/run_bicycle_e3.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/run_bicycle_e3.py",
+      "sha256": "44deeb00fa2b08917e5eb80ddc4dae98f1831c354849aa62bf0f2751f4ebe825",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "run_comparison.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_comparison.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/run_comparison.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/run_comparison.py",
+      "sha256": "66b3e32a773968f0c9d9d3272fb531bc06e2fedde5c428a29766995d3779e7a1",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "run_entry_bicycle.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_entry_bicycle.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/run_entry_bicycle.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/run_entry_bicycle.py",
+      "sha256": "7d1500a5b31047bca4fdf5da506eaed16a8ed8294ce9ec153046c0a8358c4feb",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "run_joint_e2.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_joint_e2.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/run_joint_e2.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/run_joint_e2.py",
+      "sha256": "9dfeec24525b182bd23c8bec0ac3ee25f8e8b7a8538e59c7a812355a01d11469",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "run_m0.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_m0.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/run_m0.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/run_m0.py",
+      "sha256": "5141c95f76646d0a9ada168dcd737004d404592a5967b47f39cd5d09b60c39aa",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "trajectory_acceptance.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/trajectory_acceptance.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/trajectory_acceptance.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/trajectory_acceptance.py",
+      "sha256": "36ad71f5cec952db6f4132142d2febcf0f5b84e6b21f614589053df44dccb08b",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "verify_entry_bicycle.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_entry_bicycle.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/verify_entry_bicycle.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/verify_entry_bicycle.py",
+      "sha256": "7ecc0bb00da12ce72396c448152f6214675e793ced4e2d03fa2a6e45757a438b",
+      "behavior_equivalent": true
+    },
+    {
+      "name": "verify_m0.py",
+      "maintenance_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m0.py",
+      "source_run_snapshot": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/closed_loop/source/verify_m0.py",
+      "frozen_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M1_motion_freeze_001/source/verify_m0.py",
+      "sha256": "ff2ba5ae628d371a25177785baff47445190d293fff7854ef3d756bcebe48a33",
+      "behavior_equivalent": true
+    }
+  ],
+  "acceptance_files": [
+    "bicycle_core.py",
+    "verify_entry_bicycle.py",
+    "verify_m0.py",
+    "run_joint_e2.py"
+  ],
+  "core_locations": {
+    "linearized_joint.py": {
+      "continuous_jacobians": 21,
+      "rk4_jacobians": 31,
+      "condensed": 44,
+      "body_support": 56,
+      "freeze_corridors": 63,
+      "subproblem": 97,
+      "BicycleController": 192,
+      "row": 99,
+      "__init__": 196,
+      "predict": 199,
+      "commit": 253
+    },
+    "longitudinal_joint.py": {
+      "pose": 15,
+      "routes": 30,
+      "Agent": 66,
+      "response": 117,
+      "build_qp": 122,
+      "solve": 181,
+      "Controller": 238,
+      "__init__": 239,
+      "segment": 74,
+      "finished": 78,
+      "advance": 81,
+      "parameters": 101,
+      "row": 129,
+      "prepare": 243,
+      "predict": 246,
+      "remember_reference": 286,
+      "commit": 292,
+      "future_witness": 305
+    },
+    "ros_flag.py": {
+      "Channel": 12,
+      "RosFlag": 40,
+      "__init__": 41,
+      "request": 118,
+      "release": 133,
+      "grant": 31,
+      "record": 73,
+      "wait": 77,
+      "send": 84,
+      "on_channel": 88,
+      "on_state": 102,
+      "publish_state": 109,
+      "ready": 127,
+      "constraints": 140,
+      "close": 152
+    },
+    "run_joint_e2.py": {
+      "run_b1": 25,
+      "verify_ros": 150,
+      "verify_future_execution": 174,
+      "comparison": 195,
+      "render": 248,
+      "main": 266,
+      "event": 30
+    },
+    "verify_m0.py": {
+      "verify": 12
+    },
+    "verify_entry_bicycle.py": {
+      "read_jsonl": 14,
+      "load_rows": 18,
+      "vectors": 23,
+      "replay": 27,
+      "check_series": 43,
+      "metrics": 65,
+      "verify_policy": 97,
+      "verify": 204,
+      "rhs": 29
+    }
+  },
+  "analysis_only_changes_since_run": [
+    "check_m0_stops.py",
+    "freeze_m0_stops.py"
+  ],
+  "analysis_changes_are_outside_selected_import_closure": true,
+  "regression_evidence": {
+    "source": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M0_closure_001/verification.json",
+    "count": 34,
+    "rerun": false,
+    "test_sha256": {
+      "test_entry_bicycle.py": "acbc65be4e188633c4f2c4035dfa030f2a2130a0af83df63d100e9802920a1e5",
+      "test_stopping_acceptance.py": "d38c7a9d79e879ba64ff19fca53b8903b352bcb16e9eceae1698fc16a8801541",
+      "test_m0.py": "61cb7fadab92edc9b8573657e3480ade86f15045944c1b84532156b6148fbc04",
+      "test_linearized_joint.py": "93aac51fe88d1a82fd23c5db8c1bfe38a22a64b1378f5998129a97938f2f5dde",
+      "test_flag_e1.py": "e3474ed7e041a08a49cbd659c411416c390771bddf213e04ae494ebd10d7d7d1",
+      "test_longitudinal_joint.py": "39ea498770c43f3997668502e5213acf08ab25c7e9d7d4edb1c8e3ec90ce1e61"
+    },
+    "version_locations": [
+      {
+        "name": "test_entry_bicycle.py",
+        "sha256": "acbc65be4e188633c4f2c4035dfa030f2a2130a0af83df63d100e9802920a1e5",
+        "immutable_source": "git c5cef9a0a4c1a4b104370abd7f05ebcd60e021a5:examples/head_on_mpc/tests/test_entry_bicycle.py"
+      },
+      {
+        "name": "test_stopping_acceptance.py",
+        "sha256": "d38c7a9d79e879ba64ff19fca53b8903b352bcb16e9eceae1698fc16a8801541",
+        "immutable_source": "examples/head_on_mpc/results/M0_closure_001/analysis_source/test_stopping_acceptance.py"
+      },
+      {
+        "name": "test_m0.py",
+        "sha256": "61cb7fadab92edc9b8573657e3480ade86f15045944c1b84532156b6148fbc04",
+        "immutable_source": "examples/head_on_mpc/results/M0_closure_001/closed_loop/source/test_m0.py"
+      },
+      {
+        "name": "test_linearized_joint.py",
+        "sha256": "93aac51fe88d1a82fd23c5db8c1bfe38a22a64b1378f5998129a97938f2f5dde",
+        "immutable_source": "examples/head_on_mpc/results/M0_closure_001/closed_loop/source/test_linearized_joint.py"
+      },
+      {
+        "name": "test_flag_e1.py",
+        "sha256": "e3474ed7e041a08a49cbd659c411416c390771bddf213e04ae494ebd10d7d7d1",
+        "immutable_source": "git c5cef9a0a4c1a4b104370abd7f05ebcd60e021a5:examples/head_on_mpc/tests/test_flag_e1.py"
+      },
+      {
+        "name": "test_longitudinal_joint.py",
+        "sha256": "39ea498770c43f3997668502e5213acf08ab25c7e9d7d4edb1c8e3ec90ce1e61",
+        "immutable_source": "examples/head_on_mpc/results/M0_closure_001/closed_loop/source/test_longitudinal_joint.py"
+      }
+    ],
+    "test_bodies_copied": false
+  },
+  "B1_source_hashes_checked": true,
+  "T1_resolved_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/B1&B2-T1",
+  "T1_requested_alias": "B1&B2-T1-03 not present; same-origin archive located by recorded SHA256",
+  "raw_evidence": [
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/actual.csv",
+      "sha256": "f90e8473e8ad41de5c8dc2528e2134c77e68a7bc926e7dbf119f23a059413cfb",
+      "bytes": 991965,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/checks.jsonl",
+      "sha256": "d7fa8938fcf5f9e44bcf23aeb358c43ef1fe277c7f2ca148d337ae89a89c45ed",
+      "bytes": 315817,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/config.json",
+      "sha256": "796ad354c8f72ae315c2b2d10b16ed738f2ca36f68fa51513d5735382890fc6b",
+      "bytes": 2514,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/constraints.jsonl",
+      "sha256": "bad4934a6437ee8ac464abffc869ec00a08159d21dab4bdf67a2017c2ad03ecb",
+      "bytes": 205339,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/detections.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/events.jsonl",
+      "sha256": "e2f8e6cae344ac8390dba31e1f9e8e7b66255e62e12d99e54a60ea2cadc4289f",
+      "bytes": 850,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/future_diagnostics.jsonl",
+      "sha256": "f79f9c25d6b5c1bb5170ac18dd007586b84c655f869942788528dbbe219fd89b",
+      "bytes": 9174877,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/future_execution_consistency.json",
+      "sha256": "0772dd66150a9b4221ab8918bd46b3cefc881f00d72aa543d15e616322a1b978",
+      "bytes": 717,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/independent_validation.json",
+      "sha256": "ad10ff16831bf1ac24b9103cdbbcdbf4c5f4e6598b93d4ac0aa851066c2b49e4",
+      "bytes": 6011,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/messages.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/metrics_e3.json",
+      "sha256": "217daf33864f484534d3a9cd19b3ba5408098b72efb0772046ff933db8d9a8f9",
+      "bytes": 2205,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/planning.json",
+      "sha256": "cfe54d4a0b6d29e30abf8856f1c1d20dd8706270f3ab25ba17533c47e6aa8850",
+      "bytes": 502834,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/predictions.jsonl",
+      "sha256": "30b1018484a06e58202c7012219f3d3c7df4eaffa5c248e9bd447a588060e3b0",
+      "bytes": 3255626,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/recomputed_metrics.json",
+      "sha256": "17ab60fbaa43c835f97a2402c39de6c031f8fa778c6251b891dec7a22c9a7beb",
+      "bytes": 2245,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/release_witness_A.jsonl",
+      "sha256": "87bd5b140e0bb7c7f86839cafe432ad9e3ff18da1f3dd46a6a8ee35bb6e52d5a",
+      "bytes": 20301,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/release_witness_B.jsonl",
+      "sha256": "2071772c6ea8c76deb442a4ca569af801b48a197373525e73c343860f553906e",
+      "bytes": 4744,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/ros_messages.jsonl",
+      "sha256": "45268e524a1c47b23a51f90432925a68e878b8bbfc94cbc347ba6501bfdc436d",
+      "bytes": 6306,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/ros_validation.json",
+      "sha256": "86cf59abc3a0e880da62b4bcd37e83e517a333f19042af429741570ddbb2b7c6",
+      "bytes": 104,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/solves.jsonl",
+      "sha256": "309c1d1013fbe37ac0860d109fd3ad322bdfc5d47480178e49a17ed4a97f58e7",
+      "bytes": 13561887,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/summary.json",
+      "sha256": "3ab878c4f35cb41d1118d126958639f2c16c741f87a5d192e901238f25bd38d5",
+      "bytes": 512,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r1/validation.json",
+      "sha256": "d2d4f05be6c78e39765864de0dece6a638a0477ceb7d9c9e546811ad7e0dedb6",
+      "bytes": 4369,
+      "role": "raw_and_checks_repaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/actual.csv",
+      "sha256": "f90e8473e8ad41de5c8dc2528e2134c77e68a7bc926e7dbf119f23a059413cfb",
+      "bytes": 991965,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/checks.jsonl",
+      "sha256": "385e61d2dc8976777f48dc8a1471544c17aaf6bddf88d05d28649677961402b3",
+      "bytes": 315820,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/config.json",
+      "sha256": "796ad354c8f72ae315c2b2d10b16ed738f2ca36f68fa51513d5735382890fc6b",
+      "bytes": 2514,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/constraints.jsonl",
+      "sha256": "bad4934a6437ee8ac464abffc869ec00a08159d21dab4bdf67a2017c2ad03ecb",
+      "bytes": 205339,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/detections.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/events.jsonl",
+      "sha256": "e2f8e6cae344ac8390dba31e1f9e8e7b66255e62e12d99e54a60ea2cadc4289f",
+      "bytes": 850,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/future_diagnostics.jsonl",
+      "sha256": "4dcd46453ee8abb00c217d1f3a0fa0a99358fa2bd088347e5ccda180ba09206b",
+      "bytes": 9174850,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/future_execution_consistency.json",
+      "sha256": "0772dd66150a9b4221ab8918bd46b3cefc881f00d72aa543d15e616322a1b978",
+      "bytes": 717,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/independent_validation.json",
+      "sha256": "1b71b22812a13b3aed5610e468a031778dcfbb8bf205ef4e7c02df4a649f91e6",
+      "bytes": 6011,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/messages.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/metrics_e3.json",
+      "sha256": "bd34aa7460ab508023956d9b62a69a34371ed143a8dd2ecf4f04c1711a974abd",
+      "bytes": 2205,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/planning.json",
+      "sha256": "449f3eed71f323a0f6b95eb22499a506018e669aea13fa40ee2722f6c2154de9",
+      "bytes": 503118,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/predictions.jsonl",
+      "sha256": "30b1018484a06e58202c7012219f3d3c7df4eaffa5c248e9bd447a588060e3b0",
+      "bytes": 3255626,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/recomputed_metrics.json",
+      "sha256": "792513811949f9199c2bd0f6b52299d6a5d2c08a003fe02d477e41f7033f2218",
+      "bytes": 2245,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/release_witness_A.jsonl",
+      "sha256": "64e5f99fcceef09ff2032a64de5dd16d5a701f07236a5182a6d79e9939923544",
+      "bytes": 20301,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/release_witness_B.jsonl",
+      "sha256": "4ad6bad94d74db214e31b9bb37ee56c64a04e7fc1924ab842ad5218146dd0ca1",
+      "bytes": 4745,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/ros_messages.jsonl",
+      "sha256": "9f7ea09ceadac9e40a3193ae8d6ea5725524949d0a4d925623f0317ed10bba0c",
+      "bytes": 6324,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/ros_validation.json",
+      "sha256": "86cf59abc3a0e880da62b4bcd37e83e517a333f19042af429741570ddbb2b7c6",
+      "bytes": 104,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/solves.jsonl",
+      "sha256": "5dfa273bc08fd6849066141b29f27aa758b7fe65c47c137f211c389f2b2851f1",
+      "bytes": 13561815,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/summary.json",
+      "sha256": "6f799159bd2cad4fda1079d58dd6ff711a7e7dfad0d67c2a72b114bf64eb637f",
+      "bytes": 512,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/repaired_r2/validation.json",
+      "sha256": "73390429673c1de4e3b0dcad5f609f085b9065c9ee98c00b54d1b9336e1cbe5a",
+      "bytes": 4369,
+      "role": "raw_and_checks_repaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/actual.csv",
+      "sha256": "06ee0c42a2bfd1da0f05a7bba6487b13087a6ac47c3786a01f0f251f5227995a",
+      "bytes": 1001804,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/checks.jsonl",
+      "sha256": "0b5077bc7eefcf7bcea67a2874eb834657be41b7afdef72c4e11a234ac707ab4",
+      "bytes": 318092,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/config.json",
+      "sha256": "8fe29dce717c5a5896ef7cbdd093eb260b9ebc9238df462a756685fa468c9412",
+      "bytes": 2516,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/constraints.jsonl",
+      "sha256": "f6b7f65facfecef5ad4b76d555557e251ba730474d662a66978bcc50fde62cea",
+      "bytes": 207038,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/detections.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/events.jsonl",
+      "sha256": "6701cd9e71175cb326fcd063e4e925445e6fcd82433af8354a3c5c895006bb0a",
+      "bytes": 851,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/future_diagnostics.jsonl",
+      "sha256": "dd84b238dfb1c5dc1495e81a2e179c97402ed8dabaa5a43b2b1958a4fbef2d02",
+      "bytes": 9279070,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/future_execution_consistency.json",
+      "sha256": "becc23badaf51f4605d2a8b5c94b2bc3c34c43c3dfb1993769d37fd105a6b68b",
+      "bytes": 717,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/independent_validation.json",
+      "sha256": "eb6f51e76d725ea8c70fa600ef4fefa6f321a35578b6fd5feafe42e2f89776db",
+      "bytes": 6045,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/messages.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/metrics_e3.json",
+      "sha256": "93ec6b0d53f4dfac526096491f947a9cb467e7af4a9a736874ac23b90de7a9e3",
+      "bytes": 2208,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/planning.json",
+      "sha256": "708c9b036fde86e6ff7db054901a3b44a7816dd9927a7b8e329e001f502e17c0",
+      "bytes": 506236,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/predictions.jsonl",
+      "sha256": "def8b2f3751a32e64496c1b8e4f87a9d7601e4938da0424d8bd6d35a9e10609c",
+      "bytes": 3282966,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/recomputed_metrics.json",
+      "sha256": "271d46598626a593b986e48343eda3e3c7df87f5a82ea8414ce90def33681d09",
+      "bytes": 2275,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/release_witness_A.jsonl",
+      "sha256": "52fb4585d5aa9e5292d6c8b9184c4caf075756ce6b7c63daedd5a5c4fb1c48d8",
+      "bytes": 20541,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/release_witness_B.jsonl",
+      "sha256": "9a34c63cfc6c8aa3026a6b793b0881cfd172235267880d9f404469255e585482",
+      "bytes": 4822,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/ros_messages.jsonl",
+      "sha256": "784f654594da2948d5fe38d2e8699407e6fa4b7772d5b1d8f1695d467a426423",
+      "bytes": 6292,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/ros_validation.json",
+      "sha256": "86cf59abc3a0e880da62b4bcd37e83e517a333f19042af429741570ddbb2b7c6",
+      "bytes": 104,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/solves.jsonl",
+      "sha256": "e77bc9811109547c2367ff573e1cda79fd2e916ba38397e7b29699901c1ed4d7",
+      "bytes": 13634466,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/summary.json",
+      "sha256": "aff96162710c1a21c18944e5a4f084197a7fbda387c5ecc299d6a80129a255cc",
+      "bytes": 512,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r1/validation.json",
+      "sha256": "20f210bf1135c3ef74d041b78418bdc2ca43b33ac8636dab2bb5351dd11602f7",
+      "bytes": 4399,
+      "role": "raw_and_checks_unrepaired_r1"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/actual.csv",
+      "sha256": "06ee0c42a2bfd1da0f05a7bba6487b13087a6ac47c3786a01f0f251f5227995a",
+      "bytes": 1001804,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/checks.jsonl",
+      "sha256": "4e07abb932d6578342cdec0bb1ea9f695518cd9afa04781117b19f2f8328381f",
+      "bytes": 318082,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/config.json",
+      "sha256": "8fe29dce717c5a5896ef7cbdd093eb260b9ebc9238df462a756685fa468c9412",
+      "bytes": 2516,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/constraints.jsonl",
+      "sha256": "f6b7f65facfecef5ad4b76d555557e251ba730474d662a66978bcc50fde62cea",
+      "bytes": 207038,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/detections.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/events.jsonl",
+      "sha256": "6701cd9e71175cb326fcd063e4e925445e6fcd82433af8354a3c5c895006bb0a",
+      "bytes": 851,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/future_diagnostics.jsonl",
+      "sha256": "274e1741bcaa8668c17ad851350abeb89c121e5fdc6b9678a7f9bc271b988edd",
+      "bytes": 9279066,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/future_execution_consistency.json",
+      "sha256": "becc23badaf51f4605d2a8b5c94b2bc3c34c43c3dfb1993769d37fd105a6b68b",
+      "bytes": 717,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/independent_validation.json",
+      "sha256": "3f716d1f288271e3e39bbb00b32aff6d3042e91aab529e8aa5d595a0ed75a508",
+      "bytes": 6046,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/messages.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/metrics_e3.json",
+      "sha256": "c5a4320b0d47bd95cbdad72029c0489ebd76c12964722f6f1f723c4b900641be",
+      "bytes": 2210,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/planning.json",
+      "sha256": "c3b266c03e3a83ffd4b608875caa5b210713527c1f1b91406a435383891c6a4f",
+      "bytes": 507049,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/predictions.jsonl",
+      "sha256": "def8b2f3751a32e64496c1b8e4f87a9d7601e4938da0424d8bd6d35a9e10609c",
+      "bytes": 3282966,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/recomputed_metrics.json",
+      "sha256": "adcae919aa71efe92a5be77837474e4a324c48efd3460214e85aea638454b28d",
+      "bytes": 2276,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/release_witness_A.jsonl",
+      "sha256": "9de6255ba025d8abbd75a2dcd0dbb4f09ff42fc3a78cecd5d59662c3d0c5d6e9",
+      "bytes": 20540,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/release_witness_B.jsonl",
+      "sha256": "99666ce4855dcfe5a49d613579a54bfe3cea6ea606c83831ba12732f70d6ec7d",
+      "bytes": 4821,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/ros_messages.jsonl",
+      "sha256": "4d390bbd2c3a008057a93882b4c50cdc2f98bdaac6028cd5251dca69d2cc20c1",
+      "bytes": 6320,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/ros_validation.json",
+      "sha256": "86cf59abc3a0e880da62b4bcd37e83e517a333f19042af429741570ddbb2b7c6",
+      "bytes": 104,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/solves.jsonl",
+      "sha256": "5e99471fd03fbc2ae52198386aefc8f4b800467ab38209a79898713e127344f7",
+      "bytes": 13634511,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/summary.json",
+      "sha256": "0fa8f083feeded318747d5b8c72201da4624f23d7d690f5985cd5fcfae54c17d",
+      "bytes": 512,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/M0_closure_001/closed_loop/unrepaired_r2/validation.json",
+      "sha256": "e0d37818ac56cb9484d0ab69396653adfc7af9f0f27b95a88336132448a3d79f",
+      "bytes": 4400,
+      "role": "raw_and_checks_unrepaired_r2"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/actual.csv",
+      "sha256": "0f21d098236988738b390310ed1ad72fb7551c39c7db92ef7cce8b943d5c5919",
+      "bytes": 937906,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/checks.jsonl",
+      "sha256": "db147f66c085654dae532d3a9bd22159f2aff06f8ee1a41e7d30fb64e62f12c1",
+      "bytes": 316002,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/config.json",
+      "sha256": "fba63ab7cd0cc177660cb3f5d54e961a6616f4812e1cfa66d88e7bd34184585d",
+      "bytes": 2476,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/constraints.jsonl",
+      "sha256": "2169da9ada035e6fd41f7cea24645537f52f7ad8a9bed89fe0a15d2b631a27b5",
+      "bytes": 207730,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/detections.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/events.jsonl",
+      "sha256": "d69ab7ebdecd3d062d23d89edc29dc0c4fd16d48676f6af270a409e3d22b309c",
+      "bytes": 849,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/future_diagnostics.jsonl",
+      "sha256": "adf7ffcd8b4573825bfae67e7d56604f927df8ef17be3740c7f5a7e0986e7914",
+      "bytes": 576965,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/future_execution_consistency.json",
+      "sha256": "c847155bc8f6bc463c6fdebf122ccdd5964b5fe2c5b936d6afab3b98b0e24869",
+      "bytes": 717,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/messages.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/metrics_e3.json",
+      "sha256": "a4fd7a46753dc361cf1c71e12e4e32116d1967c7748f34f3e7745f27808b3445",
+      "bytes": 2023,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/planning.json",
+      "sha256": "6b4ad927e9e86917c6f89728612a359dcf892ace6391ba7b3022634de124b0fb",
+      "bytes": 90199,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/predictions.jsonl",
+      "sha256": "6bf2142017321c78ee59b7b70d606dc213def8a53d4fe42be106a9984255e2ef",
+      "bytes": 3134844,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/recomputed_metrics.json",
+      "sha256": "74efce5a61bede30cd60dee9f1dd45d8d541ca11694558f952fb1cec34048ce8",
+      "bytes": 2230,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/release_witness_A.jsonl",
+      "sha256": "98d5960d1c5ddacd735cce9d54285221c5222b39f3e7f0a572778356e373a03e",
+      "bytes": 16529,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/release_witness_B.jsonl",
+      "sha256": "c400e394003d631fa7949dd4a228245f3a4a7a8dd5906c4431f5617db753e014",
+      "bytes": 3920,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/ros_messages.jsonl",
+      "sha256": "050cd839f596139914e6d1e5d12ad31b1ab67a88aabb74528f006b6af2442356",
+      "bytes": 6322,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/ros_validation.json",
+      "sha256": "86cf59abc3a0e880da62b4bcd37e83e517a333f19042af429741570ddbb2b7c6",
+      "bytes": 104,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/solves.jsonl",
+      "sha256": "bf8158cc1ec0debec42f136b33bbeb68e00ac459b65bf3d25097101f44a77af3",
+      "bytes": 871766,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/summary.json",
+      "sha256": "93cf439245af9c3bacabee739d7ae02715fa98e752bb995ad337ff8c55ed43a1",
+      "bytes": 536,
+      "role": "B1 historical diagnostic"
+    },
+    {
+      "path": "examples/head_on_mpc/results/bicycle_e3_002/B1/validation.json",
+      "sha256": "37a0d9d983b6037097aa2ace512791bf6e416425503836b387ae5ac86424f015",
+      "bytes": 4351,
+      "role": "B1 historical diagnostic"
+    }
+  ]
+}

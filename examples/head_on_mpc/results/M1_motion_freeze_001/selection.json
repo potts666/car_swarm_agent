@@ -1,0 +1,74 @@
+{
+  "M1_complete": true,
+  "selected_implementation": "B2-C/M1-v1",
+  "reference_implementation": "B1 historical completed diagnostic (bicycle_e3_002/B1)",
+  "source_version": "a9da250ab56a6da08ae417d7ab9863cb042e03e4108a63b380856a5089c5af9f",
+  "config_version": "3a0af019bf9d34a2cd672ed425805c26d74bc2777e2817cb49a8808bef73029a",
+  "acceptance_version": "4ce45e996385ae78758981e506fd4199e13169330a2a9d41cf3f5aa910c5a55d",
+  "selected_constructor": "BicycleController(scene, paths, updates=3, reference_warm_start=True)",
+  "evidence_runs": [
+    "M0_closure_001/closed_loop/repaired_r1",
+    "M0_closure_001/closed_loop/repaired_r2"
+  ],
+  "artifact_integrity_passed": true,
+  "both_goals_reached": true,
+  "original_full_acceptance_passed": true,
+  "protocol_passed": true,
+  "timing_complete": true,
+  "packaging_smoke_check_passed": true,
+  "new_experiments_executed": false,
+  "new_closed_loop_runs": 0,
+  "new_independent_reintegration": false,
+  "new_regression_execution": false,
+  "equivalence_checks": [
+    "all 17 transitive local runtime modules byte-equal to executed source",
+    "scene/configuration semantically equal",
+    "recorded environment/CPU/thread values equal",
+    "acceptance modules equal",
+    "34 test versions matched",
+    "original inputs/candidates/executed controls/cycle counts checked"
+  ],
+  "reasons": [
+    "both original tasks and acceptance pass",
+    "state and applied input traceable",
+    "versioned reproducible runtime and transparent timing",
+    "five-state two-input model suitable as centralized reference for M2 dependency design"
+  ],
+  "timing_limits": {
+    "observed_deadline_misses": {
+      "repaired_r1": {
+        "control_period_200ms": 2,
+        "prediction_budget_500ms": 0
+      },
+      "repaired_r2": {
+        "control_period_200ms": 2,
+        "prediction_budget_500ms": 0
+      }
+    },
+    "control_period_s": 0.2,
+    "prediction_budget_s": 0.5,
+    "future_witness_budget_s": 30.0,
+    "max_full_cycle_s": 12.808351270000003,
+    "hard_realtime": false
+  },
+  "centralized": true,
+  "DMPC_implemented": false,
+  "M2_dependency_gaps": [
+    "joint 64-variable reference optimization",
+    "joint 128-variable bicycle constraints",
+    "phase-dependent shared separation axis",
+    "deep-copied all-car future release witness",
+    "no peer prediction/version/age/compatibility exchange"
+  ],
+  "unproved": [
+    "universal optimality",
+    "arbitrary-state repair feasibility",
+    "continuous-time safety",
+    "recursive feasibility",
+    "online real-time",
+    "distributed coordination",
+    "verified online fallback"
+  ],
+  "B1_comparison": "historical diagnostic only, not matched timing/solver ranking",
+  "stop_condition": "freeze motion settings and hand over to M2; subsequent behavior/contract changes require separate versions"
+}

@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "original_full_task_acceptance_passed": true,
+  "runs": 4,
+  "frozen_cycles": [
+    121,
+    242,
+    403
+  ],
+  "frozen_repaired_candidates": 3,
+  "regression_tests": {
+    "passed": true,
+    "count": 31
+  },
+  "unchanged_from_M0_001": [
+    "reference QP and warm-start implementation",
+    "original independent validators",
+    "nonlinear integrator",
+    "ROS Flag"
+  ],
+  "checks": [
+    "source/input/frozen hashes",
+    "full original acceptance",
+    "zero sign-crossing failures",
+    "future witnesses and actual execution consistency",
+    "repeatable actual trajectories"
+  ],
+  "analysis_source_sha256": {
+    "report_m0.py": "0a6d1c42295c320e9430af8be4d99e02cae87f1439bb369d1311f26381917711",
+    "check_m0_stops.py": "15ba77b3e0d31a56cea71de62a27405bb31939f02d9fc6b98564fe8f2dad98e2",
+    "freeze_m0_stops.py": "9d2ed1347559a7afbd6b4c623bc02fd39327d669135d7505310663d0b22a7aa9"
+  }
+}

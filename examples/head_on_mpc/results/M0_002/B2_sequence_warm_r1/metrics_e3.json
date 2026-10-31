@@ -1,0 +1,67 @@
+{
+  "completed": true,
+  "unified_validation_passed": true,
+  "executed_prefix_validation_passed": true,
+  "ROS_validation_passed": true,
+  "failure": null,
+  "completion_sim_s": 80.4,
+  "attempted_control_cycles": 402,
+  "executed_control_cycles": 402,
+  "accepted_control_cycles": 402,
+  "reference_rejections": 0,
+  "rejected_subproblems": 0,
+  "cycle_acceptance_fraction": 1.0,
+  "minimum_sampled_gap_m": 1.1999221611504018,
+  "normalized_execution_effort": 19.934860907544227,
+  "endpoint_errors": {
+    "A": {
+      "position_m": 1.2119119929820954e-07,
+      "heading_rad": 0.0,
+      "speed_m_s": 2.6020852139652106e-18,
+      "steering_rad": 0.0
+    },
+    "B": {
+      "position_m": 6.001864031190962e-05,
+      "heading_rad": 1.7763568394002505e-15,
+      "speed_m_s": 2.6020852139652106e-18,
+      "steering_rad": 5.73016096670151e-16
+    }
+  },
+  "maximum_model_interface_errors": {
+    "position_m": 9.05940997069169e-06,
+    "heading_rad": 3.6389866906461066e-06,
+    "speed_m_s": 2.708944180085382e-14,
+    "steering_rad": 2.4424906541753444e-15
+  },
+  "maximum_position_model_error_m": 9.05940997069169e-06,
+  "maximum_heading_model_error_rad": 3.6389866906461066e-06,
+  "maximum_speed_model_error_m_s": 2.708944180085382e-14,
+  "main_reference_numeric_QPs": 399,
+  "main_bicycle_numeric_QPs": 411,
+  "future_reference_numeric_QPs": 272,
+  "future_bicycle_numeric_QPs": 278,
+  "update_count_histogram": {
+    "0": 0,
+    "1": 390,
+    "2": 12,
+    "3": 0
+  },
+  "accepted_subproblems": 414,
+  "attempted_subproblems": 414,
+  "maximum_QPs_per_main_cycle": 3,
+  "sequential_update_cycles": 12,
+  "deadline_rejections": 0,
+  "hessian_min_eigenvalue": 0.2221538747638788,
+  "maximum_affine_violation": 2.6856155801446846e-06,
+  "cycle_mean_ms": 98.82034355575995,
+  "cycle_max_ms": 12674.513564001245,
+  "cycles_over_200ms": 2,
+  "timed_cycles": 403,
+  "cycle_p50_ms": 54.9880620019394,
+  "cycle_p95_ms": 95.77415750027272,
+  "cycle_p99_ms": 128.3915603041534,
+  "prediction_planning_mean_ms": 93.35728565494344,
+  "future_check_wall_s": 15.089721639000345,
+  "total_policy_wall_s": 40.60672161399998,
+  "scope": "one scene; fractions are cycle counts, not scenario success probabilities"
+}

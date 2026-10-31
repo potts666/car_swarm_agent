@@ -1,0 +1,150 @@
+{
+  "B2_sequence_cold_r1": {
+    "passed": true,
+    "checks": [
+      {
+        "time_s": 134.8,
+        "holder": "A",
+        "residuals": {
+          "A": {
+            "actual_samples": 2281,
+            "witness_samples": 2281,
+            "max_state_error": 0.0
+          },
+          "B": {
+            "actual_samples": 2281,
+            "witness_samples": 2281,
+            "max_state_error": 0.0
+          }
+        }
+      },
+      {
+        "time_s": 171.0,
+        "holder": "B",
+        "residuals": {
+          "A": {
+            "actual_samples": 471,
+            "witness_samples": 471,
+            "max_state_error": 0.0
+          },
+          "B": {
+            "actual_samples": 471,
+            "witness_samples": 471,
+            "max_state_error": 0.0
+          }
+        }
+      }
+    ]
+  },
+  "B2_sequence_warm_r1": {
+    "passed": true,
+    "checks": [
+      {
+        "time_s": 134.8,
+        "holder": "A",
+        "residuals": {
+          "A": {
+            "actual_samples": 2281,
+            "witness_samples": 2281,
+            "max_state_error": 0.0
+          },
+          "B": {
+            "actual_samples": 2281,
+            "witness_samples": 2281,
+            "max_state_error": 0.0
+          }
+        }
+      },
+      {
+        "time_s": 171.0,
+        "holder": "B",
+        "residuals": {
+          "A": {
+            "actual_samples": 471,
+            "witness_samples": 471,
+            "max_state_error": 0.0
+          },
+          "B": {
+            "actual_samples": 471,
+            "witness_samples": 471,
+            "max_state_error": 0.0
+          }
+        }
+      }
+    ]
+  },
+  "B2_sequence_cold_r2": {
+    "passed": true,
+    "checks": [
+      {
+        "time_s": 134.8,
+        "holder": "A",
+        "residuals": {
+          "A": {
+            "actual_samples": 2281,
+            "witness_samples": 2281,
+            "max_state_error": 0.0
+          },
+          "B": {
+            "actual_samples": 2281,
+            "witness_samples": 2281,
+            "max_state_error": 0.0
+          }
+        }
+      },
+      {
+        "time_s": 171.0,
+        "holder": "B",
+        "residuals": {
+          "A": {
+            "actual_samples": 471,
+            "witness_samples": 471,
+            "max_state_error": 0.0
+          },
+          "B": {
+            "actual_samples": 471,
+            "witness_samples": 471,
+            "max_state_error": 0.0
+          }
+        }
+      }
+    ]
+  },
+  "B2_sequence_warm_r2": {
+    "passed": true,
+    "checks": [
+      {
+        "time_s": 134.8,
+        "holder": "A",
+        "residuals": {
+          "A": {
+            "actual_samples": 2281,
+            "witness_samples": 2281,
+            "max_state_error": 0.0
+          },
+          "B": {
+            "actual_samples": 2281,
+            "witness_samples": 2281,
+            "max_state_error": 0.0
+          }
+        }
+      },
+      {
+        "time_s": 171.0,
+        "holder": "B",
+        "residuals": {
+          "A": {
+            "actual_samples": 471,
+            "witness_samples": 471,
+            "max_state_error": 0.0
+          },
+          "B": {
+            "actual_samples": 471,
+            "witness_samples": 471,
+            "max_state_error": 0.0
+          }
+        }
+      }
+    ]
+  }
+}

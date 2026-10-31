@@ -1,0 +1,34 @@
+{
+  "source": "examples/head_on_mpc/results/M0_001/B2_sequence_warm_r1",
+  "original_hashes": {
+    "detections.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "summary.json": "b586fb1deb7d657324a617cff4a8ba170650f347091b3ca8333c53176f7aa7e1",
+    "planning.json": "873c46a0bbbcd3974cc794a9f18fcaa80be9bcf889d5648502d16bc588dee6f6",
+    "solves.jsonl": "8bf083f5059083419fa3a44c08a6979f187f7442ee21452a6fa8aa11ca1503e0",
+    "checks.jsonl": "116b9c9d9eecac111def216c28ca8dc5eb358b6b86b1a716674c4612234b49c3",
+    "events.jsonl": "6701cd9e71175cb326fcd063e4e925445e6fcd82433af8354a3c5c895006bb0a",
+    "independent_validation.json": "caf4fc5492141ff55e0052f7912756c26a30382043abd031f6079904ec82b54e",
+    "config.json": "bb1993fd107c7f057f5c308472329484d1e563c942a10f0371c0036e129311cb",
+    "predictions.jsonl": "def8b2f3751a32e64496c1b8e4f87a9d7601e4938da0424d8bd6d35a9e10609c",
+    "constraints.jsonl": "f6b7f65facfecef5ad4b76d555557e251ba730474d662a66978bcc50fde62cea",
+    "release_witness_B.jsonl": "aa1303aa92b833ab7e67f5e5ed3517f38d4fbcdc6de98bb63ebcf7feb1b40bf3",
+    "metrics_e3.json": "412440240900c97d6d0bc96c3e619e16de13a58f331c9d5c8e7ad43cdbbb2aee",
+    "ros_validation.json": "86cf59abc3a0e880da62b4bcd37e83e517a333f19042af429741570ddbb2b7c6",
+    "messages.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recomputed_metrics.json": "144fc7b2a987aab09381500c46a5b813bdb97640e76ee1150a62ca166c9f50e8",
+    "validation.json": "6793300075e127762a94213367a797b63b92b06cf84518193849e10885ee6145",
+    "release_witness_A.jsonl": "5a4fe85f695fef13848f36986d879d9646e2ab41ded79d59044ac01d1afb2284",
+    "ros_messages.jsonl": "cb574114f7e5fa0802ee6c2b710d6a91655a1f2dc6b2be12a68269daa4db68b6",
+    "future_execution_consistency.json": "becc23badaf51f4605d2a8b5c94b2bc3c34c43c3dfb1993769d37fd105a6b68b",
+    "future_diagnostics.jsonl": "61de3c1f08878f5b708b633e960fa89acfbbcbf718f1954a1398485a7f792a21",
+    "actual.csv": "06ee0c42a2bfd1da0f05a7bba6487b13087a6ac47c3786a01f0f251f5227995a"
+  },
+  "frozen_sha256": {
+    "cycle242.json": "0f6f2f6d663799c0f57d576278d88c13f9b96ac0ade8d44272f735efb5940273",
+    "cycle121_reference.npz": "eb72651bc1b4443e336987fa1d000fcfb730a38d7850a16a15860c0da58f7fc7",
+    "cycle121.json": "bfc51ff328e99756296a9558f77a9401e44f5f0b31ce60d7f2dc41be0841daba",
+    "cycle403.json": "77f6ce76a3a77295533417fbff0eea2c73e7b372ed0713eaaecb0d453a1af1ae",
+    "cycle242_reference.npz": "c2cf956ad9ebfb17d7eb19fd184620aa9100c94b5246f063a6df01e661331b39",
+    "cycle403_reference.npz": "138a23a06aab2054f21f99c1ab11467076a757f0e5ee2b034c53659fd12dd366"
+  }
+}

@@ -1,0 +1,12 @@
+{"time_s": 104.2, "kind": "request", "car": "A"}
+{"time_s": 104.2, "kind": "grant", "car": "A", "owner": "A"}
+{"time_s": 107.2, "kind": "request", "car": "B"}
+{"time_s": 107.2, "kind": "deny", "car": "B", "owner": "A"}
+{"time_s": 125.2, "kind": "waiting_ready", "car": "B", "pose": [22.06271623699125, -3.000003363279203, 3.141576460503329, -2.3161057151484775e-23, -3.191891195797325e-16]}
+{"time_s": 134.8, "kind": "release", "car": "A", "actual_body_tail_x": 26.596698356480285}
+{"time_s": 134.8, "kind": "grant", "car": "B", "owner": "B"}
+{"time_s": 134.8, "kind": "return_started", "car": "B"}
+{"time_s": 144.6, "kind": "car_completed", "car": "A"}
+{"time_s": 171.4, "kind": "release", "car": "B", "actual_body_tail_x": -26.871225288938007}
+{"time_s": 181.0, "kind": "car_completed", "car": "B"}
+{"time_s": 181.0, "kind": "both_tasks_completed"}

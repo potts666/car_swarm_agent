@@ -1,0 +1,30 @@
+{
+  "evidence_origin": [
+    "B1&B2-T1",
+    "M0_001"
+  ],
+  "historical_conclusion": "M0_001 warm runs reach both goals but fail three original sampled sign checks",
+  "kinetic_replay_matches_actual": true,
+  "reference_first_step_ends_positive": true,
+  "bicycle_first_input_overbrakes": true,
+  "physical_vs_acceptance": "Smooth bounded acceleration can cross zero between samples; original sign-product policy rejects it. This is not a dynamics discontinuity test.",
+  "parking_requirements": {
+    "arrived_s_tolerance_m": 1e-06,
+    "near_rest_for_braking_m_s": 1e-06,
+    "rest_for_phase_transition_m_s": 1e-12,
+    "goal_speed_tolerance_m_s": 0.025,
+    "original_sign_product_threshold_m2_s2": -1e-10
+  },
+  "decision": "Retain original acceptance contract and the existing smallest input correction before all validation; do not redefine acceptance to erase M0_001 failures.",
+  "ruled_out": [
+    "reference first-step negative velocity as direct source",
+    "state/log velocity discontinuity in the three old intervals",
+    "direct state/pose/WAIT reset as the repair",
+    "validator relaxation as the reason for success"
+  ],
+  "limitations": [
+    "sign-product policy is conservative and not equivalent to continuous physical parking",
+    "sampled checks do not prove continuous safety",
+    "no robustness/general-scenario guarantee"
+  ]
+}
