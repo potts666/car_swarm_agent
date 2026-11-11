@@ -1,0 +1,225 @@
+{
+  "actual_full_acceptance": true,
+  "actual_prefix_acceptance": true,
+  "violations": [],
+  "goals": {
+    "A1": true,
+    "A2": true,
+    "B1": true,
+    "B2": true
+  },
+  "physical": {
+    "passed": true,
+    "residuals": {
+      "A1": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.362467996202099e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "A2": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.340020974183176e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B1": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.3418584066116068e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B2": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.6799667124089979e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "pair_gap_m": 0.0
+    },
+    "pair_gaps_m": {
+      "A1:A2": 4.199906647302718,
+      "A1:B1": 1.1999980698173731,
+      "A1:B2": 1.1999999999999962,
+      "A2:B1": 1.1999995647025312,
+      "A2:B2": 1.1999999999999948,
+      "B1:B2": 1.5003004403285836
+    },
+    "minimum_gap_m": 1.1999980698173731
+  },
+  "component_replay_error": {
+    "A1": 6.124878382252064e-12,
+    "A2": 6.16751094639767e-12,
+    "B1": 6.16751094639767e-12,
+    "B2": 6.131983809609665e-12
+  },
+  "accumulated_replay_error": {
+    "A1": 1.1480238981675939e-10,
+    "A2": 1.6704859717719955e-10,
+    "B1": 1.6690648863004753e-10,
+    "B2": 1.1711875913533731e-10
+  },
+  "original_sign_check_passed": true,
+  "prediction_replay_error": 3.4440006402292056e-11,
+  "minimum_prediction_gap_m": 1.1999980698173731,
+  "protocol_passed": true,
+  "all_exit_timing_passed": true,
+  "local_information_boundary_passed": true,
+  "dimensions": {
+    "A1": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "A2": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "B1": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "B2": {
+      "reference": 32,
+      "bicycle": 64
+    }
+  },
+  "handoffs": [
+    {
+      "cycle": 44,
+      "kind": "handoff",
+      "old_owner": null,
+      "owner": "A1",
+      "version": 1,
+      "proposal_id": "44:1",
+      "plans": {
+        "A1": "eb652e6b2c592b34256320e293d57741d43b0eec08df29d410abf8e72fc4b4f5",
+        "A2": "2283f521e98c25dd53301c8b9068e973bb840af0c407eb0ec66d07fc8071727e",
+        "B1": "6ff00c61d434f4bcc4d852136837947f459cb11e3684147ec46e1eb56e2372a6",
+        "B2": "784a2eba827d59b23c091d3a67d8f4f49717497e08b627ab9d0e8c914bd6692b"
+      },
+      "eligible": [
+        "A1"
+      ],
+      "previous_direction": null
+    },
+    {
+      "cycle": 224,
+      "kind": "handoff",
+      "old_owner": "A1",
+      "owner": "B1",
+      "version": 2,
+      "proposal_id": "224:2",
+      "plans": {
+        "A1": "d94e5ba28a0347034cc1f001e8e12f1a402c85be713503f2f27ffd2808e38628",
+        "A2": "4258ae04a4c2c8af215d7463174caba408d6baed26c1fc32237ba7dbf582bcac",
+        "B1": "b4e7c83512b0d8546a24aa9742541002d66cce0d4a751397454bcae6410c68f7",
+        "B2": "a0002fdd4e04bd72d72a173f924e50a0aed03344cccf6047d37bb892bcb5d738"
+      },
+      "eligible": [
+        "A2",
+        "B1"
+      ],
+      "previous_direction": 1
+    },
+    {
+      "cycle": 404,
+      "kind": "handoff",
+      "old_owner": "B1",
+      "owner": "A2",
+      "version": 3,
+      "proposal_id": "404:3",
+      "plans": {
+        "A1": "447cb7e5c7c9fee5fa24a7aaf99a6a769a7cd10ce5bf6923c105d15fa57a6e7c",
+        "A2": "e0c99c0eb686836ecf8682f1ec65467e5c17963141d1207add26621b7efc61e1",
+        "B1": "cb2dc80e3c30694c11e86801f135671adeb601cff51d182a2a359cc4fd30bfcc",
+        "B2": "9195902338dd0fea1f413c2ff773822d3805b61f7c205eb55438183ec20c5484"
+      },
+      "eligible": [
+        "A2",
+        "B2"
+      ],
+      "previous_direction": -1
+    },
+    {
+      "cycle": 584,
+      "kind": "handoff",
+      "old_owner": "A2",
+      "owner": "B2",
+      "version": 4,
+      "proposal_id": "584:4",
+      "plans": {
+        "A1": "5252e01ee8a4ddfa161a1d1803d6c117464bd5f8f6eb69e3a0ae9f1420639c69",
+        "A2": "6e362d1080fbd48a93c1a5c170986623956f6173bf0e28857b5d7dfa75203a7a",
+        "B1": "deff773423b9bfe31e1aa57a4695ddde8cca290f08df7406094f73e013245c3a",
+        "B2": "f08d5916f1b2f14f97c6a7e7067bb95fe2ede5172a7579c1a15f38d5cc7a020d"
+      },
+      "eligible": [
+        "B2"
+      ],
+      "previous_direction": 1
+    },
+    {
+      "cycle": 764,
+      "kind": "handoff",
+      "old_owner": "B2",
+      "owner": null,
+      "version": 5,
+      "proposal_id": "764:5",
+      "plans": {
+        "A1": "48fa75d057807f0860b0274d298f47beca9b32a77da9a1721dfe21272e815148",
+        "A2": "eff841b707655098581b1a45f0568d02e17fb87707a4a673fbf0fca9ff1271e1",
+        "B1": "2d43bd6d6df0b98dacd385f96776483ffa980f72f4a50096a944c315eaf72bc4",
+        "B2": "0cfe05e5a8396d9dd1689972e102d30336be8f5b6cd9f755c9643d475a33e0b0"
+      },
+      "eligible": [],
+      "previous_direction": -1
+    }
+  ],
+  "waiting": {
+    "A1": {
+      "request_to_grant_s": 7.200000000000001,
+      "ready_to_grant_s": 0.0,
+      "grant_s": 8.8
+    },
+    "B1": {
+      "request_to_grant_s": 40.400000000000006,
+      "ready_to_grant_s": 21.800000000000004,
+      "grant_s": 44.800000000000004
+    },
+    "A2": {
+      "request_to_grant_s": 64.80000000000001,
+      "ready_to_grant_s": 45.40000000000001,
+      "grant_s": 80.80000000000001
+    },
+    "B2": {
+      "request_to_grant_s": 89.60000000000001,
+      "ready_to_grant_s": 54.80000000000001,
+      "grant_s": 116.80000000000001
+    }
+  },
+  "first_ready_s": {
+    "A1": 8.8,
+    "B1": 23.0,
+    "A2": 35.4,
+    "B2": 62.0
+  },
+  "first_protection_entry_s": {
+    "A1": 10.98,
+    "B1": 46.980000000000004,
+    "A2": 82.98000000000002,
+    "B2": 118.98000000000002
+  },
+  "first_actual_tail_clear_s": {
+    "A1": 44.800000000000004,
+    "B1": 80.80000000000001,
+    "A2": 116.80000000000001,
+    "B2": 152.8
+  },
+  "idle_time_s": {
+    "no_candidate": 1.5999999999999999,
+    "candidates_not_ready": 7.200000000000004
+  },
+  "independent_audit_wall_s": 103.0330221459999,
+  "geometry_shared_with_M1": true,
+  "central_future_not_run": true
+}

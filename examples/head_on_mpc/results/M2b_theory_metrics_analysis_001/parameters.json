@@ -1,0 +1,13 @@
+{
+  "horizon_source": "per-run config",
+  "prediction_alignment": "old[h/sample:] vs new[:common_length]",
+  "replay_tolerance": 1e-12,
+  "phase_tolerance": "per-run scene tolerance",
+  "new_controls_or_closed_loops": false,
+  "frozen_analysis_source": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_stage1_001/sources/2fca87292e7690de571bd36864f8ea629d9ae4d908ff19926627ccd72931572e",
+  "physical_source_sha256": {
+    "bicycle_core.py": "6d272725086c93618910c6b1f295d382745ba62533682fedb4de6ca988a34be4",
+    "m2b_scene.py": "15ae7c6555d37d11d3fbd98e09431b64b773532a1f826f2c92001862d384ecf3"
+  },
+  "candidate_scope": "physical/protocol and selected phase/terminal rows; full QP/trust/corridor NOT reconstructed"
+}

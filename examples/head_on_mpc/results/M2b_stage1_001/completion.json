@@ -1,0 +1,18 @@
+{
+  "full_acceptance": true,
+  "physical_sign_protocol_boundary_passed": true,
+  "motion_exactly_matches_historical_r1": true,
+  "paired_probe_motion_equal": true,
+  "affected_tests": 21,
+  "injected_rejection_exit_passed": true,
+  "parallel_execution_implemented": false,
+  "continuous_steering_validated": false,
+  "hard_realtime_claim": false,
+  "stage1_complete": true,
+  "delivery_corrections": {
+    "isolated_supplemental_snapshot_tests_passed": 21,
+    "unmeasured_cache_hits_are_null": true,
+    "handoff_test_count_and_command_consistent": true,
+    "no_simulation_rerun": true
+  }
+}

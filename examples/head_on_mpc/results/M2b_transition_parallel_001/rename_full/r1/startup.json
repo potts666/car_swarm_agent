@@ -1,0 +1,55 @@
+{
+  "workers": [
+    {
+      "ok": true,
+      "pid": 14512,
+      "role": "A1",
+      "affinity": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "threads": 1
+    },
+    {
+      "ok": true,
+      "pid": 14511,
+      "role": "A2",
+      "affinity": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "threads": 1
+    },
+    {
+      "ok": true,
+      "pid": 14510,
+      "role": "B1",
+      "affinity": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "threads": 1
+    },
+    {
+      "ok": true,
+      "pid": 14509,
+      "role": "B2",
+      "affinity": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "threads": 1
+    }
+  ],
+  "worker_startup_wall_s": 0.27632270899630385,
+  "dds_discovery_wall_s": 0.24757836599746952,
+  "total_startup_wall_s": 0.5239453679969301
+}

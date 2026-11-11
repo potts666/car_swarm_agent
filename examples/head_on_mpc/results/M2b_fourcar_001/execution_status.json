@@ -1,0 +1,50 @@
+{
+  "groups": {
+    "C-FIFO": {
+      "control_runs_finished": true,
+      "audits": {
+        "r1": {
+          "actual_full_acceptance": true,
+          "prefix": true,
+          "violations": []
+        },
+        "r2": {
+          "actual_full_acceptance": true,
+          "prefix": true,
+          "violations": []
+        }
+      }
+    },
+    "L-FIFO": {
+      "control_runs_finished": true,
+      "audits": {
+        "r1": {
+          "actual_full_acceptance": true,
+          "prefix": true,
+          "violations": []
+        },
+        "r2": {
+          "actual_full_acceptance": true,
+          "prefix": true,
+          "violations": []
+        }
+      }
+    },
+    "L-ALT": {
+      "control_runs_finished": true,
+      "audits": {
+        "r1": {
+          "actual_full_acceptance": true,
+          "prefix": true,
+          "violations": []
+        },
+        "r2": {
+          "actual_full_acceptance": true,
+          "prefix": true,
+          "violations": []
+        }
+      }
+    }
+  },
+  "completed": true
+}

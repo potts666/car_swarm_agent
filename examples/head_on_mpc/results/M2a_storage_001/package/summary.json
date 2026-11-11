@@ -1,0 +1,25 @@
+{
+  "experiments_completed": true,
+  "M2b_entry_criteria_met": true,
+  "actual_full_acceptance": {
+    "C-new_r1": true,
+    "L-new_r1": true,
+    "C-new_r2": true,
+    "L-new_r2": true
+  },
+  "new_release_contract_passed": {
+    "C-new_r1": true,
+    "L-new_r1": true,
+    "C-new_r2": true,
+    "L-new_r2": true
+  },
+  "local_information_boundary_passed": {
+    "L-new_r1": true,
+    "L-new_r2": true
+  },
+  "old_contract_equivalence_claimed": false,
+  "centralized_future_diagnostic_is_not_acceptance": true,
+  "debug_failures_retained": true,
+  "hard_realtime_claimed": false,
+  "recursive_feasibility_claimed": false
+}

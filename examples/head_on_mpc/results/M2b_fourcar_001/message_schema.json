@@ -1,0 +1,121 @@
+{
+  "protocol": "M2b-release-v1",
+  "log_format": "M2b-logs-v2-shift-ref",
+  "cars": [
+    "A1",
+    "A2",
+    "B1",
+    "B2"
+  ],
+  "coordination_order": [
+    "A1",
+    "B1",
+    "A2",
+    "B2"
+  ],
+  "max_rounds": 1,
+  "wire": "reliable ROS2 std_msgs/String canonical JSON envelope, full predictions sent",
+  "envelope_fields": [
+    "sender",
+    "receiver",
+    "kind",
+    "cycle",
+    "sequence",
+    "payload"
+  ],
+  "logged_send_extra_fields": [
+    "event",
+    "wall_ns",
+    "application_bytes"
+  ],
+  "logged_receive_fields": [
+    "event",
+    "cycle",
+    "sequence",
+    "wall_ns",
+    "receiver"
+  ],
+  "state_fields": [
+    "car",
+    "z",
+    "mode",
+    "index",
+    "progress_m",
+    "queue_arrived",
+    "left_queue",
+    "steering_complete",
+    "context"
+  ],
+  "state_units": [
+    "m",
+    "m",
+    "rad",
+    "m/s",
+    "rad"
+  ],
+  "context_fields": [
+    "cycle",
+    "state_time_s",
+    "owner",
+    "permission_version",
+    "proposal_id",
+    "conditional",
+    "released"
+  ],
+  "plan_fields": [
+    "car",
+    "context",
+    "report",
+    "commands",
+    "states",
+    "kind",
+    "origin",
+    "shifted_from",
+    "id"
+  ],
+  "plan_shapes": {
+    "commands": [
+      32,
+      3
+    ],
+    "states": [
+      321,
+      5
+    ]
+  },
+  "command_fields": [
+    "a_m_s2",
+    "omega_rad_s",
+    "stage"
+  ],
+  "plan_id": "SHA256 of canonical complete plan excluding id",
+  "ack_fields": [
+    "car",
+    "context",
+    "plans",
+    "accepted"
+  ],
+  "commit_fields": [
+    "token",
+    "effective",
+    "activated_proposal_id"
+  ],
+  "storage_only_references": {
+    "messages.payload": {
+      "$plan": "complete plan ID"
+    },
+    "seed.states": {
+      "$shift_states": "previous committed final ID",
+      "skip": "10 dense samples",
+      "tail": "10 explicit new states"
+    },
+    "diagnostic._details": {
+      "$details": "SHA256 of stored numerical JSON body"
+    }
+  },
+  "notes": [
+    "wire payload is not reduced by storage references",
+    "all four ACKs bind the same four final IDs and context",
+    "immutable shared QP objects require full package or explicit restoration"
+  ]
+}

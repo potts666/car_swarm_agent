@@ -1,0 +1,87 @@
+{
+  "actual_full_acceptance": true,
+  "actual_prefix_acceptance": true,
+  "both_goals_reached": {
+    "A": true,
+    "B": true
+  },
+  "physical_and_original_sign_check_passed": true,
+  "release_and_plan_version_contract_passed": true,
+  "protocol_violations": [],
+  "component_equations": {
+    "A": {
+      "passed": true,
+      "residuals": {
+        "x_m": 7.105427357601002e-15,
+        "y_m": 0.0,
+        "psi_rad": 0.0,
+        "v_m_s": 4.440892098500626e-16,
+        "delta_rad": 0.0,
+        "time_s": 1.81903103690928e-14,
+        "acceleration_m_s2": 6.068651581259132e-08,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 3.552713678800501e-15,
+        "body_width_m": 0.0
+      },
+      "gear_sign_jump": false
+    },
+    "B": {
+      "passed": true,
+      "residuals": {
+        "x_m": 6.892264536872972e-13,
+        "y_m": 4.0456527017340704e-13,
+        "psi_rad": 4.440892098500626e-16,
+        "v_m_s": 4.440892098500626e-16,
+        "delta_rad": 5.551115123125783e-17,
+        "time_s": 1.81903103690928e-14,
+        "acceleration_m_s2": 1.9442596244090282e-07,
+        "steering_rate_rad_s": 0.0,
+        "body_length_m": 4.440892098500626e-15,
+        "body_width_m": 2.6645352591003757e-15
+      },
+      "gear_sign_jump": false
+    }
+  },
+  "accumulated_replay_error": {
+    "A": 1.3855583347321954e-12,
+    "B": 1.163504848022967e-10
+  },
+  "trajectory": {
+    "passed": true,
+    "residuals": {
+      "A": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 2.2159060542037423e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 2.1348844558843894e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "pair_gap_m": 0.0
+    },
+    "minimum_gap_m": 1.1999221611731135
+  },
+  "maximum_final_prediction_replay_error": 1.1721290604782553e-10,
+  "minimum_final_prediction_gap_m": 1.1999221611731135,
+  "timing_complete": true,
+  "local_information_boundary_passed": null,
+  "local_decision_dimensions": {
+    "A": {
+      "reference_max": 0,
+      "bicycle_max": 0
+    },
+    "B": {
+      "reference_max": 0,
+      "bicycle_max": 0
+    }
+  },
+  "independent_audit_wall_s": 25.49498500300001,
+  "geometry_verifier_shared": true,
+  "contract": "M2a-release-v1",
+  "old_full_future_contract_not_claimed": true,
+  "centralized_future_diagnostic": "separate offline file, not part of actual acceptance"
+}

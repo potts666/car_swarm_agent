@@ -1,0 +1,12 @@
+{
+  "observation_counts": {
+    "partial_terminal_failures": 24,
+    "partial_phase_failures": 30
+  },
+  "unique_observed_cases": 54,
+  "reconstructed_cases": 94,
+  "restored_cycles": 882,
+  "private_queue_source": "Agent rules + previous actual submitted controls; current final is never used to infer queue",
+  "new_rejected": 0,
+  "missing_debug_v2": "source_version and diagnostic matrix absent; full OCP not reconstructible"
+}

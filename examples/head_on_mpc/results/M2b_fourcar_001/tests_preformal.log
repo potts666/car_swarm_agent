@@ -1,0 +1,19 @@
+test_conditional_commit_cannot_execute_before_activation (test_m2b_control.ControlTests.test_conditional_commit_cannot_execute_before_activation) ... ok
+test_corrupt_repair_and_moving_initialization_rejected (test_m2b_control.ControlTests.test_corrupt_repair_and_moving_initialization_rejected) ... ok
+test_follower_cannot_merge_or_advance_from_earlier_request (test_m2b_control.ControlTests.test_follower_cannot_merge_or_advance_from_earlier_request) ... ok
+test_frozen_stop_prefix_avoids_next_cycle_numeric_infeasibility (test_m2b_control.ControlTests.test_frozen_stop_prefix_avoids_next_cycle_numeric_infeasibility) ... ok
+test_joint_and_local_variables_all_pairs_and_cache (test_m2b_control.ControlTests.test_joint_and_local_variables_all_pairs_and_cache) ... ok
+test_mixed_versions_invalidate_all_acks (test_m2b_protocol.ProtocolTests.test_mixed_versions_invalidate_all_acks) ... ok
+test_no_overtake_preserve_request_and_cancel_history (test_m2b_protocol.ProtocolTests.test_no_overtake_preserve_request_and_cancel_history) ... ok
+test_release_auth_body_and_atomic_ack (test_m2b_protocol.ProtocolTests.test_release_auth_body_and_atomic_ack) ... ok
+test_rules (test_m2b_protocol.ProtocolTests.test_rules) ... ok
+test_fourcar_restore_and_missing_content (test_m2b_recording.RecordingTests.test_fourcar_restore_and_missing_content) ... ok
+test_infinite_diagnostic_bounds_are_explicit_not_invalid_json (test_m2b_recording.RecordingTests.test_infinite_diagnostic_bounds_are_explicit_not_invalid_json) ... ok
+test_normal_diagnostics_pruned (test_m2b_recording.RecordingTests.test_normal_diagnostics_pruned) ... ok
+test_DONE_obstacles_not_removed (test_m2b_scene.SceneTests.test_DONE_obstacles_not_removed) ... ok
+test_fixed_scene_and_all_pairs (test_m2b_scene.SceneTests.test_fixed_scene_and_all_pairs) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.135s
+
+OK

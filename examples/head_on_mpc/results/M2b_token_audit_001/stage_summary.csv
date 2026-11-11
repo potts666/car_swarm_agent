@@ -1,0 +1,8 @@
+stage,usage_records,root_records,guardian_records,input_tokens,cached_input_tokens,cache_write_input_tokens,output_tokens,reasoning_output_tokens,total_tokens,program_wall_s,wall_scope,attribution
+编码/场景门禁,22,11,11,2242760,2107904,0,19368,5682,2262128,,not independently measured,"tokens measured; semantic stage attributed by operation/observation window, not exact causal allocation"
+调试修复/回归,63,34,29,8960098,8832768,0,60903,29763,9021001,1217.9334398590072,"debug Σ, overlapping; not elapsed time","tokens measured; semantic stage attributed by operation/observation window, not exact causal allocation"
+正式运行/监看等待,68,62,6,16715587,16685056,0,43421,39381,16759008,3534.7109650489997,six formal online sums,"tokens measured; semantic stage attributed by operation/observation window, not exact causal allocation"
+离线验收观察,9,6,3,1869720,1598464,0,7306,6377,1877026,609.1754705699996,six formal independent audit sums,"tokens measured; semantic stage attributed by operation/observation window, not exact causal allocation"
+记录整理/归档工具开发,32,17,15,6228546,5990656,0,32407,19299,6260953,666.2702796129995,formal exports + one measured storage pass only; other work unmeasured,"tokens measured; semantic stage attributed by operation/observation window, not exact causal allocation"
+归档恢复/交付核查,32,17,15,6382228,6306432,0,23434,14343,6405662,,not independently measured,"tokens measured; semantic stage attributed by operation/observation window, not exact causal allocation"
+打包/最终交付,8,5,3,1978809,1972352,0,7623,5268,1986432,,not independently measured,"tokens measured; semantic stage attributed by operation/observation window, not exact causal allocation"

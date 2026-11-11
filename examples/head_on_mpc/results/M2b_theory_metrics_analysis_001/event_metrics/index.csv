@@ -1,0 +1,18 @@
+run,metrics_source,file,equality_basis,own_alias_protocol_verified
+C-FIFO/r1,C-FIFO/r1,C-FIFO__r1.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+C-FIFO/r2,C-FIFO/r1,C-FIFO__r1.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+L-FIFO/r1,L-FIFO/r1,L-FIFO__r1.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+L-FIFO/r2,L-FIFO/r1,L-FIFO__r1.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+L-ALT/r1,L-FIFO/r1,L-FIFO__r1.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+L-ALT/r2,L-FIFO/r1,L-FIFO__r1.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+debug_v1,debug_v1,debug_v1.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+debug_v2,debug_v2,debug_v2.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+debug_v3,debug_v3,debug_v3.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+debug_c1,debug_c1,debug_c1.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+stage1/full_L_FIFO,L-FIFO/r1,L-FIFO__r1.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+stage1/A_uncached,stage1/A_uncached,stage1__A_uncached.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+stage1/B_cached,stage1/A_uncached,stage1__A_uncached.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+stage1/B_no_profiler,stage1/A_uncached,stage1__A_uncached.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+stage1/phase_probe_uncached,stage1/phase_probe_uncached,stage1__phase_probe_uncached.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+stage1/phase_probe_cached,stage1/phase_probe_uncached,stage1__phase_probe_uncached.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True
+stage1/fault_injection,stage1/fault_injection,stage1__fault_injection.jsonl.gz,actual logical hash + complete plan bytes + scenario identity,True

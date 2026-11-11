@@ -1,0 +1,10 @@
+{
+  "physical_scenarios": 1,
+  "excluded_metadata": [
+    "source_version",
+    "log_format"
+  ],
+  "reason": "the second raw config fingerprint was solely a log_format difference; raw input byte SHA retained",
+  "raw_motion_groups": 8,
+  "motion_groups_are_not_independent_scenarios": true
+}

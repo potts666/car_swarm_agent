@@ -1,0 +1,32 @@
+{
+  "C-FIFO/r1": {
+    "seed_plans": 3540,
+    "maximum_prefix_or_tail_error": 7.105427357601002e-14,
+    "passed": true
+  },
+  "C-FIFO/r2": {
+    "seed_plans": 3540,
+    "maximum_prefix_or_tail_error": 7.105427357601002e-14,
+    "passed": true
+  },
+  "L-FIFO/r1": {
+    "seed_plans": 3528,
+    "maximum_prefix_or_tail_error": 7.105427357601002e-14,
+    "passed": true
+  },
+  "L-FIFO/r2": {
+    "seed_plans": 3528,
+    "maximum_prefix_or_tail_error": 7.105427357601002e-14,
+    "passed": true
+  },
+  "L-ALT/r1": {
+    "seed_plans": 3528,
+    "maximum_prefix_or_tail_error": 7.105427357601002e-14,
+    "passed": true
+  },
+  "L-ALT/r2": {
+    "seed_plans": 3528,
+    "maximum_prefix_or_tail_error": 7.105427357601002e-14,
+    "passed": true
+  }
+}

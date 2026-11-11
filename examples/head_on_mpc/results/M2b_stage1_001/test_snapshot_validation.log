@@ -1,0 +1,26 @@
+test_cache_does_not_hide_collision_or_released_reentry (test_m2b_stage1.StageOneTests.test_cache_does_not_hide_collision_or_released_reentry) ... ok
+test_cached_ack_still_checks_four_vehicle_geometry_and_missing_versions (test_m2b_stage1.StageOneTests.test_cached_ack_still_checks_four_vehicle_geometry_and_missing_versions) ... ok
+test_candidate_subtraction_partitions_grey_phase (test_m2b_stage1.StageOneTests.test_candidate_subtraction_partitions_grey_phase) ... ok
+test_content_change_stale_state_and_repair_without_prediction_rejected (test_m2b_stage1.StageOneTests.test_content_change_stale_state_and_repair_without_prediction_rejected) ... ok
+test_exclusive_timings_partition_root_and_aliases_restore (test_m2b_stage1.StageOneTests.test_exclusive_timings_partition_root_and_aliases_restore) ... ok
+test_hit_and_returned_state_cannot_poison_cache (test_m2b_stage1.StageOneTests.test_hit_and_returned_state_cannot_poison_cache) ... ok
+test_scene_and_validator_changes_miss (test_m2b_stage1.StageOneTests.test_scene_and_validator_changes_miss) ... ok
+test_mixed_versions_invalidate_all_acks (test_m2b_protocol.ProtocolTests.test_mixed_versions_invalidate_all_acks) ... ok
+test_no_overtake_preserve_request_and_cancel_history (test_m2b_protocol.ProtocolTests.test_no_overtake_preserve_request_and_cancel_history) ... ok
+test_release_auth_body_and_atomic_ack (test_m2b_protocol.ProtocolTests.test_release_auth_body_and_atomic_ack) ... ok
+test_rules (test_m2b_protocol.ProtocolTests.test_rules) ... ok
+test_conditional_commit_cannot_execute_before_activation (test_m2b_control.ControlTests.test_conditional_commit_cannot_execute_before_activation) ... ok
+test_corrupt_repair_and_moving_initialization_rejected (test_m2b_control.ControlTests.test_corrupt_repair_and_moving_initialization_rejected) ... ok
+test_follower_cannot_merge_or_advance_from_earlier_request (test_m2b_control.ControlTests.test_follower_cannot_merge_or_advance_from_earlier_request) ... ok
+test_frozen_stop_prefix_avoids_next_cycle_numeric_infeasibility (test_m2b_control.ControlTests.test_frozen_stop_prefix_avoids_next_cycle_numeric_infeasibility) ... ok
+test_joint_and_local_variables_all_pairs_and_cache (test_m2b_control.ControlTests.test_joint_and_local_variables_all_pairs_and_cache) ... ok
+test_hand_computed_accept_and_reject_examples (test_stopping_acceptance.StoppingAcceptanceTests.test_hand_computed_accept_and_reject_examples) ... ok
+test_position_and_actual_rest_are_both_required_for_phase_change (test_stopping_acceptance.StoppingAcceptanceTests.test_position_and_actual_rest_are_both_required_for_phase_change) ... ok
+test_smooth_crossing_rejected_by_policy_not_dynamics (test_stopping_acceptance.StoppingAcceptanceTests.test_smooth_crossing_rejected_by_policy_not_dynamics) ... ok
+test_DONE_obstacles_not_removed (test_m2b_scene.SceneTests.test_DONE_obstacles_not_removed) ... ok
+test_fixed_scene_and_all_pairs (test_m2b_scene.SceneTests.test_fixed_scene_and_all_pairs) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 1.756s
+
+OK

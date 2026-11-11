@@ -1,0 +1,24 @@
+Full optimized L-FIFO started; automatic independent audit follows.
+r1 cycle 0 sim_s 0.0 owner None done []
+r1 cycle 50 sim_s 10.0 owner A1 done []
+r1 cycle 100 sim_s 20.0 owner A1 done []
+r1 cycle 150 sim_s 30.0 owner A1 done []
+r1 cycle 200 sim_s 40.0 owner A1 done []
+Polishing not needed - no active set detected at optimal point
+r1 cycle 250 sim_s 50.0 owner B1 done []
+r1 cycle 300 sim_s 60.0 owner B1 done []
+Polishing not needed - no active set detected at optimal point
+r1 cycle 350 sim_s 70.0 owner B1 done ['A1']
+r1 cycle 400 sim_s 80.0 owner B1 done ['A1']
+r1 cycle 450 sim_s 90.0 owner A2 done ['A1']
+r1 cycle 500 sim_s 100.0 owner A2 done ['A1']
+r1 cycle 550 sim_s 110.0 owner A2 done ['A1', 'B1']
+r1 cycle 600 sim_s 120.0 owner B2 done ['A1', 'B1']
+r1 cycle 650 sim_s 130.0 owner B2 done ['A1', 'B1']
+r1 cycle 700 sim_s 140.0 owner B2 done ['A1', 'B1']
+r1 cycle 750 sim_s 150.0 owner B2 done ['A1', 'B1', 'A2']
+Polishing not needed - no active set detected at optimal point
+r1 cycle 800 sim_s 160.0 owner None done ['A1', 'B1', 'A2']
+r1 cycle 850 sim_s 170.0 owner None done ['A1', 'B1', 'A2']
+r1 {"arm": "local", "policy": "fifo-ready", "all_completed": true, "completion_sim_s": 176.4, "completion_per_car_s": {"A1": 68.60000000000001, "B1": 104.2, "A2": 140.20000000000002, "B2": 176.4}, "failure": null, "failure_layer": null, "online_wall_s": 543.7741041140034, "export_wall_s": 34.38350615699892, "committed_cycles": 882, "timed_cycles": 883, "last_states": {"A1": [46.00005484341871, 2.999998286950418, 4.469308551555731e-07, 3.469446951953614e-18, -9.26442286059391e-23], "A2": [46.00030642282177, -2.999999124593306, -3.454913539537709e-07, 8.673617379884035e-19, 3.970466940254533e-23], "B1": [-46.00030668901381, 2.9999991037418465, 3.1415923037638906, 2.6020852139652106e-18, -9.26442286059391e-23], "B2": [-46.00005490866419, -2.9999982873750457, 3.1415931003197355, 8.673617379884035e-19, 7.940933880509066e-23]}, "old_central_future_diagnostic": "not executed; no online future gate"}
+/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1 True prefix True violations []

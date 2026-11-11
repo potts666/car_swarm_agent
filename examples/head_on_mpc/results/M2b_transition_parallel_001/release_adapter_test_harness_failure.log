@@ -1,0 +1,28 @@
+E
+======================================================================
+ERROR: test_all_saved_resource_events_and_bad_reports (__main__.AdapterTests.test_all_saved_resource_events_and_bad_reports)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_transition_parallel_001/test_release_adapter.py", line 34, in test_all_saved_resource_events_and_bad_reports
+    trial=copy.deepcopy(channel);bad=copy.deepcopy(release);before=canonical(vars(trial))
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/m2a_protocol.py", line 13, in canonical
+    def canonical(value):return json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type set is not JSON serializable
+
+----------------------------------------------------------------------
+Ran 1 test in 0.698s
+
+FAILED (errors=1)

@@ -1,0 +1,48 @@
+{
+  "working_directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane",
+  "host_platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "numerical_versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.11.4",
+    "osqp": "1.1.3",
+    "joblib": "1.4.2",
+    "matplotlib": "3.6.3"
+  },
+  "commands": [
+    "OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/m2b_stage1_repro_deps python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_theory_metrics_analysis_001/test_analysis.py",
+    "OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/m2b_stage1_repro_deps python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_theory_metrics_analysis_001/analyze.py",
+    "OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/m2b_stage1_repro_deps python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_theory_metrics_analysis_001/summarize.py",
+    "OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/m2b_stage1_repro_deps python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_theory_metrics_analysis_001/counterexamples.py",
+    "OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/m2b_stage1_repro_deps python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_theory_metrics_analysis_001/make_dictionary.py",
+    "OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/m2b_stage1_repro_deps python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_theory_metrics_analysis_001/plots.py",
+    "OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/m2b_stage1_repro_deps python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_theory_metrics_analysis_001/verify_shared_diagnostics.py",
+    "OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/m2b_stage1_repro_deps python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_theory_metrics_analysis_001/verify_finish.py",
+    "OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/m2b_stage1_repro_deps python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_theory_metrics_analysis_001/make_report.py"
+  ],
+  "frozen_source_version": "2fca87292e7690de571bd36864f8ea629d9ae4d908ff19926627ccd72931572e",
+  "maintained_runtime_matches_frozen_baseline": {
+    "m2b_scene.py": true,
+    "m2b_control.py": true,
+    "m2b_protocol.py": true,
+    "m2b_recording.py": true,
+    "m2b_timing.py": true,
+    "run_m2b.py": true,
+    "verify_m2b.py": true,
+    "report_m2b.py": true,
+    "m2a_logs.py": true,
+    "m2a_local.py": true,
+    "m2a_protocol.py": true,
+    "bicycle_core.py": true,
+    "linearized_joint.py": true,
+    "longitudinal_joint.py": true,
+    "verify_entry_bicycle.py": true,
+    "run_entry_bicycle.py": true,
+    "recovery_core.py": true
+  },
+  "control_simulation_rerun": false,
+  "optimizer_called": false,
+  "settings_or_permissions_changed": false,
+  "analysis_wall_s": null,
+  "analysis_wall_reason": "multi-script analysis wall not instrumented; no model-time conversion"
+}

@@ -1,0 +1,16 @@
+test_WAIT_label_at_wrong_position_is_not_ready (test_m2a.M2aTests.test_WAIT_label_at_wrong_position_is_not_ready) ... ok
+test_initialization_and_candidate_rejection (test_m2a.M2aTests.test_initialization_and_candidate_rejection) ... ok
+test_local_qps_have_only_own_variables (test_m2a.M2aTests.test_local_qps_have_only_own_variables) ... ok
+test_missing_ack_cancel_keeps_old_authorization (test_m2a.M2aTests.test_missing_ack_cancel_keeps_old_authorization) ... ok
+test_no_commit_before_conditional_authorization (test_m2a.M2aTests.test_no_commit_before_conditional_authorization) ... ok
+test_nonowner_and_old_authorization_rejected (test_m2a.M2aTests.test_nonowner_and_old_authorization_rejected) ... ok
+test_predicted_clear_does_not_replace_actual_clear (test_m2a.M2aTests.test_predicted_clear_does_not_replace_actual_clear) ... ok
+test_redundant_rows_have_valid_certificates_and_needed_rows_remain (test_m2a.M2aTests.test_redundant_rows_have_valid_certificates_and_needed_rows_remain) ... ok
+test_rotated_support_and_wait_label (test_m2a.M2aTests.test_rotated_support_and_wait_label) ... ok
+test_stale_ack_and_repair_requires_new_prediction (test_m2a.M2aTests.test_stale_ack_and_repair_requires_new_prediction) ... ok
+test_valid_handoff_and_duplicate_release (test_m2a.M2aTests.test_valid_handoff_and_duplicate_release) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.863s
+
+OK

@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "counts": {
+    "runs": 6,
+    "preparations": 1002,
+    "releases": 24,
+    "stale_rejected": 24,
+    "nonowner_rejected": 24,
+    "missing_rejected": 24,
+    "wrong_sender_rejected": 24
+  },
+  "normal_resource_contexts_equal": true,
+  "negative_state_mutation": false
+}

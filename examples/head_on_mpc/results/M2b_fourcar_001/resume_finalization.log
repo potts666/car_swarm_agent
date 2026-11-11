@@ -1,0 +1,20 @@
+existing archive revalidated examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1
+existing archive revalidated examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2
+Traceback (most recent call last):
+  File "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/finalize_m2b_resume.py", line 93, in <module>
+    p=argparse.ArgumentParser();p.add_argument('--run',type=Path,required=True);a=p.parse_args();run(a.run)
+                                                                                                 ^^^^^^^^^^
+  File "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/finalize_m2b_resume.py", line 32, in run
+    archive(root)
+  File "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/m2b_diagnostic_archive.py", line 60, in archive
+    data=json.loads(descriptor.read_text());digest,count=logical_digest(path,load)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)

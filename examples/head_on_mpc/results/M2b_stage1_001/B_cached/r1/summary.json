@@ -1,0 +1,44 @@
+{
+  "arm": "local",
+  "policy": "fifo-ready",
+  "all_completed": false,
+  "completion_sim_s": null,
+  "completion_per_car_s": {},
+  "failure": "bounded prefix limit reached",
+  "failure_layer": "prefix_limit",
+  "online_wall_s": 3.972903583999141,
+  "export_wall_s": 0.10297761700348929,
+  "committed_cycles": 6,
+  "timed_cycles": 6,
+  "last_states": {
+    "A1": [
+      -34.28,
+      3.0,
+      0.0,
+      1.2000000000000006,
+      0.0
+    ],
+    "A2": [
+      -39.0,
+      -3.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "B1": [
+      36.82002720487969,
+      2.997290530036513,
+      3.1717224354547615,
+      0.6000000000000002,
+      0.42510318281287335
+    ],
+    "B2": [
+      40.0,
+      -3.0,
+      3.141592653589793,
+      0.0,
+      0.0
+    ]
+  },
+  "old_central_future_diagnostic": "not executed; no online future gate"
+}

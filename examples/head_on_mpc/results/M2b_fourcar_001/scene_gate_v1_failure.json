@@ -1,0 +1,175 @@
+{
+  "passed": false,
+  "entry_distances_m": {
+    "A1": 25,
+    "A2": 29,
+    "B1": 27,
+    "B2": 30
+  },
+  "initial": {
+    "passed": true,
+    "residuals": {
+      "A1": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "A2": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B1": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B2": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "pair_gap_m": 0.0
+    },
+    "pair_gaps_m": {
+      "A1:A2": 4.2,
+      "A1:B1": 65.0,
+      "A1:B2": 68.12958241468974,
+      "A2:B1": 69.12770790356065,
+      "A2:B2": 72.0,
+      "B1:B2": 4.2
+    },
+    "minimum_gap_m": 4.2
+  },
+  "goals": {
+    "passed": true,
+    "residuals": {
+      "A1": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "A2": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B1": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B2": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "pair_gap_m": 0.0
+    },
+    "pair_gaps_m": {
+      "A1:A2": 4.2,
+      "A1:B1": 90.0,
+      "A1:B2": 90.09794670246376,
+      "A2:B1": 90.09794670246376,
+      "A2:B2": 90.0,
+      "B1:B2": 4.2
+    },
+    "minimum_gap_m": 4.2
+  },
+  "initial_minimum_gap_m": 4.2,
+  "goal_minimum_gap_m": 4.2,
+  "maneuver_checks": {
+    "A1_route": true,
+    "A1_parked_A2": true,
+    "A2_route": true,
+    "A2_merge_leader_at_head": false,
+    "A2_parked_A1": true,
+    "B1_route": true,
+    "B1_parked_B2": true,
+    "B2_route": true,
+    "B2_merge_leader_at_head": false,
+    "B2_parked_B1": true
+  },
+  "nominal": {
+    "A1": {
+      "duration_s": 65.0,
+      "goal_passed": true,
+      "check": {
+        "passed": true,
+        "residuals": {
+          "A1": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "pair_gap_m": 0.0
+        },
+        "pair_gaps_m": {},
+        "minimum_gap_m": null
+      }
+    },
+    "A2": {
+      "duration_s": 80.0,
+      "goal_passed": true,
+      "check": {
+        "passed": true,
+        "residuals": {
+          "A2": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 1.3322676295501878e-15,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "pair_gap_m": 0.0
+        },
+        "pair_gaps_m": {},
+        "minimum_gap_m": null
+      }
+    },
+    "B1": {
+      "duration_s": 77.80000000000001,
+      "goal_passed": true,
+      "check": {
+        "passed": true,
+        "residuals": {
+          "B1": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 0.0,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "pair_gap_m": 0.0
+        },
+        "pair_gaps_m": {},
+        "minimum_gap_m": null
+      }
+    },
+    "B2": {
+      "duration_s": 69.4,
+      "goal_passed": true,
+      "check": {
+        "passed": true,
+        "residuals": {
+          "B2": {
+            "outside_road_area_m2": 0.0,
+            "forward_speed_m_s": 1.3322676295501878e-15,
+            "reverse_speed_m_s": 0.0,
+            "steering_rad": 0.0
+          },
+          "pair_gap_m": 0.0
+        },
+        "pair_gaps_m": {},
+        "minimum_gap_m": null
+      }
+    }
+  }
+}

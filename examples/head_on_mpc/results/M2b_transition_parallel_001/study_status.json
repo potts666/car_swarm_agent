@@ -1,0 +1,662 @@
+{
+  "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+  "started_wall": 1793689380.548597,
+  "stages": [
+    {
+      "name": "rename_prefix",
+      "backend": "P-J",
+      "variant": "rename",
+      "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+      "passed": true,
+      "wall_s": 38.5753823710038,
+      "online_exit": 0,
+      "audit_exit": 0,
+      "summary": {
+        "backend": "P-J",
+        "all_completed": false,
+        "completion_sim_s": null,
+        "completion_per_car_s": {},
+        "failure": "RuntimeError: bounded prefix limit reached",
+        "failure_layer": "prefix_limit",
+        "online_wall_s": 20.94141968400072,
+        "total_wall_before_export_s": 21.524436378997052,
+        "shutdown_wall_s": 0.08719837300304789,
+        "committed_cycles": 80,
+        "timed_cycles": 81,
+        "last_states": {
+          "east_tail": [
+            40.0,
+            -3.0,
+            3.141592653589793,
+            0.0,
+            0.0
+          ],
+          "west_head": [
+            -18.03143205072463,
+            1.4996725775934485,
+            -0.7227176898249397,
+            -3.0357660829594124e-18,
+            0.08456945024191953
+          ],
+          "west_tail": [
+            -33.962563643702694,
+            -0.2591403184771428,
+            0.9965165138003673,
+            0.6135740430570444,
+            0.42247280573691054
+          ],
+          "east_head": [
+            27.05026528774128,
+            -2.983650959559869,
+            3.215342468681659,
+            0.7504261181579273,
+            -0.4223202705026586
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate",
+        "export_wall_s": 1.966855744998611
+      },
+      "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/rename_prefix/r1/independent_validation.json",
+      "sha256": {
+        "scene_gate.json": "a661799c9e9e66865dc4a0d0fd5337b30d47cb849b227f1683e343b2cafd6312",
+        "routes.json": "6bba2f3b430442ae534427e44dbd4c304708fc112a4c520957c96b8aa5b84464",
+        "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+        "r1/solves.jsonl.gz": "e8dd8ff41ac5913682db7ec8fe3cda0ab207ac45ea1d3622193877c838a1cb43",
+        "r1/summary.json": "af86be2ca4b175a7bca7120c122f0dfa09e78acc85912676ecc569629f9548f3",
+        "r1/agreements.jsonl.gz": "9375cf35de540265bece6f6636e6612490a85a9ae511810d22524f745b40d6f4",
+        "r1/actual.jsonl.gz": "3d7afe6e1adff3c97a2cd1ed50d4ee9ddc0a424a735fa7cd840f7695aeb1c1f3",
+        "r1/startup.json": "6518e5186cd8c0393c0bd06d9f965cdc743065a8a422cc8cca98dc898e0c67ef",
+        "r1/events.jsonl.gz": "239b7fd1cd6aafc15393149b642f79d40d4cbf0ea1700eb25ddb68110e7eab90",
+        "r1/independent_validation.json": "2dfa77ad9ca861a0d667cbbe67d06bb70bc8deefbafd429f8fa555095ca9bdf6",
+        "r1/config.json": "e86d52f47634df29ba3a449aa07650be3aec812c928d4975ced9ffbdc3cbe58c",
+        "r1/rounds.jsonl.gz": "0bb6a9c55dc67d0070ead1be0df270b49d526da9413a683b5f7ebdbbf5cbcb9b",
+        "r1/recording_stats.json": "6b2f0dd8e68c1b8a5a22e490d6a35a102af365dbd2b49e46ef9db87a888c6058",
+        "r1/diagnostics.jsonl.gz": "401f00ad1c35d7a0a8151da41fe568253ac29234531c0d6969db376c55da9b82",
+        "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+        "r1/candidates.jsonl.gz": "c91f100ced50920a6888d78e8e3d66a2596f3fedab11d2561f5dbe45139eeffc",
+        "r1/planning.jsonl.gz": "0cfe9b11dc7ab27d919331089ef9b2705de735798056e9c840df57fdec293272",
+        "r1/resources.json": "8937c9bfc85e2be7e523f69bfac95bdb8fa7ccf4d7ff40c9fb76ca6fa91b9f11",
+        "r1/messages.jsonl.gz": "9b0e60a55036b35381846938620fb27450757a4e072ca96987b1533e12b9bc55",
+        "r1/plans.jsonl.gz": "5e6bec66a14b7c2156c1b34c15df4d77260e9f1f79e18856ba03a5a04081c21b"
+      }
+    },
+    {
+      "name": "position_prefix",
+      "backend": "P-J",
+      "variant": "position",
+      "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+      "passed": true,
+      "wall_s": 38.0020167219991,
+      "online_exit": 0,
+      "audit_exit": 0,
+      "summary": {
+        "backend": "P-J",
+        "all_completed": false,
+        "completion_sim_s": null,
+        "completion_per_car_s": {},
+        "failure": "RuntimeError: bounded prefix limit reached",
+        "failure_layer": "prefix_limit",
+        "online_wall_s": 20.71009006100212,
+        "total_wall_before_export_s": 21.260860057998798,
+        "shutdown_wall_s": 0.08462181100185262,
+        "committed_cycles": 80,
+        "timed_cycles": 81,
+        "last_states": {
+          "A1": [
+            -18.031431953806283,
+            1.4996725585433213,
+            -0.7227176932936229,
+            -4.336808689942018e-19,
+            -0.08457278036868894
+          ],
+          "B2": [
+            40.1,
+            -3.0,
+            3.141592653589793,
+            0.0,
+            0.0
+          ],
+          "B1": [
+            27.150265284190038,
+            -2.9836509587728104,
+            3.2153424684882315,
+            0.7504261364243612,
+            -0.4223202698328019
+          ],
+          "A2": [
+            -34.1383091195915,
+            -0.3733304438078028,
+            0.9737012080704495,
+            0.7567390037708663,
+            0.4224731807857753
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate",
+        "export_wall_s": 1.9569923039962305
+      },
+      "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/position_prefix/r1/independent_validation.json",
+      "sha256": {
+        "scene_gate.json": "a4909efda33f8e6909350c482f4dd0fc26900912d550078952ffa828d1a2d4a1",
+        "routes.json": "9bc1334a5dcf62a071bb918ee3219599efa18244af72590207e15faaa39e21ae",
+        "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+        "r1/solves.jsonl.gz": "033284887dacfff6e2b8612b6b6282ea2c1a7e7cb556f6b36b8ae0bd83a27e71",
+        "r1/summary.json": "270a3fadad43a3856e88080ba4ab13e3b726bc07276ffff25c6fd259bd87b228",
+        "r1/agreements.jsonl.gz": "fe7f19b339dc1ec5d0abcad2d7115752bad6c87ae43e91e071d7533bc6a6ce51",
+        "r1/actual.jsonl.gz": "1a388d59c418499d5e3b6710051cb98a5b3e39769fbe177d323edf3ffe67f3d0",
+        "r1/startup.json": "371c4eab6e73f30ce9b67530fecf659785a0aac5f40e78a4efc8261b075fc4cf",
+        "r1/events.jsonl.gz": "245927a06e75ef26404fcc3bc779cdbc98ea74e43677d95ef509395749b09525",
+        "r1/independent_validation.json": "b681de7ced6ec714191021336c654f88f3cb286ca9cab6a93e59a8fabd24c162",
+        "r1/config.json": "1440089a83e18f1da42ee1a6abd229ab061b12e22622519a35b407f7c5ef4b1c",
+        "r1/rounds.jsonl.gz": "9e8f7397dad163054e3e512f0e25e882e2a6d4c07892c5f77872926b9967bacf",
+        "r1/recording_stats.json": "395b51c4822e5be70495766dde4a0e700adcb8de4296fc5cfa80276389720d9a",
+        "r1/diagnostics.jsonl.gz": "38efce18f4ba87c5d754e53c9fcb250b594a72d76d22b84963848608b0ed4d25",
+        "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+        "r1/candidates.jsonl.gz": "c5aa1752b7be9d42b014aed1d69539f5cd165d0ce5d81d18076dec5e0245cd6c",
+        "r1/planning.jsonl.gz": "96704664767e25acee11419ca237a43d67dac99488e93fb4803a94655d2a1e4a",
+        "r1/resources.json": "16c6b679165d437831614da6c9b1bd27cd25a13f40a8483fa87711c00c6a0121",
+        "r1/messages.jsonl.gz": "a4bd1957ece1c0ccaf6e7892482fe0879dcc0273dd0f573ccbc2cada69a117c3",
+        "r1/plans.jsonl.gz": "ba48ec406c94922741e8bbd7bee55f73320f568de6fb3a6d934aa7209b0e5885"
+      }
+    },
+    {
+      "name": "S-J_1",
+      "backend": "S-J",
+      "variant": "main",
+      "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+      "passed": true,
+      "wall_s": 627.2552814770024,
+      "online_exit": 0,
+      "audit_exit": 0,
+      "summary": {
+        "backend": "S-J",
+        "all_completed": true,
+        "completion_sim_s": 176.60000000000002,
+        "completion_per_car_s": {
+          "A1": 68.60000000000001,
+          "B1": 104.2,
+          "A2": 140.20000000000002,
+          "B2": 176.60000000000002
+        },
+        "failure": null,
+        "failure_layer": null,
+        "online_wall_s": 437.9161939889964,
+        "total_wall_before_export_s": 438.7356249010045,
+        "shutdown_wall_s": 0.335801415007154,
+        "committed_cycles": 883,
+        "timed_cycles": 884,
+        "last_states": {
+          "B2": [
+            -46.000054925275265,
+            -2.999998287309891,
+            3.141593103006449,
+            -1.734723475976807e-18,
+            -7.940933880509066e-23
+          ],
+          "B1": [
+            -46.00030668838767,
+            2.9999991037353713,
+            3.1415923037624354,
+            6.938893903907228e-18,
+            -9.26442286059391e-23
+          ],
+          "A1": [
+            46.00005484341341,
+            2.9999982869502952,
+            4.4693102170838646e-07,
+            2.6020852139652106e-18,
+            -9.26442286059391e-23
+          ],
+          "A2": [
+            46.00030642301261,
+            -2.999999124584703,
+            -3.4549306988404423e-07,
+            3.469446951953614e-18,
+            1.3234889800848443e-22
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate",
+        "export_wall_s": 25.644023770997592
+      },
+      "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/S-J_1/r1/independent_validation.json",
+      "sha256": {
+        "scene_gate.json": "a661799c9e9e66865dc4a0d0fd5337b30d47cb849b227f1683e343b2cafd6312",
+        "routes.json": "9dba60cd48551a5a4c23929e52111cc8a2c805341e081e139c8b81ea0fc56f09",
+        "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+        "r1/solves.jsonl.gz": "b0c9d10e9e1a6e35c4137928145cad5c6bb1a1167043ee0f844f28e8a16fbb1c",
+        "r1/summary.json": "4d15d031aea21924bf9651fb0277d339339d6bba4eb360aed1cfcf1a66288163",
+        "r1/agreements.jsonl.gz": "2b2c0b9e2776a309c276289e13988e1f377d54bab5e6dd6e7a0bb4ad5d6234e5",
+        "r1/actual.jsonl.gz": "11186485d0b9eb5a1f49662aab17976c8818a4d953d97788d915f02c30dde76f",
+        "r1/startup.json": "fb640b5720b2818058f9b8efe7dcd510f8ffb406f2c9e0c5cdf82d5a39db3277",
+        "r1/events.jsonl.gz": "e6266a1cf1b5623b134e828ae9785c9d085f2ac6ba05269fb0c2b2ecc7af4a5f",
+        "r1/independent_validation.json": "0c1f6e363bf80f2108e076c713f257fe2e25c49eddefa5de9d78559e530d8fde",
+        "r1/config.json": "718222f1155b0121205a9bd8c5a16d2bd0bc3d3ce32fbd976e2fde246019aa90",
+        "r1/rounds.jsonl.gz": "131133287d2fbeb1186cab062e27dbdda33acda78453a034772b3747724ddb54",
+        "r1/recording_stats.json": "5ea9af2865abacea503ebe1ab20f78b82ba3768c1ce836c368ac5cc9fe2af711",
+        "r1/diagnostics.jsonl.gz": "7504dbbf21ba1bb04a6691db8402b10a247536ddecd1689b7519e220b748171f",
+        "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+        "r1/candidates.jsonl.gz": "14d39dcf62c18442aec82f2d034f909713d4e7c8dde4574d56602f266b785f8b",
+        "r1/planning.jsonl.gz": "fd0f408e216a9ce26206d026f3123a9c5a6cbe561df150908c54f56d3f81da86",
+        "r1/resources.json": "7715b99ad1f8695ac2bf098eb3de39e7d6b2e577d3813474f8e0b27c32be1824",
+        "r1/messages.jsonl.gz": "0bbce7ed190ab0eaf2a2f01e2059a4c51849092792017da8c86535e5bcbf87e2",
+        "r1/plans.jsonl.gz": "264d05976cbc7dd079151b0ce98023391ab873711107d2d3f320005135abb95e"
+      }
+    },
+    {
+      "name": "P-J_1",
+      "backend": "P-J",
+      "variant": "main",
+      "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+      "passed": true,
+      "wall_s": 439.6493690740026,
+      "online_exit": 0,
+      "audit_exit": 0,
+      "summary": {
+        "backend": "P-J",
+        "all_completed": true,
+        "completion_sim_s": 176.60000000000002,
+        "completion_per_car_s": {
+          "A1": 68.60000000000001,
+          "B1": 104.2,
+          "A2": 140.20000000000002,
+          "B2": 176.60000000000002
+        },
+        "failure": null,
+        "failure_layer": null,
+        "online_wall_s": 243.5732058220019,
+        "total_wall_before_export_s": 244.12777844200173,
+        "shutdown_wall_s": 0.0872943260037573,
+        "committed_cycles": 883,
+        "timed_cycles": 884,
+        "last_states": {
+          "A1": [
+            46.00005484341341,
+            2.9999982869502952,
+            4.4693102170838646e-07,
+            2.6020852139652106e-18,
+            -9.26442286059391e-23
+          ],
+          "A2": [
+            46.00030642301261,
+            -2.999999124584703,
+            -3.4549306988404423e-07,
+            3.469446951953614e-18,
+            1.3234889800848443e-22
+          ],
+          "B1": [
+            -46.00030668838767,
+            2.9999991037353713,
+            3.1415923037624354,
+            6.938893903907228e-18,
+            -9.26442286059391e-23
+          ],
+          "B2": [
+            -46.000054925275265,
+            -2.999998287309891,
+            3.141593103006449,
+            -1.734723475976807e-18,
+            -7.940933880509066e-23
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate",
+        "export_wall_s": 25.990040429001965
+      },
+      "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/P-J_1/r1/independent_validation.json",
+      "sha256": {
+        "scene_gate.json": "a661799c9e9e66865dc4a0d0fd5337b30d47cb849b227f1683e343b2cafd6312",
+        "routes.json": "9dba60cd48551a5a4c23929e52111cc8a2c805341e081e139c8b81ea0fc56f09",
+        "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+        "r1/solves.jsonl.gz": "007e73bcde9ab70480f3caafdf6f744a24e031c0cb5d557e2a42a0ce03ef00d5",
+        "r1/summary.json": "9586184132cd661bdb037e4d1e1b38232bdd4218e1b0f87d8c8eea2b28e1a5e8",
+        "r1/agreements.jsonl.gz": "10279759cce90f46bebffe997d4f228a8bca86a93024ab36b578e35b24c7a68e",
+        "r1/actual.jsonl.gz": "0276aed5372a75e8d514d5c3384aca673bcac34b3e00ef846181d4f7fa1ea7b0",
+        "r1/startup.json": "210700f5e5c91dd4d461146a12042fb3ada0daf47a3f9abf9087fc4f15af4176",
+        "r1/events.jsonl.gz": "c69afe5f46808b3ba3b4b26be071dbb20cd54dd336fbd6a0cc82b0759c4f7382",
+        "r1/independent_validation.json": "a1c6daca4ab632df3fa55c2d74050acdb6c079099aa70a628f7ffa009c256964",
+        "r1/config.json": "fdb5acf3330d05c51e9e7f0af9022468ee47380216d1504b6f3dced55e030a64",
+        "r1/rounds.jsonl.gz": "2a64c2544bd48201ccd379128d387fcea74cd7bfaa980a1faaf608d1c83401dd",
+        "r1/recording_stats.json": "5ea9af2865abacea503ebe1ab20f78b82ba3768c1ce836c368ac5cc9fe2af711",
+        "r1/diagnostics.jsonl.gz": "66e200f44ca149e61333a912dcb29656201056fad71343a416261bf8706e2950",
+        "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+        "r1/candidates.jsonl.gz": "0c0aacdaf47d86127a6ed13d46f75b6fd5a616e3a8cd827adab88e7e4a59d2b5",
+        "r1/planning.jsonl.gz": "f863de341e9dd555e15ca7668d32c6b2f5d713404cc42743b6485ee0865ce5a2",
+        "r1/resources.json": "ce69ad469fac4862d913e7a4cf4ffa6fdd3e73145451abd6d3dacfb279ec4be0",
+        "r1/messages.jsonl.gz": "234b0e2906c96d2185c41df498062d508097a7a13723e097b32e49de97446876",
+        "r1/plans.jsonl.gz": "0d87bccd488d74540c8ac157f1183af995d61b3e0efadf6df170af870e4a30f0"
+      }
+    },
+    {
+      "name": "P-J_2",
+      "backend": "P-J",
+      "variant": "main",
+      "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+      "passed": true,
+      "wall_s": 438.0221831759991,
+      "online_exit": 0,
+      "audit_exit": 0,
+      "summary": {
+        "backend": "P-J",
+        "all_completed": true,
+        "completion_sim_s": 176.60000000000002,
+        "completion_per_car_s": {
+          "A1": 68.60000000000001,
+          "B1": 104.2,
+          "A2": 140.20000000000002,
+          "B2": 176.60000000000002
+        },
+        "failure": null,
+        "failure_layer": null,
+        "online_wall_s": 247.72008702299354,
+        "total_wall_before_export_s": 248.2893933680025,
+        "shutdown_wall_s": 0.08989469100197311,
+        "committed_cycles": 883,
+        "timed_cycles": 884,
+        "last_states": {
+          "A1": [
+            46.00005484341341,
+            2.9999982869502952,
+            4.4693102170838646e-07,
+            2.6020852139652106e-18,
+            -9.26442286059391e-23
+          ],
+          "A2": [
+            46.00030642301261,
+            -2.999999124584703,
+            -3.4549306988404423e-07,
+            3.469446951953614e-18,
+            1.3234889800848443e-22
+          ],
+          "B1": [
+            -46.00030668838767,
+            2.9999991037353713,
+            3.1415923037624354,
+            6.938893903907228e-18,
+            -9.26442286059391e-23
+          ],
+          "B2": [
+            -46.000054925275265,
+            -2.999998287309891,
+            3.141593103006449,
+            -1.734723475976807e-18,
+            -7.940933880509066e-23
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate",
+        "export_wall_s": 27.31436922500143
+      },
+      "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/P-J_2/r1/independent_validation.json",
+      "sha256": {
+        "scene_gate.json": "a661799c9e9e66865dc4a0d0fd5337b30d47cb849b227f1683e343b2cafd6312",
+        "routes.json": "9dba60cd48551a5a4c23929e52111cc8a2c805341e081e139c8b81ea0fc56f09",
+        "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+        "r1/solves.jsonl.gz": "f7e83be0aa1fb280caad622efbe68c8a4b3be844757e6df060db1ac41066bc85",
+        "r1/summary.json": "1f537e5761eb763627419887d957cb5dc4346929a11efcb690b4677282465185",
+        "r1/agreements.jsonl.gz": "7de8eadc587e98e1a68b2d9a5682d01f50f8303cfd23006cd1853ae54f441db6",
+        "r1/actual.jsonl.gz": "9a208fd2191e7fe7ce20d55ffa8b94d30637f0764f07022323618b953ee60d39",
+        "r1/startup.json": "2b78aab674ca6843b39013fd9a2ac7d4c7807f3597ead53f859dc99641a655a6",
+        "r1/events.jsonl.gz": "213e5ac405a3adda937d332372fc11566ca83691ee241035f43cfe803cab8d7f",
+        "r1/independent_validation.json": "a879fd1f2a64e73766efe503890f71099530d0541ff417154a93636d743f3c05",
+        "r1/config.json": "fdb5acf3330d05c51e9e7f0af9022468ee47380216d1504b6f3dced55e030a64",
+        "r1/rounds.jsonl.gz": "9f61811e8d99ef3fa6e6650fa42192154ced7cfe42a873936ef21ef0065adaca",
+        "r1/recording_stats.json": "5ea9af2865abacea503ebe1ab20f78b82ba3768c1ce836c368ac5cc9fe2af711",
+        "r1/diagnostics.jsonl.gz": "ac6145246004201c6083b0e6276d40cab5d9cd2d0886a3cf90c7c4a01c64c7a8",
+        "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+        "r1/candidates.jsonl.gz": "285b6f9b75e8f68a54f4c8c7fb50f85daf630ae5209fadaab0fa29fbba1449a2",
+        "r1/planning.jsonl.gz": "380d7e8b68687407764074ed19004eba4c3aabdee3d44ddbb657253f3cb2e993",
+        "r1/resources.json": "2127f17f105f40438fa89b38e1369bdee26f0d8b6d326d033e8ffb1b14d93538",
+        "r1/messages.jsonl.gz": "01e9f44e2fdfcd9df0fee6633ef158ec2a3e152aad451b3f5790d4a34a117802",
+        "r1/plans.jsonl.gz": "d47dcc9679b3eac4be2105bff11bfa3d2a793b2bce7e83b384d43146c03cb43b"
+      }
+    },
+    {
+      "name": "S-J_2",
+      "backend": "S-J",
+      "variant": "main",
+      "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+      "passed": true,
+      "wall_s": 628.1127946660054,
+      "online_exit": 0,
+      "audit_exit": 0,
+      "summary": {
+        "backend": "S-J",
+        "all_completed": true,
+        "completion_sim_s": 176.60000000000002,
+        "completion_per_car_s": {
+          "A1": 68.60000000000001,
+          "B1": 104.2,
+          "A2": 140.20000000000002,
+          "B2": 176.60000000000002
+        },
+        "failure": null,
+        "failure_layer": null,
+        "online_wall_s": 434.72505726300005,
+        "total_wall_before_export_s": 435.274247759,
+        "shutdown_wall_s": 0.08637740700214636,
+        "committed_cycles": 883,
+        "timed_cycles": 884,
+        "last_states": {
+          "B1": [
+            -46.00030668838767,
+            2.9999991037353713,
+            3.1415923037624354,
+            6.938893903907228e-18,
+            -9.26442286059391e-23
+          ],
+          "A1": [
+            46.00005484341341,
+            2.9999982869502952,
+            4.4693102170838646e-07,
+            2.6020852139652106e-18,
+            -9.26442286059391e-23
+          ],
+          "B2": [
+            -46.000054925275265,
+            -2.999998287309891,
+            3.141593103006449,
+            -1.734723475976807e-18,
+            -7.940933880509066e-23
+          ],
+          "A2": [
+            46.00030642301261,
+            -2.999999124584703,
+            -3.4549306988404423e-07,
+            3.469446951953614e-18,
+            1.3234889800848443e-22
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate",
+        "export_wall_s": 25.662528048997046
+      },
+      "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/S-J_2/r1/independent_validation.json",
+      "sha256": {
+        "scene_gate.json": "a661799c9e9e66865dc4a0d0fd5337b30d47cb849b227f1683e343b2cafd6312",
+        "routes.json": "9dba60cd48551a5a4c23929e52111cc8a2c805341e081e139c8b81ea0fc56f09",
+        "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+        "r1/solves.jsonl.gz": "dfd00c59b195765c1d45450a6a2c2c11fdd2888e40d8d2badc7f3909aaea657a",
+        "r1/summary.json": "ee892c2630b0f4d114cc56b1bcd880338b1027326fa82047ea6955f209e324a7",
+        "r1/agreements.jsonl.gz": "4b9fb686d62436a166eb7027a31af33f66ad44ab442e4489e9b53c598d010ed5",
+        "r1/actual.jsonl.gz": "317a5f33036f8a6d8a6f5aea704963721332357802516feecfb61708481fd9f4",
+        "r1/startup.json": "7292a1c7d31ac62404a9e4f53ecc6204de1da953988b78aafd064c8884797a1f",
+        "r1/events.jsonl.gz": "e6266a1cf1b5623b134e828ae9785c9d085f2ac6ba05269fb0c2b2ecc7af4a5f",
+        "r1/independent_validation.json": "cfabdee0b0032b2c7a17b17254382f64ad7daa932733dd757a5001ca5571c9b2",
+        "r1/config.json": "718222f1155b0121205a9bd8c5a16d2bd0bc3d3ce32fbd976e2fde246019aa90",
+        "r1/rounds.jsonl.gz": "a36200f72e9184a82c2aa73bce0a4f6f7539e7690100b3ce67fa83eff4fd836b",
+        "r1/recording_stats.json": "5ea9af2865abacea503ebe1ab20f78b82ba3768c1ce836c368ac5cc9fe2af711",
+        "r1/diagnostics.jsonl.gz": "55a154e945c7029d8e205638efb1d076d24e62f18a01b8fe3e603e0447a7993d",
+        "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+        "r1/candidates.jsonl.gz": "ab59cb42f673a55124c01b659c3d2136c265df7f66a62878f7b7cdc034e8062f",
+        "r1/planning.jsonl.gz": "755127f35679a114b8bb9799c2843462a85a6e6b4dab22949e925e909d9f4ffe",
+        "r1/resources.json": "dbc627da6963ddfc1b000c2f7cc8869d4b6c1f9032960de424479c3125e85b42",
+        "r1/messages.jsonl.gz": "79e2f7e24a33ffa240d914c35664a73eed851105ed7b639239d0f38bb15d7c24",
+        "r1/plans.jsonl.gz": "264d05976cbc7dd079151b0ce98023391ab873711107d2d3f320005135abb95e"
+      }
+    },
+    {
+      "name": "rename_full",
+      "backend": "P-J",
+      "variant": "rename",
+      "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+      "passed": true,
+      "wall_s": 468.5259712210027,
+      "online_exit": 0,
+      "audit_exit": 0,
+      "summary": {
+        "backend": "P-J",
+        "all_completed": true,
+        "completion_sim_s": 176.60000000000002,
+        "completion_per_car_s": {
+          "west_head": 68.60000000000001,
+          "east_head": 104.2,
+          "west_tail": 140.20000000000002,
+          "east_tail": 176.60000000000002
+        },
+        "failure": null,
+        "failure_layer": null,
+        "online_wall_s": 260.2938888730059,
+        "total_wall_before_export_s": 260.91796880400216,
+        "shutdown_wall_s": 0.09899004200269701,
+        "committed_cycles": 883,
+        "timed_cycles": 884,
+        "last_states": {
+          "west_tail": [
+            46.00030642301261,
+            -2.999999124584703,
+            -3.4549306988404423e-07,
+            3.469446951953614e-18,
+            1.3234889800848443e-22
+          ],
+          "east_tail": [
+            -46.000054925275265,
+            -2.999998287309891,
+            3.141593103006449,
+            -1.734723475976807e-18,
+            -7.940933880509066e-23
+          ],
+          "east_head": [
+            -46.00030668838767,
+            2.9999991037353713,
+            3.1415923037624354,
+            6.938893903907228e-18,
+            -9.26442286059391e-23
+          ],
+          "west_head": [
+            46.00005484341341,
+            2.9999982869502952,
+            4.4693102170838646e-07,
+            2.6020852139652106e-18,
+            -9.26442286059391e-23
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate",
+        "export_wall_s": 27.51901778699539
+      },
+      "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/rename_full/r1/independent_validation.json",
+      "sha256": {
+        "scene_gate.json": "a661799c9e9e66865dc4a0d0fd5337b30d47cb849b227f1683e343b2cafd6312",
+        "routes.json": "6bba2f3b430442ae534427e44dbd4c304708fc112a4c520957c96b8aa5b84464",
+        "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+        "r1/solves.jsonl.gz": "c4aecfb3212971354fe61abb908c60f4b03747fa40faf8932eeed5759b2eece4",
+        "r1/summary.json": "97df82d38c7ebf6d87d565194e4b21712ffb3c736d6396329885350066ab4df8",
+        "r1/agreements.jsonl.gz": "1346c60043ec3b068e1aaf1c309f4446940872f5533f81b50f5872527b067aa0",
+        "r1/actual.jsonl.gz": "b8d4072c986a62c15cb91910a01f65567e7b4a5cfe28c5bdde8f226664d32598",
+        "r1/startup.json": "cef9205810f55b466c540b596ef6964414a338f525fdfe67b3623775110dc08f",
+        "r1/events.jsonl.gz": "0a7a472bd9ecd35afaf4ea30ae3b53a9e75ca93c0bffd93a38a5454ccf1e7a11",
+        "r1/independent_validation.json": "4829670bafca3f061dd6d86c6b7844407ec29c6cf1b86636ba13844e0e4e92b0",
+        "r1/config.json": "927f8ba7da2b111b76f254881a2e477c002b3ee6c1732e84ff1f04595ed34e04",
+        "r1/rounds.jsonl.gz": "a61be82b6d8518a016395b9c1582fdb4593ab952306b97f902674585b4d5e2b5",
+        "r1/recording_stats.json": "5ea9af2865abacea503ebe1ab20f78b82ba3768c1ce836c368ac5cc9fe2af711",
+        "r1/diagnostics.jsonl.gz": "1eaf97edb0b6f2f7e1b571f45078c339dcf772a7d1708b70a9189c75cc6f9eb3",
+        "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+        "r1/candidates.jsonl.gz": "526ccbb549767f612c5a3053456fc6c70b016adaf83e156087ba5fab9832124b",
+        "r1/planning.jsonl.gz": "8bdf5d7afca6db0119cf7feeced165f4f865eaaecce92bbdcd2aea9a59060d4b",
+        "r1/resources.json": "fa704e9d3b094080c0bbf80ded0462b30cb2867536531f97f0a8c373c04ffbd6",
+        "r1/messages.jsonl.gz": "ea5c3592242407c5baf664c83c86940f8058c4d0117d908dde476fd7901995e0",
+        "r1/plans.jsonl.gz": "376dee2e21416efd73fdc375bfcb5c1474ab30c1382726a200dc43966b1573e0"
+      }
+    },
+    {
+      "name": "position_full",
+      "backend": "P-J",
+      "variant": "position",
+      "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+      "passed": true,
+      "wall_s": 465.4155486439995,
+      "online_exit": 0,
+      "audit_exit": 0,
+      "summary": {
+        "backend": "P-J",
+        "all_completed": true,
+        "completion_sim_s": 176.60000000000002,
+        "completion_per_car_s": {
+          "A1": 68.60000000000001,
+          "B1": 104.4,
+          "A2": 140.4,
+          "B2": 176.60000000000002
+        },
+        "failure": null,
+        "failure_layer": null,
+        "online_wall_s": 263.81416398799774,
+        "total_wall_before_export_s": 264.4405629190005,
+        "shutdown_wall_s": 0.11895784700027434,
+        "committed_cycles": 883,
+        "timed_cycles": 884,
+        "last_states": {
+          "A1": [
+            46.00005491850145,
+            2.99999828739602,
+            4.467062923960869e-07,
+            3.469446951953614e-18,
+            -7.940933880509066e-23
+          ],
+          "A2": [
+            46.00030641179326,
+            -2.9999991247598086,
+            -3.4547051254075636e-07,
+            -2.6020852139652106e-18,
+            0.0
+          ],
+          "B1": [
+            -46.00030661611247,
+            2.999999129786699,
+            3.1415923086208073,
+            -6.071532165918825e-18,
+            9.26442286059391e-23
+          ],
+          "B2": [
+            -46.00005490100622,
+            -2.9999982873508264,
+            3.141593100336633,
+            6.071532165918825e-18,
+            0.0
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate",
+        "export_wall_s": 26.529587368997454
+      },
+      "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/position_full/r1/independent_validation.json",
+      "sha256": {
+        "scene_gate.json": "a4909efda33f8e6909350c482f4dd0fc26900912d550078952ffa828d1a2d4a1",
+        "routes.json": "9bc1334a5dcf62a071bb918ee3219599efa18244af72590207e15faaa39e21ae",
+        "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+        "r1/solves.jsonl.gz": "9d6148a624c2e55f4b03fa8b83167c038f302eab491a460ac4994bfec2ebcec9",
+        "r1/summary.json": "a7b88524393da4d7e7acd8f6c517080cd14a5a651bd6569459e30468503671ef",
+        "r1/agreements.jsonl.gz": "7425bf6fbb5325083fc4b08357b63422749fa9849eb177772ddd112e235cf6f3",
+        "r1/actual.jsonl.gz": "782d1223c707a64eef6da19fb0df4c3107258403e751afb06ab4125040b3d491",
+        "r1/startup.json": "a26a87b7b3f195babc09e7684894c481697794619fb854dc74e789d43ce11c2b",
+        "r1/events.jsonl.gz": "908d9901abcbc075ff51e9ae191102604f647dccb5064c430a0c84fc3a527f75",
+        "r1/independent_validation.json": "013a7530bf043fd6b9fe7c226aea0236b6e2632ac2c4b70a4844c88350f9fc99",
+        "r1/config.json": "90af3a59f34bf897cfefcd20c09a5632493fad409310c2ed2f5ed455f13b10b0",
+        "r1/rounds.jsonl.gz": "de0e639b1adba90198a214f759b34dc011d737f0cf8ead26864b6b986041e19f",
+        "r1/recording_stats.json": "26327c031da009291cff3bb6bafb5093f7a7b887f1f532c8fdf72f196117a5bf",
+        "r1/diagnostics.jsonl.gz": "531b7d4148b7d34f61f9c19d5f48b0286925929354f1394ab43c443ba3017ea7",
+        "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+        "r1/candidates.jsonl.gz": "a50ca4416c864ae9a0b549371806c0bc5b578f7bd03ccbb89d19cfc9865bfb7f",
+        "r1/planning.jsonl.gz": "51913834bde4f1637aa2d95fc53240adcf024947e6112fc7543d488d502b3db5",
+        "r1/resources.json": "079368196a884814da096abbd04478102dedf34f90fdeb39e9a69f3617788062",
+        "r1/messages.jsonl.gz": "fea4fa610ead3c1de3f97bb4315079fe9fa3b3803f13ef719e9b57ecfff6c230",
+        "r1/plans.jsonl.gz": "149f27cd6110ff4847ea57a35987a7299a42a88187481b6590df87af74efadbe"
+      }
+    }
+  ],
+  "completed": true,
+  "ended_wall": 1793692524.3630905
+}

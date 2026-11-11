@@ -1,0 +1,128 @@
+{
+  "C-FIFO/r1": {
+    "committed_cycle_start_intervals_s": {
+      "count": 885,
+      "p50": 0.6293651519999912,
+      "p95": 0.7919907567999415,
+      "p99": 1.0748736408799595,
+      "max": 1.4496952320000673,
+      "total": 578.2689369579999
+    },
+    "post_commit_bookkeeping_s": {
+      "count": 885,
+      "p50": 0.00028409300011844607,
+      "p95": 0.09336286920010933,
+      "p99": 0.3083716118000302,
+      "max": 0.4935138180001104,
+      "total": 12.689727454002423
+    },
+    "intervals_over_200ms": 885,
+    "final_completion_exit_logged_s": 0.017838855000036347,
+    "scope": "consecutive starts include compact records, diagnostic preparation and progress output; final no-input completion exit is separate"
+  },
+  "C-FIFO/r2": {
+    "committed_cycle_start_intervals_s": {
+      "count": 885,
+      "p50": 0.6252782470000966,
+      "p95": 0.8070950855999852,
+      "p99": 1.103166467080063,
+      "max": 1.8118542180000077,
+      "total": 579.489880261
+    },
+    "post_commit_bookkeeping_s": {
+      "count": 885,
+      "p50": 0.0002831520000654564,
+      "p95": 0.09318612300007771,
+      "p99": 0.30087614719997874,
+      "max": 0.8469268530000136,
+      "total": 12.929964670001937
+    },
+    "intervals_over_200ms": 885,
+    "final_completion_exit_logged_s": 0.017306347999920035,
+    "scope": "consecutive starts include compact records, diagnostic preparation and progress output; final no-input completion exit is separate"
+  },
+  "L-FIFO/r1": {
+    "committed_cycle_start_intervals_s": {
+      "count": 882,
+      "p50": 0.6501313275000484,
+      "p95": 0.7258956348498941,
+      "p99": 0.9129809695798208,
+      "max": 1.2338271730000088,
+      "total": 583.595435536
+    },
+    "post_commit_bookkeeping_s": {
+      "count": 882,
+      "p50": 0.0004171245000179624,
+      "p95": 0.025799118549957707,
+      "p99": 0.08121159053973766,
+      "max": 0.5031838139998399,
+      "total": 4.432657799006847
+    },
+    "intervals_over_200ms": 882,
+    "final_completion_exit_logged_s": 0.016426593999767647,
+    "scope": "consecutive starts include compact records, diagnostic preparation and progress output; final no-input completion exit is separate"
+  },
+  "L-FIFO/r2": {
+    "committed_cycle_start_intervals_s": {
+      "count": 882,
+      "p50": 0.6530959584999891,
+      "p95": 0.7331201577503179,
+      "p99": 0.9908299410699042,
+      "max": 1.9364820040000268,
+      "total": 588.2306300209998
+    },
+    "post_commit_bookkeeping_s": {
+      "count": 882,
+      "p50": 0.00042254899972249405,
+      "p95": 0.02548866639990592,
+      "p99": 0.07953388949996225,
+      "max": 0.37067426600015096,
+      "total": 4.280672461002268
+    },
+    "intervals_over_200ms": 882,
+    "final_completion_exit_logged_s": 0.016142355000283715,
+    "scope": "consecutive starts include compact records, diagnostic preparation and progress output; final no-input completion exit is separate"
+  },
+  "L-ALT/r1": {
+    "committed_cycle_start_intervals_s": {
+      "count": 882,
+      "p50": 0.6696550515002855,
+      "p95": 0.7441131369502045,
+      "p99": 0.9525655506599823,
+      "max": 1.365712335000353,
+      "total": 599.3131461539997
+    },
+    "post_commit_bookkeeping_s": {
+      "count": 882,
+      "p50": 0.0004290349997972953,
+      "p95": 0.026529116999972752,
+      "p99": 0.08449881645992711,
+      "max": 0.19438675499986857,
+      "total": 4.223134836009194
+    },
+    "intervals_over_200ms": 882,
+    "final_completion_exit_logged_s": 0.01913543800037587,
+    "scope": "consecutive starts include compact records, diagnostic preparation and progress output; final no-input completion exit is separate"
+  },
+  "L-ALT/r2": {
+    "committed_cycle_start_intervals_s": {
+      "count": 882,
+      "p50": 0.6715516069998557,
+      "p95": 0.7470209447998513,
+      "p99": 1.0542397768200211,
+      "max": 2.0790950059999886,
+      "total": 605.6509647910007
+    },
+    "post_commit_bookkeeping_s": {
+      "count": 882,
+      "p50": 0.0004442545000529208,
+      "p95": 0.025911647700149837,
+      "p99": 0.08232913631048167,
+      "max": 0.3548506510005609,
+      "total": 4.283342231998176
+    },
+    "intervals_over_200ms": 882,
+    "final_completion_exit_logged_s": 0.017880364000120608,
+    "scope": "consecutive starts include compact records, diagnostic preparation and progress output; final no-input completion exit is separate"
+  }
+}

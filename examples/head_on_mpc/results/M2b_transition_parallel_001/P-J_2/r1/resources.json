@@ -1,0 +1,85 @@
+{
+  "workers": {
+    "A1": {
+      "ok": true,
+      "result": {
+        "pid": 13961,
+        "affinity": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "threads": 1,
+        "maxrss_kib": 73804,
+        "cpu_user_s": 158.255617,
+        "cpu_system_s": 0.951967
+      },
+      "pid": 13961
+    },
+    "B1": {
+      "ok": true,
+      "result": {
+        "pid": 13963,
+        "affinity": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "threads": 1,
+        "maxrss_kib": 73376,
+        "cpu_user_s": 161.20362,
+        "cpu_system_s": 1.007754
+      },
+      "pid": 13963
+    },
+    "B2": {
+      "ok": true,
+      "result": {
+        "pid": 13964,
+        "affinity": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "threads": 1,
+        "maxrss_kib": 73544,
+        "cpu_user_s": 158.665603,
+        "cpu_system_s": 1.436609
+      },
+      "pid": 13964
+    },
+    "A2": {
+      "ok": true,
+      "result": {
+        "pid": 13962,
+        "affinity": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "threads": 1,
+        "maxrss_kib": 73380,
+        "cpu_user_s": 157.199164,
+        "cpu_system_s": 1.01659
+      },
+      "pid": 13962
+    }
+  },
+  "parent": {
+    "pid": 13948,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "maxrss_kib": 2078764,
+    "cpu_user_s": 68.565391,
+    "cpu_system_s": 5.029051,
+    "threads": 5
+  }
+}

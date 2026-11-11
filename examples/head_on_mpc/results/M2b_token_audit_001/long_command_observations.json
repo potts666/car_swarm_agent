@@ -1,0 +1,104 @@
+[
+  {
+    "exec_session_id": "40671",
+    "first_session_id_observed": "2026-11-01T15:08:11.066Z",
+    "first_observation_line": 2067,
+    "write_stdin_model_envelopes": 36,
+    "observation_lines": [
+      2082,
+      2103,
+      2125,
+      2146,
+      2169,
+      2188,
+      2224,
+      2246,
+      2271,
+      2287,
+      2307,
+      2322,
+      2341,
+      2352,
+      2363,
+      2388,
+      2404,
+      2418,
+      2432,
+      2446,
+      2467,
+      2497,
+      2525,
+      2540,
+      2553,
+      2564,
+      2590,
+      2601,
+      2612,
+      2633,
+      2646,
+      2657,
+      2668,
+      2689,
+      2715,
+      2743
+    ],
+    "last_return_observed": "2026-11-01T16:20:58.017Z",
+    "last_known_exit_codes": [
+      [
+        0
+      ]
+    ],
+    "exit_note": "driver completion exit=0 confirmed in final matching return block; observations bound lifetime, not exact process timestamps"
+  },
+  {
+    "exec_session_id": "95377",
+    "first_session_id_observed": "2026-11-01T16:20:58.017Z",
+    "first_observation_line": 2745,
+    "write_stdin_model_envelopes": 5,
+    "observation_lines": [
+      2753,
+      2776,
+      2800,
+      2825,
+      2842
+    ],
+    "last_return_observed": "2026-11-01T16:30:21.778Z",
+    "last_known_exit_codes": null,
+    "exit_note": "not assigned from mixed-tool aggregate; terminal/process exit not established"
+  },
+  {
+    "exec_session_id": "68141",
+    "first_session_id_observed": "2026-11-01T23:36:43.347Z",
+    "first_observation_line": 2968,
+    "write_stdin_model_envelopes": 2,
+    "observation_lines": [
+      2981,
+      3005
+    ],
+    "last_return_observed": "2026-11-01T23:41:05.043Z",
+    "last_known_exit_codes": null,
+    "exit_note": "not assigned from mixed-tool aggregate; terminal/process exit not established"
+  },
+  {
+    "exec_session_id": "39892",
+    "first_session_id_observed": "2026-11-01T23:32:21.277Z",
+    "first_observation_line": 2899,
+    "write_stdin_model_envelopes": 0,
+    "observation_lines": [],
+    "last_return_observed": null,
+    "last_known_exit_codes": null,
+    "exit_note": "not assigned from mixed-tool aggregate; terminal/process exit not established"
+  },
+  {
+    "exec_session_id": "67621",
+    "first_session_id_observed": "2026-11-01T23:44:47.872Z",
+    "first_observation_line": 3053,
+    "write_stdin_model_envelopes": 1,
+    "observation_lines": [
+      3067
+    ],
+    "last_return_observed": "2026-11-01T23:45:24.308Z",
+    "last_known_exit_codes": null,
+    "exit_note": "not assigned from mixed-tool aggregate; terminal/process exit not established"
+  }
+]

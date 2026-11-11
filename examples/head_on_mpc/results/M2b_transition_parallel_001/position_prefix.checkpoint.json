@@ -1,0 +1,78 @@
+{
+  "name": "position_prefix",
+  "backend": "P-J",
+  "variant": "position",
+  "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+  "passed": true,
+  "wall_s": 38.0020167219991,
+  "online_exit": 0,
+  "audit_exit": 0,
+  "summary": {
+    "backend": "P-J",
+    "all_completed": false,
+    "completion_sim_s": null,
+    "completion_per_car_s": {},
+    "failure": "RuntimeError: bounded prefix limit reached",
+    "failure_layer": "prefix_limit",
+    "online_wall_s": 20.71009006100212,
+    "total_wall_before_export_s": 21.260860057998798,
+    "shutdown_wall_s": 0.08462181100185262,
+    "committed_cycles": 80,
+    "timed_cycles": 81,
+    "last_states": {
+      "A1": [
+        -18.031431953806283,
+        1.4996725585433213,
+        -0.7227176932936229,
+        -4.336808689942018e-19,
+        -0.08457278036868894
+      ],
+      "B2": [
+        40.1,
+        -3.0,
+        3.141592653589793,
+        0.0,
+        0.0
+      ],
+      "B1": [
+        27.150265284190038,
+        -2.9836509587728104,
+        3.2153424684882315,
+        0.7504261364243612,
+        -0.4223202698328019
+      ],
+      "A2": [
+        -34.1383091195915,
+        -0.3733304438078028,
+        0.9737012080704495,
+        0.7567390037708663,
+        0.4224731807857753
+      ]
+    },
+    "old_central_future_diagnostic": "not executed; no online future gate",
+    "export_wall_s": 1.9569923039962305
+  },
+  "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/position_prefix/r1/independent_validation.json",
+  "sha256": {
+    "scene_gate.json": "a4909efda33f8e6909350c482f4dd0fc26900912d550078952ffa828d1a2d4a1",
+    "routes.json": "9bc1334a5dcf62a071bb918ee3219599efa18244af72590207e15faaa39e21ae",
+    "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+    "r1/solves.jsonl.gz": "033284887dacfff6e2b8612b6b6282ea2c1a7e7cb556f6b36b8ae0bd83a27e71",
+    "r1/summary.json": "270a3fadad43a3856e88080ba4ab13e3b726bc07276ffff25c6fd259bd87b228",
+    "r1/agreements.jsonl.gz": "fe7f19b339dc1ec5d0abcad2d7115752bad6c87ae43e91e071d7533bc6a6ce51",
+    "r1/actual.jsonl.gz": "1a388d59c418499d5e3b6710051cb98a5b3e39769fbe177d323edf3ffe67f3d0",
+    "r1/startup.json": "371c4eab6e73f30ce9b67530fecf659785a0aac5f40e78a4efc8261b075fc4cf",
+    "r1/events.jsonl.gz": "245927a06e75ef26404fcc3bc779cdbc98ea74e43677d95ef509395749b09525",
+    "r1/independent_validation.json": "b681de7ced6ec714191021336c654f88f3cb286ca9cab6a93e59a8fabd24c162",
+    "r1/config.json": "1440089a83e18f1da42ee1a6abd229ab061b12e22622519a35b407f7c5ef4b1c",
+    "r1/rounds.jsonl.gz": "9e8f7397dad163054e3e512f0e25e882e2a6d4c07892c5f77872926b9967bacf",
+    "r1/recording_stats.json": "395b51c4822e5be70495766dde4a0e700adcb8de4296fc5cfa80276389720d9a",
+    "r1/diagnostics.jsonl.gz": "38efce18f4ba87c5d754e53c9fcb250b594a72d76d22b84963848608b0ed4d25",
+    "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+    "r1/candidates.jsonl.gz": "c5aa1752b7be9d42b014aed1d69539f5cd165d0ce5d81d18076dec5e0245cd6c",
+    "r1/planning.jsonl.gz": "96704664767e25acee11419ca237a43d67dac99488e93fb4803a94655d2a1e4a",
+    "r1/resources.json": "16c6b679165d437831614da6c9b1bd27cd25a13f40a8483fa87711c00c6a0121",
+    "r1/messages.jsonl.gz": "a4bd1957ece1c0ccaf6e7892482fe0879dcc0273dd0f573ccbc2cada69a117c3",
+    "r1/plans.jsonl.gz": "ba48ec406c94922741e8bbd7bee55f73320f568de6fb3a6d934aa7209b0e5885"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "artifact_integrity_passed": true,
+  "hashed_artifacts": 531,
+  "formal_source_frozen_and_equal": true,
+  "original_M1_maintenance_and_evidence_unchanged": true,
+  "runs": {
+    "C-new_r1": {
+      "actual_full_acceptance": true,
+      "physical_and_sign": true,
+      "new_contract_and_versions": true,
+      "timing_complete": true,
+      "local_information_boundary": null,
+      "completion_s": 80.4,
+      "online_future_calls": 0,
+      "offline_central_diagnostic_passed": true
+    },
+    "C-new_r2": {
+      "actual_full_acceptance": true,
+      "physical_and_sign": true,
+      "new_contract_and_versions": true,
+      "timing_complete": true,
+      "local_information_boundary": null,
+      "completion_s": 80.4,
+      "online_future_calls": 0,
+      "offline_central_diagnostic_passed": true
+    },
+    "L-new_r1": {
+      "actual_full_acceptance": true,
+      "physical_and_sign": true,
+      "new_contract_and_versions": true,
+      "timing_complete": true,
+      "local_information_boundary": true,
+      "completion_s": 80.4,
+      "online_future_calls": 0,
+      "offline_central_diagnostic_passed": true
+    },
+    "L-new_r2": {
+      "actual_full_acceptance": true,
+      "physical_and_sign": true,
+      "new_contract_and_versions": true,
+      "timing_complete": true,
+      "local_information_boundary": true,
+      "completion_s": 80.4,
+      "online_future_calls": 0,
+      "offline_central_diagnostic_passed": true
+    }
+  },
+  "deterministic_actual_repeatability": true,
+  "new_protocol_and_local_tests": 11,
+  "new_tests_passed": true,
+  "M1_regressions_reused_not_rerun": 34,
+  "debug_failures_retained": {
+    "v1": {
+      "full_acceptance": false,
+      "prefix_acceptance": true,
+      "failure": "local bicycle or replay rejected"
+    },
+    "v2": {
+      "full_acceptance": false,
+      "prefix_acceptance": true,
+      "failure": "local bicycle or replay rejected"
+    },
+    "v3": {
+      "full_acceptance": false,
+      "prefix_acceptance": true,
+      "failure": "local bicycle or replay rejected"
+    }
+  },
+  "M2b_entry_criteria_met": true,
+  "M2b_implemented": false,
+  "continuous_safety_proven": false,
+  "recursive_feasibility_proven": false,
+  "hard_realtime_proven": false
+}

@@ -1,0 +1,1140 @@
+{
+  "C-new_r1": {
+    "arm": "C-new",
+    "both_goals_reached": true,
+    "actual_full_acceptance": true,
+    "actual_physical_acceptance": true,
+    "release_contract_passed": true,
+    "waiting_pose_independent_checks": [
+      {
+        "cycle": 174,
+        "position_error_m": 2.9930125363022697e-05,
+        "heading_error_rad": 2.2694128163358585e-05,
+        "passed": true
+      }
+    ],
+    "local_information_boundary_passed": null,
+    "local_decision_dimensions": {
+      "A": {
+        "reference_max": 0,
+        "bicycle_max": 0
+      },
+      "B": {
+        "reference_max": 0,
+        "bicycle_max": 0
+      }
+    },
+    "actual_plan_version_compatibility": true,
+    "timing_complete": true,
+    "failure": null,
+    "failure_layer": null,
+    "completion_s": 80.4,
+    "minimum_sampled_gap_m": 1.1999221611731135,
+    "per_car": {
+      "A": {
+        "control_cost": 3.760010127399044,
+        "endpoint_error": {
+          "position_m": 1.2119119929820954e-07,
+          "heading_rad": 0.0,
+          "speed_m_s": 2.6020852139652106e-18,
+          "steering_rad": 0.0
+        },
+        "request_s": 4.2,
+        "grant_s": 4.2,
+        "release_s": 34.800000000000004,
+        "request_to_grant_s": 0.0,
+        "channel_entry_s": 14.260000000000005,
+        "grant_to_entry_s": 10.060000000000006,
+        "last_channel_occupied_sample_s": 26.5,
+        "completion_s": 44.400000000000006,
+        "stationary_threshold_m_s": 0.025,
+        "low_speed_to_moving_transitions": 1,
+        "low_speed_per_stage_s": {
+          "COMPLETE": 36.0,
+          "NAVIGATE": 0.28
+        },
+        "solver_attribution": "joint calls not arbitrarily split by car"
+      },
+      "B": {
+        "control_cost": 16.174850780145334,
+        "endpoint_error": {
+          "position_m": 6.001864031190962e-05,
+          "heading_rad": 1.7763568394002505e-15,
+          "speed_m_s": 2.6020852139652106e-18,
+          "steering_rad": 5.73016096670151e-16
+        },
+        "request_s": 7.2,
+        "grant_s": 34.800000000000004,
+        "release_s": 71.0,
+        "request_to_grant_s": 27.600000000000005,
+        "channel_entry_s": 50.120000000000005,
+        "grant_to_entry_s": 15.32,
+        "last_channel_occupied_sample_s": 62.56,
+        "completion_s": 80.4,
+        "stationary_threshold_m_s": 0.025,
+        "low_speed_to_moving_transitions": 6,
+        "low_speed_per_stage_s": {
+          "DEPART": 0.84,
+          "ENTRY": 2.16,
+          "MUTEX_WAIT": 10.6,
+          "QUEUE_APPROACH": 0.48,
+          "RETURN": 2.16
+        },
+        "solver_attribution": "joint calls not arbitrarily split by car"
+      }
+    },
+    "joint_solver": {
+      "reference_QP_calls": 399,
+      "bicycle_QP_calls": 411,
+      "updates_total": 414,
+      "updates_histogram": {
+        "0": 0,
+        "1": 390,
+        "2": 12,
+        "3": 0
+      },
+      "reference_iterations": 526025,
+      "bicycle_iterations": 128600,
+      "input_repairs_attempted": 6,
+      "reference_rejections": 0,
+      "candidate_rejections": 0,
+      "prediction_budget_rejections": 0,
+      "candidate_compute_s": {
+        "count": 402,
+        "p50": 0.04828192900004069,
+        "p95": 0.08333358934983151,
+        "p99": 0.11432440267969472,
+        "max": 0.13039511099941592,
+        "total": 22.110566036995806
+      },
+      "reference_build_solve_check_s": {
+        "count": 402,
+        "p50": 0.005103362499539799,
+        "p95": 0.02555031595029504,
+        "p99": 0.03524191698953474,
+        "max": 0.06147289099953923,
+        "total": 3.5381065250048778
+      },
+      "bicycle_OSQP_setup_and_solve_s": {
+        "count": 414,
+        "p50": 0.0045416769999064854,
+        "p95": 0.015387010300264587,
+        "p99": 0.022941329669565684,
+        "max": 0.028178390999528347,
+        "total": 2.8208046290028506
+      },
+      "reference_OSQP_scope": "local field includes setup+warm+solve; central field solve only; not a direct solver timing ranking"
+    },
+    "total_control_cost": 19.93486090754438,
+    "online_wall_s": 95.90311663699958,
+    "online_full_future_calls": 0,
+    "cycle_timing_s": {
+      "count": 403,
+      "p50": 0.23198411300018051,
+      "p95": 0.29635479680009663,
+      "p99": 0.36306932167992334,
+      "max": 0.5079085269999268,
+      "total": 93.09542720800255
+    },
+    "cycles_over_200ms": 295,
+    "candidate_stage_includes_DDS_and_peer_checks_s": {
+      "count": 402,
+      "p50": 0.08229145249970315,
+      "p95": 0.12258208935027137,
+      "p99": 0.1605079470301462,
+      "max": 0.3087848320001285,
+      "total": 35.61801526701038
+    },
+    "timing_unavailable_separate": [
+      "state/protocol setup vs seed replay",
+      "nonlinear peer validation alone",
+      "record and commit separately"
+    ],
+    "coordinator_rounds_max": 1,
+    "coordinator_rounds_total": 402,
+    "sends": 5650,
+    "application_bytes": 45013603,
+    "messages_by_kind": {
+      "ack": {
+        "count": 804,
+        "bytes": 335746
+      },
+      "commit": {
+        "count": 804,
+        "bytes": 472498
+      },
+      "final": {
+        "count": 804,
+        "bytes": 21637912
+      },
+      "permission": {
+        "count": 806,
+        "bytes": 189076
+      },
+      "prepare_conditional": {
+        "count": 4,
+        "bytes": 988
+      },
+      "release_report": {
+        "count": 2,
+        "bytes": 294
+      },
+      "request": {
+        "count": 2,
+        "bytes": 440
+      },
+      "seed": {
+        "count": 804,
+        "bytes": 21674355
+      },
+      "state": {
+        "count": 1620,
+        "bytes": 702294
+      }
+    },
+    "published_seed_plans": 804,
+    "published_final_plans": 804,
+    "accepted_plan_simulation_age_cycles": 0,
+    "shifted_seed_source_age_cycles": 1,
+    "final_plan_publish_to_commit_wall_s": {
+      "count": 804,
+      "p50": 0.06678904599993984,
+      "p95": 0.11261932395013899,
+      "p99": 0.11769689563941939,
+      "max": 0.20436460800010536,
+      "total": 58.76277127800222
+    },
+    "state_report_to_commit_wall_s": {
+      "count": 804,
+      "p50": 0.22909609850012203,
+      "p95": 0.29301897030022694,
+      "p99": 0.36179931469023363,
+      "max": 0.504969264000465,
+      "total": 184.1268530370162
+    },
+    "handoffs": [
+      {
+        "cycle": 174,
+        "kind": "handoff",
+        "old_owner": "A",
+        "owner": "B",
+        "version": 2,
+        "proposal_id": "174:1:A",
+        "plans": {
+          "A": "9040b1645263ff9a6f9b17bf5c5ad43cfb742bac3501e128579dfea1abf92dc4",
+          "B": "4811db41c2b4f27c9181ccd60899674bf4841eea17627a97f5d8db7395cdc7c4"
+        }
+      },
+      {
+        "cycle": 355,
+        "kind": "handoff",
+        "old_owner": "B",
+        "owner": null,
+        "version": 3,
+        "proposal_id": "355:2:B",
+        "plans": {
+          "A": "fa403dfd366dfb0687392daecf7d2c6b4dab5d866f5bfce35d5236864896163d",
+          "B": "99cb0b25a39f9e1c60718d721e7ca74ac4b6f4ab99a58eabde2fb0a1dc0d9a0d"
+        }
+      }
+    ],
+    "independent_offline_audit_s": 23.18150152399903,
+    "centralized_future_diagnostic": {
+      "executed": true,
+      "identity": "M1 centralized B2-C full future from saved M2a checkpoints",
+      "not_local_future_proof": true,
+      "not_online_gate": true,
+      "wall_s": 14.945602113999485,
+      "online_records_unchanged": true,
+      "checkpoints": [
+        {
+          "cycle": 174,
+          "passed": true,
+          "failure": null,
+          "wall_s": 12.223141600999952
+        },
+        {
+          "cycle": 355,
+          "passed": true,
+          "failure": null,
+          "wall_s": 2.535671696999998
+        }
+      ]
+    }
+  },
+  "L-new_r1": {
+    "arm": "L-new",
+    "both_goals_reached": true,
+    "actual_full_acceptance": true,
+    "actual_physical_acceptance": true,
+    "release_contract_passed": true,
+    "waiting_pose_independent_checks": [
+      {
+        "cycle": 174,
+        "position_error_m": 2.8984156913105792e-05,
+        "heading_error_rad": 2.5018867416459756e-05,
+        "passed": true
+      }
+    ],
+    "local_information_boundary_passed": true,
+    "local_decision_dimensions": {
+      "A": {
+        "reference_max": 32,
+        "bicycle_max": 64
+      },
+      "B": {
+        "reference_max": 32,
+        "bicycle_max": 64
+      }
+    },
+    "actual_plan_version_compatibility": true,
+    "timing_complete": true,
+    "failure": null,
+    "failure_layer": null,
+    "completion_s": 80.4,
+    "minimum_sampled_gap_m": 1.19991349038163,
+    "per_car": {
+      "A": {
+        "control_cost": 3.760395930102628,
+        "endpoint_error": {
+          "position_m": 1.0657078775011541e-07,
+          "heading_rad": 0.0,
+          "speed_m_s": 1.1580528575742387e-23,
+          "steering_rad": 0.0
+        },
+        "request_s": 4.2,
+        "grant_s": 4.2,
+        "release_s": 34.800000000000004,
+        "request_to_grant_s": 0.0,
+        "channel_entry_s": 14.260000000000005,
+        "grant_to_entry_s": 10.060000000000006,
+        "last_channel_occupied_sample_s": 26.5,
+        "completion_s": 44.6,
+        "stationary_threshold_m_s": 0.025,
+        "low_speed_to_moving_transitions": 1,
+        "low_speed_per_stage_s": {
+          "COMPLETE": 35.800000000000004,
+          "NAVIGATE": 0.48
+        },
+        "solver_attribution": "own optimizer",
+        "reference_QP_calls": 222,
+        "bicycle_QP_calls": 223,
+        "updates_total": 402,
+        "updates_histogram": {
+          "0": 0,
+          "1": 402,
+          "2": 0,
+          "3": 0
+        },
+        "reference_iterations": 245925,
+        "bicycle_iterations": 51075,
+        "input_repairs_attempted": 0,
+        "reference_rejections": 0,
+        "candidate_rejections": 0,
+        "prediction_budget_rejections": 0,
+        "candidate_compute_s": {
+          "count": 402,
+          "p50": 0.025431735499751085,
+          "p95": 0.036831767599869634,
+          "p99": 0.05202339591010971,
+          "max": 0.056594846999360016,
+          "total": 9.956727591001254
+        },
+        "reference_build_solve_check_s": {
+          "count": 402,
+          "p50": 0.004081083499841043,
+          "p95": 0.014053061850017898,
+          "p99": 0.027399563090066307,
+          "max": 0.03443105399946944,
+          "total": 1.6925516480014267
+        },
+        "bicycle_OSQP_setup_and_solve_s": {
+          "count": 402,
+          "p50": 0.0027701520002665347,
+          "p95": 0.003948515049614797,
+          "p99": 0.005305273390604271,
+          "max": 0.008417414000177814,
+          "total": 0.6827204149922181
+        },
+        "reference_OSQP_scope": "local field includes setup+warm+solve; central field solve only; not a direct solver timing ranking",
+        "reference_max_variables": 32,
+        "bicycle_max_variables": 64
+      },
+      "B": {
+        "control_cost": 16.17253393256417,
+        "endpoint_error": {
+          "position_m": 5.951631391098999e-05,
+          "heading_rad": 8.881784197001252e-16,
+          "speed_m_s": 2.6020852139652106e-18,
+          "steering_rad": 2.1744628796713827e-16
+        },
+        "request_s": 7.2,
+        "grant_s": 34.800000000000004,
+        "release_s": 71.0,
+        "request_to_grant_s": 27.600000000000005,
+        "channel_entry_s": 50.120000000000005,
+        "grant_to_entry_s": 15.32,
+        "last_channel_occupied_sample_s": 62.56,
+        "completion_s": 80.4,
+        "stationary_threshold_m_s": 0.025,
+        "low_speed_to_moving_transitions": 6,
+        "low_speed_per_stage_s": {
+          "DEPART": 0.84,
+          "ENTRY": 2.16,
+          "MUTEX_WAIT": 10.6,
+          "QUEUE_APPROACH": 0.48,
+          "RETURN": 2.16
+        },
+        "solver_attribution": "own optimizer",
+        "reference_QP_calls": 329,
+        "bicycle_QP_calls": 342,
+        "updates_total": 414,
+        "updates_histogram": {
+          "0": 0,
+          "1": 390,
+          "2": 12,
+          "3": 0
+        },
+        "reference_iterations": 354150,
+        "bicycle_iterations": 96825,
+        "input_repairs_attempted": 5,
+        "reference_rejections": 0,
+        "candidate_rejections": 0,
+        "prediction_budget_rejections": 0,
+        "candidate_compute_s": {
+          "count": 402,
+          "p50": 0.027314830500017706,
+          "p95": 0.04404470610024873,
+          "p99": 0.04986597698967671,
+          "max": 0.06049958199946559,
+          "total": 11.247656285987432
+        },
+        "reference_build_solve_check_s": {
+          "count": 402,
+          "p50": 0.003849159499623056,
+          "p95": 0.014964148050148647,
+          "p99": 0.02279747232971204,
+          "max": 0.0379056589999891,
+          "total": 1.9376371830003336
+        },
+        "bicycle_OSQP_setup_and_solve_s": {
+          "count": 414,
+          "p50": 0.004054603000440693,
+          "p95": 0.007218342799887975,
+          "p99": 0.008090162030084684,
+          "max": 0.011481139999887091,
+          "total": 1.483849683997505
+        },
+        "reference_OSQP_scope": "local field includes setup+warm+solve; central field solve only; not a direct solver timing ranking",
+        "reference_max_variables": 32,
+        "bicycle_max_variables": 64
+      }
+    },
+    "joint_solver": null,
+    "total_control_cost": 19.9329298626668,
+    "online_wall_s": 95.86360251699989,
+    "online_full_future_calls": 0,
+    "cycle_timing_s": {
+      "count": 403,
+      "p50": 0.2366759019996607,
+      "p95": 0.30651983950046996,
+      "p99": 0.31575772789994516,
+      "max": 0.5215692219999255,
+      "total": 93.29889642601302
+    },
+    "cycles_over_200ms": 269,
+    "candidate_stage_includes_DDS_and_peer_checks_s": {
+      "count": 402,
+      "p50": 0.08386625449975327,
+      "p95": 0.10725942359958936,
+      "p99": 0.14308119989959794,
+      "max": 0.3419810920004238,
+      "total": 34.846937890992194
+    },
+    "timing_unavailable_separate": [
+      "state/protocol setup vs seed replay",
+      "nonlinear peer validation alone",
+      "record and commit separately"
+    ],
+    "coordinator_rounds_max": 1,
+    "coordinator_rounds_total": 402,
+    "sends": 5650,
+    "application_bytes": 45212736,
+    "messages_by_kind": {
+      "ack": {
+        "count": 804,
+        "bytes": 335746
+      },
+      "commit": {
+        "count": 804,
+        "bytes": 472498
+      },
+      "final": {
+        "count": 804,
+        "bytes": 21733566
+      },
+      "permission": {
+        "count": 806,
+        "bytes": 189076
+      },
+      "prepare_conditional": {
+        "count": 4,
+        "bytes": 988
+      },
+      "release_report": {
+        "count": 2,
+        "bytes": 294
+      },
+      "request": {
+        "count": 2,
+        "bytes": 438
+      },
+      "seed": {
+        "count": 804,
+        "bytes": 21777156
+      },
+      "state": {
+        "count": 1620,
+        "bytes": 702974
+      }
+    },
+    "published_seed_plans": 804,
+    "published_final_plans": 804,
+    "accepted_plan_simulation_age_cycles": 0,
+    "shifted_seed_source_age_cycles": 1,
+    "final_plan_publish_to_commit_wall_s": {
+      "count": 804,
+      "p50": 0.08627580550000857,
+      "p95": 0.14656386745041344,
+      "p99": 0.1639312233500914,
+      "max": 0.37758982199920865,
+      "total": 72.12275425101416
+    },
+    "state_report_to_commit_wall_s": {
+      "count": 804,
+      "p50": 0.23396152150007765,
+      "p95": 0.3019953799494942,
+      "p99": 0.31240052251037015,
+      "max": 0.5172128140002314,
+      "total": 184.36920970602205
+    },
+    "handoffs": [
+      {
+        "cycle": 174,
+        "kind": "handoff",
+        "old_owner": "A",
+        "owner": "B",
+        "version": 2,
+        "proposal_id": "174:1:A",
+        "plans": {
+          "A": "f57ec891f0376dba7aadfa291e7d58cfcbf76e72c8215f936b5e9b695d456055",
+          "B": "e56a8dd24e229dd44734f8713b9c5b0105272835ac27d9608da72bfb0bde71e9"
+        }
+      },
+      {
+        "cycle": 355,
+        "kind": "handoff",
+        "old_owner": "B",
+        "owner": null,
+        "version": 3,
+        "proposal_id": "355:2:B",
+        "plans": {
+          "A": "8e142b6ab377f9ab7ff0aa89ca5adaff0721c3b03741c47a764adb7652b07eb7",
+          "B": "541f631a545a293b06c4aa262124470c3d2fc4ae7377750e661fc36c635891f9"
+        }
+      }
+    ],
+    "independent_offline_audit_s": 22.37032682500103,
+    "centralized_future_diagnostic": {
+      "executed": true,
+      "identity": "M1 centralized B2-C full future from saved M2a checkpoints",
+      "not_local_future_proof": true,
+      "not_online_gate": true,
+      "wall_s": 15.495714322998538,
+      "online_records_unchanged": true,
+      "checkpoints": [
+        {
+          "cycle": 174,
+          "passed": true,
+          "failure": null,
+          "wall_s": 12.684834110999873
+        },
+        {
+          "cycle": 355,
+          "passed": true,
+          "failure": null,
+          "wall_s": 2.611276359999465
+        }
+      ]
+    }
+  },
+  "C-new_r2": {
+    "arm": "C-new",
+    "both_goals_reached": true,
+    "actual_full_acceptance": true,
+    "actual_physical_acceptance": true,
+    "release_contract_passed": true,
+    "waiting_pose_independent_checks": [
+      {
+        "cycle": 174,
+        "position_error_m": 2.9930125363022697e-05,
+        "heading_error_rad": 2.2694128163358585e-05,
+        "passed": true
+      }
+    ],
+    "local_information_boundary_passed": null,
+    "local_decision_dimensions": {
+      "A": {
+        "reference_max": 0,
+        "bicycle_max": 0
+      },
+      "B": {
+        "reference_max": 0,
+        "bicycle_max": 0
+      }
+    },
+    "actual_plan_version_compatibility": true,
+    "timing_complete": true,
+    "failure": null,
+    "failure_layer": null,
+    "completion_s": 80.4,
+    "minimum_sampled_gap_m": 1.1999221611731135,
+    "per_car": {
+      "A": {
+        "control_cost": 3.760010127399044,
+        "endpoint_error": {
+          "position_m": 1.2119119929820954e-07,
+          "heading_rad": 0.0,
+          "speed_m_s": 2.6020852139652106e-18,
+          "steering_rad": 0.0
+        },
+        "request_s": 4.2,
+        "grant_s": 4.2,
+        "release_s": 34.800000000000004,
+        "request_to_grant_s": 0.0,
+        "channel_entry_s": 14.260000000000005,
+        "grant_to_entry_s": 10.060000000000006,
+        "last_channel_occupied_sample_s": 26.5,
+        "completion_s": 44.400000000000006,
+        "stationary_threshold_m_s": 0.025,
+        "low_speed_to_moving_transitions": 1,
+        "low_speed_per_stage_s": {
+          "COMPLETE": 36.0,
+          "NAVIGATE": 0.28
+        },
+        "solver_attribution": "joint calls not arbitrarily split by car"
+      },
+      "B": {
+        "control_cost": 16.174850780145334,
+        "endpoint_error": {
+          "position_m": 6.001864031190962e-05,
+          "heading_rad": 1.7763568394002505e-15,
+          "speed_m_s": 2.6020852139652106e-18,
+          "steering_rad": 5.73016096670151e-16
+        },
+        "request_s": 7.2,
+        "grant_s": 34.800000000000004,
+        "release_s": 71.0,
+        "request_to_grant_s": 27.600000000000005,
+        "channel_entry_s": 50.120000000000005,
+        "grant_to_entry_s": 15.32,
+        "last_channel_occupied_sample_s": 62.56,
+        "completion_s": 80.4,
+        "stationary_threshold_m_s": 0.025,
+        "low_speed_to_moving_transitions": 6,
+        "low_speed_per_stage_s": {
+          "DEPART": 0.84,
+          "ENTRY": 2.16,
+          "MUTEX_WAIT": 10.6,
+          "QUEUE_APPROACH": 0.48,
+          "RETURN": 2.16
+        },
+        "solver_attribution": "joint calls not arbitrarily split by car"
+      }
+    },
+    "joint_solver": {
+      "reference_QP_calls": 399,
+      "bicycle_QP_calls": 411,
+      "updates_total": 414,
+      "updates_histogram": {
+        "0": 0,
+        "1": 390,
+        "2": 12,
+        "3": 0
+      },
+      "reference_iterations": 526025,
+      "bicycle_iterations": 128600,
+      "input_repairs_attempted": 6,
+      "reference_rejections": 0,
+      "candidate_rejections": 0,
+      "prediction_budget_rejections": 0,
+      "candidate_compute_s": {
+        "count": 402,
+        "p50": 0.0480644619992745,
+        "p95": 0.0816440253998735,
+        "p99": 0.11292509095053907,
+        "max": 0.14056350600003498,
+        "total": 22.008590983998147
+      },
+      "reference_build_solve_check_s": {
+        "count": 402,
+        "p50": 0.005140435500834428,
+        "p95": 0.02550870930031124,
+        "p99": 0.035736694620627535,
+        "max": 0.05744168900037039,
+        "total": 3.512825776999307
+      },
+      "bicycle_OSQP_setup_and_solve_s": {
+        "count": 414,
+        "p50": 0.0045745590005026315,
+        "p95": 0.014942476899841491,
+        "p99": 0.02311233438029377,
+        "max": 0.027263304000371136,
+        "total": 2.804426038997917
+      },
+      "reference_OSQP_scope": "local field includes setup+warm+solve; central field solve only; not a direct solver timing ranking"
+    },
+    "total_control_cost": 19.93486090754438,
+    "online_wall_s": 96.05232133699974,
+    "online_full_future_calls": 0,
+    "cycle_timing_s": {
+      "count": 403,
+      "p50": 0.23153733800063492,
+      "p95": 0.296091399999932,
+      "p99": 0.3722759012809375,
+      "max": 0.5238864949988056,
+      "total": 92.69715743598863
+    },
+    "cycles_over_200ms": 280,
+    "candidate_stage_includes_DDS_and_peer_checks_s": {
+      "count": 402,
+      "p50": 0.0821647729990218,
+      "p95": 0.12246052840000628,
+      "p99": 0.15783302729074422,
+      "max": 0.32674509400021634,
+      "total": 35.4441078529926
+    },
+    "timing_unavailable_separate": [
+      "state/protocol setup vs seed replay",
+      "nonlinear peer validation alone",
+      "record and commit separately"
+    ],
+    "coordinator_rounds_max": 1,
+    "coordinator_rounds_total": 402,
+    "sends": 5650,
+    "application_bytes": 45013603,
+    "messages_by_kind": {
+      "ack": {
+        "count": 804,
+        "bytes": 335746
+      },
+      "commit": {
+        "count": 804,
+        "bytes": 472498
+      },
+      "final": {
+        "count": 804,
+        "bytes": 21637912
+      },
+      "permission": {
+        "count": 806,
+        "bytes": 189076
+      },
+      "prepare_conditional": {
+        "count": 4,
+        "bytes": 988
+      },
+      "release_report": {
+        "count": 2,
+        "bytes": 294
+      },
+      "request": {
+        "count": 2,
+        "bytes": 440
+      },
+      "seed": {
+        "count": 804,
+        "bytes": 21674355
+      },
+      "state": {
+        "count": 1620,
+        "bytes": 702294
+      }
+    },
+    "published_seed_plans": 804,
+    "published_final_plans": 804,
+    "accepted_plan_simulation_age_cycles": 0,
+    "shifted_seed_source_age_cycles": 1,
+    "final_plan_publish_to_commit_wall_s": {
+      "count": 804,
+      "p50": 0.0662749185003122,
+      "p95": 0.11256650175100727,
+      "p99": 0.11665580401919216,
+      "max": 0.21122919700064813,
+      "total": 58.434243745959975
+    },
+    "state_report_to_commit_wall_s": {
+      "count": 804,
+      "p50": 0.22834550399966247,
+      "p95": 0.29127326445122886,
+      "p99": 0.37111875079081075,
+      "max": 0.5208954549998452,
+      "total": 183.23994401399068
+    },
+    "handoffs": [
+      {
+        "cycle": 174,
+        "kind": "handoff",
+        "old_owner": "A",
+        "owner": "B",
+        "version": 2,
+        "proposal_id": "174:1:A",
+        "plans": {
+          "A": "9040b1645263ff9a6f9b17bf5c5ad43cfb742bac3501e128579dfea1abf92dc4",
+          "B": "4811db41c2b4f27c9181ccd60899674bf4841eea17627a97f5d8db7395cdc7c4"
+        }
+      },
+      {
+        "cycle": 355,
+        "kind": "handoff",
+        "old_owner": "B",
+        "owner": null,
+        "version": 3,
+        "proposal_id": "355:2:B",
+        "plans": {
+          "A": "fa403dfd366dfb0687392daecf7d2c6b4dab5d866f5bfce35d5236864896163d",
+          "B": "99cb0b25a39f9e1c60718d721e7ca74ac4b6f4ab99a58eabde2fb0a1dc0d9a0d"
+        }
+      }
+    ],
+    "independent_offline_audit_s": 22.336951432000205,
+    "centralized_future_diagnostic": {
+      "executed": true,
+      "identity": "M1 centralized B2-C full future from saved M2a checkpoints",
+      "not_local_future_proof": true,
+      "not_online_gate": true,
+      "wall_s": 15.570167377998587,
+      "online_records_unchanged": true,
+      "checkpoints": [
+        {
+          "cycle": 174,
+          "passed": true,
+          "failure": null,
+          "wall_s": 12.752714320999075
+        },
+        {
+          "cycle": 355,
+          "passed": true,
+          "failure": null,
+          "wall_s": 2.626101894000385
+        }
+      ]
+    }
+  },
+  "L-new_r2": {
+    "arm": "L-new",
+    "both_goals_reached": true,
+    "actual_full_acceptance": true,
+    "actual_physical_acceptance": true,
+    "release_contract_passed": true,
+    "waiting_pose_independent_checks": [
+      {
+        "cycle": 174,
+        "position_error_m": 2.8984156913105792e-05,
+        "heading_error_rad": 2.5018867416459756e-05,
+        "passed": true
+      }
+    ],
+    "local_information_boundary_passed": true,
+    "local_decision_dimensions": {
+      "A": {
+        "reference_max": 32,
+        "bicycle_max": 64
+      },
+      "B": {
+        "reference_max": 32,
+        "bicycle_max": 64
+      }
+    },
+    "actual_plan_version_compatibility": true,
+    "timing_complete": true,
+    "failure": null,
+    "failure_layer": null,
+    "completion_s": 80.4,
+    "minimum_sampled_gap_m": 1.19991349038163,
+    "per_car": {
+      "A": {
+        "control_cost": 3.760395930102628,
+        "endpoint_error": {
+          "position_m": 1.0657078775011541e-07,
+          "heading_rad": 0.0,
+          "speed_m_s": 1.1580528575742387e-23,
+          "steering_rad": 0.0
+        },
+        "request_s": 4.2,
+        "grant_s": 4.2,
+        "release_s": 34.800000000000004,
+        "request_to_grant_s": 0.0,
+        "channel_entry_s": 14.260000000000005,
+        "grant_to_entry_s": 10.060000000000006,
+        "last_channel_occupied_sample_s": 26.5,
+        "completion_s": 44.6,
+        "stationary_threshold_m_s": 0.025,
+        "low_speed_to_moving_transitions": 1,
+        "low_speed_per_stage_s": {
+          "COMPLETE": 35.800000000000004,
+          "NAVIGATE": 0.48
+        },
+        "solver_attribution": "own optimizer",
+        "reference_QP_calls": 222,
+        "bicycle_QP_calls": 223,
+        "updates_total": 402,
+        "updates_histogram": {
+          "0": 0,
+          "1": 402,
+          "2": 0,
+          "3": 0
+        },
+        "reference_iterations": 245925,
+        "bicycle_iterations": 51075,
+        "input_repairs_attempted": 0,
+        "reference_rejections": 0,
+        "candidate_rejections": 0,
+        "prediction_budget_rejections": 0,
+        "candidate_compute_s": {
+          "count": 402,
+          "p50": 0.02610020249903755,
+          "p95": 0.03774103244977595,
+          "p99": 0.050145671589980345,
+          "max": 0.0563600880013837,
+          "total": 10.195121046008353
+        },
+        "reference_build_solve_check_s": {
+          "count": 402,
+          "p50": 0.004160058499110164,
+          "p95": 0.014398481799889846,
+          "p99": 0.02777907562931433,
+          "max": 0.03377418799937004,
+          "total": 1.7243447329710762
+        },
+        "bicycle_OSQP_setup_and_solve_s": {
+          "count": 402,
+          "p50": 0.002795911000248452,
+          "p95": 0.0040543947007790826,
+          "p99": 0.005630844560928382,
+          "max": 0.008666167999763275,
+          "total": 0.7090437059978285
+        },
+        "reference_OSQP_scope": "local field includes setup+warm+solve; central field solve only; not a direct solver timing ranking",
+        "reference_max_variables": 32,
+        "bicycle_max_variables": 64
+      },
+      "B": {
+        "control_cost": 16.17253393256417,
+        "endpoint_error": {
+          "position_m": 5.951631391098999e-05,
+          "heading_rad": 8.881784197001252e-16,
+          "speed_m_s": 2.6020852139652106e-18,
+          "steering_rad": 2.1744628796713827e-16
+        },
+        "request_s": 7.2,
+        "grant_s": 34.800000000000004,
+        "release_s": 71.0,
+        "request_to_grant_s": 27.600000000000005,
+        "channel_entry_s": 50.120000000000005,
+        "grant_to_entry_s": 15.32,
+        "last_channel_occupied_sample_s": 62.56,
+        "completion_s": 80.4,
+        "stationary_threshold_m_s": 0.025,
+        "low_speed_to_moving_transitions": 6,
+        "low_speed_per_stage_s": {
+          "DEPART": 0.84,
+          "ENTRY": 2.16,
+          "MUTEX_WAIT": 10.6,
+          "QUEUE_APPROACH": 0.48,
+          "RETURN": 2.16
+        },
+        "solver_attribution": "own optimizer",
+        "reference_QP_calls": 329,
+        "bicycle_QP_calls": 342,
+        "updates_total": 414,
+        "updates_histogram": {
+          "0": 0,
+          "1": 390,
+          "2": 12,
+          "3": 0
+        },
+        "reference_iterations": 354150,
+        "bicycle_iterations": 96825,
+        "input_repairs_attempted": 5,
+        "reference_rejections": 0,
+        "candidate_rejections": 0,
+        "prediction_budget_rejections": 0,
+        "candidate_compute_s": {
+          "count": 402,
+          "p50": 0.027478729500217014,
+          "p95": 0.04535187830024369,
+          "p99": 0.053062719450426815,
+          "max": 0.06496528599927842,
+          "total": 11.504972973014446
+        },
+        "reference_build_solve_check_s": {
+          "count": 402,
+          "p50": 0.003928305999579607,
+          "p95": 0.01558666794990131,
+          "p99": 0.02412541342073383,
+          "max": 0.03988919299990812,
+          "total": 1.9749842309811356
+        },
+        "bicycle_OSQP_setup_and_solve_s": {
+          "count": 414,
+          "p50": 0.004055908000736963,
+          "p95": 0.007213847449565944,
+          "p99": 0.009448855410446417,
+          "max": 0.011775196000598953,
+          "total": 1.5199775679811864
+        },
+        "reference_OSQP_scope": "local field includes setup+warm+solve; central field solve only; not a direct solver timing ranking",
+        "reference_max_variables": 32,
+        "bicycle_max_variables": 64
+      }
+    },
+    "joint_solver": null,
+    "total_control_cost": 19.9329298626668,
+    "online_wall_s": 97.83638028099995,
+    "online_full_future_calls": 0,
+    "cycle_timing_s": {
+      "count": 403,
+      "p50": 0.23707116399964434,
+      "p95": 0.30602792780046,
+      "p99": 0.3397821720594584,
+      "max": 0.5101684609999211,
+      "total": 94.97817044300064
+    },
+    "cycles_over_200ms": 312,
+    "candidate_stage_includes_DDS_and_peer_checks_s": {
+      "count": 402,
+      "p50": 0.08440222549961618,
+      "p95": 0.11060186794938999,
+      "p99": 0.15362195896997974,
+      "max": 0.24734128700038127,
+      "total": 35.338545635995615
+    },
+    "timing_unavailable_separate": [
+      "state/protocol setup vs seed replay",
+      "nonlinear peer validation alone",
+      "record and commit separately"
+    ],
+    "coordinator_rounds_max": 1,
+    "coordinator_rounds_total": 402,
+    "sends": 5650,
+    "application_bytes": 45212736,
+    "messages_by_kind": {
+      "ack": {
+        "count": 804,
+        "bytes": 335746
+      },
+      "commit": {
+        "count": 804,
+        "bytes": 472498
+      },
+      "final": {
+        "count": 804,
+        "bytes": 21733566
+      },
+      "permission": {
+        "count": 806,
+        "bytes": 189076
+      },
+      "prepare_conditional": {
+        "count": 4,
+        "bytes": 988
+      },
+      "release_report": {
+        "count": 2,
+        "bytes": 294
+      },
+      "request": {
+        "count": 2,
+        "bytes": 438
+      },
+      "seed": {
+        "count": 804,
+        "bytes": 21777156
+      },
+      "state": {
+        "count": 1620,
+        "bytes": 702974
+      }
+    },
+    "published_seed_plans": 804,
+    "published_final_plans": 804,
+    "accepted_plan_simulation_age_cycles": 0,
+    "shifted_seed_source_age_cycles": 1,
+    "final_plan_publish_to_commit_wall_s": {
+      "count": 804,
+      "p50": 0.08979592050036445,
+      "p95": 0.1458419686505294,
+      "p99": 0.16843148698919322,
+      "max": 0.28322874500008766,
+      "total": 73.4159828870088
+    },
+    "state_report_to_commit_wall_s": {
+      "count": 804,
+      "p50": 0.2344180559994129,
+      "p95": 0.3007328986498578,
+      "p99": 0.3346066454495122,
+      "max": 0.5062581509992015,
+      "total": 187.7115657129707
+    },
+    "handoffs": [
+      {
+        "cycle": 174,
+        "kind": "handoff",
+        "old_owner": "A",
+        "owner": "B",
+        "version": 2,
+        "proposal_id": "174:1:A",
+        "plans": {
+          "A": "f57ec891f0376dba7aadfa291e7d58cfcbf76e72c8215f936b5e9b695d456055",
+          "B": "e56a8dd24e229dd44734f8713b9c5b0105272835ac27d9608da72bfb0bde71e9"
+        }
+      },
+      {
+        "cycle": 355,
+        "kind": "handoff",
+        "old_owner": "B",
+        "owner": null,
+        "version": 3,
+        "proposal_id": "355:2:B",
+        "plans": {
+          "A": "8e142b6ab377f9ab7ff0aa89ca5adaff0721c3b03741c47a764adb7652b07eb7",
+          "B": "541f631a545a293b06c4aa262124470c3d2fc4ae7377750e661fc36c635891f9"
+        }
+      }
+    ],
+    "independent_offline_audit_s": 22.14521294900078,
+    "centralized_future_diagnostic": {
+      "executed": true,
+      "identity": "M1 centralized B2-C full future from saved M2a checkpoints",
+      "not_local_future_proof": true,
+      "not_online_gate": true,
+      "wall_s": 14.925941704999786,
+      "online_records_unchanged": true,
+      "checkpoints": [
+        {
+          "cycle": 174,
+          "passed": true,
+          "failure": null,
+          "wall_s": 12.232761971999935
+        },
+        {
+          "cycle": 355,
+          "passed": true,
+          "failure": null,
+          "wall_s": 2.491740605000814
+        }
+      ]
+    }
+  }
+}

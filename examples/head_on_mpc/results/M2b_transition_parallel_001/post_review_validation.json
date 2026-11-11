@@ -1,0 +1,48 @@
+{
+  "prefix_acceptance": true,
+  "actual_full_acceptance": false,
+  "committed_cycles": 260,
+  "stop_layer": "prefix_limit",
+  "submitted_plan_ids_equal_to_formal_prefix": true,
+  "violations": [],
+  "handoffs": [
+    {
+      "cycle": 44,
+      "kind": "handoff",
+      "old_owner": null,
+      "owner": "A1",
+      "version": 1,
+      "proposal_id": "44:1",
+      "plans": {
+        "B2": "8d7d8801551fa31e3fb3066881d2a278c3b6dd22237d6185b1b0f61a1a7c9a88",
+        "B1": "42fcc44732057b55cb80ad442cad6fa5a102ac953bc2268974c9f87feaa61fbe",
+        "A2": "78d48b64ccfc6e45e3a2cdf031abb17dcc918040ee79d33bcbfa40a435bc8006",
+        "A1": "7bbcfb931fc757a3dfb63df8a17eb0c81aadeee1e315633501adc1600107a464"
+      },
+      "eligible": [
+        "A1"
+      ],
+      "previous_direction": null
+    },
+    {
+      "cycle": 224,
+      "kind": "handoff",
+      "old_owner": "A1",
+      "owner": "B1",
+      "version": 2,
+      "proposal_id": "224:2",
+      "plans": {
+        "A2": "50fa4bc58a34446ca5eb661d63532a2c7812ff0834549fe07ff7182d53ee9085",
+        "B1": "6de3fee04d4d65895a3f40a0ed8204ac29786273e3746635269122735c64580a",
+        "B2": "b59c0fb9e31606c6c2d30deba4f59df22c3d2f6d60ca7d0347195af99b215171",
+        "A1": "7a971e88777d9812587ebfc198d4ca04147a6a0b5358b464d2e0cd5f7353532f"
+      },
+      "eligible": [
+        "A2",
+        "B1"
+      ],
+      "previous_direction": 1
+    }
+  ],
+  "scope": "functional affected-path regression only; final-byte full repetitions were not rerun"
+}

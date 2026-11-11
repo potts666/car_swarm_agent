@@ -1,0 +1,21 @@
+{
+  "python": "3.12.3",
+  "numpy": "1.26.4",
+  "scipy": "1.11.4",
+  "osqp": "1.1.3",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "threads": "1",
+  "ros_domain": "114",
+  "command": [
+    "examples/head_on_mpc/scripts/run_m2b.py",
+    "--arm",
+    "central",
+    "--policy",
+    "fifo-ready",
+    "--repeat",
+    "1",
+    "--output",
+    "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1"
+  ],
+  "source_version": "41ed9635904c838e6f80915c7ac92cd2da17a285190b86cb832eab99a76a7a1f"
+}

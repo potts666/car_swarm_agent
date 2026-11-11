@@ -1,0 +1,242 @@
+{
+  "actual_full_acceptance": true,
+  "actual_prefix_acceptance": true,
+  "violations": [],
+  "goals": {
+    "A1": true,
+    "A2": true,
+    "B1": true,
+    "B2": true
+  },
+  "physical": {
+    "passed": true,
+    "residuals": {
+      "A1": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.356004033503666e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "A2": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.340311865938304e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B1": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.3418483346683274e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B2": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.6798721658162208e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "pair_gap_m": 0.0
+    },
+    "pair_gaps_m": {
+      "A1:A2": 4.1999066470510416,
+      "A1:B1": 1.1999980698175956,
+      "A1:B2": 1.199999999999998,
+      "A2:B1": 1.1999995646796124,
+      "A2:B2": 1.1999999999999957,
+      "B1:B2": 1.5003004396200623
+    },
+    "minimum_gap_m": 1.1999980698175956
+  },
+  "component_replay_error": {
+    "A1": 6.124878382252064e-12,
+    "A2": 6.16751094639767e-12,
+    "B1": 6.16751094639767e-12,
+    "B2": 6.131983809609665e-12
+  },
+  "accumulated_replay_error": {
+    "A1": 1.1818457323897746e-10,
+    "A2": 1.6748202824601321e-10,
+    "B1": 1.695070750429295e-10,
+    "B2": 1.1577583336475072e-10
+  },
+  "original_sign_check_passed": true,
+  "prediction_replay_error": 3.6067149267182685e-11,
+  "minimum_prediction_gap_m": 1.1999980698175956,
+  "protocol_passed": true,
+  "all_exit_timing_passed": true,
+  "local_information_boundary_passed": true,
+  "dimensions": {
+    "A1": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "A2": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "B1": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "B2": {
+      "reference": 32,
+      "bicycle": 64
+    }
+  },
+  "handoffs": [
+    {
+      "cycle": 44,
+      "kind": "handoff",
+      "old_owner": null,
+      "owner": "A1",
+      "version": 1,
+      "proposal_id": "44:1",
+      "plans": {
+        "A1": "7bbcfb931fc757a3dfb63df8a17eb0c81aadeee1e315633501adc1600107a464",
+        "A2": "78d48b64ccfc6e45e3a2cdf031abb17dcc918040ee79d33bcbfa40a435bc8006",
+        "B2": "8d7d8801551fa31e3fb3066881d2a278c3b6dd22237d6185b1b0f61a1a7c9a88",
+        "B1": "42fcc44732057b55cb80ad442cad6fa5a102ac953bc2268974c9f87feaa61fbe"
+      },
+      "eligible": [
+        "A1"
+      ],
+      "previous_direction": null
+    },
+    {
+      "cycle": 224,
+      "kind": "handoff",
+      "old_owner": "A1",
+      "owner": "B1",
+      "version": 2,
+      "proposal_id": "224:2",
+      "plans": {
+        "B1": "6de3fee04d4d65895a3f40a0ed8204ac29786273e3746635269122735c64580a",
+        "A2": "50fa4bc58a34446ca5eb661d63532a2c7812ff0834549fe07ff7182d53ee9085",
+        "B2": "b59c0fb9e31606c6c2d30deba4f59df22c3d2f6d60ca7d0347195af99b215171",
+        "A1": "7a971e88777d9812587ebfc198d4ca04147a6a0b5358b464d2e0cd5f7353532f"
+      },
+      "eligible": [
+        "A2",
+        "B1"
+      ],
+      "previous_direction": 1
+    },
+    {
+      "cycle": 404,
+      "kind": "handoff",
+      "old_owner": "B1",
+      "owner": "A2",
+      "version": 3,
+      "proposal_id": "404:3",
+      "plans": {
+        "A2": "f7d75a512c89af723ec5fc4f9062093acb07190329f48ebf223e98481ba13310",
+        "A1": "a5fd307a6b362a5cabaddd22b2ec975ef0133dfa4d4b5c4aba0da60d43374b6f",
+        "B2": "65cca0b821905ad6d949343386618e1cb2878a263c78f58070133f233281a866",
+        "B1": "7cd2b7628ee0a79aee7cc0ac691d7d70a2f2f80e51fded8b4dbee4a83abd88ef"
+      },
+      "eligible": [
+        "A2",
+        "B2"
+      ],
+      "previous_direction": -1
+    },
+    {
+      "cycle": 584,
+      "kind": "handoff",
+      "old_owner": "A2",
+      "owner": "B2",
+      "version": 4,
+      "proposal_id": "584:4",
+      "plans": {
+        "B2": "3922d122ee30eff93e7b15cf565d3be8ae2ffd97f905b8140a3d798b0a2b7d39",
+        "A1": "70b426bda38232ff44a990abd46d2b189050eacc030982def2e6a7c701eff783",
+        "B1": "6c5d493d3d95e8bd92c4d445fe7fe044528d9defcb19f6cbb15fe56527e1ae9f",
+        "A2": "7a8f3f9b461fa84cb466d7f1519c00a220a45413d59c4e0cd1c9b76fbd130a72"
+      },
+      "eligible": [
+        "B2"
+      ],
+      "previous_direction": 1
+    },
+    {
+      "cycle": 764,
+      "kind": "handoff",
+      "old_owner": "B2",
+      "owner": null,
+      "version": 5,
+      "proposal_id": "764:5",
+      "plans": {
+        "A2": "e8625bbf57da203985c62b8b75c13d0402b10aad8dd35d88cb57d0574eada24b",
+        "B1": "9c21d2d28e64b6c385fd374a52051bbdb5cd156e2a72659a39f4d9abdac292cc",
+        "A1": "42fe4bcd9019fdcaebe68a13c490c778f6bb2815042d03526250473d333850f1",
+        "B2": "18708332c0fbd04726c7bfcac7e6db17da82201b84ec3070db6d68ee78111a62"
+      },
+      "eligible": [],
+      "previous_direction": -1
+    }
+  ],
+  "waiting": {
+    "A1": {
+      "request_to_grant_s": 7.200000000000001,
+      "ready_to_grant_s": 0.0,
+      "grant_s": 8.8
+    },
+    "B1": {
+      "request_to_grant_s": 40.400000000000006,
+      "ready_to_grant_s": 21.800000000000004,
+      "grant_s": 44.800000000000004
+    },
+    "A2": {
+      "request_to_grant_s": 64.80000000000001,
+      "ready_to_grant_s": 45.40000000000001,
+      "grant_s": 80.80000000000001
+    },
+    "B2": {
+      "request_to_grant_s": 89.60000000000001,
+      "ready_to_grant_s": 54.80000000000001,
+      "grant_s": 116.80000000000001
+    }
+  },
+  "first_ready_s": {
+    "A1": 8.8,
+    "B1": 23.0,
+    "A2": 35.4,
+    "B2": 62.0
+  },
+  "first_protection_entry_s": {
+    "A1": 10.98,
+    "B1": 46.980000000000004,
+    "A2": 82.98000000000002,
+    "B2": 118.98000000000002
+  },
+  "first_actual_tail_clear_s": {
+    "A1": 44.800000000000004,
+    "B1": 80.80000000000001,
+    "A2": 116.80000000000001,
+    "B2": 152.8
+  },
+  "idle_time_s": {
+    "no_candidate": 1.5999999999999999,
+    "candidates_not_ready": 7.200000000000004
+  },
+  "independent_audit_wall_s": 165.04537829900073,
+  "geometry_shared_with_M1": true,
+  "central_future_not_run": true,
+  "sealed_round_audit": {
+    "violations": [],
+    "candidate_count": 3532,
+    "max_fixed_input_error": 0.0,
+    "max_partial_progress_speed_error": 1.1885909820819052e-06,
+    "full_ocp_candidate_certificate": false,
+    "worker_pids": [
+      13712,
+      13713,
+      13714,
+      13715
+    ],
+    "four_way_overlap_cycles": 883,
+    "max_four_way_overlap_s": 0.078154091,
+    "round_count": 883,
+    "independent_queue_restoration": true
+  }
+}

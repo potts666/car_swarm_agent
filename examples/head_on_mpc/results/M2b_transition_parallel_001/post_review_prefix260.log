@@ -1,0 +1,6 @@
+r1 cycle 0 owner None done []
+r1 cycle 100 owner A1 done []
+r1 cycle 200 owner A1 done []
+Polishing not needed - no active set detected at optimal point
+r1 {"all_completed":false,"backend":"P-J","committed_cycles":260,"completion_per_car_s":{},"completion_sim_s":null,"export_wall_s":7.752368239998759,"failure":"RuntimeError: bounded prefix limit reached","failure_layer":"prefix_limit","last_states":{"A1":[35.28340699452295,0.1391409461975334,0.2156946401533859,1.0000000999999998,0.4221838438921984],"A2":[-21.999699215557943,2.9999995842769267,-5.599234164060307e-09,1.0842021724855044e-18,-2.24462114528049e-08],"B1":[18.031153365310256,-1.4996294067776668,2.4188681987853027,-1.734723475976807e-18,0.08457002411469572],"B2":[27.999999954509008,-3.0,3.1415926535897953,6.505213034913027e-19,-1.2499514270251178e-15]},"old_central_future_diagnostic":"not executed; no online future gate","online_wall_s":78.31982496099954,"shutdown_wall_s":0.13024987099925056,"timed_cycles":261,"total_wall_before_export_s":78.96249313800217}
+examples/head_on_mpc/results/M2b_transition_parallel_001/post_review_prefix260/r1 False prefix True violations []

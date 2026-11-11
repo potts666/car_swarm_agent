@@ -1,0 +1,65 @@
+{
+  "envelope": [
+    "sender",
+    "receiver",
+    "kind",
+    "cycle",
+    "sequence",
+    "payload"
+  ],
+  "context": [
+    "cycle",
+    "state_time_s",
+    "permission_version",
+    "owner",
+    "released",
+    "proposal_id",
+    "releasing",
+    "conditional"
+  ],
+  "public_state": [
+    "car",
+    "z",
+    "index",
+    "mode",
+    "ready",
+    "steering_complete",
+    "context",
+    "B-only entry_envelope_xmin",
+    "B-only return_envelope_xmax"
+  ],
+  "plan": [
+    "car",
+    "context",
+    "report",
+    "commands (final actuator outputs, not internal QP/reference vectors)",
+    "states (dense nonlinear)",
+    "kind (seed/final)",
+    "revision",
+    "origin",
+    "shifted_from",
+    "id (SHA256 canonical content)"
+  ],
+  "acknowledgment": [
+    "car",
+    "context",
+    "plans (A/B IDs)",
+    "accepted"
+  ],
+  "commit": [
+    "token (context+pair IDs)",
+    "effective (activated authorization)",
+    "activated_proposal_id"
+  ],
+  "prohibited_peer_payloads": [
+    "Agent object",
+    "reference solution",
+    "QP solution/H/A",
+    "private warm cache",
+    "central all-car reference"
+  ],
+  "rounds": "exactly one A-final then B-final; no online retry",
+  "seed_age": "fresh context; shifted_from last committed own plan age one cycle",
+  "byte_definition": "compact UTF-8 JSON application envelope, excludes DDS/network headers",
+  "transport": "actual three ROS2 nodes, reliable DDS /m2a/envelope"
+}

@@ -1,0 +1,10 @@
+{
+  "reason": "isolated import found omitted pre-existing transitive dependencies; no runtime mathematics change, appended outside the immutable main source manifest",
+  "sha256": {
+    "scripts/head_on_core.py": "9e724e960808516bdc60e984cb46690b7a6794d91a0f7a2913568e95b16272d5",
+    "scripts/pass_release_core.py": "65b23478e780e945958c3b8e1addb318dc76f2c8081c5dd5fd1800e3cdbc598f",
+    "scripts/trajectory_acceptance.py": "36ad71f5cec952db6f4132142d2febcf0f5b84e6b21f614589053df44dccb08b",
+    "scripts/run_comparison.py": "66b3e32a773968f0c9d9d3272fb531bc06e2fedde5c428a29766995d3779e7a1",
+    "scripts/report_entry_bicycle.py": "745ad10e8141b2452b407190f9969f7878bd8817d1d7d126d859298fdbdeb1b6"
+  }
+}

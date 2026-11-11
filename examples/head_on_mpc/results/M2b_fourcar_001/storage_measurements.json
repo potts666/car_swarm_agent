@@ -1,0 +1,74 @@
+{
+  "runs": {
+    "C-FIFO/r1": {
+      "full_log_raw_bytes": 1298104469,
+      "gzip_only_log_bytes": 168224778,
+      "referenced_log_raw_bytes": 478908313,
+      "referenced_gzip_log_bytes": 47404260,
+      "full_plan_raw_bytes": 237508999,
+      "full_message_raw_bytes": 742205282,
+      "plan_object": "5421bb87f32741aff2d505e6d716890401cd56705883189361a88199af51451b",
+      "normal_logical_content_unchanged": true
+    },
+    "C-FIFO/r2": {
+      "full_log_raw_bytes": 1298140192,
+      "gzip_only_log_bytes": 168243581,
+      "referenced_log_raw_bytes": 478944036,
+      "referenced_gzip_log_bytes": 47406434,
+      "full_plan_raw_bytes": 237508999,
+      "full_message_raw_bytes": 742240396,
+      "plan_object": "5421bb87f32741aff2d505e6d716890401cd56705883189361a88199af51451b",
+      "normal_logical_content_unchanged": true
+    },
+    "L-FIFO/r1": {
+      "full_log_raw_bytes": 1185657014,
+      "gzip_only_log_bytes": 169210415,
+      "referenced_log_raw_bytes": 340371805,
+      "referenced_gzip_log_bytes": 49002098,
+      "full_plan_raw_bytes": 244980874,
+      "full_message_raw_bytes": 764636153,
+      "plan_object": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+      "normal_logical_content_unchanged": true
+    },
+    "L-FIFO/r2": {
+      "full_log_raw_bytes": 1185656916,
+      "gzip_only_log_bytes": 169206977,
+      "referenced_log_raw_bytes": 340371707,
+      "referenced_gzip_log_bytes": 49002380,
+      "full_plan_raw_bytes": 244980874,
+      "full_message_raw_bytes": 764636153,
+      "plan_object": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+      "normal_logical_content_unchanged": true
+    },
+    "L-ALT/r1": {
+      "full_log_raw_bytes": 1185656921,
+      "gzip_only_log_bytes": 169206363,
+      "referenced_log_raw_bytes": 340371712,
+      "referenced_gzip_log_bytes": 49004461,
+      "full_plan_raw_bytes": 244980874,
+      "full_message_raw_bytes": 764636153,
+      "plan_object": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+      "normal_logical_content_unchanged": true
+    },
+    "L-ALT/r2": {
+      "full_log_raw_bytes": 1185656868,
+      "gzip_only_log_bytes": 169214356,
+      "referenced_log_raw_bytes": 340371659,
+      "referenced_gzip_log_bytes": 49005231,
+      "full_plan_raw_bytes": 244980874,
+      "full_message_raw_bytes": 764636153,
+      "plan_object": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+      "normal_logical_content_unchanged": true
+    }
+  },
+  "completed": true,
+  "scope": "JSONL logs for before/after pipeline; package sizes include all files",
+  "package_apparent_bytes": 409742104,
+  "package_unique_file_bytes": 292587228,
+  "plan_store_objects": 2,
+  "soft_package_200MiB_met": false,
+  "offline_measurement_wall_s": 464.2911481629999,
+  "hardlinks_require_tar_preservation_or_object_relink_on_copy": true,
+  "measurement_stage": "before diagnostic-object sharing; gzip-only/reference size measurements retained from that stage",
+  "final_shared_footprint": "shared_storage_footprint.json"
+}

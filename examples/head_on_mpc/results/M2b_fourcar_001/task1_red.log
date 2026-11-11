@@ -1,0 +1,21 @@
+test_m2b_scene (unittest.loader._FailedTest.test_m2b_scene) ... ERROR
+
+======================================================================
+ERROR: test_m2b_scene (unittest.loader._FailedTest.test_m2b_scene)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_m2b_scene
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 394, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/loader.py", line 337, in _get_module_from_name
+    __import__(name)
+  File "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/tests/test_m2b_scene.py", line 6, in <module>
+    from m2b_scene import build_scene,build_routes,check_scenario,audit,CARS
+ModuleNotFoundError: No module named 'm2b_scene'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

@@ -1,0 +1,145 @@
+START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_m2b.py --arm central --policy fifo-ready --repeat 2 --output examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO
+r1 cycle 0 sim_s 0.0 owner None done []
+Polishing not needed - no active set detected at optimal point
+r1 cycle 50 sim_s 10.0 owner A1 done []
+r1 cycle 100 sim_s 20.0 owner A1 done []
+r1 cycle 150 sim_s 30.0 owner A1 done []
+r1 cycle 200 sim_s 40.0 owner A1 done []
+r1 cycle 250 sim_s 50.0 owner B1 done []
+r1 cycle 300 sim_s 60.0 owner B1 done []
+r1 cycle 350 sim_s 70.0 owner B1 done ['A1']
+r1 cycle 400 sim_s 80.0 owner B1 done ['A1']
+r1 cycle 450 sim_s 90.0 owner A2 done ['A1']
+r1 cycle 500 sim_s 100.0 owner A2 done ['A1']
+r1 cycle 550 sim_s 110.0 owner A2 done ['A1', 'B1']
+r1 cycle 600 sim_s 120.0 owner B2 done ['A1', 'B1']
+r1 cycle 650 sim_s 130.0 owner B2 done ['A1', 'B1']
+r1 cycle 700 sim_s 140.0 owner B2 done ['A1', 'B1']
+r1 cycle 750 sim_s 150.0 owner B2 done ['A1', 'B1', 'A2']
+Polishing not needed - no active set detected at optimal point
+r1 cycle 800 sim_s 160.0 owner None done ['A1', 'B1', 'A2']
+r1 cycle 850 sim_s 170.0 owner None done ['A1', 'B1', 'A2']
+r1 {"arm": "central", "policy": "fifo-ready", "all_completed": true, "completion_sim_s": 177.0, "completion_per_car_s": {"A1": 68.8, "B1": 104.80000000000001, "A2": 140.8, "B2": 177.0}, "failure": null, "failure_layer": null, "online_wall_s": 578.295750391, "export_wall_s": 34.17138302500007, "committed_cycles": 885, "timed_cycles": 886, "last_states": {"A1": [46.00005528308069, 2.9999986133562935, 4.3364503889644427e-07, -2.6020852139652106e-18, 0.0], "A2": [46.000306798462184, -2.999999197665344, -2.443338308682029e-07, -6.071532165918825e-18, 3.3087224502121107e-23], "B1": [-46.000306839918025, 2.999999011879864, 3.141592357954729, 0.0, 4.632211430296955e-23], "B2": [-46.00005497245465, -2.9999982876920104, 3.141593102845615, 2.6020852139652106e-18, 9.26442286059391e-23]}, "old_central_future_diagnostic": "not executed; no online future gate"}
+r2 cycle 0 sim_s 0.0 owner None done []
+Polishing not needed - no active set detected at optimal point
+r2 cycle 50 sim_s 10.0 owner A1 done []
+r2 cycle 100 sim_s 20.0 owner A1 done []
+r2 cycle 150 sim_s 30.0 owner A1 done []
+r2 cycle 200 sim_s 40.0 owner A1 done []
+r2 cycle 250 sim_s 50.0 owner B1 done []
+r2 cycle 300 sim_s 60.0 owner B1 done []
+r2 cycle 350 sim_s 70.0 owner B1 done ['A1']
+r2 cycle 400 sim_s 80.0 owner B1 done ['A1']
+r2 cycle 450 sim_s 90.0 owner A2 done ['A1']
+r2 cycle 500 sim_s 100.0 owner A2 done ['A1']
+r2 cycle 550 sim_s 110.0 owner A2 done ['A1', 'B1']
+r2 cycle 600 sim_s 120.0 owner B2 done ['A1', 'B1']
+r2 cycle 650 sim_s 130.0 owner B2 done ['A1', 'B1']
+r2 cycle 700 sim_s 140.0 owner B2 done ['A1', 'B1']
+r2 cycle 750 sim_s 150.0 owner B2 done ['A1', 'B1', 'A2']
+Polishing not needed - no active set detected at optimal point
+r2 cycle 800 sim_s 160.0 owner None done ['A1', 'B1', 'A2']
+r2 cycle 850 sim_s 170.0 owner None done ['A1', 'B1', 'A2']
+r2 {"arm": "central", "policy": "fifo-ready", "all_completed": true, "completion_sim_s": 177.0, "completion_per_car_s": {"A1": 68.8, "B1": 104.80000000000001, "A2": 140.8, "B2": 177.0}, "failure": null, "failure_layer": null, "online_wall_s": 579.516882914, "export_wall_s": 33.310941168, "committed_cycles": 885, "timed_cycles": 886, "last_states": {"A1": [46.00005528308069, 2.9999986133562935, 4.3364503889644427e-07, -2.6020852139652106e-18, 0.0], "A2": [46.000306798462184, -2.999999197665344, -2.443338308682029e-07, -6.071532165918825e-18, 3.3087224502121107e-23], "B1": [-46.000306839918025, 2.999999011879864, 3.141592357954729, 0.0, 4.632211430296955e-23], "B2": [-46.00005497245465, -2.9999982876920104, 3.141593102845615, 2.6020852139652106e-18, 9.26442286059391e-23]}, "old_central_future_diagnostic": "not executed; no online future gate"}
+START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1
+examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1 True prefix True violations []
+START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2
+examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2 True prefix True violations []
+START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_m2b.py --arm local --policy fifo-ready --repeat 2 --output examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO
+r1 cycle 0 sim_s 0.0 owner None done []
+r1 cycle 50 sim_s 10.0 owner A1 done []
+r1 cycle 100 sim_s 20.0 owner A1 done []
+r1 cycle 150 sim_s 30.0 owner A1 done []
+r1 cycle 200 sim_s 40.0 owner A1 done []
+Polishing not needed - no active set detected at optimal point
+r1 cycle 250 sim_s 50.0 owner B1 done []
+r1 cycle 300 sim_s 60.0 owner B1 done []
+Polishing not needed - no active set detected at optimal point
+r1 cycle 350 sim_s 70.0 owner B1 done ['A1']
+r1 cycle 400 sim_s 80.0 owner B1 done ['A1']
+r1 cycle 450 sim_s 90.0 owner A2 done ['A1']
+r1 cycle 500 sim_s 100.0 owner A2 done ['A1']
+r1 cycle 550 sim_s 110.0 owner A2 done ['A1', 'B1']
+r1 cycle 600 sim_s 120.0 owner B2 done ['A1', 'B1']
+r1 cycle 650 sim_s 130.0 owner B2 done ['A1', 'B1']
+r1 cycle 700 sim_s 140.0 owner B2 done ['A1', 'B1']
+r1 cycle 750 sim_s 150.0 owner B2 done ['A1', 'B1', 'A2']
+Polishing not needed - no active set detected at optimal point
+r1 cycle 800 sim_s 160.0 owner None done ['A1', 'B1', 'A2']
+r1 cycle 850 sim_s 170.0 owner None done ['A1', 'B1', 'A2']
+r1 {"arm": "local", "policy": "fifo-ready", "all_completed": true, "completion_sim_s": 176.4, "completion_per_car_s": {"A1": 68.60000000000001, "B1": 104.2, "A2": 140.20000000000002, "B2": 176.4}, "failure": null, "failure_layer": null, "online_wall_s": 583.6205098799996, "export_wall_s": 33.19846536000023, "committed_cycles": 882, "timed_cycles": 883, "last_states": {"A1": [46.00005484341871, 2.999998286950418, 4.469308551555731e-07, 3.469446951953614e-18, -9.26442286059391e-23], "A2": [46.00030642282177, -2.999999124593306, -3.454913539537709e-07, 8.673617379884035e-19, 3.970466940254533e-23], "B1": [-46.00030668901381, 2.9999991037418465, 3.1415923037638906, 2.6020852139652106e-18, -9.26442286059391e-23], "B2": [-46.00005490866419, -2.9999982873750457, 3.1415931003197355, 8.673617379884035e-19, 7.940933880509066e-23]}, "old_central_future_diagnostic": "not executed; no online future gate"}
+r2 cycle 0 sim_s 0.0 owner None done []
+r2 cycle 50 sim_s 10.0 owner A1 done []
+r2 cycle 100 sim_s 20.0 owner A1 done []
+r2 cycle 150 sim_s 30.0 owner A1 done []
+r2 cycle 200 sim_s 40.0 owner A1 done []
+Polishing not needed - no active set detected at optimal point
+r2 cycle 250 sim_s 50.0 owner B1 done []
+r2 cycle 300 sim_s 60.0 owner B1 done []
+Polishing not needed - no active set detected at optimal point
+r2 cycle 350 sim_s 70.0 owner B1 done ['A1']
+r2 cycle 400 sim_s 80.0 owner B1 done ['A1']
+r2 cycle 450 sim_s 90.0 owner A2 done ['A1']
+r2 cycle 500 sim_s 100.0 owner A2 done ['A1']
+r2 cycle 550 sim_s 110.0 owner A2 done ['A1', 'B1']
+r2 cycle 600 sim_s 120.0 owner B2 done ['A1', 'B1']
+r2 cycle 650 sim_s 130.0 owner B2 done ['A1', 'B1']
+r2 cycle 700 sim_s 140.0 owner B2 done ['A1', 'B1']
+r2 cycle 750 sim_s 150.0 owner B2 done ['A1', 'B1', 'A2']
+Polishing not needed - no active set detected at optimal point
+r2 cycle 800 sim_s 160.0 owner None done ['A1', 'B1', 'A2']
+r2 cycle 850 sim_s 170.0 owner None done ['A1', 'B1', 'A2']
+r2 {"arm": "local", "policy": "fifo-ready", "all_completed": true, "completion_sim_s": 176.4, "completion_per_car_s": {"A1": 68.60000000000001, "B1": 104.2, "A2": 140.20000000000002, "B2": 176.4}, "failure": null, "failure_layer": null, "online_wall_s": 588.2564113610001, "export_wall_s": 33.15637623399971, "committed_cycles": 882, "timed_cycles": 883, "last_states": {"A1": [46.00005484341871, 2.999998286950418, 4.469308551555731e-07, 3.469446951953614e-18, -9.26442286059391e-23], "A2": [46.00030642282177, -2.999999124593306, -3.454913539537709e-07, 8.673617379884035e-19, 3.970466940254533e-23], "B1": [-46.00030668901381, 2.9999991037418465, 3.1415923037638906, 2.6020852139652106e-18, -9.26442286059391e-23], "B2": [-46.00005490866419, -2.9999982873750457, 3.1415931003197355, 8.673617379884035e-19, 7.940933880509066e-23]}, "old_central_future_diagnostic": "not executed; no online future gate"}
+START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1
+examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1 True prefix True violations []
+START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2
+examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2 True prefix True violations []
+START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_m2b.py --arm local --policy alternating-ready --repeat 2 --output examples/head_on_mpc/results/M2b_fourcar_001/L-ALT
+r1 cycle 0 sim_s 0.0 owner None done []
+r1 cycle 50 sim_s 10.0 owner A1 done []
+r1 cycle 100 sim_s 20.0 owner A1 done []
+r1 cycle 150 sim_s 30.0 owner A1 done []
+r1 cycle 200 sim_s 40.0 owner A1 done []
+Polishing not needed - no active set detected at optimal point
+r1 cycle 250 sim_s 50.0 owner B1 done []
+r1 cycle 300 sim_s 60.0 owner B1 done []
+Polishing not needed - no active set detected at optimal point
+r1 cycle 350 sim_s 70.0 owner B1 done ['A1']
+r1 cycle 400 sim_s 80.0 owner B1 done ['A1']
+r1 cycle 450 sim_s 90.0 owner A2 done ['A1']
+r1 cycle 500 sim_s 100.0 owner A2 done ['A1']
+r1 cycle 550 sim_s 110.0 owner A2 done ['A1', 'B1']
+r1 cycle 600 sim_s 120.0 owner B2 done ['A1', 'B1']
+r1 cycle 650 sim_s 130.0 owner B2 done ['A1', 'B1']
+r1 cycle 700 sim_s 140.0 owner B2 done ['A1', 'B1']
+r1 cycle 750 sim_s 150.0 owner B2 done ['A1', 'B1', 'A2']
+Polishing not needed - no active set detected at optimal point
+r1 cycle 800 sim_s 160.0 owner None done ['A1', 'B1', 'A2']
+r1 cycle 850 sim_s 170.0 owner None done ['A1', 'B1', 'A2']
+r1 {"arm": "local", "policy": "alternating-ready", "all_completed": true, "completion_sim_s": 176.4, "completion_per_car_s": {"A1": 68.60000000000001, "B1": 104.2, "A2": 140.20000000000002, "B2": 176.4}, "failure": null, "failure_layer": null, "online_wall_s": 599.3425017870004, "export_wall_s": 34.08053528599976, "committed_cycles": 882, "timed_cycles": 883, "last_states": {"A1": [46.00005484341871, 2.999998286950418, 4.469308551555731e-07, 3.469446951953614e-18, -9.26442286059391e-23], "A2": [46.00030642282177, -2.999999124593306, -3.454913539537709e-07, 8.673617379884035e-19, 3.970466940254533e-23], "B1": [-46.00030668901381, 2.9999991037418465, 3.1415923037638906, 2.6020852139652106e-18, -9.26442286059391e-23], "B2": [-46.00005490866419, -2.9999982873750457, 3.1415931003197355, 8.673617379884035e-19, 7.940933880509066e-23]}, "old_central_future_diagnostic": "not executed; no online future gate"}
+r2 cycle 0 sim_s 0.0 owner None done []
+r2 cycle 50 sim_s 10.0 owner A1 done []
+r2 cycle 100 sim_s 20.0 owner A1 done []
+r2 cycle 150 sim_s 30.0 owner A1 done []
+r2 cycle 200 sim_s 40.0 owner A1 done []
+Polishing not needed - no active set detected at optimal point
+r2 cycle 250 sim_s 50.0 owner B1 done []
+r2 cycle 300 sim_s 60.0 owner B1 done []
+Polishing not needed - no active set detected at optimal point
+r2 cycle 350 sim_s 70.0 owner B1 done ['A1']
+r2 cycle 400 sim_s 80.0 owner B1 done ['A1']
+r2 cycle 450 sim_s 90.0 owner A2 done ['A1']
+r2 cycle 500 sim_s 100.0 owner A2 done ['A1']
+r2 cycle 550 sim_s 110.0 owner A2 done ['A1', 'B1']
+r2 cycle 600 sim_s 120.0 owner B2 done ['A1', 'B1']
+r2 cycle 650 sim_s 130.0 owner B2 done ['A1', 'B1']
+r2 cycle 700 sim_s 140.0 owner B2 done ['A1', 'B1']
+r2 cycle 750 sim_s 150.0 owner B2 done ['A1', 'B1', 'A2']
+Polishing not needed - no active set detected at optimal point
+r2 cycle 800 sim_s 160.0 owner None done ['A1', 'B1', 'A2']
+r2 cycle 850 sim_s 170.0 owner None done ['A1', 'B1', 'A2']
+r2 {"arm": "local", "policy": "alternating-ready", "all_completed": true, "completion_sim_s": 176.4, "completion_per_car_s": {"A1": 68.60000000000001, "B1": 104.2, "A2": 140.20000000000002, "B2": 176.4}, "failure": null, "failure_layer": null, "online_wall_s": 605.6789087159996, "export_wall_s": 34.06143037699985, "committed_cycles": 882, "timed_cycles": 883, "last_states": {"A1": [46.00005484341871, 2.999998286950418, 4.469308551555731e-07, 3.469446951953614e-18, -9.26442286059391e-23], "A2": [46.00030642282177, -2.999999124593306, -3.454913539537709e-07, 8.673617379884035e-19, 3.970466940254533e-23], "B1": [-46.00030668901381, 2.9999991037418465, 3.1415923037638906, 2.6020852139652106e-18, -9.26442286059391e-23], "B2": [-46.00005490866419, -2.9999982873750457, 3.1415931003197355, 8.673617379884035e-19, 7.940933880509066e-23]}, "old_central_future_diagnostic": "not executed; no online future gate"}
+START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1
+examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1 True prefix True violations []
+START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2
+examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2 True prefix True violations []

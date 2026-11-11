@@ -1,0 +1,12 @@
+metric,unit,definition,scope,limitation
+full_cycle_wall_s,s,"all exits, perf_counter end-start, includes start preparation/IPC/DDS/checks/ACK/staging",online,"200ms target; frozen simulation, no real-time proof"
+local_computation_s,s,candidate build + own prevalidation + own optimizer,online,original .5s budget; IPC/final ACK are in full cycle
+worker_span_wall_s,s,max worker end - min worker start in a shared monotonic clock,online,"wall span, not CPU sum"
+four_way_overlap_s,s,"max(0,min ends-max starts)",online,separate PIDs; excludes candidate preparation
+rpc_wall_s,s,"parent RPC entry to full response cohort, separated by method",online,includes IPC and waiting; not pure solver time
+exchange_parent_and_logging_wall_s,s,online wall minus sum RPC calls,online,combined DDS/parent bookkeeping; no isolated pure DDS measurement
+cache_hits,count,null when counters not persisted,online,never interpret null as zero
+application_bytes,byte,"UTF-8 canonical envelope length, original plan restored",online,excludes DDS framing/retransmission overhead
+candidate_partial_residuals,original units,independent queue or scalar reference conditions,offline,not complete OCP proof
+actual_full_acceptance,boolean,original dynamics/sign/physical/goals plus resource/final-version audit,offline,finite samples and ideal communication
+model_usage,token,not captured by this experiment driver,outside,no billing inference from duration or hook counts

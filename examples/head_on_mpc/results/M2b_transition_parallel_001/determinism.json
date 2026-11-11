@@ -1,0 +1,75 @@
+{
+  "S-J_1__P-J_1": {
+    "common_cycles": 883,
+    "actual_components_max_abs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "first_input_max_abs": 0.0,
+    "public_final_ids_equal": true,
+    "sealed_input_ids_equal": true,
+    "owner_mismatch_cycles": [],
+    "declared_absolute_tolerance": 1e-09,
+    "numeric_equal_within_tolerance": true,
+    "rename_mapping": null
+  },
+  "P-J_1__P-J_2": {
+    "common_cycles": 883,
+    "actual_components_max_abs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "first_input_max_abs": 0.0,
+    "public_final_ids_equal": true,
+    "sealed_input_ids_equal": true,
+    "owner_mismatch_cycles": [],
+    "declared_absolute_tolerance": 1e-09,
+    "numeric_equal_within_tolerance": true,
+    "rename_mapping": null
+  },
+  "S-J_1__S-J_2": {
+    "common_cycles": 883,
+    "actual_components_max_abs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "first_input_max_abs": 0.0,
+    "public_final_ids_equal": true,
+    "sealed_input_ids_equal": true,
+    "owner_mismatch_cycles": [],
+    "declared_absolute_tolerance": 1e-09,
+    "numeric_equal_within_tolerance": true,
+    "rename_mapping": null
+  },
+  "rename_numeric": {
+    "common_cycles": 883,
+    "actual_components_max_abs": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "first_input_max_abs": 0.0,
+    "public_final_ids_equal": false,
+    "sealed_input_ids_equal": false,
+    "owner_mismatch_cycles": [],
+    "declared_absolute_tolerance": 1e-09,
+    "numeric_equal_within_tolerance": true,
+    "rename_mapping": {
+      "A1": "west_head",
+      "A2": "west_tail",
+      "B1": "east_head",
+      "B2": "east_tail"
+    }
+  }
+}

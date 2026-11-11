@@ -1,0 +1,85 @@
+{
+  "debug_v1": {
+    "cycle": 43,
+    "summary_failure": "A1:bicycle:primal infeasible",
+    "failure_layer": "bicycle",
+    "accepted": false,
+    "total_predict_s": 0.02126599800249096,
+    "deadline_s": 0.5,
+    "deadline_exceeded": false,
+    "reference_status": "solved",
+    "reference_accepted": true,
+    "reference_iterations": 425,
+    "bicycle_statuses": [
+      "primal infeasible"
+    ],
+    "bicycle_accepted": [
+      false
+    ],
+    "source_version": "2d1febf045acdcf818abd94f15c49bc14ea2e45705adc0a21e47ba4e759143c0",
+    "solve_log_sha256": "ac8bc34542cb546cc5bc96ac3328056f8fd6e6d9b3b79251e81beafd364fdde7",
+    "diagnostic_body_restored": true,
+    "diagnostic_log_sha256": "48f505d41aaf9ab54e9ec257385faad77da275845ac537e93ab4eea64b3eb183",
+    "last_recorded_speed_m_s": {
+      "A1": 0.03770078223841042,
+      "A2": 0.0,
+      "B1": 7.589415207398531e-19,
+      "B2": 0.0
+    },
+    "all_stopped_at_original_terminal_threshold": false
+  },
+  "debug_v2": {
+    "cycle": 33,
+    "summary_failure": "A1:reference:primal infeasible",
+    "failure_layer": "reference",
+    "accepted": false,
+    "total_predict_s": 0.014394483005162328,
+    "deadline_s": 0.5,
+    "deadline_exceeded": false,
+    "reference_status": "primal infeasible",
+    "reference_accepted": false,
+    "reference_iterations": 4775,
+    "bicycle_statuses": [],
+    "bicycle_accepted": [],
+    "source_version": null,
+    "solve_log_sha256": "ab47bcdf62f42aac892737ee5250a44bfe13100c14fea81dae0bc2b64c85f208",
+    "diagnostic_body_restored": false,
+    "diagnostic_missing": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1/diagnostics.jsonl.gz",
+    "last_recorded_speed_m_s": {
+      "A1": 1.8687424096352085,
+      "A2": 0.0,
+      "B1": 0.9724489892902841,
+      "B2": 0.0
+    },
+    "all_stopped_at_original_terminal_threshold": false
+  },
+  "debug_c1": {
+    "cycle": 689,
+    "summary_failure": "ValueError: central:budget:solved",
+    "failure_layer": "budget",
+    "accepted": false,
+    "total_predict_s": 0.5436039039996103,
+    "deadline_s": 0.5,
+    "deadline_exceeded": true,
+    "reference_status": "solved",
+    "reference_accepted": true,
+    "reference_iterations": 3150,
+    "bicycle_statuses": [
+      "solved"
+    ],
+    "bicycle_accepted": [
+      true
+    ],
+    "source_version": "41ed9635904c838e6f80915c7ac92cd2da17a285190b86cb832eab99a76a7a1f",
+    "solve_log_sha256": "09eca6cb743cded72896ca136a3092ff13dcd6713fc84a438dcc8fc50427c712",
+    "diagnostic_body_restored": false,
+    "diagnostic_missing": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/diagnostics.jsonl.gz",
+    "last_recorded_speed_m_s": {
+      "A1": -2.6020852139652106e-18,
+      "A2": 1.6000001020098717,
+      "B1": 0.0,
+      "B2": 2.000000099998557
+    },
+    "all_stopped_at_original_terminal_threshold": false
+  }
+}

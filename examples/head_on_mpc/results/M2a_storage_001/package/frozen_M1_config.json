@@ -1,0 +1,209 @@
+{
+  "label": "B2-C/M1-v1",
+  "source_version": "a9da250ab56a6da08ae417d7ab9863cb042e03e4108a63b380856a5089c5af9f",
+  "config_version": "3a0af019bf9d34a2cd672ed425805c26d74bc2777e2817cb49a8808bef73029a",
+  "acceptance_version": "4ce45e996385ae78758981e506fd4199e13169330a2a9d41cf3f5aa910c5a55d",
+  "scene": {
+    "name": "homogeneous_A_near_B_far",
+    "seed": 0,
+    "epoch_s": 100.0,
+    "parameter_source": "wheelbase, dimensions and steering from config/planner_params.yaml; omega from TrackingOptions; remaining limits are simulation assumptions, not hardware calibration",
+    "vehicle": {
+      "length": 4.5,
+      "width": 1.8,
+      "L": 2.7,
+      "front": 0.8,
+      "rear": 1.0,
+      "v_fwd": 2.0,
+      "v_rev": 1.0,
+      "a_min": -1.0,
+      "a_max": 1.0,
+      "delta_max": 0.5,
+      "omega_max": 1.0
+    },
+    "h": 0.2,
+    "N": 32,
+    "sample_s": 0.02,
+    "s_min": 0.5,
+    "tolerance": 1e-05,
+    "terminal": {
+      "position_m": 0.08,
+      "speed_m_s": 0.025,
+      "yaw_rad": 0.01,
+      "steering_rad": 0.01
+    },
+    "initial": {
+      "A": [
+        -40.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "B": [
+        46.0,
+        0.0,
+        3.141592653589793,
+        0.0,
+        0.0
+      ]
+    },
+    "previous_input": {
+      "A": [
+        0.0,
+        0.0
+      ],
+      "B": [
+        0.0,
+        0.0
+      ]
+    },
+    "goals": {
+      "A": [
+        44.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "B": [
+        -44.0,
+        0.0,
+        3.141592653589793,
+        0.0,
+        0.0
+      ]
+    },
+    "D": 20.0,
+    "W": 2.8,
+    "g": 34.0,
+    "d_A": 26.5,
+    "d_B": 32.5,
+    "road_rectangles": [
+      [
+        -52.0,
+        52.0,
+        -1.4,
+        1.4
+      ],
+      [
+        -42.0,
+        -10.0,
+        -5.5,
+        5.5
+      ],
+      [
+        10.0,
+        42.0,
+        -5.5,
+        5.5
+      ]
+    ],
+    "request_rear_axle_abs_x": 34.0,
+    "admission_protection_abs_x": 18.0,
+    "release_plane_abs_x": 26.0,
+    "release_margin_m": 0.5,
+    "waiting_anchor_abs_x": 30.0,
+    "bay_offset_local_y": 3.0,
+    "turn_radius_m": 6.0,
+    "detector": {
+      "window_s": 5.0,
+      "actual_progress_m": 0.03,
+      "prediction_endpoint_change_m": 0.03,
+      "prediction_tail_displacement_m": 0.02,
+      "minimum_blocked_fraction": 0.8
+    },
+    "navigation_gap_m": 0.6,
+    "timeout_s": 180.0,
+    "assumptions": [
+      "ideal consistent communication",
+      "no gear dwell; sign changes through rest",
+      "stop before changing primitive curvature",
+      "offline time frozen during planning and candidate screening",
+      "shared deterministic stop-to-stop time scaling, no MPC optimality claim"
+    ]
+  },
+  "constructor": "BicycleController(scene, paths, updates=3, reference_warm_start=True)",
+  "reference": {
+    "weights": {
+      "progress": 1.0,
+      "speed": 0.1,
+      "acceleration": 0.1,
+      "input_change": 0.05,
+      "terminal_progress": 10.0
+    },
+    "feasibility_band": 1e-06,
+    "eps_abs": 1e-08,
+    "eps_rel": 1e-08,
+    "max_iter": 20000,
+    "polishing": true,
+    "adaptive_rho_interval": 50,
+    "warm_start": "shift last committed reference primal per car; phase/index invalidate; clamp to current input bounds; no dual reuse"
+  },
+  "bicycle": {
+    "state_weights": [
+      10.0,
+      40.0,
+      100.0,
+      1.0,
+      10.0
+    ],
+    "input_weights": [
+      0.05,
+      0.05
+    ],
+    "input_change_weight": 0.02,
+    "terminal_state_weight_multiplier": 10,
+    "state_trust": [
+      0.15,
+      0.15,
+      0.02,
+      0.25,
+      0.03
+    ],
+    "input_trust": [
+      0.3,
+      0.25
+    ],
+    "error_limits": {
+      "position_m": 1e-05,
+      "heading_rad": 5e-06,
+      "speed_m_s": 1e-06,
+      "steering_rad": 1e-06
+    },
+    "numerical_band": 1e-07,
+    "eps_abs": 1e-07,
+    "eps_rel": 1e-07,
+    "max_iter": 10000,
+    "polishing": true,
+    "adaptive_rho_interval": 50,
+    "maximum_updates": 3,
+    "deadline_s": 0.5,
+    "derivative": "one 0.2 s RK4; defect aligns ten-substep reference; not exact composed-map derivative",
+    "stop_input_repair": "MOVE and stop_at_end; if direction*(v+h*a)<0, use a=-v/h before original complete candidate checks",
+    "terminal_box": {
+      "x_m": 0.005,
+      "y_m": 0.005,
+      "heading_rad": 0.003
+    },
+    "terminal_steering": "segment delta equality"
+  },
+  "physical_acceptance_tolerance": 1e-05,
+  "sign_product_rejection_m2_s2": -1.0000000000000002e-10,
+  "phase_transition": {
+    "arrival_tolerance_m": 1e-06,
+    "near_rest_m_s": 1e-06,
+    "rest_for_transition_m_s": 1e-12
+  },
+  "planning_budget_s": 0.5,
+  "control_period_s": 0.2,
+  "future_witness_budget_s": 30.0,
+  "fixed_permission_order": [
+    "A",
+    "B"
+  ],
+  "state_frozen_during_computation": true,
+  "ideal_cycle_synchronous_DDS": true,
+  "input_repair_is_not_exact_QP_optimum": true,
+  "hard_realtime_guarantee": false
+}

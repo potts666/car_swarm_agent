@@ -1,0 +1,15 @@
+{
+  "cycle": 120,
+  "minimum_stop_position_overshoot_m": 1.3676231263443084e-07,
+  "minimum_overshoot_with_allowed_negative_nodal_speed_m": 1.2676231263443083e-07,
+  "position_numerical_band_m": 1e-07,
+  "raw_physical_tolerance": 1e-05,
+  "necessary_first_step_constraints_inconsistent": true,
+  "reference_accepted": true,
+  "reference_position_band": 1e-06,
+  "diagnostics": {
+    "unchanged_v3": false,
+    "without_pair_diagnostic_only": true
+  },
+  "note": "Affine band-interface contradiction, not collision or physical-infeasibility proof."
+}

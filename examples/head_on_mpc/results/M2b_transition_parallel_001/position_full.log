@@ -1,0 +1,14 @@
+r1 cycle 0 owner None done []
+r1 cycle 100 owner A1 done []
+r1 cycle 200 owner A1 done []
+r1 cycle 300 owner B1 done []
+r1 cycle 400 owner B1 done ['A1']
+r1 cycle 500 owner A2 done ['A1']
+r1 cycle 600 owner B2 done ['A1', 'B1']
+r1 cycle 700 owner B2 done ['A1', 'B1']
+r1 cycle 800 owner None done ['A1', 'B1', 'A2']
+Polishing not needed - no active set detected at optimal point
+Polishing not needed - no active set detected at optimal point
+Polishing not needed - no active set detected at optimal point
+r1 {"all_completed":true,"backend":"P-J","committed_cycles":883,"completion_per_car_s":{"A1":68.60000000000001,"A2":140.4,"B1":104.4,"B2":176.60000000000002},"completion_sim_s":176.60000000000002,"export_wall_s":26.529587368997454,"failure":null,"failure_layer":null,"last_states":{"A1":[46.00005491850145,2.99999828739602,4.467062923960869e-07,3.469446951953614e-18,-7.940933880509066e-23],"A2":[46.00030641179326,-2.9999991247598086,-3.4547051254075636e-07,-2.6020852139652106e-18,0.0],"B1":[-46.00030661611247,2.999999129786699,3.1415923086208073,-6.071532165918825e-18,9.26442286059391e-23],"B2":[-46.00005490100622,-2.9999982873508264,3.141593100336633,6.071532165918825e-18,0.0]},"old_central_future_diagnostic":"not executed; no online future gate","online_wall_s":263.81416398799774,"shutdown_wall_s":0.11895784700027434,"timed_cycles":884,"total_wall_before_export_s":264.4405629190005}
+examples/head_on_mpc/results/M2b_transition_parallel_001/position_full/r1 True prefix True violations []

@@ -1,0 +1,96 @@
+test_m2b_stage1 (unittest.loader._FailedTest.test_m2b_stage1) ... ERROR
+test_m2b_protocol (unittest.loader._FailedTest.test_m2b_protocol) ... ERROR
+test_m2b_control (unittest.loader._FailedTest.test_m2b_control) ... ERROR
+test_stopping_acceptance (unittest.loader._FailedTest.test_stopping_acceptance) ... ERROR
+test_m2b_scene (unittest.loader._FailedTest.test_m2b_scene) ... ERROR
+
+======================================================================
+ERROR: test_m2b_stage1 (unittest.loader._FailedTest.test_m2b_stage1)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_m2b_stage1
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/tests/test_m2b_stage1.py", line 10, in <module>
+    import m2b_protocol as protocol
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/scripts/m2b_protocol.py", line 12, in <module>
+    from m2b_scene import CARS,SIGMA,audit
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/scripts/m2b_scene.py", line 9, in <module>
+    from longitudinal_joint import pose
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/scripts/longitudinal_joint.py", line 8, in <module>
+    import osqp
+ModuleNotFoundError: No module named 'osqp'
+
+
+======================================================================
+ERROR: test_m2b_protocol (unittest.loader._FailedTest.test_m2b_protocol)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_m2b_protocol
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/tests/test_m2b_protocol.py", line 6, in <module>
+    from m2b_scene import build_scene,CARS
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/scripts/m2b_scene.py", line 9, in <module>
+    from longitudinal_joint import pose
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/scripts/longitudinal_joint.py", line 8, in <module>
+    import osqp
+ModuleNotFoundError: No module named 'osqp'
+
+
+======================================================================
+ERROR: test_m2b_control (unittest.loader._FailedTest.test_m2b_control)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_m2b_control
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/tests/test_m2b_control.py", line 7, in <module>
+    from m2b_scene import *
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/scripts/m2b_scene.py", line 9, in <module>
+    from longitudinal_joint import pose
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/scripts/longitudinal_joint.py", line 8, in <module>
+    import osqp
+ModuleNotFoundError: No module named 'osqp'
+
+
+======================================================================
+ERROR: test_stopping_acceptance (unittest.loader._FailedTest.test_stopping_acceptance)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_stopping_acceptance
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/tests/test_stopping_acceptance.py", line 10, in <module>
+    from longitudinal_joint import Agent, routes
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/scripts/longitudinal_joint.py", line 8, in <module>
+    import osqp
+ModuleNotFoundError: No module named 'osqp'
+
+
+======================================================================
+ERROR: test_m2b_scene (unittest.loader._FailedTest.test_m2b_scene)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_m2b_scene
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/tests/test_m2b_scene.py", line 6, in <module>
+    from m2b_scene import build_scene,build_routes,check_scenario,audit,CARS
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/scripts/m2b_scene.py", line 9, in <module>
+    from longitudinal_joint import pose
+  File "/tmp/m2b-test-snapshot-sjc41ghk/test_reproduction/scripts/longitudinal_joint.py", line 8, in <module>
+    import osqp
+ModuleNotFoundError: No module named 'osqp'
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.000s
+
+FAILED (errors=5)
+Expected exactly 21 tests; check dependencies/import errors

@@ -1,0 +1,267 @@
+{
+  "design": "One fresh-session pair; hooks disabled vs enabled, identical prompt/model/checks; A then B",
+  "model": "gpt-6.1-sol",
+  "reasoning": "medium",
+  "cases": [
+    {
+      "case": "pilot",
+      "arm": "before",
+      "session_id": "01a19c74-782c-7131-83d1-1f553061ccf7",
+      "source": "/home/sunflower/.codex/sessions/2026/11/02/rollout-2026-11-02T21-30-41-01a19c74-782c-7131-83d1-1f553061ccf7.jsonl",
+      "hooks_enabled": false,
+      "numerical_checks_passed": false,
+      "test_count": 0,
+      "codex_wall_seconds": 8.583243370056152,
+      "main_usage_records": 2,
+      "guardian_usage_records": 0,
+      "guardian_sessions": [],
+      "main": {
+        "input_tokens": 29938,
+        "cached_input_tokens": 24832,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 186,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 30124
+      },
+      "guardian": {
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 0
+      },
+      "total": {
+        "input_tokens": 29938,
+        "cached_input_tokens": 24832,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 186,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 30124
+      },
+      "custom_tool_calls": 1,
+      "policy_messages": 0,
+      "hook_state": null,
+      "program_outputs": [
+        {
+          "chunk_id": "1ca32a",
+          "wall_time_seconds": 0,
+          "exit_code": 1,
+          "original_token_count": 16,
+          "output": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted\n"
+        }
+      ],
+      "answer": "Test count: 0\nExit code: 1\nResult: FAIL — sandbox prevented execution."
+    },
+    {
+      "case": "pilot",
+      "arm": "after",
+      "session_id": "01a19c74-997a-7c50-a01c-d95254d17882",
+      "source": "/home/sunflower/.codex/sessions/2026/11/02/rollout-2026-11-02T21-30-49-01a19c74-997a-7c50-a01c-d95254d17882.jsonl",
+      "hooks_enabled": true,
+      "numerical_checks_passed": false,
+      "test_count": 0,
+      "codex_wall_seconds": 9.634642601013184,
+      "main_usage_records": 2,
+      "guardian_usage_records": 0,
+      "guardian_sessions": [],
+      "main": {
+        "input_tokens": 30336,
+        "cached_input_tokens": 27392,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 196,
+        "reasoning_output_tokens": 15,
+        "total_tokens": 30532
+      },
+      "guardian": {
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 0
+      },
+      "total": {
+        "input_tokens": 30336,
+        "cached_input_tokens": 27392,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 196,
+        "reasoning_output_tokens": 15,
+        "total_tokens": 30532
+      },
+      "custom_tool_calls": 1,
+      "policy_messages": 1,
+      "hook_state": {
+        "covered_tool_events": 1,
+        "large_output_budget_events": 0,
+        "notes_sent": [],
+        "policy_sent": true,
+        "recent_calls": [
+          "1236f9bf0e35dc58e8d930d7"
+        ],
+        "updated_at_unix": 1793626255.0734155,
+        "wait_like_events": 0
+      },
+      "program_outputs": [
+        {
+          "chunk_id": "3037c5",
+          "wall_time_seconds": 0,
+          "exit_code": 1,
+          "original_token_count": 16,
+          "output": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted\n"
+        }
+      ],
+      "answer": "Test count: 0 (sandbox launch failed)\nExit code: 1\nResult: FAIL"
+    },
+    {
+      "case": "measured",
+      "arm": "before",
+      "session_id": "01a19c75-9a05-71b0-aa7c-1aba9fdc9df7",
+      "source": "/home/sunflower/.codex/sessions/2026/11/02/rollout-2026-11-02T21-31-55-01a19c75-9a05-71b0-aa7c-1aba9fdc9df7.jsonl",
+      "hooks_enabled": false,
+      "numerical_checks_passed": true,
+      "test_count": 3,
+      "codex_wall_seconds": 11.935183763504028,
+      "main_usage_records": 2,
+      "guardian_usage_records": 1,
+      "guardian_sessions": [
+        "01a19c75-9a4a-7f63-b0ac-ed68c33f96d4"
+      ],
+      "main": {
+        "input_tokens": 30092,
+        "cached_input_tokens": 24832,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 203,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 30295
+      },
+      "guardian": {
+        "input_tokens": 7389,
+        "cached_input_tokens": 6016,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 88,
+        "reasoning_output_tokens": 39,
+        "total_tokens": 7477
+      },
+      "total": {
+        "input_tokens": 37481,
+        "cached_input_tokens": 30848,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 291,
+        "reasoning_output_tokens": 39,
+        "total_tokens": 37772
+      },
+      "custom_tool_calls": 1,
+      "policy_messages": 0,
+      "hook_state": null,
+      "program_outputs": [
+        {
+          "chunk_id": "888972",
+          "wall_time_seconds": 0.101597402,
+          "exit_code": 0,
+          "original_token_count": 26,
+          "output": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.036s\n\nOK\n"
+        }
+      ],
+      "answer": "Test count: 3. Exit code: 0. PASS."
+    },
+    {
+      "case": "measured",
+      "arm": "after",
+      "session_id": "01a19c75-c899-7ab0-b656-669bf5a43545",
+      "source": "/home/sunflower/.codex/sessions/2026/11/02/rollout-2026-11-02T21-32-07-01a19c75-c899-7ab0-b656-669bf5a43545.jsonl",
+      "hooks_enabled": true,
+      "numerical_checks_passed": true,
+      "test_count": 3,
+      "codex_wall_seconds": 11.199344396591187,
+      "main_usage_records": 2,
+      "guardian_usage_records": 1,
+      "guardian_sessions": [
+        "01a19c75-c8ca-7c63-a586-d500d029c92b"
+      ],
+      "main": {
+        "input_tokens": 30497,
+        "cached_input_tokens": 27392,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 203,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 30700
+      },
+      "guardian": {
+        "input_tokens": 7384,
+        "cached_input_tokens": 6016,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 104,
+        "reasoning_output_tokens": 46,
+        "total_tokens": 7488
+      },
+      "total": {
+        "input_tokens": 37881,
+        "cached_input_tokens": 33408,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 307,
+        "reasoning_output_tokens": 46,
+        "total_tokens": 38188
+      },
+      "custom_tool_calls": 1,
+      "policy_messages": 1,
+      "hook_state": {
+        "covered_tool_events": 1,
+        "large_output_budget_events": 0,
+        "notes_sent": [],
+        "policy_sent": true,
+        "recent_calls": [
+          "85acdb6a8bb5940dfb21e58c"
+        ],
+        "updated_at_unix": 1793626333.711693,
+        "wait_like_events": 0
+      },
+      "program_outputs": [
+        {
+          "chunk_id": "d954eb",
+          "wall_time_seconds": 0.090015235,
+          "exit_code": 0,
+          "original_token_count": 26,
+          "output": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.036s\n\nOK\n"
+        }
+      ],
+      "answer": "Test count: 3. Exit code: 0. PASS."
+    }
+  ],
+  "measured_delta": {
+    "main": {
+      "input_tokens": 405,
+      "cached_input_tokens": 2560,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 405
+    },
+    "guardian": {
+      "input_tokens": -5,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 16,
+      "reasoning_output_tokens": 7,
+      "total_tokens": 11
+    },
+    "total": {
+      "input_tokens": 400,
+      "cached_input_tokens": 2560,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 16,
+      "reasoning_output_tokens": 7,
+      "total_tokens": 416
+    }
+  },
+  "measured_total_change_percent": 1.1013449115747114,
+  "all_benchmark_sessions_total": 136616,
+  "sources_unchanged": true,
+  "limitations": [
+    "One pair only; ordering/cache state and model variation uncontrolled.",
+    "Same numerical shell command; generated justification wording differs.",
+    "No native polling/waiting occurred; no operational hook note fired.",
+    "Current parent conversation, setup, analysis and reporting usage excluded and not treated as savings.",
+    "Record tokens are not fees or subscription units."
+  ]
+}

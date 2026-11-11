@@ -1,0 +1,11 @@
+This is a small controlled measurement, not a development task.
+Run these three existing bicycle numerical regression checks once, from the given repository cwd:
+OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=examples/head_on_mpc/tests python3 -m unittest test_entry_bicycle.BicycleTests.test_no_motion_from_steering_at_rest test_entry_bicycle.BicycleTests.test_arc_geometry_and_return_continuity test_entry_bicycle.BicycleTests.test_reverse_crosses_zero_and_curves_with_heading
+Do not edit code, read other sources/logs, install dependencies, add agents, or run full simulations.
+Use the existing command as given. Keep tool output small. Report only test count, exit code and pass/fail.
+Stop on failure; do not attempt repairs. At most four tool calls and 120 seconds.
+Normal sandbox/approval rules still apply.
+Host preflight has established that the default bwrap sandbox cannot start.
+For this exact read-only numerical check, request sandbox_permissions=require_escalated
+through the normal automatic approval flow; do not disable approvals or the sandbox globally.
+An infrastructure permission request is allowed; a rejection or test failure must stop the run.

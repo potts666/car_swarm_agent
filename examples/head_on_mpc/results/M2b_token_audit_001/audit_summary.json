@@ -1,0 +1,212 @@
+{
+  "usage_records": 234,
+  "root_usage_records": 152,
+  "guardian_usage_records": 82,
+  "totals": {
+    "input_tokens": 44377748,
+    "cached_input_tokens": 43493632,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 194462,
+    "reasoning_output_tokens": 120113,
+    "total_tokens": 44572210
+  },
+  "root_totals": {
+    "input_tokens": 37941905,
+    "cached_input_tokens": 37570048,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 186353,
+    "reasoning_output_tokens": 117800,
+    "total_tokens": 38128258
+  },
+  "guardian_totals": {
+    "input_tokens": 6435843,
+    "cached_input_tokens": 5923584,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 8109,
+    "reasoning_output_tokens": 2313,
+    "total_tokens": 6443952
+  },
+  "root_input_per_response": {
+    "mean": 249617.79605263157,
+    "min": 92401,
+    "max": 360489
+  },
+  "root_pure_wait_records": 68,
+  "root_pure_wait_tokens": 18138999,
+  "tool_envelopes": 151,
+  "returned_tool_outputs": 151,
+  "sleep_calls": 35,
+  "sleep_seconds": 1540.0,
+  "write_stdin_envelopes": 66,
+  "pure_write_stdin_envelopes": 31,
+  "pure_write_stdin_without_new_cycle_line": 1,
+  "raw_tool_output_bytes": 466733,
+  "largest_outputs": [
+    {
+      "line": 2813,
+      "timestamp": "2026-11-01T16:26:52.176Z",
+      "raw_serialized_output_bytes": 173883,
+      "contains_image_payload": true,
+      "evidence": "/home/sunflower/.codex/sessions/2026/10/30/rollout-2026-10-30T12-19-09-01a18b08-73cc-7001-ba3d-92d49ecdd80e.jsonl:2813",
+      "decoded_terminal_stdout_bytes": 1955
+    },
+    {
+      "line": 1648,
+      "timestamp": "2026-11-01T13:50:22.553Z",
+      "raw_serialized_output_bytes": 46576,
+      "contains_image_payload": false,
+      "evidence": "/home/sunflower/.codex/sessions/2026/10/30/rollout-2026-10-30T12-19-09-01a18b08-73cc-7001-ba3d-92d49ecdd80e.jsonl:1648",
+      "decoded_terminal_stdout_bytes": 26822
+    },
+    {
+      "line": 1670,
+      "timestamp": "2026-11-01T13:52:00.229Z",
+      "raw_serialized_output_bytes": 41175,
+      "contains_image_payload": false,
+      "evidence": "/home/sunflower/.codex/sessions/2026/10/30/rollout-2026-10-30T12-19-09-01a18b08-73cc-7001-ba3d-92d49ecdd80e.jsonl:1670",
+      "decoded_terminal_stdout_bytes": 0
+    },
+    {
+      "line": 1655,
+      "timestamp": "2026-11-01T13:50:33.211Z",
+      "raw_serialized_output_bytes": 38714,
+      "contains_image_payload": false,
+      "evidence": "/home/sunflower/.codex/sessions/2026/10/30/rollout-2026-10-30T12-19-09-01a18b08-73cc-7001-ba3d-92d49ecdd80e.jsonl:1655",
+      "decoded_terminal_stdout_bytes": 37263
+    },
+    {
+      "line": 3017,
+      "timestamp": "2026-11-01T23:41:12.056Z",
+      "raw_serialized_output_bytes": 20390,
+      "contains_image_payload": false,
+      "evidence": "/home/sunflower/.codex/sessions/2026/10/30/rollout-2026-10-30T12-19-09-01a18b08-73cc-7001-ba3d-92d49ecdd80e.jsonl:3017",
+      "decoded_terminal_stdout_bytes": 12308
+    }
+  ],
+  "repeated_read_paths": [
+    {
+      "path": "examples/head_on_mpc/results/M2b_fourcar_001/execution_status.json",
+      "count": 3
+    },
+    {
+      "path": "examples/head_on_mpc/results/M2b_fourcar_001/resume_finalization.log",
+      "count": 3
+    },
+    {
+      "path": "examples/head_on_mpc/results/M2b_fourcar_001/tests_final.log",
+      "count": 2
+    },
+    {
+      "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/summary.json",
+      "count": 2
+    },
+    {
+      "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/audit.log",
+      "count": 2
+    },
+    {
+      "path": "examples/head_on_mpc/results/M2b_fourcar_001/tests_frozen.log",
+      "count": 2
+    },
+    {
+      "path": "examples/head_on_mpc/results/M2b_fourcar_001/repeatability.json",
+      "count": 2
+    },
+    {
+      "path": "examples/head_on_mpc/results/M2b_fourcar_001/postprocess.log",
+      "count": 2
+    },
+    {
+      "path": "examples/head_on_mpc/results/M2b_fourcar_001/comparison.csv",
+      "count": 2
+    },
+    {
+      "path": "examples/head_on_mpc/results/M2b_fourcar_001/resume_finalization_2.log",
+      "count": 2
+    },
+    {
+      "path": "/home/sunflower/.codex/attachments/c4188809-0e84-4d0d-b079-5b023108a87c/已粘贴的文本.txt",
+      "count": 1
+    },
+    {
+      "path": "/home/sunflower/car_swarm_switch_ws",
+      "count": 1
+    }
+  ],
+  "source_escalation_envelopes": 83,
+  "spawn_or_coordination_tool_names": [],
+  "program_reported_sums": {
+    "online_wall_s": 3534.7109650489997,
+    "export_wall_s": 201.9791314499996,
+    "audit_wall_s": 609.1754705699996
+  },
+  "program_runs": [
+    {
+      "run": "C-FIFO/r1",
+      "online_wall_s": 578.295750391,
+      "export_wall_s": 34.17138302500007,
+      "audit_wall_s": 97.45315046099995
+    },
+    {
+      "run": "C-FIFO/r2",
+      "online_wall_s": 579.516882914,
+      "export_wall_s": 33.310941168,
+      "audit_wall_s": 99.48540679200005
+    },
+    {
+      "run": "L-FIFO/r1",
+      "online_wall_s": 583.6205098799996,
+      "export_wall_s": 33.19846536000023,
+      "audit_wall_s": 103.0330221459999
+    },
+    {
+      "run": "L-FIFO/r2",
+      "online_wall_s": 588.2564113610001,
+      "export_wall_s": 33.15637623399971,
+      "audit_wall_s": 98.78790661099993
+    },
+    {
+      "run": "L-ALT/r1",
+      "online_wall_s": 599.3425017870004,
+      "export_wall_s": 34.08053528599976,
+      "audit_wall_s": 101.38588265599992
+    },
+    {
+      "run": "L-ALT/r2",
+      "online_wall_s": 605.6789087159996,
+      "export_wall_s": 34.06143037699985,
+      "audit_wall_s": 109.03010190399982
+    }
+  ],
+  "debug_runs": [
+    {
+      "run": "debug_v1",
+      "online_wall_s": 29.73040437600139,
+      "failure": "A1:bicycle:primal infeasible",
+      "export_status": "incomplete known prototype export; not assigned a duration"
+    },
+    {
+      "run": "debug_v2",
+      "online_wall_s": 23.735652811003092,
+      "failure": "A1:reference:primal infeasible",
+      "export_status": "incomplete known prototype export; not assigned a duration"
+    },
+    {
+      "run": "debug_v3",
+      "online_wall_s": 663.7553785130003,
+      "failure": null,
+      "export_status": "incomplete known prototype export; not assigned a duration"
+    },
+    {
+      "run": "debug_c1",
+      "online_wall_s": 500.7120041590024,
+      "failure": "ValueError: central:budget:solved",
+      "export_status": "incomplete known prototype export; not assigned a duration"
+    }
+  ],
+  "image_blocks": 1,
+  "decoded_terminal_stdout_bytes": 180733,
+  "pure_poll_empty_stdout": [],
+  "context_window_recorded": 475000,
+  "displayed_context_percentage": null
+}

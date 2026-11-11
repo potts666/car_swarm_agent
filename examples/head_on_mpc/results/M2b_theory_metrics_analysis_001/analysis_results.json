@@ -1,0 +1,1676 @@
+{
+  "C-FIFO/r1": {
+    "counts": {
+      "seed_complete": 885,
+      "seed_physical_protocol_passed": 885,
+      "final_complete": 885,
+      "final_physical_protocol_passed": 885,
+      "actual_cycles": 885,
+      "seed_replays": 3540,
+      "seed_phase_checked": 3540,
+      "seed_phase_passed": 3510,
+      "seed_terminal_rows_checked": 1440,
+      "seed_terminal_rows_passed": 1416,
+      "final_replays": 3540,
+      "analyzed_plan_cycles": 885,
+      "shift_candidates": 3536,
+      "completion_only_cycles": 1
+    },
+    "worst": {
+      "seed_gap_deficit_m": {
+        "value": -0.6999982805744354,
+        "cycle": 203,
+        "time_s": 140.6,
+        "pair": "A1:B1",
+        "lead_s": 0.6
+      },
+      "final_gap_deficit_m": {
+        "value": -0.6999982805744354,
+        "cycle": 202,
+        "time_s": 140.4,
+        "pair": "A1:B1",
+        "lead_s": 0.8
+      },
+      "actual_gap_deficit_m": {
+        "value": -0.6999982805744354,
+        "cycle": 205,
+        "time_s": 141.0,
+        "pair": "A1:B1",
+        "lead_s": 0.2
+      },
+      "discrete_stop_deficit_m": {
+        "value": 5.635718094139202e-08,
+        "cycle": 790,
+        "time_s": 258.0,
+        "car": "B2",
+        "mode": "MOVE"
+      },
+      "seed_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "successive_final_position_m": {
+        "value": 8.772423302117357,
+        "cycle": 116,
+        "time_s": 123.2,
+        "car": "B2",
+        "event": [
+          "B2:mode:WAIT_MERGE>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_heading_rad": {
+        "value": 0.8966069723503878,
+        "cycle": 48,
+        "time_s": 109.6,
+        "car": "A2",
+        "event": [
+          "A1:mode:STEER>MOVE",
+          "A2:mode:STEER>MOVE",
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_speed_m_s": {
+        "value": 2.0000001046890037,
+        "cycle": 117,
+        "time_s": 123.4,
+        "car": "A1",
+        "event": [
+          "A1:mode:STEER>MOVE"
+        ],
+        "lead_s": 4.0
+      },
+      "successive_final_steering_rad": {
+        "value": 0.8457078634082043,
+        "cycle": 283,
+        "time_s": 156.6,
+        "car": "A1",
+        "event": [
+          "A1:mode:MOVE>STEER",
+          "A1:segment"
+        ],
+        "lead_s": 1.0
+      },
+      "shift_initial_error_position_m": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      }
+    },
+    "mode_duration_s": {
+      "A1:MOVE": 64.20000000000037,
+      "A2:WAIT_MERGE": 9.0,
+      "B1:STEER": 6.800000000000003,
+      "B2:WAIT_MERGE": 23.19999999999995,
+      "B1:MOVE": 75.80000000000054,
+      "A1:STEER": 4.600000000000001,
+      "A2:STEER": 7.0000000000000036,
+      "A2:MOVE": 79.20000000000059,
+      "B1:READY": 22.199999999999953,
+      "B2:MOVE": 68.80000000000044,
+      "B2:QUEUE_WAIT": 25.39999999999994,
+      "A2:READY": 45.60000000000011,
+      "B2:READY": 55.00000000000024,
+      "A1:DONE": 108.200000000001,
+      "B1:DONE": 72.20000000000049,
+      "B2:STEER": 4.600000000000001,
+      "A2:DONE": 36.199999999999974
+    },
+    "event_windows": 79,
+    "file": "cycle_metrics/C-FIFO__r1.jsonl.gz",
+    "ocp_feasibility_checked": false,
+    "geometric_independence": false
+  },
+  "C-FIFO/r2": {
+    "reused_from": "C-FIFO/r1",
+    "equality_basis": "exact logical actual hash, entire compressed plan bytes, scenario hash"
+  },
+  "L-FIFO/r1": {
+    "counts": {
+      "seed_complete": 882,
+      "seed_physical_protocol_passed": 882,
+      "final_complete": 882,
+      "final_physical_protocol_passed": 882,
+      "actual_cycles": 882,
+      "seed_replays": 3528,
+      "seed_phase_checked": 3528,
+      "seed_phase_passed": 3498,
+      "seed_terminal_rows_checked": 1436,
+      "seed_terminal_rows_passed": 1412,
+      "final_replays": 3528,
+      "analyzed_plan_cycles": 882,
+      "shift_candidates": 3524,
+      "completion_only_cycles": 1
+    },
+    "worst": {
+      "seed_gap_deficit_m": {
+        "value": -0.6999980698173731,
+        "cycle": 194,
+        "time_s": 138.8,
+        "pair": "A1:B1",
+        "lead_s": 2.16
+      },
+      "final_gap_deficit_m": {
+        "value": -0.6999980698173731,
+        "cycle": 193,
+        "time_s": 138.6,
+        "pair": "A1:B1",
+        "lead_s": 2.36
+      },
+      "actual_gap_deficit_m": {
+        "value": -0.6999980698173731,
+        "cycle": 203,
+        "time_s": 140.6,
+        "pair": "A1:B1",
+        "lead_s": 0.2
+      },
+      "discrete_stop_deficit_m": {
+        "value": 5.634942832478777e-08,
+        "cycle": 787,
+        "time_s": 257.4,
+        "car": "B2",
+        "mode": "MOVE"
+      },
+      "seed_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "successive_final_position_m": {
+        "value": 8.772422407128502,
+        "cycle": 115,
+        "time_s": 123.0,
+        "car": "B2",
+        "event": [
+          "A1:mode:STEER>MOVE",
+          "B2:mode:WAIT_MERGE>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_heading_rad": {
+        "value": 0.8966069733601207,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_speed_m_s": {
+        "value": 2.0000001050861633,
+        "cycle": 150,
+        "time_s": 130.0,
+        "car": "A2",
+        "event": [
+          "A2:mode:STEER>MOVE"
+        ],
+        "lead_s": 2.6
+      },
+      "successive_final_steering_rad": {
+        "value": 0.8457078798718716,
+        "cycle": 77,
+        "time_s": 115.4,
+        "car": "A1",
+        "event": [
+          "A1:mode:MOVE>STEER",
+          "A1:segment"
+        ],
+        "lead_s": 1.0
+      },
+      "shift_initial_error_position_m": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      }
+    },
+    "mode_duration_s": {
+      "A1:MOVE": 64.00000000000037,
+      "A2:WAIT_MERGE": 8.8,
+      "B1:STEER": 6.800000000000003,
+      "B2:WAIT_MERGE": 22.99999999999995,
+      "B1:MOVE": 75.40000000000053,
+      "A1:STEER": 4.600000000000001,
+      "A2:STEER": 7.0000000000000036,
+      "A2:MOVE": 79.00000000000058,
+      "B1:READY": 21.999999999999954,
+      "B2:MOVE": 68.80000000000044,
+      "B2:QUEUE_WAIT": 25.199999999999942,
+      "A2:READY": 45.400000000000105,
+      "B2:READY": 54.80000000000024,
+      "A1:DONE": 107.80000000000099,
+      "B1:DONE": 72.20000000000049,
+      "B2:STEER": 4.600000000000001,
+      "A2:DONE": 36.199999999999974
+    },
+    "event_windows": 80,
+    "file": "cycle_metrics/L-FIFO__r1.jsonl.gz",
+    "ocp_feasibility_checked": false,
+    "geometric_independence": false
+  },
+  "L-FIFO/r2": {
+    "reused_from": "L-FIFO/r1",
+    "equality_basis": "exact logical actual hash, entire compressed plan bytes, scenario hash"
+  },
+  "L-ALT/r1": {
+    "reused_from": "L-FIFO/r1",
+    "equality_basis": "exact logical actual hash, entire compressed plan bytes, scenario hash"
+  },
+  "L-ALT/r2": {
+    "reused_from": "L-FIFO/r1",
+    "equality_basis": "exact logical actual hash, entire compressed plan bytes, scenario hash"
+  },
+  "debug_v1": {
+    "counts": {
+      "seed_complete": 44,
+      "seed_physical_protocol_passed": 44,
+      "final_complete": 43,
+      "final_physical_protocol_passed": 43,
+      "actual_cycles": 43,
+      "seed_replays": 176,
+      "seed_phase_checked": 173,
+      "seed_phase_passed": 172,
+      "seed_terminal_rows_checked": 84,
+      "seed_terminal_rows_passed": 83,
+      "final_replays": 172,
+      "analyzed_plan_cycles": 44,
+      "shift_candidates": 172
+    },
+    "worst": {
+      "seed_gap_deficit_m": {
+        "value": -3.5681312712594995,
+        "cycle": 8,
+        "time_s": 101.6,
+        "pair": "B1:B2",
+        "lead_s": 2.56
+      },
+      "final_gap_deficit_m": {
+        "value": -3.5681312712594995,
+        "cycle": 7,
+        "time_s": 101.4,
+        "pair": "B1:B2",
+        "lead_s": 2.7600000000000002
+      },
+      "actual_gap_deficit_m": {
+        "value": -3.570068891969905,
+        "cycle": 20,
+        "time_s": 104.0,
+        "pair": "B1:B2",
+        "lead_s": 0.14
+      },
+      "discrete_stop_deficit_m": {
+        "value": 1.719237552630197e-07,
+        "cycle": 43,
+        "time_s": 108.6,
+        "car": "A1",
+        "mode": "MOVE"
+      },
+      "seed_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "successive_final_position_m": {
+        "value": 5.194672213127743,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_heading_rad": {
+        "value": 0.8966069733601207,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_speed_m_s": {
+        "value": 1.0000001,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 1.2
+      },
+      "successive_final_steering_rad": {
+        "value": 0.00338769228745206,
+        "cycle": 8,
+        "time_s": 101.6,
+        "car": "B1",
+        "event": [
+          "same_mode_permission"
+        ],
+        "lead_s": 0.2
+      },
+      "shift_initial_error_position_m": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      }
+    },
+    "mode_duration_s": {
+      "A1:MOVE": 8.600000000000001,
+      "A2:WAIT_MERGE": 8.600000000000001,
+      "B1:STEER": 0.6000000000000001,
+      "B2:WAIT_MERGE": 8.600000000000001,
+      "B1:MOVE": 8.000000000000004
+    },
+    "event_windows": 4,
+    "file": "cycle_metrics/debug_v1.jsonl.gz",
+    "ocp_feasibility_checked": false,
+    "geometric_independence": false
+  },
+  "debug_v2": {
+    "counts": {
+      "seed_complete": 34,
+      "seed_physical_protocol_passed": 34,
+      "final_complete": 33,
+      "final_physical_protocol_passed": 33,
+      "actual_cycles": 33,
+      "seed_replays": 136,
+      "seed_phase_checked": 134,
+      "seed_phase_passed": 133,
+      "seed_terminal_rows_checked": 64,
+      "seed_terminal_rows_passed": 63,
+      "final_replays": 132,
+      "analyzed_plan_cycles": 34,
+      "shift_candidates": 132
+    },
+    "worst": {
+      "seed_gap_deficit_m": {
+        "value": -3.5681312712594995,
+        "cycle": 8,
+        "time_s": 101.6,
+        "pair": "B1:B2",
+        "lead_s": 2.56
+      },
+      "final_gap_deficit_m": {
+        "value": -3.5681312712594995,
+        "cycle": 7,
+        "time_s": 101.4,
+        "pair": "B1:B2",
+        "lead_s": 2.7600000000000002
+      },
+      "actual_gap_deficit_m": {
+        "value": -3.5700693656680507,
+        "cycle": 20,
+        "time_s": 104.0,
+        "pair": "B1:B2",
+        "lead_s": 0.14
+      },
+      "discrete_stop_deficit_m": {
+        "value": -0.07123385447412289,
+        "cycle": 33,
+        "time_s": 106.6,
+        "car": "A1",
+        "mode": "MOVE"
+      },
+      "seed_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "successive_final_position_m": {
+        "value": 5.194672213127743,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_heading_rad": {
+        "value": 0.8966069733601207,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_speed_m_s": {
+        "value": 1.0000001,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 1.2
+      },
+      "successive_final_steering_rad": {
+        "value": 0.00338769228745206,
+        "cycle": 8,
+        "time_s": 101.6,
+        "car": "B1",
+        "event": [
+          "same_mode_permission"
+        ],
+        "lead_s": 0.2
+      },
+      "shift_initial_error_position_m": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      }
+    },
+    "mode_duration_s": {
+      "A1:MOVE": 6.600000000000003,
+      "A2:WAIT_MERGE": 6.600000000000003,
+      "B1:STEER": 0.6000000000000001,
+      "B2:WAIT_MERGE": 6.600000000000003,
+      "B1:MOVE": 6.000000000000003
+    },
+    "event_windows": 3,
+    "file": "cycle_metrics/debug_v2.jsonl.gz",
+    "ocp_feasibility_checked": false,
+    "geometric_independence": false
+  },
+  "debug_v3": {
+    "counts": {
+      "seed_complete": 882,
+      "seed_physical_protocol_passed": 882,
+      "final_complete": 882,
+      "final_physical_protocol_passed": 882,
+      "actual_cycles": 882,
+      "seed_replays": 3528,
+      "seed_phase_checked": 3528,
+      "seed_phase_passed": 3498,
+      "seed_terminal_rows_checked": 1436,
+      "seed_terminal_rows_passed": 1412,
+      "final_replays": 3528,
+      "analyzed_plan_cycles": 882,
+      "shift_candidates": 3524,
+      "completion_only_cycles": 1
+    },
+    "worst": {
+      "seed_gap_deficit_m": {
+        "value": -0.6999980698173731,
+        "cycle": 194,
+        "time_s": 138.8,
+        "pair": "A1:B1",
+        "lead_s": 2.16
+      },
+      "final_gap_deficit_m": {
+        "value": -0.6999980698173731,
+        "cycle": 193,
+        "time_s": 138.6,
+        "pair": "A1:B1",
+        "lead_s": 2.36
+      },
+      "actual_gap_deficit_m": {
+        "value": -0.6999980698173731,
+        "cycle": 203,
+        "time_s": 140.6,
+        "pair": "A1:B1",
+        "lead_s": 0.2
+      },
+      "discrete_stop_deficit_m": {
+        "value": 5.634942832478777e-08,
+        "cycle": 787,
+        "time_s": 257.4,
+        "car": "B2",
+        "mode": "MOVE"
+      },
+      "seed_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "successive_final_position_m": {
+        "value": 8.772422407128502,
+        "cycle": 115,
+        "time_s": 123.0,
+        "car": "B2",
+        "event": [
+          "A1:mode:STEER>MOVE",
+          "B2:mode:WAIT_MERGE>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_heading_rad": {
+        "value": 0.8966069733601207,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_speed_m_s": {
+        "value": 2.0000001050861633,
+        "cycle": 150,
+        "time_s": 130.0,
+        "car": "A2",
+        "event": [
+          "A2:mode:STEER>MOVE"
+        ],
+        "lead_s": 2.6
+      },
+      "successive_final_steering_rad": {
+        "value": 0.8457078798718716,
+        "cycle": 77,
+        "time_s": 115.4,
+        "car": "A1",
+        "event": [
+          "A1:mode:MOVE>STEER",
+          "A1:segment"
+        ],
+        "lead_s": 1.0
+      },
+      "shift_initial_error_position_m": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      }
+    },
+    "mode_duration_s": {
+      "A1:MOVE": 64.00000000000037,
+      "A2:WAIT_MERGE": 8.8,
+      "B1:STEER": 6.800000000000003,
+      "B2:WAIT_MERGE": 22.99999999999995,
+      "B1:MOVE": 75.40000000000053,
+      "A1:STEER": 4.600000000000001,
+      "A2:STEER": 7.0000000000000036,
+      "A2:MOVE": 79.00000000000058,
+      "B1:READY": 21.999999999999954,
+      "B2:MOVE": 68.80000000000044,
+      "B2:QUEUE_WAIT": 25.199999999999942,
+      "A2:READY": 45.400000000000105,
+      "B2:READY": 54.80000000000024,
+      "A1:DONE": 107.80000000000099,
+      "B1:DONE": 72.20000000000049,
+      "B2:STEER": 4.600000000000001,
+      "A2:DONE": 36.199999999999974
+    },
+    "event_windows": 80,
+    "file": "cycle_metrics/debug_v3.jsonl.gz",
+    "ocp_feasibility_checked": false,
+    "geometric_independence": false
+  },
+  "debug_c1": {
+    "counts": {
+      "seed_complete": 690,
+      "seed_physical_protocol_passed": 690,
+      "final_complete": 689,
+      "final_physical_protocol_passed": 689,
+      "actual_cycles": 689,
+      "seed_replays": 2760,
+      "seed_phase_checked": 2758,
+      "seed_phase_passed": 2731,
+      "seed_terminal_rows_checked": 1244,
+      "seed_terminal_rows_passed": 1223,
+      "final_replays": 2756,
+      "analyzed_plan_cycles": 690,
+      "shift_candidates": 2756
+    },
+    "worst": {
+      "seed_gap_deficit_m": {
+        "value": -0.6999982805744354,
+        "cycle": 203,
+        "time_s": 140.6,
+        "pair": "A1:B1",
+        "lead_s": 0.6
+      },
+      "final_gap_deficit_m": {
+        "value": -0.6999982805744354,
+        "cycle": 202,
+        "time_s": 140.4,
+        "pair": "A1:B1",
+        "lead_s": 0.8
+      },
+      "actual_gap_deficit_m": {
+        "value": -0.6999982805744354,
+        "cycle": 205,
+        "time_s": 141.0,
+        "pair": "A1:B1",
+        "lead_s": 0.2
+      },
+      "discrete_stop_deficit_m": {
+        "value": 4.3037807302562583e-08,
+        "cycle": 157,
+        "time_s": 131.4,
+        "car": "B2",
+        "mode": "MOVE"
+      },
+      "seed_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "successive_final_position_m": {
+        "value": 8.772423302117357,
+        "cycle": 116,
+        "time_s": 123.2,
+        "car": "B2",
+        "event": [
+          "B2:mode:WAIT_MERGE>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_heading_rad": {
+        "value": 0.8966069723503878,
+        "cycle": 48,
+        "time_s": 109.6,
+        "car": "A2",
+        "event": [
+          "A1:mode:STEER>MOVE",
+          "A2:mode:STEER>MOVE",
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_speed_m_s": {
+        "value": 2.0000001046890037,
+        "cycle": 117,
+        "time_s": 123.4,
+        "car": "A1",
+        "event": [
+          "A1:mode:STEER>MOVE"
+        ],
+        "lead_s": 4.0
+      },
+      "successive_final_steering_rad": {
+        "value": 0.8457078634082043,
+        "cycle": 283,
+        "time_s": 156.6,
+        "car": "A1",
+        "event": [
+          "A1:mode:MOVE>STEER",
+          "A1:segment"
+        ],
+        "lead_s": 1.0
+      },
+      "shift_initial_error_position_m": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      }
+    },
+    "mode_duration_s": {
+      "A1:MOVE": 64.20000000000037,
+      "A2:WAIT_MERGE": 9.0,
+      "B1:STEER": 6.800000000000003,
+      "B2:WAIT_MERGE": 23.19999999999995,
+      "B1:MOVE": 75.80000000000054,
+      "A1:STEER": 4.600000000000001,
+      "A2:STEER": 6.800000000000003,
+      "A2:MOVE": 76.40000000000055,
+      "B1:READY": 22.199999999999953,
+      "B2:MOVE": 31.99999999999992,
+      "B2:QUEUE_WAIT": 25.39999999999994,
+      "A2:READY": 45.60000000000011,
+      "B2:READY": 55.00000000000024,
+      "A1:DONE": 69.00000000000044,
+      "B1:DONE": 32.99999999999993,
+      "B2:STEER": 2.1999999999999997
+    },
+    "event_windows": 68,
+    "file": "cycle_metrics/debug_c1.jsonl.gz",
+    "ocp_feasibility_checked": false,
+    "geometric_independence": false
+  },
+  "stage1/full_L_FIFO": {
+    "reused_from": "L-FIFO/r1",
+    "equality_basis": "exact logical actual hash, entire compressed plan bytes, scenario hash"
+  },
+  "stage1/A_uncached": {
+    "counts": {
+      "seed_complete": 6,
+      "seed_physical_protocol_passed": 6,
+      "final_complete": 6,
+      "final_physical_protocol_passed": 6,
+      "actual_cycles": 6,
+      "seed_replays": 24,
+      "seed_phase_checked": 24,
+      "seed_phase_passed": 23,
+      "seed_terminal_rows_checked": 9,
+      "seed_terminal_rows_passed": 9,
+      "final_replays": 24,
+      "analyzed_plan_cycles": 6,
+      "shift_candidates": 20
+    },
+    "worst": {
+      "seed_gap_deficit_m": {
+        "value": -3.5682564238996948,
+        "cycle": 4,
+        "time_s": 100.8,
+        "pair": "B1:B2",
+        "lead_s": 3.36
+      },
+      "final_gap_deficit_m": {
+        "value": -3.5682564238996948,
+        "cycle": 3,
+        "time_s": 100.6,
+        "pair": "B1:B2",
+        "lead_s": 3.56
+      },
+      "actual_gap_deficit_m": {
+        "value": -3.6853361442721937,
+        "cycle": 5,
+        "time_s": 101.0,
+        "pair": "B1:B2",
+        "lead_s": 0.2
+      },
+      "discrete_stop_deficit_m": {
+        "value": -6.123185307179587,
+        "cycle": 5,
+        "time_s": 101.0,
+        "car": "B1",
+        "mode": "MOVE"
+      },
+      "seed_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "successive_final_position_m": {
+        "value": 5.194672213127743,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_heading_rad": {
+        "value": 0.8966069733601207,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_speed_m_s": {
+        "value": 1.0000001,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 1.2
+      },
+      "successive_final_steering_rad": {
+        "value": 0.002543278470886756,
+        "cycle": 3,
+        "time_s": 100.6,
+        "car": "B1",
+        "event": [
+          "B1:mode:STEER>MOVE"
+        ],
+        "lead_s": 0.8
+      },
+      "shift_initial_error_position_m": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      }
+    },
+    "mode_duration_s": {
+      "A1:MOVE": 1.2,
+      "A2:WAIT_MERGE": 1.2,
+      "B1:STEER": 0.6000000000000001,
+      "B2:WAIT_MERGE": 1.2,
+      "B1:MOVE": 0.6000000000000001
+    },
+    "event_windows": 1,
+    "file": "cycle_metrics/stage1__A_uncached.jsonl.gz",
+    "ocp_feasibility_checked": false,
+    "geometric_independence": false
+  },
+  "stage1/B_cached": {
+    "reused_from": "stage1/A_uncached",
+    "equality_basis": "exact logical actual hash, entire compressed plan bytes, scenario hash"
+  },
+  "stage1/B_no_profiler": {
+    "reused_from": "stage1/A_uncached",
+    "equality_basis": "exact logical actual hash, entire compressed plan bytes, scenario hash"
+  },
+  "stage1/phase_probe_uncached": {
+    "counts": {
+      "seed_complete": 2,
+      "seed_physical_protocol_passed": 2,
+      "final_complete": 2,
+      "final_physical_protocol_passed": 2,
+      "actual_cycles": 2,
+      "seed_replays": 8,
+      "seed_phase_checked": 8,
+      "seed_phase_passed": 7,
+      "seed_terminal_rows_checked": 2,
+      "seed_terminal_rows_passed": 2,
+      "final_replays": 8,
+      "analyzed_plan_cycles": 2,
+      "shift_candidates": 4
+    },
+    "worst": {
+      "seed_gap_deficit_m": {
+        "value": -3.7,
+        "cycle": 0,
+        "time_s": 100.0,
+        "pair": "A1:A2",
+        "lead_s": 0.0
+      },
+      "final_gap_deficit_m": {
+        "value": -3.7,
+        "cycle": 0,
+        "time_s": 100.0,
+        "pair": "A1:A2",
+        "lead_s": 0.0
+      },
+      "actual_gap_deficit_m": {
+        "value": -3.7,
+        "cycle": 0,
+        "time_s": 100.0,
+        "pair": "A1:A2",
+        "lead_s": 0.0
+      },
+      "discrete_stop_deficit_m": {
+        "value": -12.96,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1",
+        "mode": "MOVE"
+      },
+      "seed_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "seed_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "final_replay_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_position_m": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "execution_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1"
+      },
+      "successive_final_position_m": {
+        "value": 0.38003298118110607,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1",
+        "event": [
+          "same_mode_permission"
+        ],
+        "lead_s": 6.2
+      },
+      "successive_final_heading_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1",
+        "event": [
+          "same_mode_permission"
+        ],
+        "lead_s": 0.0
+      },
+      "successive_final_speed_m_s": {
+        "value": 0.20000000000000906,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1",
+        "event": [
+          "same_mode_permission"
+        ],
+        "lead_s": 4.6000000000000005
+      },
+      "successive_final_steering_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1",
+        "event": [
+          "same_mode_permission"
+        ],
+        "lead_s": 0.0
+      },
+      "shift_initial_error_position_m": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_heading_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_speed_m_s": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      },
+      "shift_initial_error_steering_rad": {
+        "value": 0.0,
+        "cycle": 1,
+        "time_s": 100.2,
+        "car": "A1"
+      }
+    },
+    "mode_duration_s": {
+      "A1:MOVE": 0.4,
+      "A2:WAIT_MERGE": 0.4,
+      "B1:STEER": 0.4,
+      "B2:WAIT_MERGE": 0.4
+    },
+    "event_windows": 0,
+    "file": "cycle_metrics/stage1__phase_probe_uncached.jsonl.gz",
+    "ocp_feasibility_checked": false,
+    "geometric_independence": false
+  },
+  "stage1/phase_probe_cached": {
+    "reused_from": "stage1/phase_probe_uncached",
+    "equality_basis": "exact logical actual hash, entire compressed plan bytes, scenario hash"
+  },
+  "stage1/fault_injection": {
+    "counts": {
+      "seed_complete": 1,
+      "seed_physical_protocol_passed": 1,
+      "seed_replays": 4,
+      "seed_phase_checked": 1,
+      "seed_phase_passed": 1,
+      "analyzed_plan_cycles": 1
+    },
+    "worst": {
+      "seed_gap_deficit_m": {
+        "value": -3.7,
+        "cycle": 0,
+        "time_s": 100.0,
+        "pair": "A1:A2",
+        "lead_s": 0.0
+      },
+      "discrete_stop_deficit_m": {
+        "value": -13.0,
+        "cycle": 0,
+        "time_s": 100.0,
+        "car": "A1",
+        "mode": "MOVE"
+      }
+    },
+    "mode_duration_s": {},
+    "event_windows": 0,
+    "file": "cycle_metrics/stage1__fault_injection.jsonl.gz",
+    "ocp_feasibility_checked": false,
+    "geometric_independence": false
+  }
+}

@@ -1,0 +1,9 @@
+case,arm,actor,records,input_tokens,cached_input_tokens,cache_write_input_tokens,output_tokens,reasoning_output_tokens,total_tokens
+pilot,before,main,2,29938,24832,0,186,0,30124
+pilot,before,guardian,0,0,0,0,0,0,0
+pilot,after,main,2,30336,27392,0,196,15,30532
+pilot,after,guardian,0,0,0,0,0,0,0
+measured,before,main,2,30092,24832,0,203,0,30295
+measured,before,guardian,1,7389,6016,0,88,39,7477
+measured,after,main,2,30497,27392,0,203,0,30700
+measured,after,guardian,1,7384,6016,0,104,46,7488

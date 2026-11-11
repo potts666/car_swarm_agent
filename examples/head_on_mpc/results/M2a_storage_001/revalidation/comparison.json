@@ -1,0 +1,64 @@
+{
+  "restored_file_hashes_passed": true,
+  "originals_unchanged": true,
+  "runs": {
+    "debug_v1/C-new": {
+      "all_audit_fields_equal_except_wall_time": true,
+      "actual_full_acceptance": true,
+      "actual_prefix_acceptance": true
+    },
+    "debug_v1/L-new": {
+      "all_audit_fields_equal_except_wall_time": true,
+      "actual_full_acceptance": false,
+      "actual_prefix_acceptance": true
+    },
+    "debug_v2/L-new": {
+      "all_audit_fields_equal_except_wall_time": true,
+      "actual_full_acceptance": false,
+      "actual_prefix_acceptance": true
+    },
+    "debug_v3/L-new": {
+      "all_audit_fields_equal_except_wall_time": true,
+      "actual_full_acceptance": false,
+      "actual_prefix_acceptance": true
+    },
+    "debug_v4/L-new": {
+      "all_audit_fields_equal_except_wall_time": true,
+      "actual_full_acceptance": true,
+      "actual_prefix_acceptance": true
+    },
+    "formal/C-new_r1": {
+      "all_audit_fields_equal_except_wall_time": true,
+      "actual_full_acceptance": true,
+      "actual_prefix_acceptance": true
+    },
+    "formal/C-new_r2": {
+      "all_audit_fields_equal_except_wall_time": true,
+      "actual_full_acceptance": true,
+      "actual_prefix_acceptance": true
+    },
+    "formal/L-new_r1": {
+      "all_audit_fields_equal_except_wall_time": true,
+      "actual_full_acceptance": true,
+      "actual_prefix_acceptance": true
+    },
+    "formal/L-new_r2": {
+      "all_audit_fields_equal_except_wall_time": true,
+      "actual_full_acceptance": true,
+      "actual_prefix_acceptance": true
+    }
+  },
+  "formal_metrics_equal": {
+    "C-new_r1": true,
+    "L-new_r1": true,
+    "C-new_r2": true,
+    "L-new_r2": true
+  },
+  "original_bytes": 781307730,
+  "stored_bytes": 95537125,
+  "reduction_fraction": 0.8777215156952306,
+  "float_precision_changed": false,
+  "control_algorithm_changed": false,
+  "wire_payload_changed": false,
+  "local_disk_reclaimed_bytes": 0
+}

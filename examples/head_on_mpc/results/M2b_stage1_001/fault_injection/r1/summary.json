@@ -1,0 +1,44 @@
+{
+  "arm": "local",
+  "policy": "fifo-ready",
+  "all_completed": false,
+  "completion_sim_s": null,
+  "completion_per_car_s": {},
+  "failure": "ValueError: injected local candidate rejection",
+  "failure_layer": "candidate",
+  "online_wall_s": 0.22311671200441197,
+  "export_wall_s": 0.005087491997983307,
+  "committed_cycles": 0,
+  "timed_cycles": 1,
+  "last_states": {
+    "A1": [
+      -35.0,
+      3.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "A2": [
+      -39.0,
+      -3.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "B1": [
+      37.0,
+      3.0,
+      3.141592653589793,
+      0.0,
+      0.0
+    ],
+    "B2": [
+      40.0,
+      -3.0,
+      3.141592653589793,
+      0.0,
+      0.0
+    ]
+  },
+  "old_central_future_diagnostic": "not executed; no online future gate"
+}

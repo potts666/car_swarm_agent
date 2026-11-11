@@ -1,0 +1,242 @@
+{
+  "actual_full_acceptance": true,
+  "actual_prefix_acceptance": true,
+  "violations": [],
+  "goals": {
+    "west_head": true,
+    "west_tail": true,
+    "east_head": true,
+    "east_tail": true
+  },
+  "physical": {
+    "passed": true,
+    "residuals": {
+      "west_head": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.356004033503666e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "west_tail": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.340311865938304e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "east_head": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.3418483346683274e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "east_tail": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.6798721658162208e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "pair_gap_m": 0.0
+    },
+    "pair_gaps_m": {
+      "west_head:west_tail": 4.1999066470510416,
+      "west_head:east_head": 1.1999980698175956,
+      "west_head:east_tail": 1.199999999999998,
+      "west_tail:east_head": 1.1999995646796124,
+      "west_tail:east_tail": 1.1999999999999957,
+      "east_head:east_tail": 1.5003004396200623
+    },
+    "minimum_gap_m": 1.1999980698175956
+  },
+  "component_replay_error": {
+    "west_head": 6.124878382252064e-12,
+    "west_tail": 6.16751094639767e-12,
+    "east_head": 6.16751094639767e-12,
+    "east_tail": 6.131983809609665e-12
+  },
+  "accumulated_replay_error": {
+    "west_head": 1.1818457323897746e-10,
+    "west_tail": 1.6748202824601321e-10,
+    "east_head": 1.695070750429295e-10,
+    "east_tail": 1.1577583336475072e-10
+  },
+  "original_sign_check_passed": true,
+  "prediction_replay_error": 3.6067149267182685e-11,
+  "minimum_prediction_gap_m": 1.1999980698175956,
+  "protocol_passed": true,
+  "all_exit_timing_passed": true,
+  "local_information_boundary_passed": true,
+  "dimensions": {
+    "west_head": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "west_tail": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "east_head": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "east_tail": {
+      "reference": 32,
+      "bicycle": 64
+    }
+  },
+  "handoffs": [
+    {
+      "cycle": 44,
+      "kind": "handoff",
+      "old_owner": null,
+      "owner": "west_head",
+      "version": 1,
+      "proposal_id": "44:1",
+      "plans": {
+        "west_tail": "5d82c168c9b4183e14470b03fe64468deb8eae0fc0fb5fd18ad243b192c90d48",
+        "east_tail": "eef9ef5c286b37d2c70e3e0cbb8179bd4e195bb591675e7a95ad508542f4fe39",
+        "west_head": "e0c09e5d4775535f1899d4b219c40ce75fee9500fbe27bd80796802e03c25f69",
+        "east_head": "54900dfe14957dfbf3a896416a16be7a24c9d2b8cb7525659b755449e64b4370"
+      },
+      "eligible": [
+        "west_head"
+      ],
+      "previous_direction": null
+    },
+    {
+      "cycle": 224,
+      "kind": "handoff",
+      "old_owner": "west_head",
+      "owner": "east_head",
+      "version": 2,
+      "proposal_id": "224:2",
+      "plans": {
+        "east_head": "798695cad714a9c44343441f358cf7a32d0d6693754962ee57bed5425e774eb0",
+        "west_tail": "79b3f055ce16d2e0e2bf9d0c4d07e199d2f18844921068ec332ee9a350730003",
+        "east_tail": "7608eea6b52b4dedfb516b0da5f44ffc1b21739f8759d6b163b7e884e71fb7d1",
+        "west_head": "f37d0e19854f45badf90bfe828eff0914f55ca0b3f69eedec7ea64d1305d55da"
+      },
+      "eligible": [
+        "west_tail",
+        "east_head"
+      ],
+      "previous_direction": 1
+    },
+    {
+      "cycle": 404,
+      "kind": "handoff",
+      "old_owner": "east_head",
+      "owner": "west_tail",
+      "version": 3,
+      "proposal_id": "404:3",
+      "plans": {
+        "west_tail": "7f93e9510755bce0d371fc6fcb82c2bcd5d1808f328566e7a9bf9bce7c8b0583",
+        "west_head": "a602c6c61c913c1c08cedc858dfecfaf823bef743cd5a516866687b8b4c89394",
+        "east_tail": "ee372c8dc0985169c1c4ea01cbb292117225c412525bfbcdbdaf2636ca18e2e8",
+        "east_head": "a0b9c79d39163804e94cbff4f0a4175c8ce680897c19059049b68e6c7436a5d9"
+      },
+      "eligible": [
+        "west_tail",
+        "east_tail"
+      ],
+      "previous_direction": -1
+    },
+    {
+      "cycle": 584,
+      "kind": "handoff",
+      "old_owner": "west_tail",
+      "owner": "east_tail",
+      "version": 4,
+      "proposal_id": "584:4",
+      "plans": {
+        "east_head": "27d1bcf2b2ff9238a4648e683e12ed3f97cfcdfd82614f9d95e4362c89899817",
+        "west_head": "f9b6e7b021f7bcaea9125f2fd0d3ed62c38c878bbc43d242fbf241af5006ebc7",
+        "east_tail": "49bdfae7572b634efbade629f2de1a8d3f76f5feca92e4990099ecd9feaf4457",
+        "west_tail": "ece41d483662401bb9c990630277ab6f039af2972a1a85dbdf0d2356665d7bd2"
+      },
+      "eligible": [
+        "east_tail"
+      ],
+      "previous_direction": 1
+    },
+    {
+      "cycle": 764,
+      "kind": "handoff",
+      "old_owner": "east_tail",
+      "owner": null,
+      "version": 5,
+      "proposal_id": "764:5",
+      "plans": {
+        "east_head": "d3579d6239fe24e629e87b9b72952e089aef2f431af02eba63bee0403828f74e",
+        "west_tail": "2f10f7b5cab3dd6972ce2ce956afef8cf4b408d0285d7c75539fec90ba261ee0",
+        "west_head": "879d2c3de29afa458d0500364c3d134cba98dd46a1ed5195f58b6eefd254a604",
+        "east_tail": "83d16094664a00b0e5db5f1751269774398ee6a24cfbe902b0013aa0243363f5"
+      },
+      "eligible": [],
+      "previous_direction": -1
+    }
+  ],
+  "waiting": {
+    "west_head": {
+      "request_to_grant_s": 7.200000000000001,
+      "ready_to_grant_s": 0.0,
+      "grant_s": 8.8
+    },
+    "east_head": {
+      "request_to_grant_s": 40.400000000000006,
+      "ready_to_grant_s": 21.800000000000004,
+      "grant_s": 44.800000000000004
+    },
+    "west_tail": {
+      "request_to_grant_s": 64.80000000000001,
+      "ready_to_grant_s": 45.40000000000001,
+      "grant_s": 80.80000000000001
+    },
+    "east_tail": {
+      "request_to_grant_s": 89.60000000000001,
+      "ready_to_grant_s": 54.80000000000001,
+      "grant_s": 116.80000000000001
+    }
+  },
+  "first_ready_s": {
+    "west_head": 8.8,
+    "east_head": 23.0,
+    "west_tail": 35.4,
+    "east_tail": 62.0
+  },
+  "first_protection_entry_s": {
+    "west_head": 10.98,
+    "east_head": 46.980000000000004,
+    "west_tail": 82.98000000000002,
+    "east_tail": 118.98000000000002
+  },
+  "first_actual_tail_clear_s": {
+    "west_head": 44.800000000000004,
+    "east_head": 80.80000000000001,
+    "west_tail": 116.80000000000001,
+    "east_tail": 152.8
+  },
+  "idle_time_s": {
+    "no_candidate": 1.5999999999999999,
+    "candidates_not_ready": 7.200000000000004
+  },
+  "independent_audit_wall_s": 175.2142845000053,
+  "geometry_shared_with_M1": true,
+  "central_future_not_run": true,
+  "sealed_round_audit": {
+    "violations": [],
+    "candidate_count": 3532,
+    "max_fixed_input_error": 0.0,
+    "max_partial_progress_speed_error": 1.1885909820819052e-06,
+    "full_ocp_candidate_certificate": false,
+    "worker_pids": [
+      14509,
+      14510,
+      14511,
+      14512
+    ],
+    "four_way_overlap_cycles": 883,
+    "max_four_way_overlap_s": 0.135897372,
+    "round_count": 883,
+    "independent_queue_restoration": true
+  }
+}

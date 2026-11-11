@@ -1,0 +1,64 @@
+{
+  "checked_at_unix": 1793625828.5422947,
+  "verification": "offline app-server initialize + hooks/list; no thread or model request",
+  "cli_version": "codex-cli 0.164.0-alpha.11.1",
+  "features_hooks": true,
+  "runtime_hooks_response": {
+    "id": 2,
+    "result": {
+      "data": [
+        {
+          "cwd": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane",
+          "hooks": [
+            {
+              "key": "/home/sunflower/.codex/hooks.json:pre_tool_use:0:0",
+              "eventName": "preToolUse",
+              "handlerType": "command",
+              "command": "python3 /home/sunflower/.codex/hooks/token_guard/guard.py",
+              "async": false,
+              "matcher": null,
+              "timeoutSec": 2,
+              "statusMessage": null,
+              "additionalContextLimit": 400,
+              "sourcePath": "/home/sunflower/.codex/hooks.json",
+              "source": "user",
+              "pluginId": null,
+              "displayOrder": 0,
+              "enabled": true,
+              "isManaged": false,
+              "currentHash": "sha256:a1661013d233abacddb536efbb399430e6ce6cc732c12beac5f5cbcc6fd4b147",
+              "trustStatus": "untrusted"
+            },
+            {
+              "key": "/home/sunflower/.codex/hooks.json:session_start:0:0",
+              "eventName": "sessionStart",
+              "handlerType": "command",
+              "command": "python3 /home/sunflower/.codex/hooks/token_guard/guard.py",
+              "async": false,
+              "matcher": null,
+              "timeoutSec": 2,
+              "statusMessage": null,
+              "additionalContextLimit": 400,
+              "sourcePath": "/home/sunflower/.codex/hooks.json",
+              "source": "user",
+              "pluginId": null,
+              "displayOrder": 1,
+              "enabled": true,
+              "isManaged": false,
+              "currentHash": "sha256:71bc814da4725829e6210234fc101ac5dd0a2ef511499d286a22225934b3428b",
+              "trustStatus": "untrusted"
+            }
+          ],
+          "warnings": [],
+          "errors": []
+        }
+      ]
+    }
+  },
+  "installed_script_sha256": "297a735c4939ccb2166358c9a1873a45829139c09c819700277826e7ff955dfd",
+  "source_script_matches_install": true,
+  "synthesis_tests": {
+    "passed": 8
+  },
+  "model_or_experiment_run": false
+}

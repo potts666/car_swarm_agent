@@ -1,0 +1,79 @@
+"""Generate a report from observations without manufacturing theoretical guarantees."""
+from collections import Counter
+from pathlib import Path
+import csv
+import json
+
+OUT=Path(__file__).resolve().parent
+def load(name):return json.loads((OUT/name).read_text())
+
+
+if __name__=='__main__':
+    results=load('analysis_results.json');detail=load('detailed_results.json');events=load('task_events.json');inventory=load('input_identity.json');comparison=load('comparison.json')
+    c=results['C-FIFO/r1'];l=results['L-FIFO/r1'];ld=detail['L-FIFO/r1'];le=events['L-FIFO/r1'];counter=load('natural_counterexamples.json');aliases=load('alias_protocol_validation.json')
+    assert not load('status.json')['errors']
+    assert all(v['passed'] for v in aliases.values())
+    kinds=Counter(r['classification'] for r in inventory)
+    files={r['run']:r for r in comparison}
+    worst_reopt=l['worst']['successive_final_position_m'];stop_v1=results['debug_v1']['worst']['discrete_stop_deficit_m']
+    guards=le['handoff_guards'];release=[r['actual_release_margin_m'] for r in guards if 'actual_release_margin_m' in r]
+    lines=['# M2b理论关联指标分析', '',
+    '**现有记录支持名义固定场景下的采样约束合规、有限任务完成和执行版本一致性；不支持完整OCP递归可行性、闭环Lyapunov稳定性、持续安全停车或正扰动/延迟鲁棒域的保证。** 旧计划移位能形成实际使用的物理/协议合格候选，但在模式、路段或停车参考改变后，并不总满足当前的部分阶段/终端条件。缓存与打平的两种调度没有制造新的理论收益。', '',
+    '## 输入身份、分组和证据范围', '',
+    f"读取17类运行记录：原正式6轮、stage1完整1轮、调试完成{kinds['debug_complete']}轮、自然失败{kinds['natural_failure']}轮、短前缀{kinds['bounded_prefix']}轮、人工拒绝{kinds['artificial_rejection']}轮。除去source_version和log_format两项元数据，配置只有一个物理场景；原始配置字节SHA仍保留。8个实际逻辑哈希组包含不同长度前缀/失败，不能计成8个独立场景。正式及优化完整记录只对应集中式/局部两种完整运动逻辑。", '',
+    'actual逻辑哈希包含每周期状态、输入、owner与许可版本，不受计划ID或计时影响。只有整个计划日志字节、实际逻辑和场景都一致时才复用数值分析。8个复用分支仍分别读取自身消息和ACK核验版本，不继承未检查的协议通过。debug_v3因存储表达不同单独分析，即使其实际运动归入局部组。', '',
+    '使用的输入文件SHA与已有清单核对，6个可取得的关联源码快照清单均逐文件核对。debug_v2缺完整source_version/诊断正文，不能恢复其全部QP；该缺口没有阻止其他层。六轮正式共享诊断也恢复核对原逻辑SHA，共748个不同正文对象；这不等于重建完整OCP。仅使用原积分/几何函数重算，几何并非完全独立实现。', '',
+    '## A. 采样安全与约束余量', '',
+    '|代表运行|实际最小净空余量m|final预测最小净空余量m|seed集合物理/权限检查|', '|---|---:|---:|---:|']
+    for name in ['C-FIFO/r1','L-FIFO/r1','L-ALT/r1','stage1/full_L_FIFO']:
+        r=files[name];lines.append(f"|{name}|{r['sampled_actual_gap_margin_m']:.10f}|{r['sampled_final_gap_margin_m']:.10f}|{r['seed_physical_passed']}/{r['seed_physical_checked']}|")
+    lines += ['', '原最小净空要求0.5m，因此局部实际最小净空约1.19999807m，余量约0.69999807m。实际与预测分别保留最差车对/cycle/预测位置，并非同一条轨迹曲线。释放后seed/final另核26.5m外侧保持条件，released_boundary_m记录越界违反量，与实际清空裕度分开。', '',
+    '|局部实际轨迹/输入量|最大原始超界量|最差位置|', '|---|---:|---|']
+    for key,unit in [('road_area_m2','m²'),('forward_speed_m_s','m/s'),('reverse_speed_m_s','m/s'),('steering_rad','rad'),('acceleration_m_s2','m/s²'),('steering_rate_rad_s','rad/s'),('unauthorized_area_m2','m²')]:
+        r=ld['worst_by_unit']['actual:'+key];lines.append(f"|{key}|{r['value']:.9g} {unit}|{r['car']}, cycle {r['cycle']}|")
+    lines += ['', '速度与加速度存在约1e-7量级的原始上界超出，但均未超过原scene容差；并未舍入成严格零。实际没有超原容差的违反样本，故违反持续区间为空；零违反时“最差位置”只是并列位置。这里没有混合面积、速度、角度误差取统一物理余量。有限0.02s采样不提供扫掠体或连续时间证书。', '',
+    '## B. 下一步候选：物理可用与OCP可行必须分开', '',
+    '|代表运行|总seed车周期|真实移位车候选|部分阶段条件通过/检查|部分参考终端条件通过/检查|', '|---|---:|---:|---:|---:|']
+    for name,r in [('C-FIFO/r1',c),('L-FIFO/r1',l)]:
+        n=r['counts'];lines.append(f"|{name}|{n['seed_replays']}|{n['shift_candidates']}|{n['seed_phase_passed']}/{n['seed_phase_checked']}|{n['seed_terminal_rows_passed']}/{n['seed_terminal_rows_checked']}|")
+    lines += ['', '局部882组seed包括1组初始化和881组移位；首轮4车静止种子没有旧计划可移位。所有3528个seed及3528个final的本次重积分诊断均在各报告分量1e-12以内，3524个真实移位候选的初态也匹配。实际构造确实是上个已提交final输入去首项、末尾补零；恢复的状态前缀/新增尾部与内容ID一致。', '',
+    f"30个部分阶段条件失效中，{ld['seed_phase_initialization_failures']}个属于初始化，{ld['seed_phase_shifted_failures']}个属于真实移位，后29个均在本车模式/段变化时发生，模式为STEER。24个参考终端条件失效中22个在本车切换时发生，另2个是B1/cycle15、A2/cycle59的停车参考激活，公开模式仍为MOVE。", '',
+    '非MOVE固定输入是当前QP的硬等式：本次用已接受final所含固定输入核对seed，未假装独立恢复内部转向队列。典型seed仍保持旧曲率，而新STEER目标需要非零转角速度；另一些旧seed停在中途，而新参考要求到段端。**这使旧移位构造不能直接承担当前OCP的可行性归纳，但不意味着所有候选不存在；这些正式周期事实上求得了其他合格final。**', '',
+    '本次没有重建全部本车QP、参考更新、信赖域、走廊、线性化中心及全部耦合行，完整OCP候选状态为“未检查”，不能把物理/协议通过写成完整OCP可行。terminal_zero只延长原末端控制一个h；没有终端不变集。局部final末端最大速度约1.8563e-7m/s、补零后单步漂移约3.7126e-8m，进一步说明数值上小不等于严格平衡/无限期静止。', '',
+    '## C. 三种一致性与时间对齐', '',
+    '同计划重积分误差、认可final首0.2s与实际执行误差，以及相邻final重优化差异独立保存。前两者接近零是理想仿真/执行记录的一致性，不是扰动鲁棒性。相邻final使用绝对时间共同窗：旧10..320对新0..310，共311点；按h/sample自动计算，航向包裹至[-π,π]。', '',
+    f"局部最大位置变化{worst_reopt['value']:.9f}m，B2/cycle{worst_reopt['cycle']}，共同窗内lead={worst_reopt['lead_s']:.1f}s，接近远端；本车由WAIT_MERGE转MOVE。同模式且全局无切换时的位置最大变化仍有{ld['reoptimization_by_event']['same_mode_permission']['worst']['position_m']['value']:.9f}m；不能将当前局部STATE_TRUST的0.15m直接当作连续两次公布预测的界。", '',
+    '本车模式/段变化组的航向、速度、前轮角最大变化分别约0.896607rad、2.0000001m/s、0.845708rad，它们属于不同样本、不同量纲。纯许可变化且本车模式未变的15个样本位置变化约2.23e-5m；该组不包括同时切换模式的获准车辆，不能据此宣称所有交接影响小。', '',
+    '当前没有适用的理论允许界，因此没有计算“实际/保证界”比例，也没有将观测最大值定义成保证。逐周期最大值曲线与逐lead观测包络分别保存，不是QP仿射/非线性mapping_error。', '',
+    '## D. 模式与许可切换', '',
+    f"局部4次授予的交接前READY检查、4次实际旋转车身清空检查均通过，最小实际释放裕度{min(release):.9f}m。检查使用拟授权之前的原始state消息，避免把新条件候选的MOVE标签当READY。四ACK/计划ID/许可版本/提案激活与实际提交逐周期核对；所有复用分支另核自身消息。", '',
+    f"有前后实际提交记录的{len(le['segment_transition_guards'])}次段索引推进均满足原进度/实际速度守卫，状态未被重置；观测到的最大段端位置误差为{max(r['observed_pose_endpoint_error_m'] for r in le['segment_transition_guards']):.9f}m。**Agent.advance的显式推进守卫是s>=段长−1e-6和足够低的实际速度，最终推进还要求|v|<=1e-12；它本身没有显式位置/航向端点守卫。** 观测姿态合格不能改写为源代码已有该守卫或已有交接可行集。", '',
+    'event_metrics保留切换前/时/后的可用周期、公开报告、owner、许可、四计划和ACK；完成出口没有新控制/预测，缺少后续周期明确标记。部分seed在这些点失去阶段/终端条件，说明当前模式有解不能直接推出未经另证的下一模式候选有解。', '',
+    '## E. 停车、任务推进与自然反例', '',
+    '|车|完成时间s|请求至授权s|就绪至授权s|首次进入保护区s|实际整车清空s|', '|---|---:|---:|---:|---:|---:|']
+    for car,r in le['per_car'].items():lines.append(f"|{car}|{r['completion_elapsed_s']:.2f}|{r['request_to_grant_s']:.2f}|{r['ready_to_grant_s']:.2f}|{r['first_protection_entry_elapsed_s']:.2f}|{r['first_actual_body_clear_elapsed_s']:.2f}|")
+    lines += ['', '时间均从场景epoch起算。原正式六轮与优化完整一轮均记录完成，但仅是固定名义场景中的重复/实现对照。MOVE/STEER/READY/QUEUE_WAIT/WAIT_MERGE/DONE分列；停车阈值使用原terminal.speed_m_s。B2的54.8s就绪等待与许可顺序相符，未据停车时间单独判死锁。累计进度使用段offset+s处理清零，不用欧氏目标距离强行作下降证据。', '',
+    f"- v1/cycle43：参考QP成功，自行车层primal infeasible；按原h和制动界重算必要离散停车余量缺口{stop_v1['value']:.12g}m。缺口条件仅指固定段不越端点、分段常输入、非反向停车，不是完整碰撞安全停车证书。",
+    '- v2/cycle33：参考QP拒绝，必要离散停车余量约+0.07123m；本项条件没有解释该拒绝。原失败周期诊断矩阵及完整源版本缺失，其他约束/数值原因未排除；不将OSQP报告直接当成原物理问题无解的证明。',
+    f"- 中央debug_c1/cycle689：QP与模型/物理检查已通过，但预测调用{counter['debug_c1']['total_predict_s']:.9f}s超0.5s，属于预算失败。缺诊断正文明确保留。",
+    '- 正式局部段端最小必要离散停止余量约−5.635e-8m，量级处于原数值容差内，不作为物理安全失败；但也不能升级成严格数学不变性证书。',
+    '- fault_injection是人工拒绝出口检查，实际提交为0；它不计自然失败率，也不证明行驶中的备用安全停车。三个自然拒绝出口仍有车在动：v1的A1约0.03770m/s；v2的A1/B1约1.86874/0.97245m/s；中央预算出口A2/B2约1.60000/2.00000m/s。离线终止没有验证后续安全停车。', '',
+    '有限记录能分别说明：实际停车片段通过采样约束；部分物理/协议移位候选存在；这批任务最终完成。三者不能合并成“始终可安全停住、继续可行且最终完成”的一般保证。', '',
+    '## F/G. 稳定性、鲁棒域及文献边界', '',
+    '没有找到适用于当前切换控制器的已定义Lyapunov候选、终端不变集及下降命题。本轮不计算伪Lyapunov下降残差：输入平方积分不是价值函数；省略常数、随参考/模式改变的QP目标也不能直接比较作共同Lyapunov函数。固定名义场景不能辨识初态/扰动/信息年龄可保证范围，最大允许延迟与可认证集合均为未知。', '',
+    '指定正式论文的原文/可访问条件逐条见[literature_conditions.md](literature_conditions.md)。Zheng作者稿的终端与一致性条件、Chen v4的终端平衡与MBVC-WB可行构造均不能移植为本自行车结论。Dunbar全文未取得；Sun仅核对到可索引原文片段，稳态领车等适用条件不能省略，也未声称完整证明已核查。', '',
+    '## 下一方法优先级与实现层', '',
+    '1. **优先模式/参考切换的可行衔接。** 先离线构造段端/转向/停车目标激活与授权的交接可行集合，给出保持原物理界的终端控制和下一模式候选构造，证明完整约束在守卫下可延续。不能用提前WAIT或数值置零代替。证明还必须区分安全停留与最终推进，不能靠永久不交接取得安全表象。',
+    '2. **随后建立同模式预测依赖条件。** 已有同模式0.38m观测变化，研究按绝对时间对齐、按时域/模式分层的预测承诺或一致性条件；需要由动力学、扰动和协调更新推导有效界，并证明组合约束保留。不要拿本次8.77m或0.38m最大值直接作理论常数。并行时统一用旧seed的信息语义改变，尤其需要这个条件。', '',
+    '停车末端已修的前缀条件保留为第一项的必要组成，不认定所有停车问题已解决；名义净空余量充足且本轮未见混版，不应优先通过加大物理裕度或放宽验收制造理论改进。本任务未实现上述任何新机制、扰动闭环或新控制方法。', '',
+    '缓存优化没有改变完整运动、公布计划或这些理论相关指标；FIFO/ALT在本批同样选择A1→B1→A2→B2，也没有可归因的调度理论收益。墙钟/通信仍见comparison.csv；它们是实现指标，不作理论排名。完整周期取相邻起点，前缀最后一期没有后继起点时不补造样本，cycle_count给实际分母。stage1记录硬件为4核/4核亲和、BLAS单线程；其驱动峰值RSS约1671.7MiB包含导出与离线验收，不能当纯在线控制峰值。资源身份引用stage1/environment.json和full_status.json，未将当前机器状态替代历史负载。原任务token只引用既有审计：主模型38,128,258、自动审批6,443,952，合计44,572,210记录token；43,493,632缓存输入已含在输入中。它们不是全价费用或额度换算，本次分析用量未计量，也没有重扫会话或按控制周期换算模型调用。', '',
+    '## 工件入口', '',
+    '- metric_dictionary.csv：逐量定义/单位/来源/阈值/覆盖与不能推出的结论；comparison.csv和analysis_results.json给每运行的分母。',
+    '- run_inventory.csv、input_identity.json、source_snapshot_checks.json：身份、原字节SHA、分组、缺失。',
+    '- cycle_metrics/index.csv、event_metrics/index.csv：复用组的明确映射；正文为无损gzip，带run/car/pair/cycle/time/plan/permit。',
+    '- seed_failure_events.csv、detailed_results.json、task_events.json、natural_counterexamples.json：失效、最差事件、守卫、推进与反例。',
+    '- evidence_gaps.md：区分记录通过、本次重算、部分构造检查、尚未建立的证明和未知。',
+    '- figures/：采样余量、311点共同窗重规划变化、模式/owner时间线；horizon_envelopes/保存观测包络，不是保证界。',
+    '- analysis_tests.log：7项有针对性的分析器检查。原实验包、原控制源码和原审计均未写入。']
+    (OUT/'report.md').write_text('\n'.join(lines)+'\n')
+    print('Theory-linked report generated from measured data.')

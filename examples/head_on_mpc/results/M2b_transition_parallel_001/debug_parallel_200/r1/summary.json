@@ -1,0 +1,45 @@
+{
+  "backend": "P-J",
+  "all_completed": false,
+  "completion_sim_s": null,
+  "completion_per_car_s": {},
+  "failure": "RuntimeError: bounded prefix limit reached",
+  "failure_layer": "prefix_limit",
+  "online_wall_s": 56.05093295999541,
+  "total_wall_before_export_s": 56.643250146000355,
+  "shutdown_wall_s": 0.08479212300153449,
+  "committed_cycles": 200,
+  "timed_cycles": 201,
+  "last_states": {
+    "B1": [
+      21.999699232892816,
+      -2.9999983831466426,
+      3.141592966918884,
+      1.734723475976807e-18,
+      -7.940933880509066e-23
+    ],
+    "A1": [
+      17.933960531700507,
+      7.016505447147531e-16,
+      -5.889901060644478e-16,
+      2.0000001000000007,
+      1.3222573462979643e-15
+    ],
+    "A2": [
+      -21.999699215557943,
+      2.9999995842769267,
+      -5.599234164060307e-09,
+      1.0842021724855044e-18,
+      -2.24462114528049e-08
+    ],
+    "B2": [
+      27.999999954509008,
+      -3.0,
+      3.1415926535897953,
+      6.505213034913027e-19,
+      -1.2499514270251178e-15
+    ]
+  },
+  "old_central_future_diagnostic": "not executed; no online future gate",
+  "export_wall_s": 5.918175701001019
+}

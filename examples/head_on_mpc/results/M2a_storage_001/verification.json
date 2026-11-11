@@ -1,0 +1,21 @@
+{
+  "storage_format": "M2a-logs-v2-gzip-plan-ref",
+  "original_files": 533,
+  "all_original_files_covered": true,
+  "restored_bytes_match_original_sha256": true,
+  "originals_unchanged": true,
+  "runs_reaudited": 9,
+  "all_audit_fields_equal_except_wall_time": true,
+  "formal_metrics_equal": true,
+  "tests_passed": 15,
+  "original_bytes": 781307730,
+  "stored_payload_bytes": 95537125,
+  "reduction_fraction": 0.8777215156952306,
+  "local_disk_reclaimed_bytes": 0,
+  "controller_protocol_dynamics_unchanged": true,
+  "full_closed_loop_rerun": false,
+  "DDS_payload_unchanged": true,
+  "precision_unchanged": true,
+  "diagnostic_trimming_implemented": false,
+  "old_central_future_reexecuted": false
+}

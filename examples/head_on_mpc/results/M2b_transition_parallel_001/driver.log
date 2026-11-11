@@ -1,0 +1,17 @@
+START rename_prefix backend P-J variant rename
+END rename_prefix passed True wall_s 38.58 failure RuntimeError: bounded prefix limit reached
+START position_prefix backend P-J variant position
+END position_prefix passed True wall_s 38.0 failure RuntimeError: bounded prefix limit reached
+START S-J_1 backend S-J variant main
+END S-J_1 passed True wall_s 627.26 failure None
+START P-J_1 backend P-J variant main
+END P-J_1 passed True wall_s 439.65 failure None
+START P-J_2 backend P-J variant main
+END P-J_2 passed True wall_s 438.02 failure None
+START S-J_2 backend S-J variant main
+END S-J_2 passed True wall_s 628.11 failure None
+START rename_full backend P-J variant rename
+END rename_full passed True wall_s 468.53 failure None
+START position_full backend P-J variant position
+END position_full passed True wall_s 465.42 failure None
+STUDY_COMPLETE

@@ -1,0 +1,384 @@
+{
+  "files": [
+    {
+      "file": "examples/head_on_mpc/scripts/bicycle_core.py",
+      "sha256": "6d272725086c93618910c6b1f295d382745ba62533682fedb4de6ca988a34be4",
+      "matches_frozen": true,
+      "imports": [
+        "collections",
+        "math",
+        "numpy"
+      ],
+      "selected_call_evidence": []
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/linearized_joint.py",
+      "sha256": "cf7631dff31518bc1bc4d2e10dd7dae1fc0a4c1025f346ca5f8e3b61c05d6785",
+      "matches_frozen": true,
+      "imports": [
+        "bicycle_core",
+        "longitudinal_joint",
+        "math",
+        "numpy",
+        "osqp",
+        "scipy.linalg",
+        "scipy.sparse",
+        "time"
+      ],
+      "selected_call_evidence": [
+        {
+          "line": 163,
+          "text": "solver=osqp.OSQP();started=time.perf_counter()"
+        },
+        {
+          "line": 168,
+          "text": "result=solver.solve(raise_error=False);raw_wall=time.perf_counter()-started"
+        }
+      ]
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/longitudinal_joint.py",
+      "sha256": "bcea2073cb158aef4bd1eef660c93a8c67acb0085dc0b559c3a66f698fa245be",
+      "matches_frozen": true,
+      "imports": [
+        "bicycle_core",
+        "copy",
+        "math",
+        "numpy",
+        "osqp",
+        "scipy.linalg",
+        "scipy.sparse",
+        "time"
+      ],
+      "selected_call_evidence": [
+        {
+          "line": 200,
+          "text": "solver=osqp.OSQP();setup_started=time.perf_counter()"
+        },
+        {
+          "line": 212,
+          "text": "result=solver.solve(raise_error=False);solver_wall=time.perf_counter()-solver_started"
+        }
+      ]
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/m2a_local.py",
+      "sha256": "9df6e4bbe1e2e1ecf6983b9c9bacb822eca27ab0a0e377c59a88da30cd657d13",
+      "matches_frozen": true,
+      "imports": [
+        "bicycle_core",
+        "copy",
+        "linearized_joint",
+        "longitudinal_joint",
+        "math",
+        "numpy",
+        "osqp",
+        "scipy.linalg",
+        "scipy.sparse",
+        "time"
+      ],
+      "selected_call_evidence": [
+        {
+          "line": 127,
+          "text": "solver=osqp.OSQP();started=time.perf_counter()"
+        },
+        {
+          "line": 132,
+          "text": "result=solver.solve(raise_error=False);raw_wall=time.perf_counter()-started"
+        },
+        {
+          "line": 196,
+          "text": "scale=max(1.,np.max(abs(q)),np.max(abs(H)));scales=np.maximum(1.,norms[keep]);solver=osqp.OSQP();before=time.perf_counter()"
+        },
+        {
+          "line": 200,
+          "text": "result=solver.solve(raise_error=False);solver_wall=time.perf_counter()-before"
+        }
+      ]
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/m2a_logs.py",
+      "sha256": "2d69d06d87d9a2df1123ea326cefd737346342ee698b6679408bca4a1db768df",
+      "matches_frozen": true,
+      "imports": [
+        "copy",
+        "gzip",
+        "hashlib",
+        "json",
+        "pathlib"
+      ],
+      "selected_call_evidence": []
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/m2a_protocol.py",
+      "sha256": "38c9ce1e9cddcb27f4621d53bd6de7c2a6a2f9c597e5893c663b44f954c99484",
+      "matches_frozen": true,
+      "imports": [
+        "bicycle_core",
+        "copy",
+        "hashlib",
+        "json",
+        "numpy",
+        "rclpy",
+        "rclpy.executors",
+        "rclpy.node",
+        "rclpy.qos",
+        "std_msgs.msg",
+        "time"
+      ],
+      "selected_call_evidence": [
+        {
+          "line": 134,
+          "text": "self.executor.add_node(node);self.pubs[name]=node.create_publisher(String,'/m2a/envelope',qos)"
+        }
+      ]
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/m2b_control.py",
+      "sha256": "36cebf384f72a1656bef1f143eb9bc0d0633b56f3e71c6cdba906a22db77585f",
+      "matches_frozen": true,
+      "imports": [
+        "bicycle_core",
+        "copy",
+        "itertools",
+        "linearized_joint",
+        "longitudinal_joint",
+        "m2a_local",
+        "m2b_scene",
+        "numpy",
+        "osqp",
+        "scipy.linalg",
+        "scipy.sparse",
+        "time"
+      ],
+      "selected_call_evidence": [
+        {
+          "line": 25,
+          "text": "scale=max(1.,np.max(abs(q)),np.max(abs(H)));scales=np.maximum(1.,norms[keep]);solver=osqp.OSQP();start=time.perf_counter()"
+        },
+        {
+          "line": 28,
+          "text": "result=solver.solve(raise_error=False);wall=time.perf_counter()-start;status=result.info.status;iterations=int(result.info.iter);ok=result.info.status_val in (1,2)"
+        },
+        {
+          "line": 217,
+          "text": "def predict_joint(optimizer,agents,permissions,scene):"
+        }
+      ]
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/m2b_protocol.py",
+      "sha256": "d6756ca7f2123c9ab347ec00d46c852abf784d6dc12e2dc2b3bdca821b89edfd",
+      "matches_frozen": true,
+      "imports": [
+        "bicycle_core",
+        "copy",
+        "json",
+        "m2a_logs",
+        "m2a_protocol",
+        "m2b_scene",
+        "math",
+        "numpy",
+        "rclpy",
+        "rclpy.executors",
+        "rclpy.node",
+        "rclpy.qos",
+        "std_msgs.msg",
+        "time"
+      ],
+      "selected_call_evidence": [
+        {
+          "line": 128,
+          "text": "self.executor.add_node(node);self.pubs[name]=node.create_publisher(String,'/m2b/envelope',qos);self.subs.append(node.create_subscription(String,'/m2b/envelope',lambda msg,n=name:se"
+        }
+      ]
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/m2b_recording.py",
+      "sha256": "b3fc35c0ee5ed6512ceae7a4b6de2744dd28438dbbff63952ca2342eef71d2cc",
+      "matches_frozen": true,
+      "imports": [
+        "copy",
+        "gzip",
+        "hashlib",
+        "json",
+        "m2a_logs",
+        "math",
+        "numpy",
+        "pathlib"
+      ],
+      "selected_call_evidence": []
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/m2b_scene.py",
+      "sha256": "15ae7c6555d37d11d3fbd98e09431b64b773532a1f826f2c92001862d384ecf3",
+      "matches_frozen": true,
+      "imports": [
+        "bicycle_core",
+        "copy",
+        "itertools",
+        "json",
+        "longitudinal_joint",
+        "math",
+        "numpy",
+        "pathlib"
+      ],
+      "selected_call_evidence": []
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/recovery_core.py",
+      "sha256": "5b70b4be795b0286be74dc31e7762f94920d0da9802a4dcc3f5cdaa6c2b14f7f",
+      "matches_frozen": true,
+      "imports": [
+        "collections",
+        "copy",
+        "head_on_core",
+        "numpy",
+        "pass_release_core",
+        "time",
+        "trajectory_acceptance"
+      ],
+      "selected_call_evidence": []
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/report_m2b.py",
+      "sha256": "653051f7c98edd221d56701c54a4ee8a7b6a2512705ee409d0b1f2855964d7f4",
+      "matches_frozen": true,
+      "imports": [
+        "argparse",
+        "csv",
+        "gzip",
+        "hashlib",
+        "json",
+        "m2b_recording",
+        "m2b_scene",
+        "numpy",
+        "pathlib",
+        "run_entry_bicycle"
+      ],
+      "selected_call_evidence": []
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/run_entry_bicycle.py",
+      "sha256": "7d1500a5b31047bca4fdf5da506eaed16a8ed8294ce9ec153046c0a8358c4feb",
+      "matches_frozen": true,
+      "imports": [
+        "argparse",
+        "bicycle_core",
+        "collections",
+        "copy",
+        "csv",
+        "hashlib",
+        "json",
+        "numpy",
+        "pathlib",
+        "platform",
+        "recovery_core",
+        "report_entry_bicycle",
+        "run_comparison",
+        "subprocess",
+        "time",
+        "verify_entry_bicycle"
+      ],
+      "selected_call_evidence": [
+        {
+          "line": 349,
+          "text": "git=subprocess.run(['git','rev-parse','HEAD'],capture_output=True,text=True,check=True).stdout.strip()"
+        }
+      ]
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/run_m2b.py",
+      "sha256": "1c69340e7494d572851056ff4fff02d5fb5d9ccf53fdf2ceff5b137beedca092",
+      "matches_frozen": true,
+      "imports": [
+        "argparse",
+        "bicycle_core",
+        "contextlib",
+        "copy",
+        "hashlib",
+        "json",
+        "m2a_logs",
+        "m2b_control",
+        "m2b_protocol",
+        "m2b_recording",
+        "m2b_scene",
+        "numpy",
+        "os",
+        "osqp",
+        "pathlib",
+        "platform",
+        "run_entry_bicycle",
+        "scipy",
+        "shutil",
+        "sys",
+        "time",
+        "unittest.mock"
+      ],
+      "selected_call_evidence": []
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/run_m2b_study.py",
+      "sha256": "243632b061a1e8b2e83daa784a5550e7a77ae29cc551da1b6710e361fd89d0e1",
+      "matches_frozen": true,
+      "imports": [
+        "argparse",
+        "hashlib",
+        "json",
+        "os",
+        "pathlib",
+        "subprocess",
+        "sys",
+        "threading",
+        "time"
+      ],
+      "selected_call_evidence": [
+        {
+          "line": 29,
+          "text": "p=subprocess.Popen(list(map(str,command)),stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,env=env)"
+        }
+      ]
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/verify_entry_bicycle.py",
+      "sha256": "7ecc0bb00da12ce72396c448152f6214675e793ced4e2d03fa2a6e45757a438b",
+      "matches_frozen": true,
+      "imports": [
+        "argparse",
+        "bicycle_core",
+        "csv",
+        "json",
+        "math",
+        "numpy",
+        "pathlib"
+      ],
+      "selected_call_evidence": []
+    },
+    {
+      "file": "examples/head_on_mpc/scripts/verify_m2b.py",
+      "sha256": "c9e0680e39f74bde37248a7a9c8f07a547e5bc17b820eed9cd2b618d6b7a822b",
+      "matches_frozen": true,
+      "imports": [
+        "argparse",
+        "bicycle_core",
+        "collections",
+        "itertools",
+        "json",
+        "linearized_joint",
+        "m2a_logs",
+        "m2a_protocol",
+        "m2b_recording",
+        "m2b_scene",
+        "math",
+        "numpy",
+        "pathlib",
+        "run_entry_bicycle",
+        "time",
+        "verify_entry_bicycle"
+      ],
+      "selected_call_evidence": []
+    }
+  ],
+  "llm_or_http_import_matches": [],
+  "scope": "all 17 runtime files identified by formal_freeze; no dynamic network trace; generated shell dependency download is separate"
+}

@@ -1,0 +1,44 @@
+{
+  "arm": "local",
+  "policy": "fifo-ready",
+  "all_completed": false,
+  "completion_sim_s": null,
+  "completion_per_car_s": {},
+  "failure": "A1:reference:primal infeasible",
+  "failure_layer": "candidate",
+  "online_wall_s": 23.735652811003092,
+  "committed_cycles": 33,
+  "timed_cycles": 34,
+  "last_states": {
+    "A1": [
+      -23.821844432781027,
+      3.0,
+      0.0,
+      1.8687424096352085,
+      0.0
+    ],
+    "A2": [
+      -39.0,
+      -3.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "B1": [
+      32.243225004125286,
+      0.6566266494060568,
+      4.057022742713312,
+      0.9724489892902841,
+      0.4231557401573756
+    ],
+    "B2": [
+      40.0,
+      -3.0,
+      3.141592653589793,
+      0.0,
+      0.0
+    ]
+  },
+  "metadata_recovered_from_existing_logs": true,
+  "diagnostic_export_failed": "non-finite matrix bounds; original partial export retained"
+}

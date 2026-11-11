@@ -1,0 +1,8 @@
+{
+  "format": "M2b-logs-v1",
+  "base": "M2a-logs-v2-gzip-plan-ref",
+  "plan_content": "plans.jsonl.gz",
+  "references": "$plan",
+  "float_precision_unchanged": true,
+  "detailed_cycles": "failure and previous two; handoff/repair and neighbors"
+}

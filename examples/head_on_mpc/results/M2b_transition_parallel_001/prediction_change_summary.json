@@ -1,0 +1,186 @@
+{
+  "rename_prefix": {
+    "records": 320,
+    "adjacent_max": [
+      5.194672213128223,
+      0.8966069733601207,
+      1.0000001000000023,
+      0.8457078798718867
+    ],
+    "seed_to_final_max": [
+      0.4000329811811021,
+      0.033344762358633595,
+      0.20000000000001128,
+      0.00338769228745206
+    ],
+    "alignment": "previous indices 10..320 vs current 0..310, 311 nodes, shared absolute time",
+    "units": [
+      "m position norm",
+      "rad wrapped yaw",
+      "m/s",
+      "rad steering"
+    ],
+    "not_a_theoretical_bound": true
+  },
+  "position_prefix": {
+    "records": 320,
+    "adjacent_max": [
+      5.194672213127748,
+      0.8966069733601323,
+      1.0000001000000043,
+      0.8457078597886885
+    ],
+    "seed_to_final_max": [
+      0.4000330018910674,
+      0.03334476304138655,
+      0.20000000000000906,
+      0.0033876922873404824
+    ],
+    "alignment": "previous indices 10..320 vs current 0..310, 311 nodes, shared absolute time",
+    "units": [
+      "m position norm",
+      "rad wrapped yaw",
+      "m/s",
+      "rad steering"
+    ],
+    "not_a_theoretical_bound": true
+  },
+  "S-J_1": {
+    "records": 3532,
+    "adjacent_max": [
+      8.772422407128502,
+      0.8966069733601207,
+      2.000000105086185,
+      0.8457078798718867
+    ],
+    "seed_to_final_max": [
+      0.4000330211428462,
+      0.033344762358633595,
+      0.20000000000002016,
+      0.00338769228745206
+    ],
+    "alignment": "previous indices 10..320 vs current 0..310, 311 nodes, shared absolute time",
+    "units": [
+      "m position norm",
+      "rad wrapped yaw",
+      "m/s",
+      "rad steering"
+    ],
+    "not_a_theoretical_bound": true
+  },
+  "P-J_1": {
+    "records": 3532,
+    "adjacent_max": [
+      8.772422407128502,
+      0.8966069733601207,
+      2.000000105086185,
+      0.8457078798718867
+    ],
+    "seed_to_final_max": [
+      0.4000330211428462,
+      0.033344762358633595,
+      0.20000000000002016,
+      0.00338769228745206
+    ],
+    "alignment": "previous indices 10..320 vs current 0..310, 311 nodes, shared absolute time",
+    "units": [
+      "m position norm",
+      "rad wrapped yaw",
+      "m/s",
+      "rad steering"
+    ],
+    "not_a_theoretical_bound": true
+  },
+  "P-J_2": {
+    "records": 3532,
+    "adjacent_max": [
+      8.772422407128502,
+      0.8966069733601207,
+      2.000000105086185,
+      0.8457078798718867
+    ],
+    "seed_to_final_max": [
+      0.4000330211428462,
+      0.033344762358633595,
+      0.20000000000002016,
+      0.00338769228745206
+    ],
+    "alignment": "previous indices 10..320 vs current 0..310, 311 nodes, shared absolute time",
+    "units": [
+      "m position norm",
+      "rad wrapped yaw",
+      "m/s",
+      "rad steering"
+    ],
+    "not_a_theoretical_bound": true
+  },
+  "S-J_2": {
+    "records": 3532,
+    "adjacent_max": [
+      8.772422407128502,
+      0.8966069733601207,
+      2.000000105086185,
+      0.8457078798718867
+    ],
+    "seed_to_final_max": [
+      0.4000330211428462,
+      0.033344762358633595,
+      0.20000000000002016,
+      0.00338769228745206
+    ],
+    "alignment": "previous indices 10..320 vs current 0..310, 311 nodes, shared absolute time",
+    "units": [
+      "m position norm",
+      "rad wrapped yaw",
+      "m/s",
+      "rad steering"
+    ],
+    "not_a_theoretical_bound": true
+  },
+  "rename_full": {
+    "records": 3532,
+    "adjacent_max": [
+      8.772422407128502,
+      0.8966069733601207,
+      2.000000105086185,
+      0.8457078798718867
+    ],
+    "seed_to_final_max": [
+      0.4000330211428462,
+      0.033344762358633595,
+      0.20000000000002016,
+      0.00338769228745206
+    ],
+    "alignment": "previous indices 10..320 vs current 0..310, 311 nodes, shared absolute time",
+    "units": [
+      "m position norm",
+      "rad wrapped yaw",
+      "m/s",
+      "rad steering"
+    ],
+    "not_a_theoretical_bound": true
+  },
+  "position_full": {
+    "records": 3532,
+    "adjacent_max": [
+      8.772422401754188,
+      0.8966069733601323,
+      2.00000010508075,
+      0.8457078796173609
+    ],
+    "seed_to_final_max": [
+      0.4000330018910674,
+      0.03334476304138655,
+      0.20000000000002016,
+      0.0033876922873404824
+    ],
+    "alignment": "previous indices 10..320 vs current 0..310, 311 nodes, shared absolute time",
+    "units": [
+      "m position norm",
+      "rad wrapped yaw",
+      "m/s",
+      "rad steering"
+    ],
+    "not_a_theoretical_bound": true
+  }
+}

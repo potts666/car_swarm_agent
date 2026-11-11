@@ -1,0 +1,88 @@
+{
+  "version": "sealed-jacobi-v1",
+  "transport": "ROS2 reliable directed receiver topics, batch publish then expected cohort receive; decoded public envelopes forwarded by IPC",
+  "envelope": {
+    "sender": "public ID or channel",
+    "receiver": "public ID or channel",
+    "kind": "snapshot/state/seed/final/request/permission/release_report/prepare_conditional/ack/commit",
+    "cycle": "integer",
+    "sequence": "unique integer per run",
+    "payload": "kind-specific public object"
+  },
+  "context": {
+    "cycle": "integer",
+    "state_time_s": "epoch + cycle*h",
+    "coordination_round": "integer only for candidate/final/ACK/commit token",
+    "owner": "public ID or null",
+    "permission_version": "integer",
+    "proposal_id": "string or null",
+    "conditional": "boolean",
+    "released": "public ID list"
+  },
+  "report": [
+    "car",
+    "z",
+    "mode",
+    "index",
+    "progress_m",
+    "queue_arrived",
+    "left_queue",
+    "steering_complete",
+    "context"
+  ],
+  "seed": [
+    "car",
+    "context",
+    "report",
+    "commands",
+    "states",
+    "kind",
+    "origin",
+    "shifted_from",
+    "applicability",
+    "id"
+  ],
+  "final": [
+    "car",
+    "context",
+    "report",
+    "commands",
+    "states",
+    "kind",
+    "origin",
+    "shifted_from",
+    "applicability",
+    "input_set_id",
+    "id"
+  ],
+  "applicability": [
+    "mode",
+    "index",
+    "stop_active",
+    "stop_index",
+    "cap",
+    "upper",
+    "authorized"
+  ],
+  "ack": [
+    "car",
+    "context",
+    "plans",
+    "accepted",
+    "input_set_id"
+  ],
+  "commit": {
+    "token": [
+      "context",
+      "plans"
+    ],
+    "effective": "base resource context after activation",
+    "activated_proposal_id": "string or null"
+  },
+  "input_manifest": {
+    "context": "full round context",
+    "plans": "all four public IDs -> content IDs",
+    "digest": "SHA256 canonical manifest"
+  },
+  "storage": "plan bodies once in plans.jsonl.gz; message $plan references recover original serialized envelope bytes; float precision unchanged"
+}

@@ -1,0 +1,42 @@
+test_cache_does_not_hide_collision_or_released_reentry (test_m2b_stage1.StageOneTests.test_cache_does_not_hide_collision_or_released_reentry) ... ok
+test_cached_ack_still_checks_four_vehicle_geometry_and_missing_versions (test_m2b_stage1.StageOneTests.test_cached_ack_still_checks_four_vehicle_geometry_and_missing_versions) ... ok
+test_candidate_subtraction_partitions_grey_phase (test_m2b_stage1.StageOneTests.test_candidate_subtraction_partitions_grey_phase) ... ok
+test_content_change_stale_state_and_repair_without_prediction_rejected (test_m2b_stage1.StageOneTests.test_content_change_stale_state_and_repair_without_prediction_rejected) ... ok
+test_exclusive_timings_partition_root_and_aliases_restore (test_m2b_stage1.StageOneTests.test_exclusive_timings_partition_root_and_aliases_restore) ... ok
+test_hit_and_returned_state_cannot_poison_cache (test_m2b_stage1.StageOneTests.test_hit_and_returned_state_cannot_poison_cache) ... ok
+test_scene_and_validator_changes_miss (test_m2b_stage1.StageOneTests.test_scene_and_validator_changes_miss) ... ok
+test_mixed_versions_invalidate_all_acks (test_m2b_protocol.ProtocolTests.test_mixed_versions_invalidate_all_acks) ... ok
+test_no_overtake_preserve_request_and_cancel_history (test_m2b_protocol.ProtocolTests.test_no_overtake_preserve_request_and_cancel_history) ... ok
+test_release_auth_body_and_atomic_ack (test_m2b_protocol.ProtocolTests.test_release_auth_body_and_atomic_ack) ... ok
+test_rules (test_m2b_protocol.ProtocolTests.test_rules) ... ok
+test_m2b_control (unittest.loader._FailedTest.test_m2b_control) ... ERROR
+test_hand_computed_accept_and_reject_examples (test_stopping_acceptance.StoppingAcceptanceTests.test_hand_computed_accept_and_reject_examples) ... ok
+test_position_and_actual_rest_are_both_required_for_phase_change (test_stopping_acceptance.StoppingAcceptanceTests.test_position_and_actual_rest_are_both_required_for_phase_change) ... ok
+test_smooth_crossing_rejected_by_policy_not_dynamics (test_stopping_acceptance.StoppingAcceptanceTests.test_smooth_crossing_rejected_by_policy_not_dynamics) ... ok
+test_DONE_obstacles_not_removed (test_m2b_scene.SceneTests.test_DONE_obstacles_not_removed) ... ok
+test_fixed_scene_and_all_pairs (test_m2b_scene.SceneTests.test_fixed_scene_and_all_pairs) ... ok
+
+======================================================================
+ERROR: test_m2b_control (unittest.loader._FailedTest.test_m2b_control)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_m2b_control
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/m2b-test-snapshot-0xmi2vuf/test_reproduction/tests/test_m2b_control.py", line 10, in <module>
+    from run_m2b import Endpoint
+  File "/tmp/m2b-test-snapshot-0xmi2vuf/test_reproduction/scripts/run_m2b.py", line 25, in <module>
+    from run_entry_bicycle import write
+  File "/tmp/m2b-test-snapshot-0xmi2vuf/test_reproduction/scripts/run_entry_bicycle.py", line 18, in <module>
+    from recovery_core import BlockingDetector
+  File "/tmp/m2b-test-snapshot-0xmi2vuf/test_reproduction/scripts/recovery_core.py", line 11, in <module>
+    from head_on_core import Settings, integrate, lane_y, matrices, prediction, receive
+ModuleNotFoundError: No module named 'head_on_core'
+
+
+----------------------------------------------------------------------
+Ran 17 tests in 1.239s
+
+FAILED (errors=1)
+Expected exactly 21 tests; check dependencies/import errors

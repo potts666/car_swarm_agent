@@ -1,0 +1,222 @@
+{
+  "scene": {
+    "name": "M2b_fourcar_asymmetric_v1",
+    "seed": 0,
+    "epoch_s": 100.0,
+    "parameter_source": "wheelbase, dimensions and steering from config/planner_params.yaml; omega from TrackingOptions; remaining limits are simulation assumptions, not hardware calibration",
+    "vehicle": {
+      "length": 4.5,
+      "width": 1.8,
+      "L": 2.7,
+      "front": 0.8,
+      "rear": 1.0,
+      "v_fwd": 2.0,
+      "v_rev": 1.0,
+      "a_min": -1.0,
+      "a_max": 1.0,
+      "delta_max": 0.5,
+      "omega_max": 1.0
+    },
+    "h": 0.2,
+    "N": 32,
+    "sample_s": 0.02,
+    "s_min": 0.5,
+    "tolerance": 1e-05,
+    "terminal": {
+      "position_m": 0.08,
+      "speed_m_s": 0.025,
+      "yaw_rad": 0.01,
+      "steering_rad": 0.01
+    },
+    "initial": {
+      "west_head": [
+        -35,
+        3,
+        0,
+        0,
+        0
+      ],
+      "west_tail": [
+        -39,
+        -3,
+        0,
+        0,
+        0
+      ],
+      "east_head": [
+        37,
+        3,
+        3.141592653589793,
+        0,
+        0
+      ],
+      "east_tail": [
+        40,
+        -3,
+        3.141592653589793,
+        0,
+        0
+      ]
+    },
+    "previous_input": {
+      "A1": [
+        0,
+        0
+      ],
+      "A2": [
+        0,
+        0
+      ],
+      "B1": [
+        0,
+        0
+      ],
+      "B2": [
+        0,
+        0
+      ]
+    },
+    "goals": {
+      "west_head": [
+        46,
+        3,
+        0,
+        0,
+        0
+      ],
+      "west_tail": [
+        46,
+        -3,
+        0,
+        0,
+        0
+      ],
+      "east_head": [
+        -46,
+        3,
+        3.141592653589793,
+        0,
+        0
+      ],
+      "east_tail": [
+        -46,
+        -3,
+        3.141592653589793,
+        0,
+        0
+      ]
+    },
+    "D": 20.0,
+    "W": 2.8,
+    "g": 34.0,
+    "d_A": 26.5,
+    "d_B": 32.5,
+    "road_rectangles": [
+      [
+        -52,
+        52,
+        -1.4,
+        1.4
+      ],
+      [
+        -52,
+        -10,
+        -5.5,
+        5.5
+      ],
+      [
+        10,
+        52,
+        -5.5,
+        5.5
+      ]
+    ],
+    "request_rear_axle_abs_x": 34.0,
+    "admission_protection_abs_x": 18.0,
+    "release_plane_abs_x": 26.0,
+    "release_margin_m": 0.5,
+    "waiting_anchor_abs_x": 30.0,
+    "bay_offset_local_y": 3.0,
+    "turn_radius_m": 6.0,
+    "detector": {
+      "window_s": 5.0,
+      "actual_progress_m": 0.03,
+      "prediction_endpoint_change_m": 0.03,
+      "prediction_tail_displacement_m": 0.02,
+      "minimum_blocked_fraction": 0.8
+    },
+    "navigation_gap_m": 0.6,
+    "timeout_s": 180.0,
+    "assumptions": [
+      "ideal consistent communication",
+      "no gear dwell; sign changes through rest",
+      "stop before changing primitive curvature",
+      "offline time frozen during planning and candidate screening",
+      "shared deterministic stop-to-stop time scaling, no MPC optimality claim"
+    ],
+    "queue_heads": {
+      "A": [
+        -22,
+        3
+      ],
+      "B": [
+        22,
+        -3
+      ]
+    },
+    "queue_tails": {
+      "A": [
+        -28,
+        3
+      ],
+      "B": [
+        28,
+        -3
+      ]
+    },
+    "protocol": "M2b-release-v1",
+    "log_format": "M2b-logs-v2-shift-ref",
+    "coordination_order": [
+      "A1",
+      "B1",
+      "A2",
+      "B2"
+    ],
+    "coordination_rounds": 1,
+    "prediction_budget_s": 0.5,
+    "wall_watchdog_s": 1800.0,
+    "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8"
+  },
+  "arm": "local",
+  "policy": "fifo-ready",
+  "contract": "M2b-release-v1",
+  "backend": "P-J",
+  "coordination_scheme": "sealed-jacobi-v1",
+  "identity_mapping": {
+    "A1": "west_head",
+    "A2": "west_tail",
+    "B1": "east_head",
+    "B2": "east_tail"
+  },
+  "start_order": [
+    "B2",
+    "B1",
+    "A2",
+    "A1"
+  ],
+  "coordination_order": [
+    "west_head",
+    "east_head",
+    "west_tail",
+    "east_tail"
+  ],
+  "max_coordination_rounds": 1,
+  "budget_s": 0.5,
+  "local_budget_scope": "start candidate + own prevalidation + own optimizer; IPC/DDS separately in whole cycle",
+  "online_joint_forbidden": true,
+  "online_future_calls": 0,
+  "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+  "validation_cache": true,
+  "detailed_timing": false,
+  "max_cycles": 80
+}

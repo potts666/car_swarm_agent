@@ -1,0 +1,25 @@
+{
+  "task_start_utc": "2026-11-01T13:50:13.786Z",
+  "task_end_utc": "2026-11-01T23:46:00.619Z",
+  "root_thread_id": "01a18b08-73cc-7001-ba3d-92d49ecdd80e",
+  "root_turn_ids": [
+    "01a19760-00c8-74f2-a1ce-764b0e651cc0",
+    "01a1979c-a4e1-7493-b137-0ce18a0d1fc2",
+    "01a19972-5fcc-71a2-bf8a-f076f9d4d354"
+  ],
+  "task_records": 234,
+  "duplicate_response_records": [],
+  "cumulative_resets": [],
+  "counter_delta_mismatches": [],
+  "total_identity_passed": true,
+  "cached_subset_inequality_passed": true,
+  "reasoning_subset_inequality_passed": true,
+  "sum_effective_delta": {
+    "input_tokens": 44377748,
+    "cached_input_tokens": 43493632,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 194462,
+    "reasoning_output_tokens": 120113,
+    "total_tokens": 44572210
+  }
+}

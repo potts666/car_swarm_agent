@@ -1,0 +1,74 @@
+[
+  {
+    "line": 1649,
+    "timestamp": "2026-11-01T13:50:22.561Z",
+    "model_context_window": 475000,
+    "rate_limits": {
+      "limit_id": "codex",
+      "limit_name": null,
+      "primary": {
+        "used_percent": 20.0,
+        "window_minutes": 300,
+        "resets_at": 1793557941
+      },
+      "secondary": {
+        "used_percent": 8.0,
+        "window_minutes": 10080,
+        "resets_at": 1794115773
+      },
+      "credits": {
+        "has_credits": false,
+        "unlimited": false,
+        "balance": "0"
+      },
+      "individual_limit": null,
+      "spend_control_reached": null,
+      "plan_type": "plus",
+      "rate_limit_reached_type": null
+    },
+    "last_usage": {
+      "input_tokens": 92401,
+      "cached_input_tokens": 92160,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 157,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 92558
+    }
+  },
+  {
+    "line": 3079,
+    "timestamp": "2026-11-01T23:46:00.612Z",
+    "model_context_window": 475000,
+    "rate_limits": {
+      "limit_id": "codex",
+      "limit_name": null,
+      "primary": {
+        "used_percent": 14.0,
+        "window_minutes": 300,
+        "resets_at": 1793593784
+      },
+      "secondary": {
+        "used_percent": 22.0,
+        "window_minutes": 10080,
+        "resets_at": 1794115773
+      },
+      "credits": {
+        "has_credits": false,
+        "unlimited": false,
+        "balance": "0"
+      },
+      "individual_limit": null,
+      "spend_control_reached": null,
+      "plan_type": "plus",
+      "rate_limit_reached_type": null
+    },
+    "last_usage": {
+      "input_tokens": 360489,
+      "cached_input_tokens": 360064,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 1262,
+      "reasoning_output_tokens": 1034,
+      "total_tokens": 361751
+    }
+  }
+]

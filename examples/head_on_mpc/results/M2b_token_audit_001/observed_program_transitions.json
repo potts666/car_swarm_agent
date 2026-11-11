@@ -1,0 +1,92 @@
+[
+  [
+    2067,
+    "2026-11-01T15:08:11.066Z",
+    "START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_m2b.py --arm central --policy fifo-ready --repeat 2 --output examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO"
+  ],
+  [
+    2248,
+    "2026-11-01T15:30:08.825Z",
+    "START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1"
+  ],
+  [
+    2274,
+    "2026-11-01T15:33:20.903Z",
+    "START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2"
+  ],
+  [
+    2274,
+    "2026-11-01T15:33:20.903Z",
+    "START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_m2b.py --arm local --policy fifo-ready --repeat 2 --output examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO"
+  ],
+  [
+    2469,
+    "2026-11-01T15:53:19.969Z",
+    "START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1"
+  ],
+  [
+    2499,
+    "2026-11-01T15:56:39.019Z",
+    "START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2"
+  ],
+  [
+    2499,
+    "2026-11-01T15:56:39.019Z",
+    "START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/run_m2b.py --arm local --policy alternating-ready --repeat 2 --output examples/head_on_mpc/results/M2b_fourcar_001/L-ALT"
+  ],
+  [
+    2717,
+    "2026-11-01T16:17:34.277Z",
+    "START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1"
+  ],
+  [
+    2745,
+    "2026-11-01T16:20:58.017Z",
+    "START /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/verify_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2"
+  ],
+  [
+    2756,
+    "2026-11-01T16:21:39.955Z",
+    "POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/report_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001"
+  ],
+  [
+    2803,
+    "2026-11-01T16:26:38.174Z",
+    "formal audits 6 all passed True"
+  ],
+  [
+    2803,
+    "2026-11-01T16:26:38.174Z",
+    "POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/plot_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001"
+  ],
+  [
+    2803,
+    "2026-11-01T16:26:38.174Z",
+    "POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/check_m2b_seeds.py --run examples/head_on_mpc/results/M2b_fourcar_001"
+  ],
+  [
+    2803,
+    "2026-11-01T16:26:38.174Z",
+    "POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/m2b_storage_post.py --run examples/head_on_mpc/results/M2b_fourcar_001"
+  ],
+  [
+    2803,
+    "2026-11-01T16:26:38.174Z",
+    "POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/check_m2b_seeds.py --run examples/head_on_mpc/results/M2b_fourcar_001"
+  ],
+  [
+    2803,
+    "2026-11-01T16:26:38.174Z",
+    "POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/m2b_storage_post.py --run examples/head_on_mpc/results/M2b_fourcar_001"
+  ],
+  [
+    2867,
+    "2026-11-01T23:29:42.953Z",
+    "POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/m2b_storage_post.py --run examples/head_on_mpc/results/M2b_fourcar_001"
+  ],
+  [
+    2867,
+    "2026-11-01T23:29:42.953Z",
+    "POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/m2b_diagnostic_archive.py --run examples/head_on_mpc/results/M2b_fourcar_001"
+  ]
+]

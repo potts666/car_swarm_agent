@@ -1,0 +1,56 @@
+{
+  "C-FIFO": {
+    "runs": 2,
+    "actual_bytes_equal": true,
+    "permission_orders": [
+      [
+        "A1",
+        "B1",
+        "A2",
+        "B2"
+      ],
+      [
+        "A1",
+        "B1",
+        "A2",
+        "B2"
+      ]
+    ]
+  },
+  "L-FIFO": {
+    "runs": 2,
+    "actual_bytes_equal": true,
+    "permission_orders": [
+      [
+        "A1",
+        "B1",
+        "A2",
+        "B2"
+      ],
+      [
+        "A1",
+        "B1",
+        "A2",
+        "B2"
+      ]
+    ]
+  },
+  "L-ALT": {
+    "runs": 2,
+    "actual_bytes_equal": true,
+    "permission_orders": [
+      [
+        "A1",
+        "B1",
+        "A2",
+        "B2"
+      ],
+      [
+        "A1",
+        "B1",
+        "A2",
+        "B2"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,1324 @@
+[
+  {
+    "run": "C-FIFO/r1",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1",
+    "classification": "formal",
+    "arm": "central",
+    "policy": "fifo-ready",
+    "all_completed": true,
+    "committed_cycles": 885,
+    "motion_group": "e535b97577da0bb38c92839d1679882f9d5f8365f453fcd6ed0febebd94536e3",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "5421bb87f32741aff2d505e6d716890401cd56705883189361a88199af51451b",
+    "metrics_source": "C-FIFO/r1",
+    "source_version": "1c266f396b45a4d10b0cba017eace9432d4a25d5ca0a7fb776a0a331f678d629",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": null,
+    "failure_layer": null,
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1/config.json",
+        "sha256": "38de99d54f9ce1ddffe6d19cc77f1f3a7d4e768970fe2eb5464c4d4da1d057b3",
+        "bytes": 3837,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1/summary.json",
+        "sha256": "a523eb73ce0d2aa281e417bd5323d5f97049ecdb605cd78b8e01933b0a4f7dc8",
+        "bytes": 1068,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1/actual.jsonl.gz",
+        "sha256": "23114c60873f83e106c8289a03232862a07e781a7538037229df3d232d911e94",
+        "bytes": 902583,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1/plans.jsonl.gz",
+        "sha256": "5421bb87f32741aff2d505e6d716890401cd56705883189361a88199af51451b",
+        "bytes": 19712996,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1/messages.jsonl.gz",
+        "sha256": "0e9a0be8a52ec8a7c78900b6960497a055a4d2c50d98628a4961a450faeae0ca",
+        "bytes": 2001129,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1/agreements.jsonl.gz",
+        "sha256": "df1e346aa9c983509d2bb71866b437cbc83c3b7f4971ca609c080fce972544c0",
+        "bytes": 193958,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1/events.jsonl.gz",
+        "sha256": "83d28a6da9701eeb7ca27b3ae664757966f0144de9680c3016f40653af93f1ff",
+        "bytes": 1269,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1/solves.jsonl.gz",
+        "sha256": "0d3804962e1488f1573f56a9b3f83e620204c384be2dbf66be812553855cf102",
+        "bytes": 1309915,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1/planning.jsonl.gz",
+        "sha256": "f142513bb0ec99b8f24f5c359b124009bb9c63e8403bde1e2bdfdef0c160baf0",
+        "bytes": 44696,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "C-FIFO/r2",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2",
+    "classification": "formal",
+    "arm": "central",
+    "policy": "fifo-ready",
+    "all_completed": true,
+    "committed_cycles": 885,
+    "motion_group": "e535b97577da0bb38c92839d1679882f9d5f8365f453fcd6ed0febebd94536e3",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "5421bb87f32741aff2d505e6d716890401cd56705883189361a88199af51451b",
+    "metrics_source": "C-FIFO/r1",
+    "source_version": "1c266f396b45a4d10b0cba017eace9432d4a25d5ca0a7fb776a0a331f678d629",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": null,
+    "failure_layer": null,
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2/config.json",
+        "sha256": "38de99d54f9ce1ddffe6d19cc77f1f3a7d4e768970fe2eb5464c4d4da1d057b3",
+        "bytes": 3837,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2/summary.json",
+        "sha256": "bf9b2c6174679e78589e7f3085d494ea32335fb0f09eaff2dd588f005e4ec55f",
+        "bytes": 1063,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2/actual.jsonl.gz",
+        "sha256": "23114c60873f83e106c8289a03232862a07e781a7538037229df3d232d911e94",
+        "bytes": 902583,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2/plans.jsonl.gz",
+        "sha256": "5421bb87f32741aff2d505e6d716890401cd56705883189361a88199af51451b",
+        "bytes": 19712996,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2/messages.jsonl.gz",
+        "sha256": "79d7f82788854f9f96843d840b231184067ef8b12562cd71ba233c1c1fe641e7",
+        "bytes": 2002887,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2/agreements.jsonl.gz",
+        "sha256": "df1e346aa9c983509d2bb71866b437cbc83c3b7f4971ca609c080fce972544c0",
+        "bytes": 193958,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2/events.jsonl.gz",
+        "sha256": "83d28a6da9701eeb7ca27b3ae664757966f0144de9680c3016f40653af93f1ff",
+        "bytes": 1269,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2/solves.jsonl.gz",
+        "sha256": "9e6200c6af1d9dc292c9757154ef1db4e382b7b7ee55700c1c17ae80ac1e510c",
+        "bytes": 1310048,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2/planning.jsonl.gz",
+        "sha256": "d6ff69f8f5c2e3dd30c7949350f2e4afd388541d52017f2c7976923d9ce32812",
+        "bytes": 44802,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "L-FIFO/r1",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1",
+    "classification": "formal",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": true,
+    "committed_cycles": 882,
+    "motion_group": "b6cb236bd54bd185d119ec3252f4d67ba707b2e19ee1de951c06255e574c7acf",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+    "metrics_source": "L-FIFO/r1",
+    "source_version": "1c266f396b45a4d10b0cba017eace9432d4a25d5ca0a7fb776a0a331f678d629",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": null,
+    "failure_layer": null,
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1/config.json",
+        "sha256": "37f7a3de70eeeb7dc6f22eb4c31b38776fd0c2fef6582b4d091f520ad1282cdc",
+        "bytes": 3834,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1/summary.json",
+        "sha256": "0696b22b78cb2dce75f6fc3f98e1cc12f669bf1c383ad8ea6084f831504ed3c7",
+        "bytes": 1115,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1/actual.jsonl.gz",
+        "sha256": "e7d5c039b5cf0d2772a3095b0e119017e78f2f26dda79af6ee08d0b029b017fc",
+        "bytes": 881118,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1/plans.jsonl.gz",
+        "sha256": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+        "bytes": 19432221,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1/messages.jsonl.gz",
+        "sha256": "b4cfaaf5f8a14212f5533c916e76f1e52302491e59facb2ac7f6ad98210377dd",
+        "bytes": 1990150,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1/agreements.jsonl.gz",
+        "sha256": "cc0146fcee145532d5fdb50d0e03390d741820e1fdc8e6b3e4190fbaed92c028",
+        "bytes": 193393,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1/events.jsonl.gz",
+        "sha256": "848179bd045a35c0bc12bc99ca19c7f9fcda74659d2ccfb29925c80668ee3ecc",
+        "bytes": 1266,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1/solves.jsonl.gz",
+        "sha256": "a3cca7608454739e0f70935a2f2dd348de44193b3a8403b12d8af117208ffb08",
+        "bytes": 1697903,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1/planning.jsonl.gz",
+        "sha256": "063fab24cae639efc62ac0394813434afb072604e2621a329eaae9443dbd672b",
+        "bytes": 44701,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "L-FIFO/r2",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2",
+    "classification": "formal",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": true,
+    "committed_cycles": 882,
+    "motion_group": "b6cb236bd54bd185d119ec3252f4d67ba707b2e19ee1de951c06255e574c7acf",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+    "metrics_source": "L-FIFO/r1",
+    "source_version": "1c266f396b45a4d10b0cba017eace9432d4a25d5ca0a7fb776a0a331f678d629",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": null,
+    "failure_layer": null,
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2/config.json",
+        "sha256": "37f7a3de70eeeb7dc6f22eb4c31b38776fd0c2fef6582b4d091f520ad1282cdc",
+        "bytes": 3834,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2/summary.json",
+        "sha256": "65374d1c5fd2f82990ab9c652dd9e41f43702edfd8f9bd1a008eac7515d52512",
+        "bytes": 1115,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2/actual.jsonl.gz",
+        "sha256": "e7d5c039b5cf0d2772a3095b0e119017e78f2f26dda79af6ee08d0b029b017fc",
+        "bytes": 881118,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2/plans.jsonl.gz",
+        "sha256": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+        "bytes": 19432221,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2/messages.jsonl.gz",
+        "sha256": "46d68b53fbdb05f868464bda499f0234c6dd043577497098957cbe8469a25bbd",
+        "bytes": 1990087,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2/agreements.jsonl.gz",
+        "sha256": "cc0146fcee145532d5fdb50d0e03390d741820e1fdc8e6b3e4190fbaed92c028",
+        "bytes": 193393,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2/events.jsonl.gz",
+        "sha256": "848179bd045a35c0bc12bc99ca19c7f9fcda74659d2ccfb29925c80668ee3ecc",
+        "bytes": 1266,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2/solves.jsonl.gz",
+        "sha256": "fa3bab307e3aa43057fe50d73e9e07afce97307f6fb7835e505c2015ce6016a1",
+        "bytes": 1698114,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2/planning.jsonl.gz",
+        "sha256": "40d40e8daf5ca520809ee4a3f3121417d2817cfc012ea5d7dec112976a86038d",
+        "bytes": 44827,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "L-ALT/r1",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1",
+    "classification": "formal",
+    "arm": "local",
+    "policy": "alternating-ready",
+    "all_completed": true,
+    "committed_cycles": 882,
+    "motion_group": "b6cb236bd54bd185d119ec3252f4d67ba707b2e19ee1de951c06255e574c7acf",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+    "metrics_source": "L-FIFO/r1",
+    "source_version": "1c266f396b45a4d10b0cba017eace9432d4a25d5ca0a7fb776a0a331f678d629",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": null,
+    "failure_layer": null,
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1/config.json",
+        "sha256": "76e853c8f9279b9c476405602f5a243d70c1ce265c577b6480eba622bf892c46",
+        "bytes": 3841,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1/summary.json",
+        "sha256": "77c4422767183be81fe52f3caceb0da2996cdc1e2611e531c6e312cb643ca103",
+        "bytes": 1122,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1/actual.jsonl.gz",
+        "sha256": "e7d5c039b5cf0d2772a3095b0e119017e78f2f26dda79af6ee08d0b029b017fc",
+        "bytes": 881118,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1/plans.jsonl.gz",
+        "sha256": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+        "bytes": 19432221,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1/messages.jsonl.gz",
+        "sha256": "4ca86fe6b1da8c66de83084724ee375bdc41002933de21fd3750523075c51593",
+        "bytes": 1991389,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1/agreements.jsonl.gz",
+        "sha256": "cc0146fcee145532d5fdb50d0e03390d741820e1fdc8e6b3e4190fbaed92c028",
+        "bytes": 193393,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1/events.jsonl.gz",
+        "sha256": "092013f62fd4baa3f51272618fc0a06d4febc70717c4ee35cffbe88e89b4c4de",
+        "bytes": 1274,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1/solves.jsonl.gz",
+        "sha256": "ff6cf015caaf58057fec8d216a8c3c5f39046699d90b591ec658aaab3aea87b6",
+        "bytes": 1698501,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1/planning.jsonl.gz",
+        "sha256": "033f2d35f8e938af45d45343018f1d7e1f751089810a01a10fd77324a211dd75",
+        "bytes": 45054,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "L-ALT/r2",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2",
+    "classification": "formal",
+    "arm": "local",
+    "policy": "alternating-ready",
+    "all_completed": true,
+    "committed_cycles": 882,
+    "motion_group": "b6cb236bd54bd185d119ec3252f4d67ba707b2e19ee1de951c06255e574c7acf",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+    "metrics_source": "L-FIFO/r1",
+    "source_version": "1c266f396b45a4d10b0cba017eace9432d4a25d5ca0a7fb776a0a331f678d629",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": null,
+    "failure_layer": null,
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2/config.json",
+        "sha256": "76e853c8f9279b9c476405602f5a243d70c1ce265c577b6480eba622bf892c46",
+        "bytes": 3841,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2/summary.json",
+        "sha256": "864bc302f47ddb83dae00b93b91650086a0cbc68badae4f638f9a2df52299eb8",
+        "bytes": 1122,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2/actual.jsonl.gz",
+        "sha256": "e7d5c039b5cf0d2772a3095b0e119017e78f2f26dda79af6ee08d0b029b017fc",
+        "bytes": 881118,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2/plans.jsonl.gz",
+        "sha256": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+        "bytes": 19432221,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2/messages.jsonl.gz",
+        "sha256": "463d88e84cd43c6e257c54d39f027da5b904f356649594331b6eab2f56f7218c",
+        "bytes": 1991372,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2/agreements.jsonl.gz",
+        "sha256": "cc0146fcee145532d5fdb50d0e03390d741820e1fdc8e6b3e4190fbaed92c028",
+        "bytes": 193393,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2/events.jsonl.gz",
+        "sha256": "092013f62fd4baa3f51272618fc0a06d4febc70717c4ee35cffbe88e89b4c4de",
+        "bytes": 1274,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2/solves.jsonl.gz",
+        "sha256": "53845ef7de5896ff4483131c3fd5a2bf9611a99790c931bd61cf922ae337914e",
+        "bytes": 1698922,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2/planning.jsonl.gz",
+        "sha256": "1784c04dba30ae82dcbb2ba82976e02f087816657adcf4425c2a8034ab98cdea",
+        "bytes": 45167,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "debug_v1",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/debug_v1/r1",
+    "classification": "natural_failure",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": false,
+    "committed_cycles": 43,
+    "motion_group": "7a42da12fd275737583e88adc76567d13140933f7692dadbefbac6f22d05fac6",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "c0d4c37b9bbfe4d79a1dd75d9da1feb2ba1d013de07cfdf006ac4494a8df3864",
+    "metrics_source": "debug_v1",
+    "source_version": "2d1febf045acdcf818abd94f15c49bc14ea2e45705adc0a21e47ba4e759143c0",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": "A1:bicycle:primal infeasible",
+    "failure_layer": "candidate",
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v1/r1/config.json",
+        "sha256": "51d576a0bafa7e07c17ec6845781353e194dbd6605486510d4a002dfe04c4f14",
+        "bytes": 3824,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v1/r1/summary.json",
+        "sha256": "fd3cf50b5f8f2d91d0f1e9c397fc5fbe02837931c5859a7d172f68db97e28f72",
+        "bytes": 854,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v1/r1/actual.jsonl.gz",
+        "sha256": "28ffbedd18d78d7bc0073c5ef4c2bf98c1f7f6b5edc4e762fbe53ce504323799",
+        "bytes": 36909,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v1/r1/plans.jsonl.gz",
+        "sha256": "c0d4c37b9bbfe4d79a1dd75d9da1feb2ba1d013de07cfdf006ac4494a8df3864",
+        "bytes": 1406989,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v1/r1/messages.jsonl.gz",
+        "sha256": "ce22d63c5fb3aaab05acafd13494a5b04a197dba7c936827a9d077d4068c5452",
+        "bytes": 96997,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v1/r1/agreements.jsonl.gz",
+        "sha256": "a2c3427d1246a1c51ef63ff50eb6ef3a5588fb40c017c874adb3917d913a7922",
+        "bytes": 9686,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v1/r1/events.jsonl.gz",
+        "sha256": "82c088c5c88882f83e49f57939c0bf0ee47f2ac3fd743e876754954e2a42ef2b",
+        "bytes": 87,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v1/r1/solves.jsonl.gz",
+        "sha256": "ac8bc34542cb546cc5bc96ac3328056f8fd6e6d9b3b79251e81beafd364fdde7",
+        "bytes": 89745,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v1/r1/planning.jsonl.gz",
+        "sha256": "8325b72df5734679ed0773a007b884efbb8e65203883d729f669c51efb1526ea",
+        "bytes": 2614,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "debug_v2",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1",
+    "classification": "natural_failure",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": false,
+    "committed_cycles": 33,
+    "motion_group": "12fac380faef4cd9295eb6a96d96a6f699a8aa7d5f93f3d2ae738bb53d29d6fc",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "dadaf63c608d2dd41f8cb4c13a81ef72c0b810143edceb8abd2ccff9b1e24041",
+    "metrics_source": "debug_v2",
+    "source_version": null,
+    "source_snapshot_available": false,
+    "physical_source_matches": {},
+    "failure": "A1:reference:primal infeasible",
+    "failure_layer": "candidate",
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1/config.json",
+        "sha256": "68d3f6c0a38f47dd9ce4236a2a4e9628fa370a0571a44e454e8f0f1f416a2601",
+        "bytes": 3560,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1/summary.json",
+        "sha256": "4781eb964bc82db0df9b56416e47fc24e6b4b5875958add796a7ba46ca79e324",
+        "bytes": 876,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1/actual.jsonl.gz",
+        "sha256": "92de1744a0f6c2805c4e7070c0d16befdeefec60acb897d6d32ffa64ecc2ac05",
+        "bytes": 28155,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1/plans.jsonl.gz",
+        "sha256": "dadaf63c608d2dd41f8cb4c13a81ef72c0b810143edceb8abd2ccff9b1e24041",
+        "bytes": 1160243,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1/messages.jsonl.gz",
+        "sha256": "328b9d9053dbcf7f2662e0af2f1e97ab1d5da749b6d83ea74212b10d892e4629",
+        "bytes": 74822,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1/agreements.jsonl.gz",
+        "sha256": "692c2fa05335a053679977fcbaf316dd5aa85a985689008fdd8c0845014df9cb",
+        "bytes": 7513,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1/events.jsonl.gz",
+        "sha256": "82c088c5c88882f83e49f57939c0bf0ee47f2ac3fd743e876754954e2a42ef2b",
+        "bytes": 87,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1/solves.jsonl.gz",
+        "sha256": "ab47bcdf62f42aac892737ee5250a44bfe13100c14fea81dae0bc2b64c85f208",
+        "bytes": 74941,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v2/r1/planning.jsonl.gz",
+        "sha256": "ba7cd5cf08f74e53fb3a8a709c3c05851d651afcda8403e29f6bf2d27e49ebe2",
+        "bytes": 2098,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "debug_v3",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/r1",
+    "classification": "debug_complete",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": true,
+    "committed_cycles": 882,
+    "motion_group": "b6cb236bd54bd185d119ec3252f4d67ba707b2e19ee1de951c06255e574c7acf",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "9f0af9136888e36b0218e585dd67264c4519347a5c0a9fb4add0b1cdc17cd7e5",
+    "metrics_source": "debug_v3",
+    "source_version": "fcc5d81c79e0bbbce10badd106f9363a5a1bcd76c8bb22fc08b894d4def97d48",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": null,
+    "failure_layer": null,
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/r1/config.json",
+        "sha256": "befac50e042aec949b6fccbef308580e3a6b2c8b39d45c3250978b4dfb851b89",
+        "bytes": 3824,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/r1/summary.json",
+        "sha256": "fd22399f6866508ff4025d966b1c50cae05a08c13213a9094fa643f146cc82d8",
+        "bytes": 1118,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/r1/actual.jsonl.gz",
+        "sha256": "e7d5c039b5cf0d2772a3095b0e119017e78f2f26dda79af6ee08d0b029b017fc",
+        "bytes": 881118,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/r1/plans.jsonl.gz",
+        "sha256": "9f0af9136888e36b0218e585dd67264c4519347a5c0a9fb4add0b1cdc17cd7e5",
+        "bytes": 35413908,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/r1/messages.jsonl.gz",
+        "sha256": "9f01fc1cd6d235acd8f0fdbc718d313b5e668a1abddac2de20364294fa29dc17",
+        "bytes": 1997212,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/r1/agreements.jsonl.gz",
+        "sha256": "cc0146fcee145532d5fdb50d0e03390d741820e1fdc8e6b3e4190fbaed92c028",
+        "bytes": 193393,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/r1/events.jsonl.gz",
+        "sha256": "848179bd045a35c0bc12bc99ca19c7f9fcda74659d2ccfb29925c80668ee3ecc",
+        "bytes": 1266,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/r1/solves.jsonl.gz",
+        "sha256": "7a5567a44c448aa1781e7fc9dd02b498530b92c8db5b7dc543b8fb0bf0bf42d3",
+        "bytes": 1701424,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_v3/r1/planning.jsonl.gz",
+        "sha256": "3084e922a5d03d566ffe73725ed61ef16c7ad926f648784c88371d4caa645d7a",
+        "bytes": 46044,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "debug_c1",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1",
+    "classification": "natural_failure",
+    "arm": "central",
+    "policy": "fifo-ready",
+    "all_completed": false,
+    "committed_cycles": 689,
+    "motion_group": "0ad911f2a5100a842fa73fa84b6c107257ce60a8c1a24896604dc0421f53af28",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "2bc3126f7a41ef331436b1f36f0ea17b75f586e172ea7bf6f09ae48cb5bbb422",
+    "metrics_source": "debug_c1",
+    "source_version": "41ed9635904c838e6f80915c7ac92cd2da17a285190b86cb832eab99a76a7a1f",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": "ValueError: central:budget:solved",
+    "failure_layer": "candidate",
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/config.json",
+        "sha256": "5b1c849b0acd4a1c5eb6732dd10341620bdbc4f193d9faf828192fe3fff1be83",
+        "bytes": 3827,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/summary.json",
+        "sha256": "e2cc2dd913d083649d037610d7971894d12484933915e8397c97ab8c35e248b7",
+        "bytes": 1074,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/actual.jsonl.gz",
+        "sha256": "12e0a3cff30d6519f74166a1fb554d79753a4f3897e4b2b47e7b6d6699df8e21",
+        "bytes": 765030,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/plans.jsonl.gz",
+        "sha256": "2bc3126f7a41ef331436b1f36f0ea17b75f586e172ea7bf6f09ae48cb5bbb422",
+        "bytes": 30926968,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/messages.jsonl.gz",
+        "sha256": "22005b2319818398c6b33d3df2cd864f8ae3be596c5f78111462add3b6bea172",
+        "bytes": 1571466,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/agreements.jsonl.gz",
+        "sha256": "c368eb3348d68438cdaa6cb1f3e99f4bbbf74e3b7a4082061b28ee60c049484a",
+        "bytes": 151159,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/events.jsonl.gz",
+        "sha256": "ab56e9b2fcf51e1310b7162912394ef308f4af0fe0259e7c91395c689444d11e",
+        "bytes": 1057,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/solves.jsonl.gz",
+        "sha256": "09eca6cb743cded72896ca136a3092ff13dcd6713fc84a438dcc8fc50427c712",
+        "bytes": 1125165,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_fourcar_001/debug_c1/r1/planning.jsonl.gz",
+        "sha256": "63840d20ff89ebd2519cbe059e3651ff0001bb6a8c5230f7641604b93b94eae5",
+        "bytes": 36276,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "stage1/full_L_FIFO",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1",
+    "classification": "formal_optimized",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": true,
+    "committed_cycles": 882,
+    "motion_group": "b6cb236bd54bd185d119ec3252f4d67ba707b2e19ee1de951c06255e574c7acf",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+    "metrics_source": "L-FIFO/r1",
+    "source_version": "2fca87292e7690de571bd36864f8ea629d9ae4d908ff19926627ccd72931572e",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": null,
+    "failure_layer": null,
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1/config.json",
+        "sha256": "d5b7f6fdf09431be1eef3f3f29ced15d704c364a7e215e51127381830e99f5ad",
+        "bytes": 3912,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1/summary.json",
+        "sha256": "87babb788b1104207e9abdcd5fc167bf5eac9f027f52bb9c774eba891e894ff6",
+        "bytes": 1115,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1/actual.jsonl.gz",
+        "sha256": "e7d5c039b5cf0d2772a3095b0e119017e78f2f26dda79af6ee08d0b029b017fc",
+        "bytes": 881118,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1/plans.jsonl.gz",
+        "sha256": "7a4617348a8615ea4a2ec36b13b7199d2301e53bdac17f049ec727cb3bd35452",
+        "bytes": 19432221,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1/messages.jsonl.gz",
+        "sha256": "0f838683dc0933226b4f9048c924a1fd1cc00feaafc48fae1c21b651ae451564",
+        "bytes": 1995884,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1/agreements.jsonl.gz",
+        "sha256": "cc0146fcee145532d5fdb50d0e03390d741820e1fdc8e6b3e4190fbaed92c028",
+        "bytes": 193393,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1/events.jsonl.gz",
+        "sha256": "848179bd045a35c0bc12bc99ca19c7f9fcda74659d2ccfb29925c80668ee3ecc",
+        "bytes": 1266,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1/solves.jsonl.gz",
+        "sha256": "cf4dec9437a2df22c1a270381adbfe27c8cf20cc2bf05540a9b4ec4c95419523",
+        "bytes": 1700986,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/full_L_FIFO/r1/planning.jsonl.gz",
+        "sha256": "ba118a43e1cb180e4bf1ab9f44304cde349a98e43ee8e051590d46139fb59622",
+        "bytes": 83356,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "stage1/A_uncached",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_stage1_001/A_uncached/r1",
+    "classification": "bounded_prefix",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": false,
+    "committed_cycles": 6,
+    "motion_group": "ca3a162e190620bdbb5392fab3bab97529b34e473acbb234b63d084e49677fcb",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "5d7b0feed6f8fbba60ff769be69703d813c52285b12bfb50532447ddd9045530",
+    "metrics_source": "stage1/A_uncached",
+    "source_version": "afa65d8e8670d3991f1ca1801f67d2ed926bf186d15e9c1c2205c09464af0eed",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": "bounded prefix limit reached",
+    "failure_layer": "prefix_limit",
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/A_uncached/r1/config.json",
+        "sha256": "8d905cb8406cd527359a93f0d231be5cd5532cc9541f9e784734b5fdcf75be0c",
+        "bytes": 3909,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/A_uncached/r1/summary.json",
+        "sha256": "f037e2507c9cb4fab9160a88427e3b2cb137edd8eedb5496095e8c4997ba990e",
+        "bytes": 835,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/A_uncached/r1/actual.jsonl.gz",
+        "sha256": "537ca5280109eaa4f698fa6d53498823a080a38eb830d836eca7bc4dd727320f",
+        "bytes": 3949,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/A_uncached/r1/plans.jsonl.gz",
+        "sha256": "5d7b0feed6f8fbba60ff769be69703d813c52285b12bfb50532447ddd9045530",
+        "bytes": 71823,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/A_uncached/r1/messages.jsonl.gz",
+        "sha256": "05795735e6591ebc8d9cd6d1ff5cc1e81dc2076c3137e315dfdc0e68a7042b69",
+        "bytes": 13444,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/A_uncached/r1/agreements.jsonl.gz",
+        "sha256": "2f7053dd06e33b10322ac2a19cd8408ea71338843076e9d025901197273ca7a7",
+        "bytes": 1566,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/A_uncached/r1/events.jsonl.gz",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "bytes": 20,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/A_uncached/r1/solves.jsonl.gz",
+        "sha256": "1c95978f9de6361dce04135c5e4796b8248ad133c19d058ee6546c4f08382284",
+        "bytes": 12303,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/A_uncached/r1/planning.jsonl.gz",
+        "sha256": "a73001327c42c2e060cdf45fcaad1e3ba971b9f766e38bd8147f0142e8922fa4",
+        "bytes": 7018,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "stage1/B_cached",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_stage1_001/B_cached/r1",
+    "classification": "bounded_prefix",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": false,
+    "committed_cycles": 6,
+    "motion_group": "ca3a162e190620bdbb5392fab3bab97529b34e473acbb234b63d084e49677fcb",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "5d7b0feed6f8fbba60ff769be69703d813c52285b12bfb50532447ddd9045530",
+    "metrics_source": "stage1/A_uncached",
+    "source_version": "afa65d8e8670d3991f1ca1801f67d2ed926bf186d15e9c1c2205c09464af0eed",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": "bounded prefix limit reached",
+    "failure_layer": "prefix_limit",
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_cached/r1/config.json",
+        "sha256": "2c18f3b0bbcbea3301dc71aeb730cf4d70d9abacc2fd386299333a1f780fe28b",
+        "bytes": 3908,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_cached/r1/summary.json",
+        "sha256": "fc2623b90bf7c01eafda6fd2afa39ca5c01c6d51d67d4bbf56d9d9386b12d2d1",
+        "bytes": 835,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_cached/r1/actual.jsonl.gz",
+        "sha256": "537ca5280109eaa4f698fa6d53498823a080a38eb830d836eca7bc4dd727320f",
+        "bytes": 3949,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_cached/r1/plans.jsonl.gz",
+        "sha256": "5d7b0feed6f8fbba60ff769be69703d813c52285b12bfb50532447ddd9045530",
+        "bytes": 71823,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_cached/r1/messages.jsonl.gz",
+        "sha256": "84d3005fd3894c7d061cf149dd422e1873447f204594a8866c8adbe303044341",
+        "bytes": 13398,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_cached/r1/agreements.jsonl.gz",
+        "sha256": "2f7053dd06e33b10322ac2a19cd8408ea71338843076e9d025901197273ca7a7",
+        "bytes": 1566,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_cached/r1/events.jsonl.gz",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "bytes": 20,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_cached/r1/solves.jsonl.gz",
+        "sha256": "0fe8828abb846f076e0b8d9a29fed071b473d44a661b74a813d3db3d08b30dac",
+        "bytes": 12321,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_cached/r1/planning.jsonl.gz",
+        "sha256": "c00d43605e1a7b67975db7d01763c901a8d0746b8fa883408697b180945372b6",
+        "bytes": 7218,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "stage1/B_no_profiler",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_stage1_001/B_no_profiler/r1",
+    "classification": "bounded_prefix",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": false,
+    "committed_cycles": 6,
+    "motion_group": "ca3a162e190620bdbb5392fab3bab97529b34e473acbb234b63d084e49677fcb",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "5d7b0feed6f8fbba60ff769be69703d813c52285b12bfb50532447ddd9045530",
+    "metrics_source": "stage1/A_uncached",
+    "source_version": "afa65d8e8670d3991f1ca1801f67d2ed926bf186d15e9c1c2205c09464af0eed",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": "bounded prefix limit reached",
+    "failure_layer": "prefix_limit",
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_no_profiler/r1/config.json",
+        "sha256": "71bf7005fd7d37772dee882df99610ecc216db2747910f56d9729ee9a95d503e",
+        "bytes": 3909,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_no_profiler/r1/summary.json",
+        "sha256": "1e805885de39db1ec115b622a7dd2834476a7b8905726403d5a7bf9556cb4d1b",
+        "bytes": 834,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_no_profiler/r1/actual.jsonl.gz",
+        "sha256": "537ca5280109eaa4f698fa6d53498823a080a38eb830d836eca7bc4dd727320f",
+        "bytes": 3949,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_no_profiler/r1/plans.jsonl.gz",
+        "sha256": "5d7b0feed6f8fbba60ff769be69703d813c52285b12bfb50532447ddd9045530",
+        "bytes": 71823,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_no_profiler/r1/messages.jsonl.gz",
+        "sha256": "928f2537c5b00155873753c9a95d12bb810df1e5984b6dc32631a19435f092f8",
+        "bytes": 13411,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_no_profiler/r1/agreements.jsonl.gz",
+        "sha256": "2f7053dd06e33b10322ac2a19cd8408ea71338843076e9d025901197273ca7a7",
+        "bytes": 1566,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_no_profiler/r1/events.jsonl.gz",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "bytes": 20,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_no_profiler/r1/solves.jsonl.gz",
+        "sha256": "d90c0e9fb8aaa3098cd5d83f9170dea8d914f883a0cc98d141c426938ce97fab",
+        "bytes": 12327,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/B_no_profiler/r1/planning.jsonl.gz",
+        "sha256": "e9a8f965a24013017811ba3dbb445499b96aa0a6d251721102501d371bc36ff6",
+        "bytes": 850,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "stage1/phase_probe_uncached",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_stage1_001/phase_probe_uncached/r1",
+    "classification": "bounded_prefix",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": false,
+    "committed_cycles": 2,
+    "motion_group": "19bd2be60a5d4ed01234d1796b773320f2a87c38e5d20aa314232a46f037037a",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "f198cf0ea26ec57348f3014426c19b1dcbf37b294c9b7527fb2ee622aa42fa79",
+    "metrics_source": "stage1/phase_probe_uncached",
+    "source_version": "2fca87292e7690de571bd36864f8ea629d9ae4d908ff19926627ccd72931572e",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": "bounded prefix limit reached",
+    "failure_layer": "prefix_limit",
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_uncached/r1/config.json",
+        "sha256": "b3583cbaeb6153e6b2c634fb107fac7682f29bd9e609ca13c96c00d80844a33f",
+        "bytes": 3909,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_uncached/r1/summary.json",
+        "sha256": "93ff69f2384bcce95553c77b47788abbcf54e84cceeb73a1dec27501ce62369a",
+        "bytes": 777,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_uncached/r1/actual.jsonl.gz",
+        "sha256": "022522451a6a3d5eb6e791b49e9f1bd02ca68a9233bed6db74d4fd6f0d0a58f9",
+        "bytes": 1253,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_uncached/r1/plans.jsonl.gz",
+        "sha256": "f198cf0ea26ec57348f3014426c19b1dcbf37b294c9b7527fb2ee622aa42fa79",
+        "bytes": 9984,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_uncached/r1/messages.jsonl.gz",
+        "sha256": "c7d17651ee9f9df8bbc0261c77e79d394de25a63956aebb22ff7f6375423bec4",
+        "bytes": 4776,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_uncached/r1/agreements.jsonl.gz",
+        "sha256": "96d202827a8c057b173417077245539fe558c40e89145f0511b34f003687169a",
+        "bytes": 679,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_uncached/r1/events.jsonl.gz",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "bytes": 20,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_uncached/r1/solves.jsonl.gz",
+        "sha256": "e93f5e60dcbf4ead419bd80aa6b3563d07510d99557055e3aa5ef081281a90e4",
+        "bytes": 3024,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_uncached/r1/planning.jsonl.gz",
+        "sha256": "98008b9d0ec471569aea2281ff7b24f86502f7b131f3869518967b3b2f529ce8",
+        "bytes": 3037,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "stage1/phase_probe_cached",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_stage1_001/phase_probe_cached/r1",
+    "classification": "bounded_prefix",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": false,
+    "committed_cycles": 2,
+    "motion_group": "19bd2be60a5d4ed01234d1796b773320f2a87c38e5d20aa314232a46f037037a",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "f198cf0ea26ec57348f3014426c19b1dcbf37b294c9b7527fb2ee622aa42fa79",
+    "metrics_source": "stage1/phase_probe_uncached",
+    "source_version": "2fca87292e7690de571bd36864f8ea629d9ae4d908ff19926627ccd72931572e",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": "bounded prefix limit reached",
+    "failure_layer": "prefix_limit",
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_cached/r1/config.json",
+        "sha256": "e9e1ddd358e8f029a083881f765e4afa0c92c3ecc091f857eb84131e9db67135",
+        "bytes": 3908,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_cached/r1/summary.json",
+        "sha256": "e558579b4ea60a1246910cf0dfc6e8a85c6bda2c2014cd04e1aa7f2964e06aff",
+        "bytes": 778,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_cached/r1/actual.jsonl.gz",
+        "sha256": "022522451a6a3d5eb6e791b49e9f1bd02ca68a9233bed6db74d4fd6f0d0a58f9",
+        "bytes": 1253,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_cached/r1/plans.jsonl.gz",
+        "sha256": "f198cf0ea26ec57348f3014426c19b1dcbf37b294c9b7527fb2ee622aa42fa79",
+        "bytes": 9984,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_cached/r1/messages.jsonl.gz",
+        "sha256": "cda47dfb5d3ec150c85627fb68ca06518644d57252b93af020de410c1e86750e",
+        "bytes": 4774,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_cached/r1/agreements.jsonl.gz",
+        "sha256": "96d202827a8c057b173417077245539fe558c40e89145f0511b34f003687169a",
+        "bytes": 679,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_cached/r1/events.jsonl.gz",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "bytes": 20,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_cached/r1/solves.jsonl.gz",
+        "sha256": "28dcc210923b30711b8ab0b5cdec657d40ff827a74328eb7473d83f7fffdaa18",
+        "bytes": 3028,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/phase_probe_cached/r1/planning.jsonl.gz",
+        "sha256": "517c856d295da89cf765ea585b0e758cf2419257db1e97ef7131cc25e38fe8a1",
+        "bytes": 3118,
+        "manifest_match": true
+      }
+    }
+  },
+  {
+    "run": "stage1/fault_injection",
+    "directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/results/M2b_stage1_001/fault_injection/r1",
+    "classification": "artificial_rejection",
+    "arm": "local",
+    "policy": "fifo-ready",
+    "all_completed": false,
+    "committed_cycles": 0,
+    "motion_group": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "physical_scenario": "7afba5f69dc2279e90adced3216442bb1a5539c91aa29b5d1cb8263e3aac1fbe",
+    "prediction_file_sha256": "a6f208ef7f68598bebc96a6dd6485a69ea366d0c6002c6a744e0929b2db26122",
+    "metrics_source": "stage1/fault_injection",
+    "source_version": "2fca87292e7690de571bd36864f8ea629d9ae4d908ff19926627ccd72931572e",
+    "source_snapshot_available": true,
+    "physical_source_matches": {
+      "bicycle_core.py": true,
+      "m2b_scene.py": true,
+      "verify_entry_bicycle.py": true
+    },
+    "failure": "ValueError: injected local candidate rejection",
+    "failure_layer": "candidate",
+    "files": {
+      "config.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/fault_injection/r1/config.json",
+        "sha256": "08cd741c12525747e49efe3e44dfbedac9b294b123ab0011548f4884d7752cb9",
+        "bytes": 3908,
+        "manifest_match": true
+      },
+      "summary.json": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/fault_injection/r1/summary.json",
+        "sha256": "50904221b7cb91e01cd78e22fea89b8061fb45e230044697be7cc2c615af5906",
+        "bytes": 778,
+        "manifest_match": true
+      },
+      "actual.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/fault_injection/r1/actual.jsonl.gz",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "bytes": 20,
+        "manifest_match": true
+      },
+      "plans.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/fault_injection/r1/plans.jsonl.gz",
+        "sha256": "a6f208ef7f68598bebc96a6dd6485a69ea366d0c6002c6a744e0929b2db26122",
+        "bytes": 847,
+        "manifest_match": true
+      },
+      "messages.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/fault_injection/r1/messages.jsonl.gz",
+        "sha256": "d018b6d3a43740670acc7ee2b451c994002361354304d9750929aaf86d6d9fbf",
+        "bytes": 1781,
+        "manifest_match": true
+      },
+      "agreements.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/fault_injection/r1/agreements.jsonl.gz",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "bytes": 20,
+        "manifest_match": true
+      },
+      "events.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/fault_injection/r1/events.jsonl.gz",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "bytes": 20,
+        "manifest_match": true
+      },
+      "solves.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/fault_injection/r1/solves.jsonl.gz",
+        "sha256": "cd88d0418001def333f5d7bfad4484903ef9028675d49777caeaab1dc0242978",
+        "bytes": 158,
+        "manifest_match": true
+      },
+      "planning.jsonl": {
+        "path": "examples/head_on_mpc/results/M2b_stage1_001/fault_injection/r1/planning.jsonl.gz",
+        "sha256": "6fef5b169444d67c8097f9b0f62a45d6d8e72bfa18bb819384afd70fe491ab85",
+        "bytes": 1012,
+        "manifest_match": true
+      }
+    }
+  }
+]

@@ -1,0 +1,37 @@
+diagnostic bytes restored exactly /tmp/tmpfnb3gbl_/study/C-FIFO/r1
+diagnostic bytes restored exactly /tmp/tmpfnb3gbl_/study/C-FIFO/r2
+diagnostic bytes restored exactly /tmp/tmpfnb3gbl_/study/L-FIFO/r1
+diagnostic bytes restored exactly /tmp/tmpfnb3gbl_/study/L-FIFO/r2
+diagnostic bytes restored exactly /tmp/tmpfnb3gbl_/study/L-ALT/r1
+diagnostic bytes restored exactly /tmp/tmpfnb3gbl_/study/L-ALT/r2
+full diagnostic restore verified /tmp/tmpfnb3gbl_/study/C-FIFO/r1
+full diagnostic restore verified /tmp/tmpfnb3gbl_/study/C-FIFO/r2
+full diagnostic restore verified /tmp/tmpfnb3gbl_/study/L-ALT/r1
+full diagnostic restore verified /tmp/tmpfnb3gbl_/study/L-ALT/r2
+full diagnostic restore verified /tmp/tmpfnb3gbl_/study/L-FIFO/r1
+full diagnostic restore verified /tmp/tmpfnb3gbl_/study/L-FIFO/r2
+======================================================================
+ERROR: test_m2b_control (unittest.loader._FailedTest.test_m2b_control)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_m2b_control
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 394, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/loader.py", line 337, in _get_module_from_name
+    __import__(name)
+  File "/tmp/m2b_frozen_test_9_gmzy43/snapshot/tests/test_m2b_control.py", line 10, in <module>
+    from run_m2b import Endpoint
+  File "/tmp/m2b_frozen_test_9_gmzy43/snapshot/scripts/run_m2b.py", line 25, in <module>
+    from run_entry_bicycle import write
+  File "/tmp/m2b_frozen_test_9_gmzy43/snapshot/scripts/run_entry_bicycle.py", line 18, in <module>
+    from recovery_core import BlockingDetector
+  File "/tmp/m2b_frozen_test_9_gmzy43/snapshot/scripts/recovery_core.py", line 11, in <module>
+    from head_on_core import Settings, integrate, lane_y, matrices, prediction, receive
+ModuleNotFoundError: No module named 'head_on_core'
+
+
+----------------------------------------------------------------------
+Ran 27 tests in 2.978s
+
+FAILED (errors=1)

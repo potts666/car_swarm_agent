@@ -1,0 +1,1394 @@
+{
+  "runs": {
+    "A_uncached": {
+      "summary": {
+        "arm": "local",
+        "policy": "fifo-ready",
+        "all_completed": false,
+        "completion_sim_s": null,
+        "completion_per_car_s": {},
+        "failure": "bounded prefix limit reached",
+        "failure_layer": "prefix_limit",
+        "online_wall_s": 4.379653639000026,
+        "export_wall_s": 0.09959521500422852,
+        "committed_cycles": 6,
+        "timed_cycles": 6,
+        "last_states": {
+          "A1": [
+            -34.28,
+            3.0,
+            0.0,
+            1.2000000000000006,
+            0.0
+          ],
+          "A2": [
+            -39.0,
+            -3.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "B1": [
+            36.82002720487969,
+            2.997290530036513,
+            3.1717224354547615,
+            0.6000000000000002,
+            0.42510318281287335
+          ],
+          "B2": [
+            40.0,
+            -3.0,
+            3.141592653589793,
+            0.0,
+            0.0
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate"
+      },
+      "actual_signature": {
+        "sha256": "ca3a162e190620bdbb5392fab3bab97529b34e473acbb234b63d084e49677fcb",
+        "cycles": 6,
+        "input_square_integral": 2.0980178059871397
+      },
+      "validation": {
+        "actual_full_acceptance": false,
+        "actual_prefix_acceptance": true,
+        "violations": [],
+        "original_sign_check_passed": true,
+        "local_information_boundary_passed": true,
+        "physical": {
+          "passed": true,
+          "residuals": {
+            "A1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "A2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "pair_gap_m": 0.0
+          },
+          "pair_gaps_m": {
+            "A1:A2": 4.2,
+            "A1:B1": 64.0745030401973,
+            "A1:B2": 67.41096646688875,
+            "A2:B1": 68.97024000249071,
+            "A2:B2": 72.0,
+            "B1:B2": 4.185336144272194
+          },
+          "minimum_gap_m": 4.185336144272194
+        },
+        "dimensions": {
+          "A1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "A2": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B2": {
+            "reference": 32,
+            "bicycle": 64
+          }
+        }
+      },
+      "cycle_s": {
+        "count": 6,
+        "mean": 0.7280807546667347,
+        "p50": 0.7046069329990132,
+        "p95": 0.7993892410013359,
+        "p99": 0.8028877090022434,
+        "max": 0.8037623260024702,
+        "over_200ms": 6
+      },
+      "consecutive_start_s": {
+        "count": 5,
+        "mean": 0.7164732461998937,
+        "p50": 0.6887257139969734,
+        "p95": 0.7871437952024279,
+        "p99": 0.8004540654431912,
+        "max": 0.803781633003382,
+        "over_200ms": 5
+      },
+      "executable_s": {
+        "count": 6,
+        "mean": 0.7275714941667198,
+        "p50": 0.7041643234988442,
+        "p95": 0.7986774205000984,
+        "p99": 0.8021522929007915,
+        "max": 0.8030210110009648,
+        "over_200ms": 6
+      },
+      "diagnostic_s": {
+        "count": 6,
+        "mean": 0.00041428783151786774,
+        "p50": 0.00038414699884015135,
+        "p95": 0.0005550714977289317,
+        "p99": 0.0005633614982798463,
+        "max": 0.0005654339984175749,
+        "over_200ms": 0
+      },
+      "local_predict_s": {
+        "count": 24,
+        "mean": 0.037768895332495354,
+        "p50": 0.030958634495618753,
+        "p95": 0.0653745213476213,
+        "p99": 0.07247832609849865,
+        "max": 0.07385531999898376,
+        "over_200ms": 0
+      },
+      "local_over_500ms": 0,
+      "phases_exclusive_mean_s": {
+        "before_last_final": {
+          "corridor_construction": 0.007070003858340594,
+          "candidate_compute": 0.0044817783309554216,
+          "dds_wait": 0.02987407236044722,
+          "copy": 0.02474302251963915,
+          "road_geometry": 0.005575923017507496,
+          "matrix_solver": 0.02418872950147488,
+          "encoding": 0.008870284332563946,
+          "body_geometry": 0.013473325155549295,
+          "cycle": 0.0018804888168233447,
+          "pair_geometry": 0.030734873157295322,
+          "decoding": 0.02499678215341798,
+          "state_stage_prepare": 0.00047111966462883476,
+          "reference_total": 0.003672445000120206,
+          "prediction_integration": 0.19920444883124824,
+          "bicycle_total": 0.0209347039781278,
+          "polygon_clip": 0.06529310825256592,
+          "condensed_model": 0.008612697839756342,
+          "plan_content_binding": 0.007921269665530417,
+          "plan_validation": 0.02722306026529016,
+          "seed_generation": 0.0023233228384924587,
+          "physical_audit": 0.0019376086517392348,
+          "wire_send": 0.004373290306830313
+        },
+        "after_last_final": {
+          "decoding": 0.00102169666691528,
+          "encoding": 0.00015539717302696468,
+          "acknowledgement": 0.00022130950067852004,
+          "body_geometry": 0.0022409743372312128,
+          "cycle": 0.00023871366890186133,
+          "prediction_integration": 0.0956401518402951,
+          "dds_wait": 0.0035793599963653833,
+          "copy": 0.0010761751679334945,
+          "plan_content_binding": 0.006827269993664231,
+          "plan_validation": 0.01973980360950615,
+          "physical_audit": 0.0012299895000372392,
+          "pair_geometry": 0.02211367432998183,
+          "polygon_clip": 0.048268467723877016,
+          "wire_send": 0.0007909793275757693,
+          "road_geometry": 0.003926725998705176
+        },
+        "commit_tail": {
+          "decoding": 0.00023140416427243812,
+          "encoding": 6.110083268140443e-05,
+          "cycle": 0.00013729566611194363,
+          "dds_wait": 0.002017922837694641,
+          "copy": 7.109149858782378e-05,
+          "wire_send": 0.00020953016792191193
+        },
+        "diagnostics": {
+          "cycle": 0.00041724816522522207
+        }
+      },
+      "grey_without_candidate_mean_s": null,
+      "exclusive_mean_s": {
+        "corridor_construction": 0.007070003858340594,
+        "candidate_compute": 0.0044817783309554216,
+        "dds_wait": 0.03547135519450725,
+        "copy": 0.02589028918616047,
+        "road_geometry": 0.009502649016212672,
+        "matrix_solver": 0.02418872950147488,
+        "encoding": 0.009086782338272315,
+        "body_geometry": 0.01571429949278051,
+        "cycle": 0.002673746317062372,
+        "pair_geometry": 0.05284854748727715,
+        "decoding": 0.026249882984605694,
+        "state_stage_prepare": 0.00047111966462883476,
+        "reference_total": 0.003672445000120206,
+        "acknowledgement": 0.00022130950067852004,
+        "prediction_integration": 0.29484460067154333,
+        "bicycle_total": 0.0209347039781278,
+        "polygon_clip": 0.11356157597644294,
+        "condensed_model": 0.008612697839756342,
+        "plan_content_binding": 0.014748539659194648,
+        "physical_audit": 0.003167598151776474,
+        "seed_generation": 0.0023233228384924587,
+        "plan_validation": 0.04696286387479631,
+        "wire_send": 0.005373799802327994
+      },
+      "application_bytes": 2424053,
+      "cache_hits": 0,
+      "stored_bytes": 117553,
+      "cache_hits_measured": true
+    },
+    "B_cached": {
+      "summary": {
+        "arm": "local",
+        "policy": "fifo-ready",
+        "all_completed": false,
+        "completion_sim_s": null,
+        "completion_per_car_s": {},
+        "failure": "bounded prefix limit reached",
+        "failure_layer": "prefix_limit",
+        "online_wall_s": 3.972903583999141,
+        "export_wall_s": 0.10297761700348929,
+        "committed_cycles": 6,
+        "timed_cycles": 6,
+        "last_states": {
+          "A1": [
+            -34.28,
+            3.0,
+            0.0,
+            1.2000000000000006,
+            0.0
+          ],
+          "A2": [
+            -39.0,
+            -3.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "B1": [
+            36.82002720487969,
+            2.997290530036513,
+            3.1717224354547615,
+            0.6000000000000002,
+            0.42510318281287335
+          ],
+          "B2": [
+            40.0,
+            -3.0,
+            3.141592653589793,
+            0.0,
+            0.0
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate"
+      },
+      "actual_signature": {
+        "sha256": "ca3a162e190620bdbb5392fab3bab97529b34e473acbb234b63d084e49677fcb",
+        "cycles": 6,
+        "input_square_integral": 2.0980178059871397
+      },
+      "validation": {
+        "actual_full_acceptance": false,
+        "actual_prefix_acceptance": true,
+        "violations": [],
+        "original_sign_check_passed": true,
+        "local_information_boundary_passed": true,
+        "physical": {
+          "passed": true,
+          "residuals": {
+            "A1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "A2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "pair_gap_m": 0.0
+          },
+          "pair_gaps_m": {
+            "A1:A2": 4.2,
+            "A1:B1": 64.0745030401973,
+            "A1:B2": 67.41096646688875,
+            "A2:B1": 68.97024000249071,
+            "A2:B2": 72.0,
+            "B1:B2": 4.185336144272194
+          },
+          "minimum_gap_m": 4.185336144272194
+        },
+        "dimensions": {
+          "A1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "A2": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B2": {
+            "reference": 32,
+            "bicycle": 64
+          }
+        }
+      },
+      "cycle_s": {
+        "count": 6,
+        "mean": 0.6603588904993861,
+        "p50": 0.6634057579976798,
+        "p95": 0.6848309825018077,
+        "p99": 0.6872501805020874,
+        "max": 0.6878549800021574,
+        "over_200ms": 6
+      },
+      "consecutive_start_s": {
+        "count": 5,
+        "mean": 0.6573143585992511,
+        "p50": 0.6625293429970043,
+        "p95": 0.683177077601431,
+        "p99": 0.686931030722335,
+        "max": 0.687869519002561,
+        "over_200ms": 5
+      },
+      "executable_s": {
+        "count": 6,
+        "mean": 0.6597052508344253,
+        "p50": 0.6625261234985373,
+        "p95": 0.6842589292518824,
+        "p99": 0.6866758722524537,
+        "max": 0.6872801080025965,
+        "over_200ms": 6
+      },
+      "diagnostic_s": {
+        "count": 6,
+        "mean": 0.0005544691654601289,
+        "p50": 0.00046254200060502626,
+        "p95": 0.001018982498862897,
+        "p99": 0.001156491699293838,
+        "max": 0.001190868999401573,
+        "over_200ms": 0
+      },
+      "local_predict_s": {
+        "count": 24,
+        "mean": 0.03952636783287744,
+        "p50": 0.03213949299970409,
+        "p95": 0.07043753810066841,
+        "p99": 0.0746210248737043,
+        "max": 0.07473713600484189,
+        "over_200ms": 0
+      },
+      "local_over_500ms": 0,
+      "phases_exclusive_mean_s": {
+        "before_last_final": {
+          "corridor_construction": 0.007399865171464626,
+          "candidate_compute": 0.005116422664286802,
+          "dds_wait": 0.036192992810053205,
+          "copy": 0.030500599508134957,
+          "road_geometry": 0.005882641995412996,
+          "matrix_solver": 0.024428160505825264,
+          "encoding": 0.01147528469421862,
+          "body_geometry": 0.014088290333650852,
+          "cycle": 0.0022820186447158144,
+          "pair_geometry": 0.03067268550269849,
+          "decoding": 0.02580547219501265,
+          "state_stage_prepare": 0.000627568829562127,
+          "reference_total": 0.0039140453324459186,
+          "prediction_integration": 0.21097512467774018,
+          "bicycle_total": 0.02186924898948443,
+          "polygon_clip": 0.06687652072165899,
+          "condensed_model": 0.009144634669307075,
+          "plan_content_binding": 0.008731748304853681,
+          "plan_validation": 0.028823890269753367,
+          "seed_generation": 0.0027789811671633893,
+          "physical_audit": 0.0020299053418663484,
+          "wire_send": 0.005587463004000408
+        },
+        "after_last_final": {
+          "plan_cache_hit": 5.7676838575086244e-05,
+          "decoding": 0.001297250653199929,
+          "encoding": 0.001109851838312655,
+          "acknowledgement": 0.00022842483546507233,
+          "body_geometry": 0.0012605629999598023,
+          "cycle": 0.0002472446770601285,
+          "prediction_integration": 0.02985744399848045,
+          "dds_wait": 0.003964396180284287,
+          "copy": 0.0011172086621324222,
+          "plan_content_binding": 0.007000039836081366,
+          "plan_validation": 0.007116901169259411,
+          "physical_audit": 0.00103676683405259,
+          "pair_geometry": 0.028341653008586338,
+          "polygon_clip": 0.015566796146837683,
+          "wire_send": 0.0008921984966339854,
+          "road_geometry": 0.002811879325842407
+        },
+        "commit_tail": {
+          "decoding": 0.0001895861654096128,
+          "encoding": 6.291383639715302e-05,
+          "cycle": 0.00014286516792102097,
+          "dds_wait": 0.0020094570015013837,
+          "copy": 7.494649980799295e-05,
+          "wire_send": 0.000203328663095211
+        },
+        "diagnostics": {
+          "cycle": 0.0005576404983003158
+        }
+      },
+      "grey_without_candidate_mean_s": null,
+      "exclusive_mean_s": {
+        "corridor_construction": 0.007399865171464626,
+        "candidate_compute": 0.005116422664286802,
+        "dds_wait": 0.042166845991838876,
+        "copy": 0.031692754670075374,
+        "road_geometry": 0.008694521321255403,
+        "matrix_solver": 0.024428160505825264,
+        "plan_cache_hit": 5.7676838575086244e-05,
+        "encoding": 0.012648050368928429,
+        "body_geometry": 0.015348853333610654,
+        "cycle": 0.00322976898799728,
+        "pair_geometry": 0.059014338511284826,
+        "decoding": 0.02729230901362219,
+        "state_stage_prepare": 0.000627568829562127,
+        "reference_total": 0.0039140453324459186,
+        "acknowledgement": 0.00022842483546507233,
+        "prediction_integration": 0.24083256867622063,
+        "bicycle_total": 0.02186924898948443,
+        "polygon_clip": 0.08244331686849667,
+        "condensed_model": 0.009144634669307075,
+        "plan_content_binding": 0.01573178814093505,
+        "physical_audit": 0.0030666721759189386,
+        "seed_generation": 0.0027789811671633893,
+        "plan_validation": 0.03594079143901278,
+        "wire_send": 0.006682990163729603
+      },
+      "application_bytes": 2424053,
+      "cache_hits": 72,
+      "stored_bytes": 117725,
+      "cache_hits_measured": true
+    },
+    "B_no_profiler": {
+      "summary": {
+        "arm": "local",
+        "policy": "fifo-ready",
+        "all_completed": false,
+        "completion_sim_s": null,
+        "completion_per_car_s": {},
+        "failure": "bounded prefix limit reached",
+        "failure_layer": "prefix_limit",
+        "online_wall_s": 3.660769544003415,
+        "export_wall_s": 0.1019376639960683,
+        "committed_cycles": 6,
+        "timed_cycles": 6,
+        "last_states": {
+          "A1": [
+            -34.28,
+            3.0,
+            0.0,
+            1.2000000000000006,
+            0.0
+          ],
+          "A2": [
+            -39.0,
+            -3.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "B1": [
+            36.82002720487969,
+            2.997290530036513,
+            3.1717224354547615,
+            0.6000000000000002,
+            0.42510318281287335
+          ],
+          "B2": [
+            40.0,
+            -3.0,
+            3.141592653589793,
+            0.0,
+            0.0
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate"
+      },
+      "actual_signature": {
+        "sha256": "ca3a162e190620bdbb5392fab3bab97529b34e473acbb234b63d084e49677fcb",
+        "cycles": 6,
+        "input_square_integral": 2.0980178059871397
+      },
+      "validation": {
+        "actual_full_acceptance": false,
+        "actual_prefix_acceptance": true,
+        "violations": [],
+        "original_sign_check_passed": true,
+        "local_information_boundary_passed": true,
+        "physical": {
+          "passed": true,
+          "residuals": {
+            "A1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "A2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "pair_gap_m": 0.0
+          },
+          "pair_gaps_m": {
+            "A1:A2": 4.2,
+            "A1:B1": 64.0745030401973,
+            "A1:B2": 67.41096646688875,
+            "A2:B1": 68.97024000249071,
+            "A2:B2": 72.0,
+            "B1:B2": 4.185336144272194
+          },
+          "minimum_gap_m": 4.185336144272194
+        },
+        "dimensions": {
+          "A1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "A2": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B2": {
+            "reference": 32,
+            "bicycle": 64
+          }
+        }
+      },
+      "cycle_s": {
+        "count": 6,
+        "mean": 0.608537079498395,
+        "p50": 0.6084000734990695,
+        "p95": 0.6367575317472074,
+        "p99": 0.6420217543472972,
+        "max": 0.6433378099973197,
+        "over_200ms": 6
+      },
+      "consecutive_start_s": {
+        "count": 5,
+        "mean": 0.6015947740001139,
+        "p50": 0.6036968050029827,
+        "p95": 0.6162397589971078,
+        "p99": 0.6168652205966646,
+        "max": 0.6170215859965538,
+        "over_200ms": 5
+      },
+      "executable_s": {
+        "count": 6,
+        "mean": 0.6080054871648221,
+        "p50": 0.6079053680005018,
+        "p95": 0.6361144814964064,
+        "p99": 0.6413573738962441,
+        "max": 0.6426680969962035,
+        "over_200ms": 6
+      },
+      "diagnostic_s": {
+        "count": 6,
+        "mean": 0.0004318574998857609,
+        "p50": 0.00042862400005105883,
+        "p95": 0.0005391274971771054,
+        "p99": 0.0005585438964772039,
+        "max": 0.0005633979963022284,
+        "over_200ms": 0
+      },
+      "local_predict_s": {
+        "count": 24,
+        "mean": 0.0374900110418821,
+        "p50": 0.030473188999167178,
+        "p95": 0.0675139576014771,
+        "p99": 0.07257909540669061,
+        "max": 0.07301483799528796,
+        "over_200ms": 0
+      },
+      "local_over_500ms": 0,
+      "phases_exclusive_mean_s": {},
+      "grey_without_candidate_mean_s": null,
+      "exclusive_mean_s": {},
+      "application_bytes": 2424053,
+      "cache_hits": null,
+      "stored_bytes": 111376,
+      "cache_hits_measured": false
+    },
+    "full_L_FIFO": {
+      "summary": {
+        "arm": "local",
+        "policy": "fifo-ready",
+        "all_completed": true,
+        "completion_sim_s": 176.4,
+        "completion_per_car_s": {
+          "A1": 68.60000000000001,
+          "B1": 104.2,
+          "A2": 140.20000000000002,
+          "B2": 176.4
+        },
+        "failure": null,
+        "failure_layer": null,
+        "online_wall_s": 543.7741041140034,
+        "export_wall_s": 34.38350615699892,
+        "committed_cycles": 882,
+        "timed_cycles": 883,
+        "last_states": {
+          "A1": [
+            46.00005484341871,
+            2.999998286950418,
+            4.469308551555731e-07,
+            3.469446951953614e-18,
+            -9.26442286059391e-23
+          ],
+          "A2": [
+            46.00030642282177,
+            -2.999999124593306,
+            -3.454913539537709e-07,
+            8.673617379884035e-19,
+            3.970466940254533e-23
+          ],
+          "B1": [
+            -46.00030668901381,
+            2.9999991037418465,
+            3.1415923037638906,
+            2.6020852139652106e-18,
+            -9.26442286059391e-23
+          ],
+          "B2": [
+            -46.00005490866419,
+            -2.9999982873750457,
+            3.1415931003197355,
+            8.673617379884035e-19,
+            7.940933880509066e-23
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate"
+      },
+      "actual_signature": {
+        "sha256": "b6cb236bd54bd185d119ec3252f4d67ba707b2e19ee1de951c06255e574c7acf",
+        "cycles": 882,
+        "input_square_integral": 91.12064639258638
+      },
+      "validation": {
+        "actual_full_acceptance": true,
+        "actual_prefix_acceptance": true,
+        "violations": [],
+        "original_sign_check_passed": true,
+        "local_information_boundary_passed": true,
+        "physical": {
+          "passed": true,
+          "residuals": {
+            "A1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 1.362467996202099e-07,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "A2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 1.340020974183176e-07,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 1.3418584066116068e-07,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 1.6799667124089979e-07,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "pair_gap_m": 0.0
+          },
+          "pair_gaps_m": {
+            "A1:A2": 4.199906647302718,
+            "A1:B1": 1.1999980698173731,
+            "A1:B2": 1.1999999999999962,
+            "A2:B1": 1.1999995647025312,
+            "A2:B2": 1.1999999999999948,
+            "B1:B2": 1.5003004403285836
+          },
+          "minimum_gap_m": 1.1999980698173731
+        },
+        "dimensions": {
+          "A1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "A2": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B2": {
+            "reference": 32,
+            "bicycle": 64
+          }
+        }
+      },
+      "cycle_s": {
+        "count": 882,
+        "mean": 0.616468630946588,
+        "p50": 0.5981926005006244,
+        "p95": 0.7101454617979469,
+        "p99": 0.8960778939353616,
+        "max": 1.3509124709962634,
+        "over_200ms": 882
+      },
+      "consecutive_start_s": {
+        "count": 882,
+        "mean": 0.6164771297165537,
+        "p50": 0.5981977240007836,
+        "p95": 0.7101502059002085,
+        "p99": 0.8960921197257261,
+        "max": 1.350918575997639,
+        "over_200ms": 882
+      },
+      "executable_s": {
+        "count": 882,
+        "mean": 0.611308138301624,
+        "p50": 0.5946944455026824,
+        "p95": 0.6829022150002856,
+        "p99": 0.891994749604709,
+        "max": 1.3502828609998687,
+        "over_200ms": 882
+      },
+      "diagnostic_s": {
+        "count": 882,
+        "mean": 0.005053266441026363,
+        "p50": 0.00045976749970577657,
+        "p95": 0.027325148294767117,
+        "p99": 0.09308291690351297,
+        "max": 0.1483192820014665,
+        "over_200ms": 0
+      },
+      "local_predict_s": {
+        "count": 3528,
+        "mean": 0.03415429835563878,
+        "p50": 0.030551874999218853,
+        "p95": 0.050639962545756124,
+        "p99": 0.07018810371235304,
+        "max": 0.1105078330001561,
+        "over_200ms": 0
+      },
+      "local_over_500ms": 0,
+      "phases_exclusive_mean_s": {},
+      "grey_without_candidate_mean_s": null,
+      "exclusive_mean_s": {},
+      "application_bytes": 715916537,
+      "cache_hits": null,
+      "stored_bytes": 49061635,
+      "cache_hits_measured": false
+    },
+    "phase_probe_uncached": {
+      "summary": {
+        "arm": "local",
+        "policy": "fifo-ready",
+        "all_completed": false,
+        "completion_sim_s": null,
+        "completion_per_car_s": {},
+        "failure": "bounded prefix limit reached",
+        "failure_layer": "prefix_limit",
+        "online_wall_s": 1.438464209997619,
+        "export_wall_s": 0.026179873995715752,
+        "committed_cycles": 2,
+        "timed_cycles": 2,
+        "last_states": {
+          "A1": [
+            -34.92,
+            3.0,
+            0.0,
+            0.4,
+            0.0
+          ],
+          "A2": [
+            -39.0,
+            -3.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "B1": [
+            37.0,
+            3.0,
+            3.141592653589793,
+            0.0,
+            0.2819026174219604
+          ],
+          "B2": [
+            40.0,
+            -3.0,
+            3.141592653589793,
+            0.0,
+            0.0
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate"
+      },
+      "actual_signature": {
+        "sha256": "19bd2be60a5d4ed01234d1796b773320f2a87c38e5d20aa314232a46f037037a",
+        "cycles": 2,
+        "input_square_integral": 0.5986727142733804
+      },
+      "validation": {
+        "actual_full_acceptance": false,
+        "actual_prefix_acceptance": true,
+        "violations": [],
+        "original_sign_check_passed": true,
+        "local_information_boundary_passed": true,
+        "physical": {
+          "passed": true,
+          "residuals": {
+            "A1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "A2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "pair_gap_m": 0.0
+          },
+          "pair_gaps_m": {
+            "A1:A2": 4.2,
+            "A1:B1": 64.92,
+            "A1:B2": 68.04973475334052,
+            "A2:B1": 69.12770790356065,
+            "A2:B2": 72.0,
+            "B1:B2": 4.2
+          },
+          "minimum_gap_m": 4.2
+        },
+        "dimensions": {
+          "A1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "A2": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B2": {
+            "reference": 32,
+            "bicycle": 64
+          }
+        }
+      },
+      "cycle_s": {
+        "count": 2,
+        "mean": 0.713886323999759,
+        "p50": 0.713886323999759,
+        "p95": 0.7366589448025479,
+        "p99": 0.7386831777627958,
+        "max": 0.7391892360028578,
+        "over_200ms": 2
+      },
+      "consecutive_start_s": {
+        "count": 1,
+        "mean": 0.7393191310038674,
+        "p50": 0.7393191310038674,
+        "p95": 0.7393191310038674,
+        "p99": 0.7393191310038674,
+        "max": 0.7393191310038674,
+        "over_200ms": 1
+      },
+      "executable_s": {
+        "count": 2,
+        "mean": 0.7134399794995261,
+        "p50": 0.7134399794995261,
+        "p95": 0.7362666583521786,
+        "p99": 0.7382956964724144,
+        "max": 0.7388029560024734,
+        "over_200ms": 2
+      },
+      "diagnostic_s": {
+        "count": 2,
+        "mean": 0.0003482924985291902,
+        "p50": 0.0003482924985291902,
+        "p95": 0.00037018994880781974,
+        "p99": 0.0003721363888325868,
+        "max": 0.0003726229988387786,
+        "over_200ms": 0
+      },
+      "local_predict_s": {
+        "count": 8,
+        "mean": 0.033991043748756056,
+        "p50": 0.030840027498925338,
+        "p95": 0.04614510239880473,
+        "p99": 0.04745016448076057,
+        "max": 0.04777643000124954,
+        "over_200ms": 0
+      },
+      "local_over_500ms": 0,
+      "phases_exclusive_mean_s": {
+        "before_last_final": {
+          "corridor_construction": 0.007084183980623493,
+          "candidate_compute": 0.0037664945084543433,
+          "dds_wait": 0.0301566520211054,
+          "copy": 0.026089276507264003,
+          "road_geometry": 0.0053980025004420895,
+          "matrix_solver": 0.003303303998109186,
+          "encoding": 0.007744529986666748,
+          "body_geometry": 0.013348805041459855,
+          "cycle": 0.0017728999955579638,
+          "pair_geometry": 0.027730012505344348,
+          "decoding": 0.022439446485805092,
+          "state_stage_prepare": 0.0003349919970787596,
+          "reference_total": 0.0035601820090960246,
+          "prediction_integration": 0.19852367150087957,
+          "osqp_solve": 0.011731050995877013,
+          "bicycle_total": 0.01919869597259094,
+          "osqp_setup": 0.0013659930009453092,
+          "polygon_clip": 0.06696915826250915,
+          "condensed_model": 0.007841590999305481,
+          "plan_content_binding": 0.006762295994121814,
+          "plan_validation": 0.030473229238850763,
+          "seed_generation": 0.00162012300643255,
+          "physical_audit": 0.002036423480603844,
+          "wire_send": 0.004479226510738954
+        },
+        "after_last_final": {
+          "decoding": 0.0015454994827450719,
+          "encoding": 0.0001331825042143464,
+          "acknowledgement": 0.00021453948647831567,
+          "body_geometry": 0.0021498514906852506,
+          "cycle": 0.00021980799283483066,
+          "prediction_integration": 0.09347818900278071,
+          "dds_wait": 0.003653837015008321,
+          "copy": 0.0010290299978805706,
+          "plan_content_binding": 0.005717407493648352,
+          "plan_validation": 0.021412570495158434,
+          "physical_audit": 0.0012419165468600113,
+          "pair_geometry": 0.02223766550378059,
+          "polygon_clip": 0.04984249099652516,
+          "wire_send": 0.0008088775102805812,
+          "road_geometry": 0.0036841164801444393
+        },
+        "commit_tail": {
+          "decoding": 0.0001744510118442122,
+          "encoding": 4.988399814465083e-05,
+          "cycle": 0.00013782550377072766,
+          "dds_wait": 0.0017472164799983148,
+          "copy": 0.00010044098962680437,
+          "wire_send": 0.000212863516935613
+        },
+        "diagnostics": {
+          "cycle": 0.0003519040001265239
+        }
+      },
+      "grey_without_candidate_mean_s": {
+        "corridor_construction": 0.0,
+        "decoding": 0.022439446485805092,
+        "state_stage_prepare": 0.0003349919970787596,
+        "reference_total": 0.0,
+        "seed_generation": 0.00162012300643255,
+        "candidate_compute": 0.0,
+        "prediction_integration": 0.15374666100615286,
+        "dds_wait": 0.0301566520211054,
+        "copy": 0.026089276507264003,
+        "osqp_solve": 0.0,
+        "bicycle_total": 0.0,
+        "osqp_setup": 0.0,
+        "polygon_clip": 0.06696915826250915,
+        "road_geometry": 0.0035899629947380163,
+        "condensed_model": 0.0,
+        "matrix_solver": 0.0,
+        "encoding": 0.007744529986666748,
+        "body_geometry": 0.0029180695019022096,
+        "cycle": 0.0017728999955579638,
+        "pair_geometry": 0.005642929998430191,
+        "plan_content_binding": 0.006762295994121814,
+        "plan_validation": 0.030473229238850763,
+        "physical_audit": 0.0013281409919727594,
+        "wire_send": 0.004479226510738954
+      },
+      "exclusive_mean_s": {
+        "corridor_construction": 0.007084183980623493,
+        "candidate_compute": 0.0037664945084543433,
+        "dds_wait": 0.03555770551611204,
+        "copy": 0.027218747494771378,
+        "road_geometry": 0.009082118980586529,
+        "matrix_solver": 0.003303303998109186,
+        "encoding": 0.007927596489025746,
+        "body_geometry": 0.015498656532145105,
+        "cycle": 0.002482437492290046,
+        "pair_geometry": 0.04996767800912494,
+        "decoding": 0.024159396980394376,
+        "state_stage_prepare": 0.0003349919970787596,
+        "reference_total": 0.0035601820090960246,
+        "acknowledgement": 0.00021453948647831567,
+        "prediction_integration": 0.2920018605036603,
+        "osqp_solve": 0.011731050995877013,
+        "bicycle_total": 0.01919869597259094,
+        "osqp_setup": 0.0013659930009453092,
+        "polygon_clip": 0.11681164925903431,
+        "condensed_model": 0.007841590999305481,
+        "plan_content_binding": 0.012479703487770166,
+        "physical_audit": 0.0032783400274638552,
+        "seed_generation": 0.00162012300643255,
+        "plan_validation": 0.0518857997340092,
+        "wire_send": 0.005500967537955148
+      },
+      "application_bytes": 705687,
+      "cache_hits": 0,
+      "stored_bytes": 30093,
+      "cache_hits_measured": true
+    },
+    "phase_probe_cached": {
+      "summary": {
+        "arm": "local",
+        "policy": "fifo-ready",
+        "all_completed": false,
+        "completion_sim_s": null,
+        "completion_per_car_s": {},
+        "failure": "bounded prefix limit reached",
+        "failure_layer": "prefix_limit",
+        "online_wall_s": 1.1887685809997492,
+        "export_wall_s": 0.027390554001613054,
+        "committed_cycles": 2,
+        "timed_cycles": 2,
+        "last_states": {
+          "A1": [
+            -34.92,
+            3.0,
+            0.0,
+            0.4,
+            0.0
+          ],
+          "A2": [
+            -39.0,
+            -3.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "B1": [
+            37.0,
+            3.0,
+            3.141592653589793,
+            0.0,
+            0.2819026174219604
+          ],
+          "B2": [
+            40.0,
+            -3.0,
+            3.141592653589793,
+            0.0,
+            0.0
+          ]
+        },
+        "old_central_future_diagnostic": "not executed; no online future gate"
+      },
+      "actual_signature": {
+        "sha256": "19bd2be60a5d4ed01234d1796b773320f2a87c38e5d20aa314232a46f037037a",
+        "cycles": 2,
+        "input_square_integral": 0.5986727142733804
+      },
+      "validation": {
+        "actual_full_acceptance": false,
+        "actual_prefix_acceptance": true,
+        "violations": [],
+        "original_sign_check_passed": true,
+        "local_information_boundary_passed": true,
+        "physical": {
+          "passed": true,
+          "residuals": {
+            "A1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "A2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B1": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "B2": {
+              "outside_road_area_m2": 0.0,
+              "forward_speed_m_s": 0.0,
+              "reverse_speed_m_s": 0.0,
+              "steering_rad": 0.0
+            },
+            "pair_gap_m": 0.0
+          },
+          "pair_gaps_m": {
+            "A1:A2": 4.2,
+            "A1:B1": 64.92,
+            "A1:B2": 68.04973475334052,
+            "A2:B1": 69.12770790356065,
+            "A2:B2": 72.0,
+            "B1:B2": 4.2
+          },
+          "minimum_gap_m": 4.2
+        },
+        "dimensions": {
+          "A1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "A2": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B1": {
+            "reference": 32,
+            "bicycle": 64
+          },
+          "B2": {
+            "reference": 32,
+            "bicycle": 64
+          }
+        }
+      },
+      "cycle_s": {
+        "count": 2,
+        "mean": 0.5891027055004088,
+        "p50": 0.5891027055004088,
+        "p95": 0.6014773855491512,
+        "p99": 0.6025773571090395,
+        "max": 0.6028523499990115,
+        "over_200ms": 2
+      },
+      "consecutive_start_s": {
+        "count": 1,
+        "mean": 0.6029330300007132,
+        "p50": 0.6029330300007132,
+        "p95": 0.6029330300007132,
+        "p99": 0.6029330300007132,
+        "max": 0.6029330300007132,
+        "over_200ms": 1
+      },
+      "executable_s": {
+        "count": 2,
+        "mean": 0.5886909749970073,
+        "p50": 0.5886909749970073,
+        "p95": 0.60107183219734,
+        "p99": 0.6021723528373696,
+        "max": 0.6024474829973769,
+        "over_200ms": 2
+      },
+      "diagnostic_s": {
+        "count": 2,
+        "mean": 0.00034224149931105785,
+        "p50": 0.00034224149931105785,
+        "p95": 0.0003528916469804244,
+        "p99": 0.000353838326773257,
+        "max": 0.00035407499672146514,
+        "over_200ms": 0
+      },
+      "local_predict_s": {
+        "count": 8,
+        "mean": 0.03400167099789542,
+        "p50": 0.03146708400163334,
+        "p95": 0.04529427274501359,
+        "p99": 0.04553816254534467,
+        "max": 0.04559913499542745,
+        "over_200ms": 0
+      },
+      "local_over_500ms": 0,
+      "phases_exclusive_mean_s": {
+        "before_last_final": {
+          "corridor_construction": 0.006986065989622148,
+          "candidate_compute": 0.004096790493349545,
+          "dds_wait": 0.028905382543598535,
+          "copy": 0.02505659349844791,
+          "road_geometry": 0.005176941518584499,
+          "matrix_solver": 0.0032723945114412345,
+          "encoding": 0.009188904983602697,
+          "body_geometry": 0.013210661560151493,
+          "cycle": 0.002006692000577459,
+          "pair_geometry": 0.028534635006508324,
+          "decoding": 0.02211473246643436,
+          "state_stage_prepare": 0.000381638492399361,
+          "reference_total": 0.0034114094960386865,
+          "prediction_integration": 0.1955425430132891,
+          "osqp_solve": 0.011519020994455786,
+          "bicycle_total": 0.019045397955778753,
+          "osqp_setup": 0.0012277814967092127,
+          "polygon_clip": 0.06610317208833294,
+          "condensed_model": 0.007901856508397032,
+          "plan_content_binding": 0.007104642994818278,
+          "plan_validation": 0.02894959938566899,
+          "seed_generation": 0.0019267079987912439,
+          "physical_audit": 0.0017911229660967365,
+          "wire_send": 0.004156648039497668
+        },
+        "after_last_final": {
+          "plan_cache_hit": 6.181250137160532e-05,
+          "decoding": 0.0011749199948098976,
+          "encoding": 0.0010508664527151268,
+          "acknowledgement": 0.00016907551253098063,
+          "body_geometry": 0.001099675504519837,
+          "cycle": 0.00019563450405257754,
+          "prediction_integration": 0.027537945497897454,
+          "dds_wait": 0.0029908145043009426,
+          "copy": 0.0011211950004508253,
+          "plan_content_binding": 0.005823186045745388,
+          "plan_validation": 0.006388525980582926,
+          "physical_audit": 0.0008466825202049222,
+          "pair_geometry": 0.022294536986009916,
+          "polygon_clip": 0.015129060004255734,
+          "wire_send": 0.0005696605003322475,
+          "road_geometry": 0.002345573990169214
+        },
+        "commit_tail": {
+          "decoding": 0.0001714615209493786,
+          "encoding": 7.152900070650503e-05,
+          "cycle": 0.00010677100726752542,
+          "dds_wait": 0.0017233334765478503,
+          "copy": 6.614200538024306e-05,
+          "wire_send": 0.00019788448844337836
+        },
+        "diagnostics": {
+          "cycle": 0.00034549149859230965
+        }
+      },
+      "grey_without_candidate_mean_s": {
+        "corridor_construction": 0.0,
+        "decoding": 0.02211473246643436,
+        "state_stage_prepare": 0.000381638492399361,
+        "reference_total": 0.0,
+        "seed_generation": 0.0019267079987912439,
+        "candidate_compute": 0.0,
+        "prediction_integration": 0.15100624851038447,
+        "dds_wait": 0.028905382543598535,
+        "copy": 0.02505659349844791,
+        "osqp_solve": 0.0,
+        "bicycle_total": 0.0,
+        "osqp_setup": 0.0,
+        "polygon_clip": 0.06610317208833294,
+        "road_geometry": 0.003417974014155334,
+        "condensed_model": 0.0,
+        "matrix_solver": 0.0,
+        "encoding": 0.009188904983602697,
+        "body_geometry": 0.0026951735126203857,
+        "cycle": 0.002006692000577459,
+        "pair_geometry": 0.005676508506439859,
+        "plan_content_binding": 0.007104642994818278,
+        "plan_validation": 0.02894959938566899,
+        "physical_audit": 0.0010823434677149635,
+        "wire_send": 0.004156648039497668
+      },
+      "exclusive_mean_s": {
+        "corridor_construction": 0.006986065989622148,
+        "candidate_compute": 0.004096790493349545,
+        "dds_wait": 0.03361953052444733,
+        "copy": 0.02624393050427898,
+        "road_geometry": 0.007522515508753713,
+        "matrix_solver": 0.0032723945114412345,
+        "plan_cache_hit": 6.181250137160532e-05,
+        "encoding": 0.010311300437024329,
+        "body_geometry": 0.01431033706467133,
+        "cycle": 0.0026545890104898717,
+        "pair_geometry": 0.05082917199251824,
+        "decoding": 0.023461113982193638,
+        "state_stage_prepare": 0.000381638492399361,
+        "reference_total": 0.0034114094960386865,
+        "acknowledgement": 0.00016907551253098063,
+        "prediction_integration": 0.22308048851118656,
+        "osqp_solve": 0.011519020994455786,
+        "bicycle_total": 0.019045397955778753,
+        "osqp_setup": 0.0012277814967092127,
+        "polygon_clip": 0.08123223209258867,
+        "condensed_model": 0.007901856508397032,
+        "plan_content_binding": 0.012927829040563665,
+        "physical_audit": 0.0026378054863016587,
+        "seed_generation": 0.0019267079987912439,
+        "plan_validation": 0.035338125366251916,
+        "wire_send": 0.004924193028273294
+      },
+      "application_bytes": 705687,
+      "cache_hits": 24,
+      "stored_bytes": 30176,
+      "cache_hits_measured": true
+    }
+  },
+  "historical_L_FIFO_r1_signature": {
+    "sha256": "b6cb236bd54bd185d119ec3252f4d67ba707b2e19ee1de951c06255e574c7acf",
+    "cycles": 882,
+    "input_square_integral": 91.12064639258638
+  },
+  "motion_matches_historical": true,
+  "scope": "full_cycle ends after diagnostics; consecutive starts additionally cover timer finalization/progress; nested inclusive rows must not be summed"
+}

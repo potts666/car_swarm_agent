@@ -1,0 +1,9 @@
+{"cycle": 21, "kind": "request", "car": "A"}
+{"cycle": 21, "kind": "grant", "car": "A", "version": 1}
+{"cycle": 36, "kind": "request", "car": "B"}
+{"cycle": 174, "kind": "release_prepared", "old_owner": "A", "next_owner": "B", "old_version": 1, "proposed": {"cycle": 174, "state_time_s": 134.8, "permission_version": 2, "owner": "B", "released": [], "proposal_id": "174:1:A", "releasing": "A", "conditional": true}}
+{"cycle": 174, "kind": "handoff", "old_owner": "A", "owner": "B", "version": 2, "proposal_id": "174:1:A", "plans": {"A": "f57ec891f0376dba7aadfa291e7d58cfcbf76e72c8215f936b5e9b695d456055", "B": "e56a8dd24e229dd44734f8713b9c5b0105272835ac27d9608da72bfb0bde71e9"}}
+{"cycle": 223, "kind": "car_completed", "car": "A"}
+{"cycle": 355, "kind": "release_prepared", "old_owner": "B", "next_owner": null, "old_version": 2, "proposed": {"cycle": 355, "state_time_s": 171.0, "permission_version": 3, "owner": null, "released": ["A"], "proposal_id": "355:2:B", "releasing": "B", "conditional": true}}
+{"cycle": 355, "kind": "handoff", "old_owner": "B", "owner": null, "version": 3, "proposal_id": "355:2:B", "plans": {"A": "8e142b6ab377f9ab7ff0aa89ca5adaff0721c3b03741c47a764adb7652b07eb7", "B": "541f631a545a293b06c4aa262124470c3d2fc4ae7377750e661fc36c635891f9"}}
+{"cycle": 402, "kind": "car_completed", "car": "B"}

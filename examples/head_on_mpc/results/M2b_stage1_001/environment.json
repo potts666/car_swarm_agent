@@ -1,0 +1,27 @@
+{
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "cpu_count": 4,
+  "affinity_cores": 4,
+  "loadavg": [
+    0.00341796875,
+    0.04931640625,
+    0.06640625
+  ],
+  "python": "3.12.3",
+  "historical_source_matches": {
+    "m2b_control.py": true,
+    "m2b_scene.py": true,
+    "bicycle_core.py": true
+  },
+  "initial_implementation_sha256": {
+    "run_m2b.py": "6fef17c02b29d0eb8b0aef6c3174b346fa67c4ec8c2987594afc3bbc45ccfe7b",
+    "m2b_protocol.py": "39e2c45780ffa45416f648a07ff8fe3b1fe66217fa479149f25b2d7a65836fdd",
+    "m2b_control.py": "36cebf384f72a1656bef1f143eb9bc0d0633b56f3e71c6cdba906a22db77585f",
+    "m2b_timing.py": "72a7c7229a16ada985d56a5f09d1d4ec1172512e16f79aa684f5caf876ee67d5",
+    "m2b_scene.py": "15ae7c6555d37d11d3fbd98e09431b64b773532a1f826f2c92001862d384ecf3",
+    "bicycle_core.py": "6d272725086c93618910c6b1f295d382745ba62533682fedb4de6ca988a34be4"
+  },
+  "token_evidence_reused": "../M2b_token_audit_001/report.md",
+  "thread_setting": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1; ROS_DOMAIN_ID=74",
+  "historical_results_read_only": true
+}

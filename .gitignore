@@ -13,3 +13,6 @@ Thumbs.db
 # Python 生成缓存
 __pycache__/
 *.py[cod]
+
+# Keep the large experiment archive locally; do not commit it.
+/examples/head_on_mpc/results/M2b_fourcar_001.tar.gz

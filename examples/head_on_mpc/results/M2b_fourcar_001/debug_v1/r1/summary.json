@@ -1,0 +1,44 @@
+{
+  "arm": "local",
+  "policy": "fifo-ready",
+  "all_completed": false,
+  "completion_sim_s": null,
+  "completion_per_car_s": {},
+  "failure": "A1:bicycle:primal infeasible",
+  "failure_layer": "candidate",
+  "online_wall_s": 29.73040437600139,
+  "export_wall_s": 1.0582857089975732,
+  "committed_cycles": 43,
+  "timed_cycles": 44,
+  "last_states": {
+    "A1": [
+      -22.00376990630007,
+      3.0,
+      0.0,
+      0.03770078223841042,
+      0.0
+    ],
+    "A2": [
+      -39.0,
+      -3.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "B1": [
+      31.803848129950282,
+      -0.0003428476067598099,
+      4.188782569877462,
+      7.589415207398531e-19,
+      0.42285472858478573
+    ],
+    "B2": [
+      40.0,
+      -3.0,
+      3.141592653589793,
+      0.0,
+      0.0
+    ]
+  },
+  "old_central_future_diagnostic": "not executed; no online future gate"
+}

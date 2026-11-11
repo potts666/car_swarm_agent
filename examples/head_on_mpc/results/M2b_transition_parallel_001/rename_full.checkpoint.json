@@ -1,0 +1,83 @@
+{
+  "name": "rename_full",
+  "backend": "P-J",
+  "variant": "rename",
+  "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+  "passed": true,
+  "wall_s": 468.5259712210027,
+  "online_exit": 0,
+  "audit_exit": 0,
+  "summary": {
+    "backend": "P-J",
+    "all_completed": true,
+    "completion_sim_s": 176.60000000000002,
+    "completion_per_car_s": {
+      "west_head": 68.60000000000001,
+      "east_head": 104.2,
+      "west_tail": 140.20000000000002,
+      "east_tail": 176.60000000000002
+    },
+    "failure": null,
+    "failure_layer": null,
+    "online_wall_s": 260.2938888730059,
+    "total_wall_before_export_s": 260.91796880400216,
+    "shutdown_wall_s": 0.09899004200269701,
+    "committed_cycles": 883,
+    "timed_cycles": 884,
+    "last_states": {
+      "west_tail": [
+        46.00030642301261,
+        -2.999999124584703,
+        -3.4549306988404423e-07,
+        3.469446951953614e-18,
+        1.3234889800848443e-22
+      ],
+      "east_tail": [
+        -46.000054925275265,
+        -2.999998287309891,
+        3.141593103006449,
+        -1.734723475976807e-18,
+        -7.940933880509066e-23
+      ],
+      "east_head": [
+        -46.00030668838767,
+        2.9999991037353713,
+        3.1415923037624354,
+        6.938893903907228e-18,
+        -9.26442286059391e-23
+      ],
+      "west_head": [
+        46.00005484341341,
+        2.9999982869502952,
+        4.4693102170838646e-07,
+        2.6020852139652106e-18,
+        -9.26442286059391e-23
+      ]
+    },
+    "old_central_future_diagnostic": "not executed; no online future gate",
+    "export_wall_s": 27.51901778699539
+  },
+  "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/rename_full/r1/independent_validation.json",
+  "sha256": {
+    "scene_gate.json": "a661799c9e9e66865dc4a0d0fd5337b30d47cb849b227f1683e343b2cafd6312",
+    "routes.json": "6bba2f3b430442ae534427e44dbd4c304708fc112a4c520957c96b8aa5b84464",
+    "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+    "r1/solves.jsonl.gz": "c4aecfb3212971354fe61abb908c60f4b03747fa40faf8932eeed5759b2eece4",
+    "r1/summary.json": "97df82d38c7ebf6d87d565194e4b21712ffb3c736d6396329885350066ab4df8",
+    "r1/agreements.jsonl.gz": "1346c60043ec3b068e1aaf1c309f4446940872f5533f81b50f5872527b067aa0",
+    "r1/actual.jsonl.gz": "b8d4072c986a62c15cb91910a01f65567e7b4a5cfe28c5bdde8f226664d32598",
+    "r1/startup.json": "cef9205810f55b466c540b596ef6964414a338f525fdfe67b3623775110dc08f",
+    "r1/events.jsonl.gz": "0a7a472bd9ecd35afaf4ea30ae3b53a9e75ca93c0bffd93a38a5454ccf1e7a11",
+    "r1/independent_validation.json": "4829670bafca3f061dd6d86c6b7844407ec29c6cf1b86636ba13844e0e4e92b0",
+    "r1/config.json": "927f8ba7da2b111b76f254881a2e477c002b3ee6c1732e84ff1f04595ed34e04",
+    "r1/rounds.jsonl.gz": "a61be82b6d8518a016395b9c1582fdb4593ab952306b97f902674585b4d5e2b5",
+    "r1/recording_stats.json": "5ea9af2865abacea503ebe1ab20f78b82ba3768c1ce836c368ac5cc9fe2af711",
+    "r1/diagnostics.jsonl.gz": "1eaf97edb0b6f2f7e1b571f45078c339dcf772a7d1708b70a9189c75cc6f9eb3",
+    "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+    "r1/candidates.jsonl.gz": "526ccbb549767f612c5a3053456fc6c70b016adaf83e156087ba5fab9832124b",
+    "r1/planning.jsonl.gz": "8bdf5d7afca6db0119cf7feeced165f4f865eaaecce92bbdcd2aea9a59060d4b",
+    "r1/resources.json": "fa704e9d3b094080c0bbf80ded0462b30cb2867536531f97f0a8c373c04ffbd6",
+    "r1/messages.jsonl.gz": "ea5c3592242407c5baf664c83c86940f8058c4d0117d908dde476fd7901995e0",
+    "r1/plans.jsonl.gz": "376dee2e21416efd73fdc375bfcb5c1474ab30c1382726a200dc43966b1573e0"
+  }
+}

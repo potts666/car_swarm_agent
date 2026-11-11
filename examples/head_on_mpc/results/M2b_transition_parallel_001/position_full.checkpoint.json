@@ -1,0 +1,83 @@
+{
+  "name": "position_full",
+  "backend": "P-J",
+  "variant": "position",
+  "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+  "passed": true,
+  "wall_s": 465.4155486439995,
+  "online_exit": 0,
+  "audit_exit": 0,
+  "summary": {
+    "backend": "P-J",
+    "all_completed": true,
+    "completion_sim_s": 176.60000000000002,
+    "completion_per_car_s": {
+      "A1": 68.60000000000001,
+      "B1": 104.4,
+      "A2": 140.4,
+      "B2": 176.60000000000002
+    },
+    "failure": null,
+    "failure_layer": null,
+    "online_wall_s": 263.81416398799774,
+    "total_wall_before_export_s": 264.4405629190005,
+    "shutdown_wall_s": 0.11895784700027434,
+    "committed_cycles": 883,
+    "timed_cycles": 884,
+    "last_states": {
+      "A1": [
+        46.00005491850145,
+        2.99999828739602,
+        4.467062923960869e-07,
+        3.469446951953614e-18,
+        -7.940933880509066e-23
+      ],
+      "A2": [
+        46.00030641179326,
+        -2.9999991247598086,
+        -3.4547051254075636e-07,
+        -2.6020852139652106e-18,
+        0.0
+      ],
+      "B1": [
+        -46.00030661611247,
+        2.999999129786699,
+        3.1415923086208073,
+        -6.071532165918825e-18,
+        9.26442286059391e-23
+      ],
+      "B2": [
+        -46.00005490100622,
+        -2.9999982873508264,
+        3.141593100336633,
+        6.071532165918825e-18,
+        0.0
+      ]
+    },
+    "old_central_future_diagnostic": "not executed; no online future gate",
+    "export_wall_s": 26.529587368997454
+  },
+  "validation": "examples/head_on_mpc/results/M2b_transition_parallel_001/position_full/r1/independent_validation.json",
+  "sha256": {
+    "scene_gate.json": "a4909efda33f8e6909350c482f4dd0fc26900912d550078952ffa828d1a2d4a1",
+    "routes.json": "9bc1334a5dcf62a071bb918ee3219599efa18244af72590207e15faaa39e21ae",
+    "environment.json": "d6c9be07ca4e11e5e4dac91b99fd68e0a88d81445942f5444f5240999e6e200f",
+    "r1/solves.jsonl.gz": "9d6148a624c2e55f4b03fa8b83167c038f302eab491a460ac4994bfec2ebcec9",
+    "r1/summary.json": "a7b88524393da4d7e7acd8f6c517080cd14a5a651bd6569459e30468503671ef",
+    "r1/agreements.jsonl.gz": "7425bf6fbb5325083fc4b08357b63422749fa9849eb177772ddd112e235cf6f3",
+    "r1/actual.jsonl.gz": "782d1223c707a64eef6da19fb0df4c3107258403e751afb06ab4125040b3d491",
+    "r1/startup.json": "a26a87b7b3f195babc09e7684894c481697794619fb854dc74e789d43ce11c2b",
+    "r1/events.jsonl.gz": "908d9901abcbc075ff51e9ae191102604f647dccb5064c430a0c84fc3a527f75",
+    "r1/independent_validation.json": "013a7530bf043fd6b9fe7c226aea0236b6e2632ac2c4b70a4844c88350f9fc99",
+    "r1/config.json": "90af3a59f34bf897cfefcd20c09a5632493fad409310c2ed2f5ed455f13b10b0",
+    "r1/rounds.jsonl.gz": "de0e639b1adba90198a214f759b34dc011d737f0cf8ead26864b6b986041e19f",
+    "r1/recording_stats.json": "26327c031da009291cff3bb6bafb5093f7a7b887f1f532c8fdf72f196117a5bf",
+    "r1/diagnostics.jsonl.gz": "531b7d4148b7d34f61f9c19d5f48b0286925929354f1394ab43c443ba3017ea7",
+    "r1/log_format.json": "ae279b4a6e731e2a54e651bbefbfdaae57c8500d993e3888c781db6b39f399f4",
+    "r1/candidates.jsonl.gz": "a50ca4416c864ae9a0b549371806c0bc5b578f7bd03ccbb89d19cfc9865bfb7f",
+    "r1/planning.jsonl.gz": "51913834bde4f1637aa2d95fc53240adcf024947e6112fc7543d488d502b3db5",
+    "r1/resources.json": "079368196a884814da096abbd04478102dedf34f90fdeb39e9a69f3617788062",
+    "r1/messages.jsonl.gz": "fea4fa610ead3c1de3f97bb4315079fe9fa3b3803f13ef719e9b57ecfff6c230",
+    "r1/plans.jsonl.gz": "149f27cd6110ff4847ea57a35987a7299a42a88187481b6590df87af74efadbe"
+  }
+}

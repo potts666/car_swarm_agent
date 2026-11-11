@@ -1,0 +1,22 @@
+POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/report_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001
+formal audits 6 all passed True
+POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/plot_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001
+POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/check_m2b_seeds.py --run examples/head_on_mpc/results/M2b_fourcar_001
+seed replay passed examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1 7.105427357601002e-14
+seed replay passed examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2 7.105427357601002e-14
+seed replay passed examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1 7.105427357601002e-14
+seed replay passed examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2 7.105427357601002e-14
+seed replay passed examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1 7.105427357601002e-14
+seed replay passed examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2 7.105427357601002e-14
+POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/m2b_storage_post.py --run examples/head_on_mpc/results/M2b_fourcar_001
+storage measured examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1
+storage measured examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2
+storage measured examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1
+storage measured examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2
+storage measured examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r1
+storage measured examples/head_on_mpc/results/M2b_fourcar_001/L-ALT/r2
+POST /usr/bin/python3 /home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/examples/head_on_mpc/scripts/m2b_diagnostic_archive.py --run examples/head_on_mpc/results/M2b_fourcar_001
+diagnostic bytes restored exactly examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r1
+diagnostic bytes restored exactly examples/head_on_mpc/results/M2b_fourcar_001/C-FIFO/r2
+diagnostic bytes restored exactly examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r1
+diagnostic bytes restored exactly examples/head_on_mpc/results/M2b_fourcar_001/L-FIFO/r2

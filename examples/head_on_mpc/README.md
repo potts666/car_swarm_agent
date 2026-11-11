@@ -301,3 +301,13 @@ M0停车衔接已完成后续修复：[新报告](results/M0_002/report.md) · [
 ## M1：固定运动基线与M2交接
 
 [M1_motion_freeze_001报告](results/M1_motion_freeze_001/report.md) · [冻结规格](results/M1_motion_freeze_001/baseline_spec.md) · [明确选型](results/M1_motion_freeze_001/selection.json) · [M2信息依赖与交接](results/M1_motion_freeze_001/M2_handoff.md)。已确认维护运行代码、配置、原验收及已声明环境与关闭版一致，复用M0_closure_001两轮已验收结果，未新增运动实验或调参。冻结B2-C/M1-v1为M2的集中式主参考，B1仅保留历史诊断；源码、参数和验收均有SHA256版本，原始材料不覆盖。预测预算0.5 s、控制周期0.2 s、最大完整周期约12–13 s分别保留，尚未实现实时或局部DMPC。下一步是双车局部信息/预测兼容与协调设计，不在M1继续扩展求解器。
+
+## M2a：双车理想通信下局部DMPC
+
+[实验报告](results/M2a_local_dmpc_001/report.md) · [对照表](results/M2a_local_dmpc_001/comparison.csv) · [交付核查](results/M2a_local_dmpc_001/verification.json) · [复现与M2b边界](results/M2a_local_dmpc_001/reproduction.md)。C-new和L-new各两轮均在80.4 s完成，独立重演通过原物理/速度跨零与新释放、最终计划版本契约。L-new每车只解32/64变量问题，经三个ROS节点显式交换预测，一轮A→B后双认可提交；没有中央联合求解救场或在线完整未来门禁。旧完整未来只作事后中央诊断，不是局部未来可行性证明。三版调试失败和冻结实例均保留。周期最大约524 ms，计算期间状态冻结，尚无硬实时、连续安全或递归可行保证；M2b未实施。
+
+M2a日志减量已完成前两步：[压缩/计划引用报告](results/M2a_storage_001/report.md)。完整记录可恢复，当前维护读写器支持gzip及计划ID引用；原冻结目录保留，新分发包载荷由745.11 MiB降到91.11 MiB。存储缩小不代表DDS流量或控制周期下降；失败触发的诊断裁剪尚未实施。
+
+## M2b：四车理想同步通信
+
+[真实结果与复现](results/M2b_fourcar_001/report.md) · [六轮对照](results/M2b_fourcar_001/comparison.csv) · [冻结设计](results/M2b_fourcar_001/design.md) · [交付核查](results/M2b_fourcar_001/verification.json)。C-FIFO两轮均177.0 s，L-FIFO/L-ALT各两轮均176.4 s，六轮均经独立重积分通过原物理/跨零、6车对、队首资格及四计划/四认可验收。中央真正单次求128/256变量，局部每车32/64、五个ROS节点公开交换、一轮A1→B1→A2→B2，无联合求解救场或在线全未来门禁。两种局部调度在此场景授权顺序相同，未区分出调度收益。外侧道路显式扩至52 m；调试反例、停车前缀可达性修复、日志无损恢复及工程体积边界均在报告中列明。周期超过200 ms，不构成连续安全、递归可行、硬实时或实车证明。

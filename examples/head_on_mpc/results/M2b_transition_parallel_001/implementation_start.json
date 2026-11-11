@@ -1,0 +1,13 @@
+{
+  "baseline": "M2b_stage1_001/full_L_FIFO/r1",
+  "source_sha256": {
+    "m2b_scene.py": "15ae7c6555d37d11d3fbd98e09431b64b773532a1f826f2c92001862d384ecf3",
+    "m2b_control.py": "36cebf384f72a1656bef1f143eb9bc0d0633b56f3e71c6cdba906a22db77585f",
+    "m2b_protocol.py": "83f1be8c48b0a24820c983b8af5d2f7afe38f442e456055042b2fb0dc1098e22",
+    "run_m2b.py": "d7abca0e1be80e6714eac7251da6477a03467edb981f8386ccc0eefcdcb7854c",
+    "verify_m2b.py": "c9e0680e39f74bde37248a7a9c8f07a547e5bc17b820eed9cd2b618d6b7a822b",
+    "m2b_recording.py": "b3fc35c0ee5ed6512ceae7a4b6de2744dd28438dbbff63952ca2342eef71d2cc"
+  },
+  "frozen_constraints": "same scene/targets/physics/N/h/sample/weights/tolerances/0.5s; no continuous steering",
+  "initial_debug_max_rounds": 1
+}

@@ -1,0 +1,40 @@
+{
+  "audit_target": "M2b_fourcar_001",
+  "MRIB_alias_confirmed": false,
+  "MRIB_scope_note": "No MRIB name in original task evidence; the supplied M2b output/task is matched. Whether MRIB is the user's alias remains unconfirmed.",
+  "cwd": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane",
+  "original_host_platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "original_hostname": null,
+  "host_evidence": "M2b_fourcar_001/C-FIFO/environment.json",
+  "original_client": "codex_vscode / source=vscode",
+  "original_cli_version": "0.164.0-alpha.11.1",
+  "original_extension_version": null,
+  "current_installed_extension_version_for_corroboration_only": "26.1021.22027",
+  "current_bundled_cli_same_version": true,
+  "main_model": "gpt-6.1-sol",
+  "main_reasoning": "medium",
+  "guardian_model": "codex-auto-review",
+  "guardian_reasoning": "low",
+  "historical_plan_type": "plus",
+  "exact_authentication_mode": null,
+  "credential_files_read": false,
+  "api_cost_available": false,
+  "credits_snapshot": {
+    "has_credits": false,
+    "balance": "0"
+  },
+  "task_start_utc": "2026-11-01T13:50:13.786Z",
+  "task_end_utc": "2026-11-01T23:46:00.619Z",
+  "local_timezone": "Asia/Shanghai (+08:00)",
+  "task_start_local": "2026-11-01 21:50:13.786",
+  "task_end_local": "2026-11-02 07:46:00.619",
+  "root_thread_id": "01a18b08-73cc-7001-ba3d-92d49ecdd80e",
+  "root_turn_ids": [
+    "01a19760-00c8-74f2-a1ce-764b0e651cc0",
+    "01a1979c-a4e1-7493-b137-0ce18a0d1fc2",
+    "01a19972-5fcc-71a2-bf8a-f076f9d4d354"
+  ],
+  "excluded": "T1/M0/M1/M2a/storage, later folder explanation, this audit, old Oct30 guardian",
+  "field_definition_evidence": "same-version generated protocol token_schema_definitions.json + historical per-response/cumulative arithmetic",
+  "billing_semantics_not_established": true
+}

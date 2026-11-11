@@ -1,0 +1,35 @@
+test_WAIT_label_at_wrong_position_is_not_ready (test_m2a.M2aTests.test_WAIT_label_at_wrong_position_is_not_ready) ... ok
+test_initialization_and_candidate_rejection (test_m2a.M2aTests.test_initialization_and_candidate_rejection) ... ok
+test_local_qps_have_only_own_variables (test_m2a.M2aTests.test_local_qps_have_only_own_variables) ... ok
+test_missing_ack_cancel_keeps_old_authorization (test_m2a.M2aTests.test_missing_ack_cancel_keeps_old_authorization) ... ok
+test_no_commit_before_conditional_authorization (test_m2a.M2aTests.test_no_commit_before_conditional_authorization) ... ok
+test_nonowner_and_old_authorization_rejected (test_m2a.M2aTests.test_nonowner_and_old_authorization_rejected) ... ok
+test_predicted_clear_does_not_replace_actual_clear (test_m2a.M2aTests.test_predicted_clear_does_not_replace_actual_clear) ... ok
+test_redundant_rows_have_valid_certificates_and_needed_rows_remain (test_m2a.M2aTests.test_redundant_rows_have_valid_certificates_and_needed_rows_remain) ... ok
+test_rotated_support_and_wait_label (test_m2a.M2aTests.test_rotated_support_and_wait_label) ... ok
+test_stale_ack_and_repair_requires_new_prediction (test_m2a.M2aTests.test_stale_ack_and_repair_requires_new_prediction) ... ok
+test_valid_handoff_and_duplicate_release (test_m2a.M2aTests.test_valid_handoff_and_duplicate_release) ... ok
+test_bundle_roundtrip_and_single_content (test_m2a_logs.LogsTests.test_bundle_roundtrip_and_single_content) ... ok
+test_missing_or_corrupt_plan_rejected (test_m2a_logs.LogsTests.test_missing_or_corrupt_plan_rejected) ... ok
+test_pack_preserves_original_bytes_and_refuses_overwrite (test_m2a_logs.LogsTests.test_pack_preserves_original_bytes_and_refuses_overwrite) ... ok
+test_wire_mismatch_and_ambiguous_files_rejected (test_m2a_logs.LogsTests.test_wire_mismatch_and_ambiguous_files_rejected) ... ok
+test_conditional_commit_cannot_execute_before_activation (test_m2b_control.ControlTests.test_conditional_commit_cannot_execute_before_activation) ... ok
+test_corrupt_repair_and_moving_initialization_rejected (test_m2b_control.ControlTests.test_corrupt_repair_and_moving_initialization_rejected) ... ok
+test_follower_cannot_merge_or_advance_from_earlier_request (test_m2b_control.ControlTests.test_follower_cannot_merge_or_advance_from_earlier_request) ... ok
+test_frozen_stop_prefix_avoids_next_cycle_numeric_infeasibility (test_m2b_control.ControlTests.test_frozen_stop_prefix_avoids_next_cycle_numeric_infeasibility) ... ok
+test_joint_and_local_variables_all_pairs_and_cache (test_m2b_control.ControlTests.test_joint_and_local_variables_all_pairs_and_cache) ... ok
+test_mixed_versions_invalidate_all_acks (test_m2b_protocol.ProtocolTests.test_mixed_versions_invalidate_all_acks) ... ok
+test_no_overtake_preserve_request_and_cancel_history (test_m2b_protocol.ProtocolTests.test_no_overtake_preserve_request_and_cancel_history) ... ok
+test_release_auth_body_and_atomic_ack (test_m2b_protocol.ProtocolTests.test_release_auth_body_and_atomic_ack) ... ok
+test_rules (test_m2b_protocol.ProtocolTests.test_rules) ... ok
+test_fourcar_restore_and_missing_content (test_m2b_recording.RecordingTests.test_fourcar_restore_and_missing_content) ... ok
+test_infinite_diagnostic_bounds_are_explicit_not_invalid_json (test_m2b_recording.RecordingTests.test_infinite_diagnostic_bounds_are_explicit_not_invalid_json) ... ok
+test_normal_diagnostics_pruned (test_m2b_recording.RecordingTests.test_normal_diagnostics_pruned) ... ok
+test_shifted_seed_exact_recovery_and_corrupt_tail_rejected (test_m2b_recording.RecordingTests.test_shifted_seed_exact_recovery_and_corrupt_tail_rejected) ... ok
+test_DONE_obstacles_not_removed (test_m2b_scene.SceneTests.test_DONE_obstacles_not_removed) ... ok
+test_fixed_scene_and_all_pairs (test_m2b_scene.SceneTests.test_fixed_scene_and_all_pairs) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 2.023s
+
+OK

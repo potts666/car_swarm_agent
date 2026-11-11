@@ -1,0 +1,3 @@
+2026-11-02T13:30:50.296464Z  WARN codex_core_plugins::manifest::manifest_cache: failed to parse plugin manifest: EOF while parsing a value at line 1 column 0 path=/home/sunflower/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/.codex-plugin/plugin.json
+2026-11-02T13:30:50.297503Z  WARN codex_core_plugins::loader: failed to load plugin: missing or invalid plugin.json plugin="superpowers@openai-curated-remote" path=/home/sunflower/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1
+2026-11-02T13:30:55.140222Z  WARN codex_sandboxing::violation: recorded sandbox violation: resource=filesystem backend=linux_sandbox reason=operation_not_permitted path=unknown

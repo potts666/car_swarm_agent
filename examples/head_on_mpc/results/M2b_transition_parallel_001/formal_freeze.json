@@ -1,0 +1,30 @@
+{
+  "source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+  "max_rounds": 1,
+  "simulation_limit_s": 180.0,
+  "wall_watchdog_s": 1800.0,
+  "formal_order": [
+    "S-J_1",
+    "P-J_1",
+    "P-J_2",
+    "S-J_2",
+    "rename_full",
+    "position_full"
+  ],
+  "variants": {
+    "rename": {
+      "A1": "west_head",
+      "A2": "west_tail",
+      "B1": "east_head",
+      "B2": "east_tail",
+      "start_order": [
+        "B2",
+        "B1",
+        "A2",
+        "A1"
+      ]
+    },
+    "position": "each initial x := original x - physical direction * 0.1m"
+  },
+  "stopping": "stop stage on any failure; never increase rounds/budget/tolerance; full audit must pass; no overlap between online and audit"
+}

@@ -1,0 +1,10 @@
+{
+  "format": "M2b-logs-v2-shift-ref",
+  "base": "M2a-logs-v2-gzip-plan-ref",
+  "plan_content": "plans.jsonl.gz",
+  "references": "$plan",
+  "seed_states": "previous committed final suffix + explicit new tail; original ID verified",
+  "final_states": "full 321 nodes",
+  "float_precision_unchanged": true,
+  "detailed_cycles": "failure and previous two; handoff/repair and neighbors"
+}

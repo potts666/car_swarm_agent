@@ -1,0 +1,98 @@
+{
+  "actual_full_acceptance": false,
+  "actual_prefix_acceptance": true,
+  "violations": [],
+  "goals": {
+    "A1": false,
+    "A2": false,
+    "B1": false,
+    "B2": false
+  },
+  "physical": {
+    "passed": true,
+    "residuals": {
+      "A1": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 1.3424170797193824e-07,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "A2": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B1": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "B2": {
+        "outside_road_area_m2": 0.0,
+        "forward_speed_m_s": 0.0,
+        "reverse_speed_m_s": 0.0,
+        "steering_rad": 0.0
+      },
+      "pair_gap_m": 0.0
+    },
+    "pair_gaps_m": {
+      "A1:A2": 4.2,
+      "A1:B1": 49.85370307754409,
+      "A1:B2": 56.97685499168209,
+      "A2:B1": 64.89877511499947,
+      "A2:B2": 72.0,
+      "B1:B2": 4.070069365668051
+    },
+    "minimum_gap_m": 4.070069365668051
+  },
+  "component_replay_error": {
+    "A1": 1.7763568394002505e-14,
+    "A2": 0.0,
+    "B1": 6.16751094639767e-12,
+    "B2": 0.0
+  },
+  "accumulated_replay_error": {
+    "A1": 5.684341886080802e-14,
+    "A2": 0.0,
+    "B1": 2.0250467969162855e-11,
+    "B2": 0.0
+  },
+  "original_sign_check_passed": true,
+  "prediction_replay_error": 3.419842187213362e-11,
+  "minimum_prediction_gap_m": 4.0681312712594995,
+  "protocol_passed": true,
+  "all_exit_timing_passed": true,
+  "local_information_boundary_passed": true,
+  "dimensions": {
+    "A1": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "A2": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "B1": {
+      "reference": 32,
+      "bicycle": 64
+    },
+    "B2": {
+      "reference": 32,
+      "bicycle": 64
+    }
+  },
+  "handoffs": [],
+  "waiting": {},
+  "first_ready_s": {},
+  "first_protection_entry_s": {},
+  "first_actual_tail_clear_s": {},
+  "idle_time_s": {
+    "no_candidate": 1.5999999999999999,
+    "candidates_not_ready": 5.200000000000002
+  },
+  "independent_audit_wall_s": 4.591553448997729,
+  "geometry_shared_with_M1": true,
+  "central_future_not_run": true
+}

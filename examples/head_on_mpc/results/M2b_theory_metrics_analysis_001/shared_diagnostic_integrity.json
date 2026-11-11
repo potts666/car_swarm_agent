@@ -1,0 +1,42 @@
+{
+  "runs": {
+    "C-FIFO/r1": {
+      "passed": true,
+      "rows": 119,
+      "restored_sha256": "1c2fdc9baf0a74988168525b81483a432f2dff21f3b79c0a802e3100ebdcfed0",
+      "full_ocp_rows_rebuilt": false
+    },
+    "C-FIFO/r2": {
+      "passed": true,
+      "rows": 119,
+      "restored_sha256": "9414e8bdb2807204d584b69a90e848e1116eb98454fe3187966c6a5bd3a616ec",
+      "full_ocp_rows_rebuilt": false
+    },
+    "L-FIFO/r1": {
+      "passed": true,
+      "rows": 129,
+      "restored_sha256": "6e940e543bcd32034fddce2d54279677c5e4ad7a2e63a0f5b84cdfeb7116a57f",
+      "full_ocp_rows_rebuilt": false
+    },
+    "L-FIFO/r2": {
+      "passed": true,
+      "rows": 129,
+      "restored_sha256": "ba44501d4f57f16a1f836d76107a08d67cc4b6627ca3344d56a626bb544e7b78",
+      "full_ocp_rows_rebuilt": false
+    },
+    "L-ALT/r1": {
+      "passed": true,
+      "rows": 129,
+      "restored_sha256": "a96d0a694a0ca0d3b085d9380fff1618faed752e6894fafc465661e17c128e3a",
+      "full_ocp_rows_rebuilt": false
+    },
+    "L-ALT/r2": {
+      "passed": true,
+      "rows": 129,
+      "restored_sha256": "8499571b779bf996d19180fff70693a6f71940abbc569a3f5ea8010e363092d3",
+      "full_ocp_rows_rebuilt": false
+    }
+  },
+  "distinct_referenced_objects": 748,
+  "scope": "all archived formal diagnostic rows restored/hashed; no solver or full OCP candidate check"
+}

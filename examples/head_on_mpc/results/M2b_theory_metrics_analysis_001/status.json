@@ -1,0 +1,25 @@
+{
+  "stage": "complete",
+  "finished": [
+    "C-FIFO/r1",
+    "C-FIFO/r2",
+    "L-FIFO/r1",
+    "L-FIFO/r2",
+    "L-ALT/r1",
+    "L-ALT/r2",
+    "debug_v1",
+    "debug_v2",
+    "debug_v3",
+    "debug_c1",
+    "stage1/full_L_FIFO",
+    "stage1/A_uncached",
+    "stage1/B_cached",
+    "stage1/B_no_profiler",
+    "stage1/phase_probe_uncached",
+    "stage1/phase_probe_cached",
+    "stage1/fault_injection"
+  ],
+  "errors": {},
+  "ended_unix": 1793665373.925818,
+  "report": "report.md"
+}

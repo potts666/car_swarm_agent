@@ -1,0 +1,52 @@
+[
+  {
+    "line": 1740,
+    "timestamp": "2026-11-01T14:00:17.473Z",
+    "command": "python3 examples/head_on_mpc/scripts/run_m2b.py --arm local --policy fifo-ready --repeat 1 --output examples/head_on_mpc/results/M2b_fourcar_001/debug_v1"
+  },
+  {
+    "line": 1769,
+    "timestamp": "2026-11-01T14:02:36.620Z",
+    "command": "python3 examples/head_on_mpc/scripts/run_m2b.py --arm local --policy fifo-ready --repeat 1 --output examples/head_on_mpc/results/M2b_fourcar_001/debug_v2"
+  },
+  {
+    "line": 1803,
+    "timestamp": "2026-11-01T14:05:38.038Z",
+    "command": "python3 examples/head_on_mpc/scripts/run_m2b.py --arm local --policy fifo-ready --repeat 1 --output examples/head_on_mpc/results/M2b_fourcar_001/debug_v3"
+  },
+  {
+    "line": 1844,
+    "timestamp": "2026-11-01T14:10:40.597Z",
+    "command": "python3 examples/head_on_mpc/scripts/run_m2b.py --arm central --policy fifo-ready --repeat 1 --output examples/head_on_mpc/results/M2b_fourcar_001/debug_c1"
+  },
+  {
+    "line": 2049,
+    "timestamp": "2026-11-01T15:07:11.470Z",
+    "command": "python3 examples/head_on_mpc/scripts/run_m2b.py --check-scene > examples/head_on_mpc/results/M2b_fourcar_001/scene_gate.json"
+  },
+  {
+    "line": 2065,
+    "timestamp": "2026-11-01T15:08:07.040Z",
+    "command": "python3 -u examples/head_on_mpc/scripts/run_m2b_study.py --run examples/head_on_mpc/results/M2b_fourcar_001"
+  },
+  {
+    "line": 2743,
+    "timestamp": "2026-11-01T16:20:54.448Z",
+    "command": "python3 -u examples/head_on_mpc/scripts/finalize_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001"
+  },
+  {
+    "line": 2897,
+    "timestamp": "2026-11-01T23:32:18.360Z",
+    "command": "python3 -u examples/head_on_mpc/scripts/finalize_m2b_resume.py --run examples/head_on_mpc/results/M2b_fourcar_001 > examples/head_on_mpc/results/M2b_fourcar_001/resume_finalization.log 2>&1"
+  },
+  {
+    "line": 2966,
+    "timestamp": "2026-11-01T23:36:40.527Z",
+    "command": "python3 -u examples/head_on_mpc/scripts/finalize_m2b_resume.py --run examples/head_on_mpc/results/M2b_fourcar_001 > examples/head_on_mpc/results/M2b_fourcar_001/resume_finalization_2.log 2>&1"
+  },
+  {
+    "line": 3051,
+    "timestamp": "2026-11-01T23:44:45.145Z",
+    "command": "python3 -u examples/head_on_mpc/scripts/package_m2b.py --run examples/head_on_mpc/results/M2b_fourcar_001 --output examples/head_on_mpc/results/M2b_fourcar_001.tar.gz"
+  }
+]

@@ -1,0 +1,74 @@
+{
+  "C-FIFO/r2": {
+    "passed": true,
+    "own_messages_and_acks_checked": true,
+    "counts": {
+      "commits": 885,
+      "references": 21240
+    },
+    "source": "C-FIFO/r1"
+  },
+  "L-FIFO/r2": {
+    "passed": true,
+    "own_messages_and_acks_checked": true,
+    "counts": {
+      "commits": 882,
+      "references": 21168
+    },
+    "source": "L-FIFO/r1"
+  },
+  "L-ALT/r1": {
+    "passed": true,
+    "own_messages_and_acks_checked": true,
+    "counts": {
+      "commits": 882,
+      "references": 21168
+    },
+    "source": "L-FIFO/r1"
+  },
+  "L-ALT/r2": {
+    "passed": true,
+    "own_messages_and_acks_checked": true,
+    "counts": {
+      "commits": 882,
+      "references": 21168
+    },
+    "source": "L-FIFO/r1"
+  },
+  "stage1/full_L_FIFO": {
+    "passed": true,
+    "own_messages_and_acks_checked": true,
+    "counts": {
+      "commits": 882,
+      "references": 21168
+    },
+    "source": "L-FIFO/r1"
+  },
+  "stage1/B_cached": {
+    "passed": true,
+    "own_messages_and_acks_checked": true,
+    "counts": {
+      "commits": 6,
+      "references": 144
+    },
+    "source": "stage1/A_uncached"
+  },
+  "stage1/B_no_profiler": {
+    "passed": true,
+    "own_messages_and_acks_checked": true,
+    "counts": {
+      "commits": 6,
+      "references": 144
+    },
+    "source": "stage1/A_uncached"
+  },
+  "stage1/phase_probe_cached": {
+    "passed": true,
+    "own_messages_and_acks_checked": true,
+    "counts": {
+      "commits": 2,
+      "references": 48
+    },
+    "source": "stage1/phase_probe_uncached"
+  }
+}

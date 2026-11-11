@@ -1,0 +1,66 @@
+[
+  {
+    "path": "/home/sunflower/.codex/sessions/2026/10/30/rollout-2026-10-30T12-19-09-01a18b08-73cc-7001-ba3d-92d49ecdd80e.jsonl",
+    "bytes": 10692046,
+    "id": "01a18b08-73cc-7001-ba3d-92d49ecdd80e",
+    "timestamp": "2026-10-30T04:19:09.416Z",
+    "cwd": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane",
+    "originator": "codex_vscode",
+    "cli_version": "0.164.0-alpha.11.1",
+    "source": "vscode",
+    "model_provider": "openai",
+    "parent_thread_id": null,
+    "forked_from_id": null
+  },
+  {
+    "path": "/home/sunflower/.codex/sessions/2026/11/01/rollout-2026-11-01T12-46-36-01a1956e-4cce-7131-8d9c-6b797ba71e29.jsonl",
+    "bytes": 1598151,
+    "id": "01a1956e-4cce-7131-8d9c-6b797ba71e29",
+    "timestamp": "2026-11-01T04:46:36.250Z",
+    "cwd": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane",
+    "originator": "codex_vscode",
+    "cli_version": "0.164.0-alpha.11.1",
+    "source": {
+      "subagent": {
+        "other": "guardian"
+      }
+    },
+    "model_provider": "openai",
+    "parent_thread_id": "01a18b08-73cc-7001-ba3d-92d49ecdd80e",
+    "forked_from_id": null
+  },
+  {
+    "path": "/home/sunflower/.codex/sessions/2026/11/01/rollout-2026-11-01T22-56-21-01a1979c-8d37-7aa3-ba72-e53cf10480a8.jsonl",
+    "bytes": 1077054,
+    "id": "01a1979c-8d37-7aa3-ba72-e53cf10480a8",
+    "timestamp": "2026-11-01T14:56:21.819Z",
+    "cwd": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane",
+    "originator": "codex_vscode",
+    "cli_version": "0.164.0-alpha.11.1",
+    "source": {
+      "subagent": {
+        "other": "guardian"
+      }
+    },
+    "model_provider": "openai",
+    "parent_thread_id": "01a18b08-73cc-7001-ba3d-92d49ecdd80e",
+    "forked_from_id": null
+  },
+  {
+    "path": "/home/sunflower/.codex/sessions/2026/11/02/rollout-2026-11-02T07-29-24-01a19972-433f-7c82-ac47-efafdf5ddefb.jsonl",
+    "bytes": 796332,
+    "id": "01a19972-433f-7c82-ac47-efafdf5ddefb",
+    "timestamp": "2026-11-01T23:29:24.807Z",
+    "cwd": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane",
+    "originator": "codex_vscode",
+    "cli_version": "0.164.0-alpha.11.1",
+    "source": {
+      "subagent": {
+        "other": "guardian"
+      }
+    },
+    "model_provider": "openai",
+    "parent_thread_id": "01a18b08-73cc-7001-ba3d-92d49ecdd80e",
+    "forked_from_id": null
+  }
+]

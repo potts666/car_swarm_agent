@@ -1,0 +1,12 @@
+{
+  "formal_source_version": "147b593c39d6cffd8763f274e5d689e9ad3df181fbecfaba8126ac590252bec8",
+  "maintenance_source_version": "996f85af9c01baaacb63b3138121e87d9191766c57ded15e746dd171c19fb422",
+  "changed_snapshot_files": [
+    "scripts/run_m2b_jacobi.py"
+  ],
+  "reason": "consume received authorization version instead of substituting current channel version; bind release sender/cycle and require owner report",
+  "normal_message_replay": "release_adapter_replay.json",
+  "motion_constraints_solver_and_protocol_rounds_changed": false,
+  "full_closed_loop_repetitions_on_final_bytes": false,
+  "affected_path_validation": "260-cycle real DDS prefix + independent audit; check summary before claiming pass"
+}

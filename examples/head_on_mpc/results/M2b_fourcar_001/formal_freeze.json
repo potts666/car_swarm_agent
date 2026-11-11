@@ -1,0 +1,220 @@
+{
+  "source_sha256": {
+    "bicycle_core.py": "6d272725086c93618910c6b1f295d382745ba62533682fedb4de6ca988a34be4",
+    "linearized_joint.py": "cf7631dff31518bc1bc4d2e10dd7dae1fc0a4c1025f346ca5f8e3b61c05d6785",
+    "longitudinal_joint.py": "bcea2073cb158aef4bd1eef660c93a8c67acb0085dc0b559c3a66f698fa245be",
+    "m2a_local.py": "9df6e4bbe1e2e1ecf6983b9c9bacb822eca27ab0a0e377c59a88da30cd657d13",
+    "m2a_logs.py": "2d69d06d87d9a2df1123ea326cefd737346342ee698b6679408bca4a1db768df",
+    "m2a_protocol.py": "38c9ce1e9cddcb27f4621d53bd6de7c2a6a2f9c597e5893c663b44f954c99484",
+    "m2b_control.py": "36cebf384f72a1656bef1f143eb9bc0d0633b56f3e71c6cdba906a22db77585f",
+    "m2b_protocol.py": "d6756ca7f2123c9ab347ec00d46c852abf784d6dc12e2dc2b3bdca821b89edfd",
+    "m2b_recording.py": "b3fc35c0ee5ed6512ceae7a4b6de2744dd28438dbbff63952ca2342eef71d2cc",
+    "m2b_scene.py": "15ae7c6555d37d11d3fbd98e09431b64b773532a1f826f2c92001862d384ecf3",
+    "recovery_core.py": "5b70b4be795b0286be74dc31e7762f94920d0da9802a4dcc3f5cdaa6c2b14f7f",
+    "report_m2b.py": "653051f7c98edd221d56701c54a4ee8a7b6a2512705ee409d0b1f2855964d7f4",
+    "run_entry_bicycle.py": "7d1500a5b31047bca4fdf5da506eaed16a8ed8294ce9ec153046c0a8358c4feb",
+    "run_m2b.py": "1c69340e7494d572851056ff4fff02d5fb5d9ccf53fdf2ceff5b137beedca092",
+    "run_m2b_study.py": "243632b061a1e8b2e83daa784a5550e7a77ae29cc551da1b6710e361fd89d0e1",
+    "verify_entry_bicycle.py": "7ecc0bb00da12ce72396c448152f6214675e793ced4e2d03fa2a6e45757a438b",
+    "verify_m2b.py": "c9e0680e39f74bde37248a7a9c8f07a547e5bc17b820eed9cd2b618d6b7a822b"
+  },
+  "scene_sha256": "bbd9f3374e9664a2f38b16f01541587584bb76ae6f058f459eed9fce8af6e0a3",
+  "scene": {
+    "name": "M2b_fourcar_asymmetric_v1",
+    "seed": 0,
+    "epoch_s": 100.0,
+    "parameter_source": "wheelbase, dimensions and steering from config/planner_params.yaml; omega from TrackingOptions; remaining limits are simulation assumptions, not hardware calibration",
+    "vehicle": {
+      "length": 4.5,
+      "width": 1.8,
+      "L": 2.7,
+      "front": 0.8,
+      "rear": 1.0,
+      "v_fwd": 2.0,
+      "v_rev": 1.0,
+      "a_min": -1.0,
+      "a_max": 1.0,
+      "delta_max": 0.5,
+      "omega_max": 1.0
+    },
+    "h": 0.2,
+    "N": 32,
+    "sample_s": 0.02,
+    "s_min": 0.5,
+    "tolerance": 1e-05,
+    "terminal": {
+      "position_m": 0.08,
+      "speed_m_s": 0.025,
+      "yaw_rad": 0.01,
+      "steering_rad": 0.01
+    },
+    "initial": {
+      "A1": [
+        -35,
+        3,
+        0,
+        0,
+        0
+      ],
+      "A2": [
+        -39,
+        -3,
+        0,
+        0,
+        0
+      ],
+      "B1": [
+        37,
+        3,
+        3.141592653589793,
+        0,
+        0
+      ],
+      "B2": [
+        40,
+        -3,
+        3.141592653589793,
+        0,
+        0
+      ]
+    },
+    "previous_input": {
+      "A1": [
+        0,
+        0
+      ],
+      "A2": [
+        0,
+        0
+      ],
+      "B1": [
+        0,
+        0
+      ],
+      "B2": [
+        0,
+        0
+      ]
+    },
+    "goals": {
+      "A1": [
+        46,
+        3,
+        0,
+        0,
+        0
+      ],
+      "A2": [
+        46,
+        -3,
+        0,
+        0,
+        0
+      ],
+      "B1": [
+        -46,
+        3,
+        3.141592653589793,
+        0,
+        0
+      ],
+      "B2": [
+        -46,
+        -3,
+        3.141592653589793,
+        0,
+        0
+      ]
+    },
+    "D": 20.0,
+    "W": 2.8,
+    "g": 34.0,
+    "d_A": 26.5,
+    "d_B": 32.5,
+    "road_rectangles": [
+      [
+        -52,
+        52,
+        -1.4,
+        1.4
+      ],
+      [
+        -52,
+        -10,
+        -5.5,
+        5.5
+      ],
+      [
+        10,
+        52,
+        -5.5,
+        5.5
+      ]
+    ],
+    "request_rear_axle_abs_x": 34.0,
+    "admission_protection_abs_x": 18.0,
+    "release_plane_abs_x": 26.0,
+    "release_margin_m": 0.5,
+    "waiting_anchor_abs_x": 30.0,
+    "bay_offset_local_y": 3.0,
+    "turn_radius_m": 6.0,
+    "detector": {
+      "window_s": 5.0,
+      "actual_progress_m": 0.03,
+      "prediction_endpoint_change_m": 0.03,
+      "prediction_tail_displacement_m": 0.02,
+      "minimum_blocked_fraction": 0.8
+    },
+    "navigation_gap_m": 0.6,
+    "timeout_s": 180.0,
+    "assumptions": [
+      "ideal consistent communication",
+      "no gear dwell; sign changes through rest",
+      "stop before changing primitive curvature",
+      "offline time frozen during planning and candidate screening",
+      "shared deterministic stop-to-stop time scaling, no MPC optimality claim"
+    ],
+    "queue_heads": {
+      "A": [
+        -22,
+        3
+      ],
+      "B": [
+        22,
+        -3
+      ]
+    },
+    "queue_tails": {
+      "A": [
+        -28,
+        3
+      ],
+      "B": [
+        28,
+        -3
+      ]
+    },
+    "protocol": "M2b-release-v1",
+    "log_format": "M2b-logs-v2-shift-ref",
+    "coordination_order": [
+      "A1",
+      "B1",
+      "A2",
+      "B2"
+    ],
+    "coordination_rounds": 1,
+    "prediction_budget_s": 0.5,
+    "wall_watchdog_s": 1800.0
+  },
+  "control_watchdog_s": 1800,
+  "group_process_timeout_s": 4200,
+  "order": [
+    "C-FIFO",
+    "L-FIFO",
+    "L-ALT"
+  ],
+  "repetitions": 2,
+  "thread_env": "OPENBLAS_NUM_THREADS=1",
+  "online_and_audits_overlap": false,
+  "formal_started_wall_ns": 1793545690084200071
+}

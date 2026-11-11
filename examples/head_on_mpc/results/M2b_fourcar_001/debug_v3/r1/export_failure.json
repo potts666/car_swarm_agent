@@ -1,0 +1,6 @@
+{
+  "control_loop_finished": true,
+  "diagnostics_export_completed": false,
+  "reason": "nested NumPy bounds contained infinity; after full execution, finite physical/plan logs had already exported",
+  "fixed_by": "recursive plain conversion, regression test_infinite_diagnostic_bounds_are_explicit_not_invalid_json"
+}
