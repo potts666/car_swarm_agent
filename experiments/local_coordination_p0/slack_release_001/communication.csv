@@ -1,0 +1,10 @@
+stream,phase,scope,messages,JSON_bytes,cross_logical_endpoint_messages,cross_logical_endpoint_bytes,note
+E-MPC,extension,current_experiment,18,8438,18,8438,actual serialized in-process application dispatch; not real network; original log retained
+E-MPC,internal,current_experiment,6,2810,6,2810,actual serialized in-process application dispatch; not real network; original log retained
+E-MPC_numeric,steady,current_experiment,24,10148,6,2552,actual serialized in-process application dispatch; not real network; original log retained
+E-anchor,extension,diagnostic_before_tail_repair_1,18,8438,18,8438,actual serialized in-process application dispatch; not real network; original log retained
+E-anchor,internal,diagnostic_before_tail_repair_1,6,2810,6,2810,actual serialized in-process application dispatch; not real network; original log retained
+E-anchor,extension,certified_analytic,18,8438,18,8438,actual serialized in-process application dispatch; not real network; original log retained
+E-anchor,internal,certified_analytic,6,2810,6,2810,actual serialized in-process application dispatch; not real network; original log retained
+recovery_missing_ACK,extension,current_experiment,29,13551,29,13551,actual serialized in-process application dispatch; not real network; original log retained
+recovery_stale_K,extension,current_experiment,30,14090,30,14090,actual serialized in-process application dispatch; not real network; original log retained

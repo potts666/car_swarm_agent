@@ -1,0 +1,174 @@
+[
+  {
+    "kind": "resource_choice",
+    "cycle": 55,
+    "old_witness": "e7f388ef8bc3b712df00f407206fa5d23c7e21b20386db15e5f6acc4ca98a24e",
+    "new_witness": "21e99af55e32aa07a4f58ddf44a288ef790b0432a387e9a73b1e111a53a4fa92",
+    "choice": {
+      "eligible": [
+        "A1",
+        "A2",
+        "B1",
+        "B2"
+      ],
+      "chosen": "A1",
+      "previous": null,
+      "case": "opposite",
+      "basis": "experimental direction preference among currently certified unfinished waiting cars; ID breaks ties; not a frozen vehicle-priority rule"
+    },
+    "commit_id": "c7d652beec4dd7706fe566e79106dd2d8d55779a30b8ad88fd64efcaed459688"
+  },
+  {
+    "kind": "resource_choice",
+    "cycle": 718,
+    "old_witness": "21e99af55e32aa07a4f58ddf44a288ef790b0432a387e9a73b1e111a53a4fa92",
+    "new_witness": "f61b9f505859a906f4df1ac641e88af3c6406a7d952e55e94d6b98722fbba550",
+    "choice": {
+      "eligible": [
+        "A2",
+        "B1",
+        "B2"
+      ],
+      "chosen": "B1",
+      "previous": "A1",
+      "case": "opposite",
+      "basis": "experimental direction preference among currently certified unfinished waiting cars; ID breaks ties; not a frozen vehicle-priority rule"
+    },
+    "commit_id": "6932be1d8293c45a2d825f2c450fad63f987c2e001ce22efeaf335bcba478a36"
+  },
+  {
+    "kind": "local_socp",
+    "case": "opposite",
+    "cycle": 787,
+    "actor": "B1",
+    "source_history": "cae9bdcabd78991cf9159661e1b2cdfd2eb709868c5c0d308d4e22e18648558f",
+    "parent_witness": "f61b9f505859a906f4df1ac641e88af3c6406a7d952e55e94d6b98722fbba550",
+    "anchor_id": "c4d34b86731c70a639419b55f801e2f941f77063f010d0d73bd5c82485de8bf8",
+    "derivative_id": "dcb2b8a1e9ef04c1f39899d3572b6e567fdd9a8b3d2ef2aafa00064ca4bf0f35",
+    "assembly_id": "0e102e4519b6334c7fad5876f77e92f8019eb6f9988fdbb4060a842fd7fb0308",
+    "raw_result_id": "e35ee4846830a0d651a3ded2e62a9741a9853ec1334cd9b0ddb695174f098b49",
+    "policy_result_id": "ae8d28f941f0cd1bf005e875c24ee397b15d1693d63748516856637d46f29711",
+    "accepted": true,
+    "accepted_witness": "19ac977ca0c30170e6da8e19cf0a1cdef7fac5011673b5bb363e794e5f5c2110",
+    "commit_id": "1d7e4ab651fa8fb3803bea097d155c8af139b52940969284469e779eb8bc4470"
+  },
+  {
+    "kind": "resource_choice",
+    "cycle": 1381,
+    "old_witness": "19ac977ca0c30170e6da8e19cf0a1cdef7fac5011673b5bb363e794e5f5c2110",
+    "new_witness": "466ac498d9382059f4fce6c066f111e1259861c48e3061a0eedf4ddc2718b5b2",
+    "choice": {
+      "eligible": [
+        "A2",
+        "B2"
+      ],
+      "chosen": "A2",
+      "previous": "B1",
+      "case": "opposite",
+      "basis": "experimental direction preference among currently certified unfinished waiting cars; ID breaks ties; not a frozen vehicle-priority rule"
+    },
+    "commit_id": "6fee2c9b0e06ada219aa12daee9397bfedd0b28cf2aae3ace2d35d9dc1d3db0c"
+  },
+  {
+    "kind": "resource_choice",
+    "cycle": 2044,
+    "old_witness": "466ac498d9382059f4fce6c066f111e1259861c48e3061a0eedf4ddc2718b5b2",
+    "new_witness": "15b1fea9a28eeb7f240c736c9687d21c4819e03195fa4d731352417422a19105",
+    "choice": {
+      "eligible": [
+        "B2"
+      ],
+      "chosen": "B2",
+      "previous": "A2",
+      "case": "opposite",
+      "basis": "experimental direction preference among currently certified unfinished waiting cars; ID breaks ties; not a frozen vehicle-priority rule"
+    },
+    "commit_id": "62f6f44992096db63733de5a29537a08568becfaa8d1d67bbded896650145db1"
+  },
+  {
+    "kind": "resource_choice",
+    "cycle": 55,
+    "old_witness": "e7f388ef8bc3b712df00f407206fa5d23c7e21b20386db15e5f6acc4ca98a24e",
+    "new_witness": "21e99af55e32aa07a4f58ddf44a288ef790b0432a387e9a73b1e111a53a4fa92",
+    "choice": {
+      "eligible": [
+        "A1",
+        "A2",
+        "B1",
+        "B2"
+      ],
+      "chosen": "A1",
+      "previous": null,
+      "case": "same_direction",
+      "basis": "experimental direction preference among currently certified unfinished waiting cars; ID breaks ties; not a frozen vehicle-priority rule"
+    },
+    "commit_id": "c7d652beec4dd7706fe566e79106dd2d8d55779a30b8ad88fd64efcaed459688"
+  },
+  {
+    "kind": "resource_choice",
+    "cycle": 718,
+    "old_witness": "21e99af55e32aa07a4f58ddf44a288ef790b0432a387e9a73b1e111a53a4fa92",
+    "new_witness": "d656543361b6f586f80ab5d871e10eab300c372acb7c3896a4d99561cf2914ea",
+    "choice": {
+      "eligible": [
+        "A2",
+        "B1",
+        "B2"
+      ],
+      "chosen": "A2",
+      "previous": "A1",
+      "case": "same_direction",
+      "basis": "experimental direction preference among currently certified unfinished waiting cars; ID breaks ties; not a frozen vehicle-priority rule"
+    },
+    "commit_id": "418a5a0953bef5a903f9376baccc084690f7ade68b6837d23992fd923d836db5"
+  },
+  {
+    "kind": "local_socp",
+    "case": "same_direction",
+    "cycle": 787,
+    "actor": "A2",
+    "source_history": "f674efecded517b4d364a61f017a3723321213b79e7f144ae911ce4b00d9d328",
+    "parent_witness": "d656543361b6f586f80ab5d871e10eab300c372acb7c3896a4d99561cf2914ea",
+    "anchor_id": "e0707aef6d02bccae5a3767421539bd5c10e1126eec5e6af632c7795ae8373fb",
+    "derivative_id": "3edaf6dbeadeed8aeedc58491688153cbcd19fb8cbb3fb6fba1f9ebb7232b01e",
+    "assembly_id": "2c5949faf4f3e75a3633035b94593b5149010c01d155a7eb70802d18443c5655",
+    "raw_result_id": "b0174cf82ab6581a2c3827fcd4eb8d113cc2e93cf3196d472dc35808381cac61",
+    "policy_result_id": "68b854ffafbd23c2b7698150918d6ed7eaf1f66aa2f0f50885ef69aca993a7b8",
+    "accepted": true,
+    "accepted_witness": "615d44ecac7f3b753f6a6b5e60a075c46a1f96a450c5fa77fa30c8d72d3dd64c",
+    "commit_id": "fbafc95693cec9016892cac4a37826cd7ad97af0c5610800e54f148dc559f483"
+  },
+  {
+    "kind": "resource_choice",
+    "cycle": 1381,
+    "old_witness": "615d44ecac7f3b753f6a6b5e60a075c46a1f96a450c5fa77fa30c8d72d3dd64c",
+    "new_witness": "b50c1017626fa18a02851c3b69efa6fd5103d82be679570cd758400ed09a4716",
+    "choice": {
+      "eligible": [
+        "B1",
+        "B2"
+      ],
+      "chosen": "B1",
+      "previous": "A2",
+      "case": "same_direction",
+      "basis": "experimental direction preference among currently certified unfinished waiting cars; ID breaks ties; not a frozen vehicle-priority rule"
+    },
+    "commit_id": "49ca8bc9661cec01879113e3a25407cb95a68c1d45f0e6d3273ee8398b098d49"
+  },
+  {
+    "kind": "resource_choice",
+    "cycle": 2044,
+    "old_witness": "b50c1017626fa18a02851c3b69efa6fd5103d82be679570cd758400ed09a4716",
+    "new_witness": "cc2c4b89f9c9096bf2567cdf8a839302fc91df0971d07782fc295580b8a49b53",
+    "choice": {
+      "eligible": [
+        "B2"
+      ],
+      "chosen": "B2",
+      "previous": "B1",
+      "case": "same_direction",
+      "basis": "experimental direction preference among currently certified unfinished waiting cars; ID breaks ties; not a frozen vehicle-priority rule"
+    },
+    "commit_id": "0c30b3ae961e5618ef76d9eea3400b65c0f4e3f316651c1fda887648643b5d4c"
+  }
+]

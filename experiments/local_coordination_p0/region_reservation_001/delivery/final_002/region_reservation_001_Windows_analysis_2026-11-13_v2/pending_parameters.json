@@ -1,0 +1,34 @@
+{
+  "frozen_this_run": {
+    "source_commit": "ebc3d29f5d7caf0b77b6d11887f82252e9a151dc",
+    "source_package": "/home/sunflower/Downloads/DMPC_region_construction_001",
+    "h": "1/5",
+    "resource": {
+      "x_abs_max": "16"
+    },
+    "body_tube": "1/20",
+    "safe_distance": "1/2",
+    "cases": [
+      "opposite",
+      "same_direction"
+    ],
+    "local_solver": "Clarabel 0.11.1; 64 inputs/65 variables, Q, centered, scale 1e-4, rho .001, 1e-10 tolerances, 300 iterations, 5s",
+    "priority": "test witness selection only; general vehicle priority is not frozen",
+    "scope": "rational certification, full four-car preparation and two overlap cases, per-case one local SOCP update, independent replay, version rejection fallback",
+    "formal_batch": false
+  },
+  "not_frozen": [
+    "general priority/fairness selector",
+    "earlier release optimization",
+    "additional parallel configurations",
+    "arbitrary-domain-source online policy materialization",
+    "reverse SOCP anchors",
+    "persistent wall clock and asynchronous process deployment",
+    "disturbance model"
+  ],
+  "unchanged_theory_reference_bounds": {
+    "overlapped_ticks": 2802,
+    "serial_ticks": 3087
+  },
+  "no_formal_batch": true
+}

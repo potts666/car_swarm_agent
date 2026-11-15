@@ -1,0 +1,97 @@
+{
+  "prior_task": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/autonomy_init_001",
+  "fresh_init_input_manifest": {
+    "files": {
+      "common.py": "c5c4cd5fa1628768bec40d47493bf63df7825aee77b7f38e45105da76617ad12",
+      "initialize.py": "0e11b61e8794ee8ad39ba73753036aaa0c17c9be7c31b72896bb334ba8673190",
+      "local_tasks.json": "23cc8a95808c254417ac985749162ff003d1b72d2cf391cd561d006a5d58b37e",
+      "map_config.json": "53b437b4cd104049164ace1b9f4725b476a5f9cf67bb856d6242ca0a3490e819",
+      "map_domain.py": "bd3d944def207ec46e98750254e65e08a60d42fc4d76230b934639a0c9259ee8",
+      "physics.py": "e6edc61a707aab24f7cf530eba0c10a3bc3ba9104269da165a43a780929ccc39",
+      "requests.json": "933154b25c0a9310b36edb0f7db3ca1bcaa19ae1739cd9e0abe6ee164b331a5c",
+      "sources/construct_certificate.py": "5bb5a8c09e1bbb3bca283741abed7a314dfda8cbec758002c00dda34087793d3",
+      "sources/interval_source.py": "bac15f5e841b511293ca4a220e48ccfda9a9a350795ab91102647ba906743df3",
+      "vehicle_configs.json": "d88e2ae749dd9518585f84d293ada586d1ca65e48c417710f678df83b663a4ad"
+    },
+    "historical_whole_witness_read": false,
+    "parameters": {
+      "certified_graphs": "c5dbfd3ab0d395317b35284f7fd3914283ee38c15083e3e6cd12565e0e22faff",
+      "local_tasks": "a64050c3c59b39b63efeb4d0d6eca9da45203e127601fe3afd7bc608442dc87b",
+      "map_config": "4fc5d777704c9c9dcf49748c2686cec59ed72e64a4e736b090cc5ad152acafb8",
+      "requests": "6d5e3535850254cb559a5b30c4e4a9f5bc678a14f6854eea912a67c70a3c2bf2",
+      "vehicle_configs": "063a474737046965485a1a885a6f77c1f8924a7c4dac10e9dbc56b0597b87628"
+    }
+  },
+  "regenerated_initializations_bit_identical": [
+    {
+      "plan": 0,
+      "identity": "d7e0e8f77c8e34554705902bd31b9a47cc260b2c790243f272ea0491936fb8cf",
+      "prior_file_sha": "429feccfeece89afe096854d4f74db4f53fe99faa1971c50e2ff2baf1eefca8d",
+      "current_sha": "429feccfeece89afe096854d4f74db4f53fe99faa1971c50e2ff2baf1eefca8d",
+      "prior_acceptance": {
+        "passed": true,
+        "steps": 1955,
+        "goals": {
+          "A1": 475,
+          "B1": 960,
+          "B2": 1460,
+          "A2": 1955
+        },
+        "B_final": 0,
+        "all_six_pairs_every_subinterval": true,
+        "subdivisions": 8,
+        "minimum": {
+          "road": "44882811499889525693/100000000000000000000",
+          "pair": "15744224881726933373/25000000000000000000"
+        },
+        "cost": "66912275601571035089892912681653274184981/242055527834132100000000000000000000000",
+        "maximum_activity": 1,
+        "first_two_activity": [
+          [],
+          [
+            "A1"
+          ]
+        ],
+        "wall_seconds": 15.744275625998853,
+        "optimizer_calls": 0
+      }
+    },
+    {
+      "plan": 1,
+      "identity": "3996850d2b75d83fb71843cdadf2516044f2196f68907ded0473af2d99f8129b",
+      "prior_file_sha": "61e57315b02cb2a2688077d4043163daf4fde02a9fff47bfb0f20613cfde2599",
+      "current_sha": "61e57315b02cb2a2688077d4043163daf4fde02a9fff47bfb0f20613cfde2599",
+      "prior_acceptance": {
+        "passed": true,
+        "steps": 1955,
+        "goals": {
+          "B2": 500,
+          "B1": 985,
+          "A2": 1480,
+          "A1": 1955
+        },
+        "B_final": 0,
+        "all_six_pairs_every_subinterval": true,
+        "subdivisions": 8,
+        "minimum": {
+          "road": "44882811499889525693/100000000000000000000",
+          "pair": "15744224881726933373/25000000000000000000"
+        },
+        "cost": "66912275601571035089892912681653274184981/242055527834132100000000000000000000000",
+        "maximum_activity": 1,
+        "first_two_activity": [
+          [],
+          [
+            "B2"
+          ]
+        ],
+        "wall_seconds": 15.423214375998214,
+        "optimizer_calls": 0
+      }
+    }
+  ],
+  "fixed_anchor_id": "c7ca419e5590ce5a0975d512b4240db9ef4363b48bdf8c425dc5ee209f8d16f8",
+  "fixed_anchor_prior_id": "c7ca419e5590ce5a0975d512b4240db9ef4363b48bdf8c425dc5ee209f8d16f8",
+  "historical_complete_witness_input": false,
+  "source": "map/config/local tasks + finite certified graph; prior plans accessed afterward for content comparison only"
+}

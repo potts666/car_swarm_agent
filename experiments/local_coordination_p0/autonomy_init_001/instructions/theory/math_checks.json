@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "checks": {
+    "DAG_initialization": {
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "ticks": 120,
+      "cyclic_dependency_detected": true,
+      "fixture": "Analytic straight delta=0 bicycle and monotone swept intervals"
+    },
+    "buffer_initialization": {
+      "transfers": [
+        [
+          1,
+          "b0"
+        ],
+        [
+          0,
+          "y"
+        ],
+        [
+          1,
+          "x"
+        ]
+      ],
+      "fixture": "Endpoint reservation logic only"
+    },
+    "inflated_registry_cover": {
+      "pairs": 79
+    },
+    "intent_and_permanent_goal": {
+      "stale_version_rejected": true
+    },
+    "receiver_radius_chain": {
+      "position_radius": "1/40",
+      "heading_radius": "1/200"
+    },
+    "affine_quantization_lattice": {
+      "terminal_sum": "1",
+      "error_squared": "1/1800"
+    },
+    "anchor_margin_and_radius": {
+      "zero_candidate_feasible": true
+    },
+    "deadline_rank": {
+      "cases": 1296
+    },
+    "finite_activity_composition": {
+      "passed": true
+    },
+    "resolution_cover_fixture": {
+      "level": 6,
+      "approximation": "21/64"
+    }
+  },
+  "check_categories": 10,
+  "optimizer_calls": 0,
+  "project_control_runs": 0,
+  "scope": "Exact illustrative consistency checks; mathematical proofs in theory.md; no current-map certification"
+}

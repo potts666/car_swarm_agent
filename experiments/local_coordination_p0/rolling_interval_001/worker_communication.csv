@@ -1,0 +1,4 @@
+mode,messages,request_bytes,response_bytes,scope
+solve,518,117730710,11399568,"actual worker pipe JSON, separate from logical application messages"
+assemble,518,117732264,345506,"actual worker pipe JSON, separate from logical application messages"
+zero_call_phase_samples,25,3665096,16675,preflight worker assembly only; zero solve calls

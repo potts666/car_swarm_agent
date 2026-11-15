@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "actual_full_task_s": 350.6,
+  "full_trace_frames": 1754,
+  "partial_interface_s": 48.0,
+  "live_messages": 6,
+  "all_four_bodies_correct": true,
+  "B_yaw_and_rear_axle_offset_checked": true,
+  "live_motion_observed": true,
+  "published_topics": [
+    "/dmpc_replay/markers",
+    "/parameter_events",
+    "/rosout",
+    "/tf"
+  ],
+  "no_control_topics": true
+}

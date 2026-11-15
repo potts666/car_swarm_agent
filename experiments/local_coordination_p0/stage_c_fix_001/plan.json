@@ -1,0 +1,26 @@
+{
+  "initial_solver_calls": 4,
+  "interfaces": [
+    "curve",
+    "straight_acceleration"
+  ],
+  "representations": [
+    "old",
+    "centered"
+  ],
+  "variant": "Q",
+  "scale": "1/10000",
+  "tol": 1e-10,
+  "max_iter": 300,
+  "time_limit": 5,
+  "policy": "Solved first; certificate_suboptimal_v1 only if AlmostSolved",
+  "source_commit": "ebc3d29f5d7caf0b77b6d11887f82252e9a151dc",
+  "preserve": [
+    "stage_a",
+    "stage_b",
+    "stage_c",
+    "P0",
+    "papers"
+  ],
+  "scope": "E0 E1 E2 if necessary E3; no extensions"
+}

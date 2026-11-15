@@ -1,0 +1,40 @@
+{
+  "stage": "region_reservation_002",
+  "priority_order": [
+    "continuous actual-state reoptimization",
+    "reverse SOCP",
+    "more order/overlap cases"
+  ],
+  "current_scope": "first priority: two consecutive actual solves in both two-moving cases",
+  "phases": [
+    787,
+    788
+  ],
+  "solver_calls": 4,
+  "extra_calls": 0,
+  "h": "1/5",
+  "N": 32,
+  "input_dimension": 64,
+  "variables": 65,
+  "rho": "1/1000",
+  "scale": "1/10000",
+  "quantization": "1/1000000000000",
+  "solver": "Clarabel 0.11.1",
+  "tol": 1e-10,
+  "max_iter": 300,
+  "time_limit_s": 5,
+  "policy": "certificate_suboptimal_v1",
+  "fixed": [
+    "map",
+    "resource |x|<=16",
+    "experimental chooser",
+    "2802-tick completion table",
+    "goal domains",
+    "weights"
+  ],
+  "source_directory": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/region_reservation_001",
+  "formal_batch": false,
+  "papers_changed": false,
+  "git_commit": false,
+  "source_commit": "ebc3d29f5d7caf0b77b6d11887f82252e9a151dc"
+}

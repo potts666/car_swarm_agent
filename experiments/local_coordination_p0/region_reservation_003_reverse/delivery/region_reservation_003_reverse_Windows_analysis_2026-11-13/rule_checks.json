@@ -1,0 +1,132 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "kind": "existing_forward",
+      "case": "opposite",
+      "generation_id": "356c9a26938feca7a7dcc4eb0f1443d4d24dfec6144a39e5c296b56dd350a0c7",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "kind": "existing_shifted",
+      "case": "opposite",
+      "generation_id": "ecf5e49111295900a1f3d4eb65f71368ee0b9519335a73d7eab1b68df0135f56",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "kind": "existing_forward",
+      "case": "same_direction",
+      "generation_id": "1af515da1330558390942f332c27c7c488ed161f430cc139c020461e3a8f69ea",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "kind": "existing_shifted",
+      "case": "same_direction",
+      "generation_id": "5396bde52b54db294caab523f27afb1c31d2bfbdcb6e1e928e190a4b68ae8ad5",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "kind": "reverse",
+      "side": "A",
+      "generation_id": "72845d50b3c6f3a6fb769ee33aacdf4115223359f74414043f9ca311d0b2f07a",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "kind": "reverse",
+      "side": "B",
+      "generation_id": "c94a1ef417e7c3ea414300680644817b749d25e5d11ecacf3b54901f3e38a4b1",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "kind": "zero_speed",
+      "generation_id": "3be9fe6ca43250109873b76bc0c6e5eb9bc08308a2f2734d0e307220397eecd9",
+      "passed": true,
+      "failure": null
+    }
+  ],
+  "math": [
+    {
+      "name": "negative",
+      "passed": true,
+      "exact_zoh_displacement": "-1/25",
+      "expected_signed_J": "{(0, 3): Fraction(1, 5), (0, 5): Fraction(1, 50), (1, 2): Fraction(-1, 25), (2, 4): Fraction(-2, 135), (2, 6): Fraction(-1, 675), (3, 3): Fraction(1, 1), (3, 5): Fraction(1, 5), (4, 4): Fraction(1, 1), (4, 6): Fraction(1, 5)}",
+      "envelope": {
+        "v": [
+          "-201131370849898476039041351/1000000000000000000000000000",
+          "-198868629150101523960958649/1000000000000000000000000000"
+        ],
+        "delta": [
+          "-1131370849898476039041351/1000000000000000000000000000",
+          "1131370849898476039041351/1000000000000000000000000000"
+        ],
+        "V_abs": "201131370849898476039041351/1000000000000000000000000000",
+        "D_abs": "1131370849898476039041351/1000000000000000000000000000"
+      },
+      "jacobian_id": "0fc9e24dedd7ba0df157ce428a66b168b3ea4537d14282c500130756f0deeae1"
+    },
+    {
+      "name": "zero",
+      "passed": true,
+      "exact_zoh_displacement": "0",
+      "expected_signed_J": "{(0, 3): Fraction(1, 5), (0, 5): Fraction(1, 50), (1, 2): Fraction(0, 1), (2, 4): Fraction(0, 1), (2, 6): Fraction(0, 1), (3, 3): Fraction(1, 1), (3, 5): Fraction(1, 5), (4, 4): Fraction(1, 1), (4, 6): Fraction(1, 5)}",
+      "envelope": {
+        "v": [
+          "-1131370849898476039041351/1000000000000000000000000000",
+          "1131370849898476039041351/1000000000000000000000000000"
+        ],
+        "delta": [
+          "-1131370849898476039041351/1000000000000000000000000000",
+          "1131370849898476039041351/1000000000000000000000000000"
+        ],
+        "V_abs": "1131370849898476039041351/1000000000000000000000000000",
+        "D_abs": "1131370849898476039041351/1000000000000000000000000000"
+      },
+      "jacobian_id": "8f1349e1970337066c15ffe9d556ab9f771ef1fa1cd2c350ff41b44fd48480b6"
+    },
+    {
+      "name": "cross_zero",
+      "passed": true,
+      "exact_zoh_displacement": "0",
+      "expected_signed_J": "{(0, 3): Fraction(1, 5), (0, 5): Fraction(1, 50), (1, 2): Fraction(0, 1), (2, 4): Fraction(0, 1), (2, 6): Fraction(1, 8100), (3, 3): Fraction(1, 1), (3, 5): Fraction(1, 5), (4, 4): Fraction(1, 1), (4, 6): Fraction(1, 5)}",
+      "envelope": {
+        "v": [
+          "-51131370849898476039041351/1000000000000000000000000000",
+          "51131370849898476039041351/1000000000000000000000000000"
+        ],
+        "delta": [
+          "-1131370849898476039041351/1000000000000000000000000000",
+          "1131370849898476039041351/1000000000000000000000000000"
+        ],
+        "V_abs": "51131370849898476039041351/1000000000000000000000000000",
+        "D_abs": "1131370849898476039041351/1000000000000000000000000000"
+      },
+      "jacobian_id": "2d80d1c8b888d68a8c9fe6b31bfc20edd977cc1db10d9f6f27a58fd7e608d5ee"
+    },
+    {
+      "name": "negative_opposite_frame",
+      "passed": true,
+      "exact_zoh_displacement": "-1/25",
+      "expected_signed_J": "{(0, 3): Fraction(-1, 5), (0, 5): Fraction(-1, 50), (1, 2): Fraction(1, 25), (2, 4): Fraction(-2, 135), (2, 6): Fraction(-1, 675), (3, 3): Fraction(1, 1), (3, 5): Fraction(1, 5), (4, 4): Fraction(1, 1), (4, 6): Fraction(1, 5)}",
+      "envelope": {
+        "v": [
+          "-201131370849898476039041351/1000000000000000000000000000",
+          "-198868629150101523960958649/1000000000000000000000000000"
+        ],
+        "delta": [
+          "-1131370849898476039041351/1000000000000000000000000000",
+          "1131370849898476039041351/1000000000000000000000000000"
+        ],
+        "V_abs": "201131370849898476039041351/1000000000000000000000000000",
+        "D_abs": "1131370849898476039041351/1000000000000000000000000000"
+      },
+      "jacobian_id": "4a90e6811a22ae7575c3610dbb6b29c9f007925ec44676e757f380b9174409a8"
+    }
+  ],
+  "native_solver_calls": 0
+}

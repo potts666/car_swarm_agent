@@ -1,0 +1,436 @@
+{
+  "theory_read": true,
+  "scope": "作者稿三项定理的受限开发实现核对；不把有限运行当作普遍定理证明；外部引用论文PDF未重新审读",
+  "rows": [
+    {
+      "id": "A01",
+      "premise": "共同模型",
+      "source": "统一§1式(1)—(3)；运动§1式(1)—(2)",
+      "status": "开发实现匹配",
+      "code": "pilot_control.py、socp_anchor.py",
+      "action": "固定h=.2/N32/L2.7/五状态/a,omega实际ZOH；车身rear1/front3.5/halfwidth.9，五组共同配置。",
+      "baseline_review": {
+        "status": "匹配",
+        "code": "bicycle_core.py:derivative；config/m2b_fourcar.json",
+        "action": "五状态和a/omega ZOH、h=.2、N=32、L=2.7、矩形尺寸匹配"
+      }
+    },
+    {
+      "id": "A02",
+      "premise": "速度约束",
+      "source": "统一§1：0≤v≤2",
+      "status": "整拍认证",
+      "code": "pilot_control.py:advance_pose；accept_execution.py",
+      "action": "精确有理数v节点0至2、delta±.5、a/omega±1；每拍线性v/delta的极值在端点；没有沿用历史倒车容差。",
+      "baseline_review": {
+        "status": "部分：优化与验收不一致",
+        "code": "m2b_control.py:bicycle_qp约束vlo=0；m2b_scene.py:audit使用v_rev=1",
+        "action": "当前路线direction=1且QP节点限制非负；实际采样验收仍允许负速。须认证实际整拍v≥0，不能据此断言已观察到倒车，也不能只检查参考节点"
+      }
+    },
+    {
+      "id": "A03",
+      "premise": "精确流或认证外包",
+      "source": "统一§1、§3.2式(12)；运动§5",
+      "status": "区间外包",
+      "code": "source_rebuild_005/work/.../route_zoh_certificate.py",
+      "action": "Q=10^20向外舍入、Taylor三角、Simpson余项；控制器4子段，验收8子段；二者共享积分原语，几何与预算独立。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "bicycle_core.py:step；m2b_scene.py:audit",
+        "action": "RK4点值、.02秒采样和求解残差不是eta积分外包"
+      }
+    },
+    {
+      "id": "A04",
+      "premise": "共同原点与版本",
+      "source": "统一§1、§7",
+      "status": "内容绑定",
+      "code": "pilot_control.py:commit_token",
+      "action": "实际history、输入、域phase、接续/策略版本、期限、权限和预算绑定；四车同版ACK后提交；理想进程内可靠消息。",
+      "baseline_review": {
+        "status": "部分",
+        "code": "m2b_jacobi.py:prepare/_check_public；m2b_protocol.py:check_plan",
+        "action": "有时间/版本/哈希绑定；新接收域和策略版本未进入绑定"
+      }
+    },
+    {
+      "id": "A05",
+      "premise": "目标停车集合",
+      "source": "统一§1；运动§10式(43)",
+      "status": "精确停车保持",
+      "code": "run_pilot.py；accept_execution.py",
+      "action": "共同目标位置/航向内界、v=delta=0；最后零输入是解析不变保持。没有放宽历史数值停车容差。",
+      "baseline_review": {
+        "status": "不匹配",
+        "code": "bicycle_core.py:completed",
+        "action": "现有speed<=.025、steering<=.01；理论要求v=delta=0和后续合法保持"
+      }
+    },
+    {
+      "id": "A06",
+      "premise": "初态认证与非目标默认出口",
+      "source": "统一§1—2；运动§9—10",
+      "status": "对象重建通过",
+      "code": "rebuild_sources.py；prepare_pilot.py",
+      "action": "原20模板及图独立重建；三个开发案例重新认证源域和所有默认出口；在线从共同可实现策略出发。",
+      "baseline_review": {
+        "status": "待原工程对象",
+        "code": "现有build_scene初始状态；无所引图源域/默认策略对象",
+        "action": "须验证初态属于带合法标签的源域；每个非目标接收域都有已认证出口。原文报告存在不能替代本机可重建数据"
+      }
+    },
+    {
+      "id": "S01",
+      "premise": "道路凸区契约",
+      "source": "统一§3.1、§3.3",
+      "status": "连续区间契约",
+      "code": "cross_stop.py；pilot_control.py:execute",
+      "action": "逐小段车身角点区间及弯曲膨胀后整体属于一个道路矩形；不是并集面积抽样。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "m2b_scene.py:audit",
+        "action": "采样道路并集面积检查不是按小段的凸半空间契约"
+      }
+    },
+    {
+      "id": "S02",
+      "premise": "全部六对含组外承诺",
+      "source": "统一定理一、式(9)",
+      "status": "六对覆盖",
+      "code": "moving_objects.py:pair_partition；pilot_control.py:execute",
+      "action": "三车组3内3外分配、拆分和全车ACK；活动车/静止同伴的全部六对连续投影间隔检验。",
+      "baseline_review": {
+        "status": "部分",
+        "code": "m2b_scene.py:audit；m2b_protocol.py:acknowledge",
+        "action": "枚举六对已有；连续分离方向/边界及3内3外契约没有"
+      }
+    },
+    {
+      "id": "S03",
+      "premise": "弯曲预算",
+      "source": "统一式(10)—(12a)",
+      "status": "有理上界",
+      "code": "test_theory_checks.py；cross_stop.py",
+      "action": "Mc=15有理上界核对，子段Mc*Delta^2/8与向外积分外包分列；安全净空.5另列。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "bicycle_core.py:corners/gaps",
+        "action": "需要Mc*Delta²/8+eta；安全间距.5不得代替eta或剩余裕量"
+      }
+    },
+    {
+      "id": "S04",
+      "premise": "权限全过程覆盖",
+      "source": "统一§3.3",
+      "status": "连续权限覆盖",
+      "code": "pilot_control.py:execute；accept_execution.py",
+      "action": "共享一车活动规则；等待车保护区、释放车不回入；换权必须到实际接收域。未实现兼容多车并行。",
+      "baseline_review": {
+        "status": "部分",
+        "code": "m2b_protocol.py:check_plan/Channel",
+        "action": "已有保护区、释放检查；只在采样状态验收且没有源域包含"
+      }
+    },
+    {
+      "id": "S05",
+      "premise": "全源域安全",
+      "source": "统一式(5)；运动式(18)、(24)—(25)",
+      "status": "限定域认证",
+      "code": "cross_stop.py；theory_checks.py",
+      "action": "全源位置/航向域认证，粗节点v/delta精确0，内部移动域由输入精确流像定义；不是任意五状态开域。另有含v/delta误差的反馈局部例证。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "checks.py直线盒；theory_checks.py局部五状态曲线域",
+        "action": "小型源域解析构造已有；当前四车初态和全程曲线/停车/权限切换证书仍缺"
+      }
+    },
+    {
+      "id": "R01",
+      "premise": "认证运动接收域及延续",
+      "source": "运动§4式(18)、§5",
+      "status": "开发全程接续",
+      "code": "moving_objects.py；pilot_control.py",
+      "action": "实际输入链每个窗口绑定E、K和后继；内部允许非零v/delta；数值成员检验仅用于已认证内部盒及继承分支。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "m2b_candidates.py:contract",
+        "action": "当前契约无E_sigma/K_sigma/后继接收域"
+      }
+    },
+    {
+      "id": "R02",
+      "premise": "全状态接缝",
+      "source": "运动§1式(3)",
+      "status": "实际接缝",
+      "code": "pilot_control.py:commit_token；accept_execution.py",
+      "action": "v、delta精确相等，实际pose连续积分，不重置名义位置。P0包含换权后新车首拍。",
+      "baseline_review": {
+        "status": "部分",
+        "code": "m2b_jacobi.py:prepare；新checks.py:check_seam",
+        "action": "历史阶段检查局部位置航向和停车条件；新夹具尚未接入真实提案"
+      }
+    },
+    {
+      "id": "R03",
+      "premise": "32拍尾段迁移",
+      "source": "运动定理2式(36)",
+      "status": "显式K移位",
+      "code": "pilot_control.py:shift_plan",
+      "action": "移去实际已执行首拍、追加phase+32参考K；仅在实际停车尾部合法时补零。6456窗口静态核对及闭环逐拍重演。",
+      "baseline_review": {
+        "status": "部分",
+        "code": "m2b_candidates.py:build_start",
+        "action": "实际输入可移位；默认补零没有移动域延续证书；零输入仅在对应延续合法时可用"
+      }
+    },
+    {
+      "id": "R04",
+      "premise": "接收阶段标签同步更新",
+      "source": "运动§7",
+      "status": "接收阶段同步",
+      "code": "pilot_control.py:commit_token",
+      "action": "接收phase=min(phase+32,m)，剩余期限和后续时间值一起迁移；receiver_phase损坏核对拒绝。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "m2b_scene.py:Agent.index",
+        "action": "历史路线index不含认证域/延续策略阶段版本"
+      }
+    },
+    {
+      "id": "R05",
+      "premise": "新初态继承实际尾部",
+      "source": "运动定理2证明",
+      "status": "实际尾部继承",
+      "code": "pilot_control.py；accept_execution.py",
+      "action": "history/phase/v0/delta0与实际输入链绑定；保留预测外包和锥余项预算。",
+      "baseline_review": {
+        "status": "部分",
+        "code": "m2b_candidates.py:build_start",
+        "action": "有首状态对齐检查；缺整拍误差外包和所有原契约继承"
+      }
+    },
+    {
+      "id": "R06",
+      "premise": "SOCP实际输入增量",
+      "source": "统一§4式(13)—(24)；运动§7",
+      "status": "真实SOCP",
+      "code": "socp_anchor.py",
+      "action": "Clarabel0.11.1，64个归一化实际输入增量+t/s，含SOC和旋转二次余项锥；实际维度及约束行数记录。",
+      "baseline_review": {
+        "status": "不匹配",
+        "code": "m2b_control.py:reference_qp/bicycle_qp",
+        "action": "当前OSQP QP，不含二次余项旋转锥"
+      }
+    },
+    {
+      "id": "R07",
+      "premise": "认证gamma、Jacobian和Hessian界",
+      "source": "统一式(15)、(17)、(25)—(28)",
+      "status": "保守解析界",
+      "code": "socp_anchor.py:derivative_bounds",
+      "action": "使用理论全局Gp/Gc/P1/P2/Hp/Hc有理上界；零近似Jacobian加认证导数误差，比较保守。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "linearized_joint.py:ERROR_LIMIT/STATE_TRUST",
+        "action": "线性化信赖域和回放误差阈值不等于可证泰勒界"
+      }
+    },
+    {
+      "id": "R08",
+      "premise": "显式零增量锚点可行",
+      "source": "统一引理2；运动§7",
+      "status": "显式锚点",
+      "code": "socp_anchor.py；final_conic_021/checks.json",
+      "action": "求解前精确验零增量；正盒调用真实锥求解器；边界唯一锚点和恒输入最小能量属于解析预消元，单列非数值调用。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "m2b_candidates.py:validate_start",
+        "action": "full_ocp_checked=False；热启动不证明SOCP/OCP可行"
+      }
+    },
+    {
+      "id": "R09",
+      "premise": "接收盒包含及边界锚点",
+      "source": "统一式(19)—(23)；运动式(28a)",
+      "status": "内部盒或继承像",
+      "code": "pilot_control.py:receiver_room/admit_delta",
+      "action": "以SE2逆像界证明正接收盒包含；区间不足时rp=rpsi=0保留原锚点；没有任意放宽。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "历史终端pose box",
+        "action": "需证明K⊆E、继承真实终点和积分误差；不能以任意正盒替换边界锚点"
+      }
+    },
+    {
+      "id": "R10",
+      "premise": "合并、拆分、换权",
+      "source": "统一§5.3；运动§7",
+      "status": "实际组变化及换权",
+      "code": "check_runtime.py；pilot_control.py:commit_token",
+      "action": "两条P0各有pair→三车→拆分，依赖转交和新持权车实际首拍；消息串行仿真，不代表真实网络并行。",
+      "baseline_review": {
+        "status": "部分",
+        "code": "m2b_protocol.py:Channel/Barrier",
+        "action": "权限事务可参考；真实三车分组的输入、契约、接收域、期限、版本转交未实现"
+      }
+    },
+    {
+      "id": "R11",
+      "premise": "拒绝后旧分支仍执行",
+      "source": "统一§5.2、§7；运动§10",
+      "status": "拒绝续行",
+      "code": "check_runtime.py；pilot_control.py:optimize",
+      "action": "七类非法提案拒绝后旧输入执行；数值提案拒绝也计入周期。继承失效与程序错误不能当普通拒绝。",
+      "baseline_review": {
+        "status": "不满足",
+        "code": "run_m2b_jacobi.py:except/failure break；m2b_jacobi.py:abort",
+        "action": "异常取消并中止物理执行；不等于旧锚点继续推进"
+      }
+    },
+    {
+      "id": "F01",
+      "premise": "每拍有限提案后必执行",
+      "source": "统一§7；运动定理3",
+      "status": "开发时钟实现",
+      "code": "run_pilot.py",
+      "action": "每拍最多一次SOCP、有限验证与ACK后执行；求解限时5s/300迭代；理想物理时钟暂停计算。持续时钟未实现。",
+      "baseline_review": {
+        "status": "部分",
+        "code": "run_m2b_jacobi.py:round loop",
+        "action": "有限轮次已有；失败时不执行旧输入，不满足必执行条件"
+      }
+    },
+    {
+      "id": "F02",
+      "premise": "物理可实现的C或U_pi",
+      "source": "运动§9式(38)、(40a)",
+      "status": "可重算U_pi",
+      "code": "prepare_pilot.py；run_pilot.py",
+      "action": "原C2140/R2200由对象复算；开发U_pi为共同S可行策略，初值1301/1305/1295拍；C只作独立库内参照。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "本Ubuntu工程未找到对应图或math_checks.py",
+        "action": "文档中的141/402、2140拍只是原文归档报告，未独立重建"
+      }
+    },
+    {
+      "id": "F03",
+      "premise": "当前连接时长不超过32拍",
+      "source": "统一§2；运动§7",
+      "status": "粗连接展开",
+      "code": "moving_objects.py；pilot_control.py",
+      "action": "粗连接可超过32拍；逐拍移动接收阶段与N32窗口展开后每个承诺段<=32，不能把224拍粗边直接当理论单段。",
+      "baseline_review": {
+        "status": "待数据",
+        "code": "仅32拍预测不等于认证连接长度≤32",
+        "action": "需要粗边展开、各阶段和接收对象；旧图5625/5886未随理论包提供"
+      }
+    },
+    {
+      "id": "F04",
+      "premise": "在线替换预算不增加",
+      "source": "运动式(41)—(42)及局部版本",
+      "status": "替换守卫",
+      "code": "run_pilot.py",
+      "action": "仅m+U_pi(target)<=当前源预算的连接可选，策略替换后重算同版U且各节点不增；每真实执行拍减1。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "m2b_protocol.py:Channel.select_next",
+        "action": "当前FIFO/ALT不是m+C或m+U_pi及预算守卫"
+      }
+    },
+    {
+      "id": "F05",
+      "premise": "默认策略与预算同版",
+      "source": "运动定理3及§9.3命题4",
+      "status": "同版见证",
+      "code": "run_pilot.py；accept_execution.py",
+      "action": "每次连接保存policy、U和内容哈希；验收从已引用对象和策略重建，不只看递减列。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "无策略版本对象",
+        "action": "共同旧U_pi版本验收多条替换；保存后续见证；不得混用R、C、U_pi"
+      }
+    },
+    {
+      "id": "F06",
+      "premise": "真实到期状态和预算归零",
+      "source": "运动式(43)",
+      "status": "到期物理验收",
+      "code": "run_pilot.py；accept_execution.py",
+      "action": "到粗连接到期必须实际落入目标域且v/delta0；全任务预算0须对应四车目标与不变保持。完整运行观察另见试运行汇总。",
+      "baseline_review": {
+        "status": "缺失",
+        "code": "现有timeout_s和Agent.index",
+        "action": "递减计数/超时不是到期进入接收域；零预算必须对应四车目标"
+      }
+    },
+    {
+      "id": "D01",
+      "premise": "五组公平条件",
+      "source": "设计§4—5",
+      "status": "受限公平对照",
+      "code": "prepare_pilot.py；run_pilot.py",
+      "action": "共同地图/几何/物理界/安全守卫/初始S策略；S只在声明物理路线节点增加v=0，delta不强制额外归零；所有组都采用同一串行活动规则。",
+      "baseline_review": {
+        "status": "未实现",
+        "code": "原FIFO/ALT、central/local不能重命名替代",
+        "action": "保持共同候选、初始策略、安全守卫；S只要求指定节点v=0，不额外轮角回零"
+      }
+    },
+    {
+      "id": "D02",
+      "premise": "L组时间目标与推进守卫",
+      "source": "设计§4.2；运动式(42)",
+      "status": "排序与守卫分离",
+      "code": "run_pilot.py",
+      "action": "L排序m、T排序m+U；均通过相同可实现守卫。初始策略距S库最短30/32/26拍，不人为删除无改善任务。",
+      "baseline_review": {
+        "status": "需明确",
+        "code": "无新五组入口",
+        "action": "若初始预算冻结为最短C，L可能被限制到同一最优解；以共同U_pi可行见证保留空间并如实报告"
+      }
+    },
+    {
+      "id": "D03",
+      "premise": "M-R对应关闭局部SOCP",
+      "source": "设计§5",
+      "status": "固定时长消融",
+      "code": "run_pilot.py",
+      "action": "M-R与M-T同高层/候选/初始策略，仅关闭SOCP；在线不搜索更短m，时间相同不能写成SOCP缩时收益。",
+      "baseline_review": {
+        "status": "未实现",
+        "code": "无匹配M-T的认证参考执行入口",
+        "action": "必须相同高层和初始候选；固定m时SOCP不必改变完成时间"
+      }
+    },
+    {
+      "id": "D04",
+      "premise": "三案例15次先行门槛",
+      "source": "设计§3.3、§9.1",
+      "status": "P0后开发放行",
+      "code": "P0_GATE_v2.json；run_development.py",
+      "action": "v1试运行哈希类型缺陷保留，修正并重过P0后v2门禁；仅3x5开发运行，逐次独立验收，禁止正式批量。",
+      "baseline_review": {
+        "status": "未放行",
+        "code": "results/preflight_002/gate.json",
+        "action": "原小型核对通过≠完整P0；不得启动正式批量"
+      }
+    },
+    {
+      "id": "D05",
+      "premise": "原始式(9)排版",
+      "source": "统一式(9a)、(9b)",
+      "status": "原文排版备注",
+      "code": "theory/；theory_review.md",
+      "action": "原式9a/b缺加号；实现使用投影+epsilon+d/2<=边界。原文不修改。",
+      "baseline_review": {
+        "status": "需澄清排版",
+        "code": "原文在角点投影、epsilon和d/2间没有显式加号",
+        "action": "证明第2步意图为投影+epsilon+d/2≤边界；实现应写明，不修改原文"
+      }
+    }
+  ],
+  "implementation_gate": "P0_GATE_v2.json"
+}

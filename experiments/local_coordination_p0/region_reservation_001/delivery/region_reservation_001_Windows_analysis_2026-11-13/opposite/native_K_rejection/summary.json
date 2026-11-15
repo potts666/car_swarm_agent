@@ -1,0 +1,95 @@
+{
+  "passed": true,
+  "case": "opposite",
+  "source_anchor_id": "c4d34b86731c70a639419b55f801e2f941f77063f010d0d73bd5c82485de8bf8",
+  "bad_witness": "d31aa130af9d847447d445f5f59815e4ff9e253af3db4dda87df12b1cd8e25b7",
+  "old_witness": "f61b9f505859a906f4df1ac641e88af3c6406a7d952e55e94d6b98722fbba550",
+  "rejection": "AssertionError()",
+  "invalid_commits": 0,
+  "actual_steps": 33,
+  "old_K_phase": 819,
+  "old_K_exact_reset": true,
+  "final": {
+    "poses_Q": {
+      "A1": [
+        [
+          4600000000000060396402,
+          4600000000000061323376
+        ],
+        [
+          299999999999999538206,
+          300000000000000461794
+        ],
+        [
+          -586,
+          586
+        ]
+      ],
+      "A2": [
+        [
+          -3000000000000000000000,
+          -3000000000000000000000
+        ],
+        [
+          -300000000000000000000,
+          -300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "B1": [
+        [
+          2189999999999969443371,
+          2189999999999969696755
+        ],
+        [
+          -110461615,
+          -110209937
+        ],
+        [
+          -293,
+          293
+        ]
+      ],
+      "B2": [
+        [
+          3000000000000000000000,
+          3000000000000000000000
+        ],
+        [
+          -300000000000000000000,
+          -300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "v": {
+      "A1": "0",
+      "A2": "0",
+      "B1": "1/2",
+      "B2": "0"
+    },
+    "delta": {
+      "A1": "0",
+      "A2": "0",
+      "B1": "0",
+      "B2": "0"
+    },
+    "history": "a7f54c038ea0452244ad4d482c3df3f0369a0fe6d22299413ed5ea4b72c54d2e",
+    "cycle": 820,
+    "witness": "f61b9f505859a906f4df1ac641e88af3c6406a7d952e55e94d6b98722fbba550",
+    "owner": "B1",
+    "permission_version": 2,
+    "served": [
+      "A1",
+      "B1"
+    ]
+  },
+  "independent_eight_segment_replay": true,
+  "scope": "auxiliary copied source at phase787, excluded from main timing/solver counts"
+}

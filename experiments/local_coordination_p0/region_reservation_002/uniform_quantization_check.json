@@ -1,0 +1,16 @@
+{
+  "certificate_id": "b3edd902e5e6737900a08bea6df703bc652756ed6c2919c643aaf3460c6d7d6e",
+  "passed": true,
+  "scope": "uniform over continuous time, all four routes, including negative staging and stationary steering; endpoint-only sampling is not the proof",
+  "curvature_error": "7921489/300000000000000000000",
+  "arc_length_error": "3/1000000000000",
+  "D_error": "456457/2000000000000000000",
+  "yaw_error": "61450262787955828603/25000000000000000000000000000000",
+  "position_l1_error": "196028716801367485809/625000000000000000000000000000",
+  "body_error": "4031614960885185898465621/12500000000000000000000000000000000",
+  "reserved_extra": "1/100000000",
+  "proof": "For matched trapezoidal profiles: integral |v_q-v| <= sum length errors; |yaw_q-yaw| <= sum(|k_q-k|*ell_q + |ell_q-ell|/6); L1 position <= 3/2*(length_error + 80*yaw_error); body <= position_L1 + rB*yaw_error. All real/rational counts agree.",
+  "rational_inputs_id": "f874f2c03274cad5b88b4a5117a30693e100037839440fe6fa9073f3fa7b53ec",
+  "domain_certificate_id": "68fb4525449d56da49557f2bfbdaf235faadb7e67893e9e1ecf3b606561bea6a",
+  "model_sha256": "bac15f5e841b511293ca4a220e48ccfda9a9a350795ab91102647ba906743df3"
+}

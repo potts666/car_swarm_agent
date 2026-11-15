@@ -1,0 +1,53 @@
+{
+  "passed": true,
+  "manifest_files": 737,
+  "independent_prefixes": [
+    {
+      "arm": "F-S",
+      "round": 1,
+      "source_history": "bd2659d4eabcda54f45180b81bcfef7b42de15438ea50be0945d47bf84c1a360",
+      "steps": 33,
+      "passed": true
+    },
+    {
+      "arm": "F-S",
+      "round": 2,
+      "source_history": "437e7f073159e3488d55fd46153e4a48f5504166554ae317456d0f8a1c645cc1",
+      "steps": 33,
+      "passed": true
+    },
+    {
+      "arm": "F-P",
+      "round": 1,
+      "source_history": "bd2659d4eabcda54f45180b81bcfef7b42de15438ea50be0945d47bf84c1a360",
+      "steps": 33,
+      "passed": true
+    },
+    {
+      "arm": "F-P",
+      "round": 2,
+      "source_history": "437e7f073159e3488d55fd46153e4a48f5504166554ae317456d0f8a1c645cc1",
+      "steps": 33,
+      "passed": true
+    },
+    {
+      "arm": "D-P",
+      "round": 1,
+      "source_history": "bd2659d4eabcda54f45180b81bcfef7b42de15438ea50be0945d47bf84c1a360",
+      "steps": 33,
+      "passed": true
+    },
+    {
+      "arm": "D-P",
+      "round": 2,
+      "source_history": "437e7f073159e3488d55fd46153e4a48f5504166554ae317456d0f8a1c645cc1",
+      "steps": 33,
+      "passed": true
+    }
+  ],
+  "full_replay": false,
+  "new_calls": 0,
+  "wall_s": 12.316951477000202,
+  "relocated_root": "/tmp/dg001_relocated_3v2489w_/dynamic_groups_001",
+  "verified_manifest_sha256": "048cad5611bc7fc1aa7a3165347fa7dfd9cfb50157ccaef949f16f5533b35505"
+}

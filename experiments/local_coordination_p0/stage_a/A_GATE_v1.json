@@ -1,0 +1,67 @@
+{
+  "version": "A-interface-v1",
+  "scope": "fixed-duration constructed candidates, reset K, actual shift, common commit and independent acceptance",
+  "A_interface_validation_passed": true,
+  "allow_interface_replay": true,
+  "full_fourcar_evaluation_allowed": false,
+  "formal_batch_allowed": false,
+  "B_derivatives_connected": false,
+  "B_derivative_connection_allowed": false,
+  "time_branches_allowed": false,
+  "numerical_socp_free_terminal_branch_implemented": false,
+  "constructed_candidate_branch_implemented": true,
+  "old_P0_v2_sha256": "033bd5ce6b1d1cd4106dbce98f397acf0d39a99a4031d45bba87477b275ab368",
+  "old_P0_frozen_code_and_evidence_unchanged": true,
+  "historical_15_runs_unchanged": true,
+  "code_sha256": {
+    "region_certificates.py": "d7b6d33b3557f3b1c7686f4dd7b5c430a1b85b07ef97406e4fbcccd13c14f287",
+    "test_acceptor_damage.py": "672e9ea84a088aea87cb2287b979d5503b4d9c5cdf4b5599fdc82125fe105c77",
+    "run_stage_a.py": "f841874921a168a9976396b104a1f6159532e533ccf390abe4b6550cf4d07428",
+    "region_control.py": "114079056699e7137974b08d446b1258159eabfe8adab7a82a0159bb7a7df4ae",
+    "accept_interfaces.py": "30dbf8a3a2e52cc583b6be78b5f71efb75d70da99ea745c9532cd6c9fbdf9302",
+    "run_interfaces.py": "0374f29b52e8dc41bf3547c9bfbb73879881ff144a61c849fc33e82e2464bf2a"
+  },
+  "input_manifest": "inputs_v2/manifest.json",
+  "input_manifest_sha256": "511a52b942e3428a67786e742f936543a3afd678514f5f5a0b196e8edb7d05ae",
+  "source_interval_model_sha256": "bac15f5e841b511293ca4a220e48ccfda9a9a350795ab91102647ba906743df3",
+  "witness_id": "d038db36d63515f7775265ffff5907dfe4a337a08d9672a4a43f7fb30377ca4e",
+  "witness_kind": "current accepted historical M-T first-policy version with actual completion chain",
+  "witness_version": 1,
+  "accepted_budget": 1279,
+  "old_budget": 1301,
+  "source_git": "ebc3d29",
+  "evidence": {
+    "curve": {
+      "summary_sha256": "adf391039a8c8fcbc8d61eb944943d079ccced12b744229141cd2cb133075dc5",
+      "acceptance_sha256": "c569ba04634729e6153175e556026c0234bb0a6ae52749651ae8a35de3fd71db",
+      "execution_sha256": "e59b488ba8f4dc4ff3f4a726c8501470a6736ad6ee32f354b7f071a3c12cfe3f"
+    },
+    "straight_acceleration": {
+      "summary_sha256": "99efe7d5badf156d6fc7941f7db834f4adcc27feb2f366d0ac4529cf6e27c8c7",
+      "acceptance_sha256": "e586378ae24540c882cb80fbc297c512bfd62d5d6ac915005641bf81911928cb",
+      "execution_sha256": "370452bd9129a19287137d4a333e71ab7c74a12c5ebf3dcd6233288d7ef5e98e"
+    }
+  },
+  "driver_status_sha256": "ec046e0491226aeb5f86fb388b6d105fd12ef20d9ae117112302862e8b4e86a8",
+  "acceptor_damage_sha256": "1efdb50d5a39159893ce1725c432d796215002ec1ed05c251f1fbe6e2d7e2d22",
+  "interface_phases": {
+    "curve": 37,
+    "straight_acceleration": 42
+  },
+  "fixed_prefix_ticks": 32,
+  "fixed_connection_ticks": 239,
+  "unchanged": [
+    "h=.2",
+    "goal/input objective weights",
+    "phase%64 grouping",
+    "single active mover",
+    "parked permission transfer",
+    "current high-level choice"
+  ],
+  "limitations": [
+    "two constructed interface cases, not a new full four-car evaluation",
+    "shared certified interval primitives; independent geometry/reset/shift/budget logic",
+    "no native SOCP/Jacobian/Hessian upgrade",
+    "no new duration branches, real-time or parallel claims"
+  ]
+}

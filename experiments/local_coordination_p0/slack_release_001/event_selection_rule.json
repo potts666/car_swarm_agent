@@ -1,0 +1,9 @@
+{
+  "candidate_order": "current physical owner; successor request order inherited from static-input initial scheduler; resource key breaks tie; at most one commit per boundary",
+  "release_condition": "Clear in release_theory.md; no vehicle-specific trigger times or fixed duration cuts",
+  "candidate_start_order": "integers max(actual_k, own approach_end) through previous service_start-1, capped by initial_B0 checks",
+  "window_order": "ascending actual k after event; >=2 nonzero-v vehicles with effective>=.02 and certified energy descent + both source phase models",
+  "numerical_events": "first two successful releases; skip already occupied numerical control boundaries",
+  "retry": "one attempt per actual history/contract/proposal; then execute old input, reevaluate only with new history or relevant frame",
+  "new_attempt_limit": 8
+}

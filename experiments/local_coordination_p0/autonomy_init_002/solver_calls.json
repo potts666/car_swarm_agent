@@ -1,0 +1,178 @@
+[
+  {
+    "id": 1,
+    "round": 0,
+    "actor": "A1",
+    "model_id": "fab2d6f21db989aa8bf784d11b0ea896daba76d108571df62353388e7705154a",
+    "source_id": "f28e0b3947848a83dc000243560388a509930c9e9346a9885f9f5d8514854704",
+    "released_at": 1794640604.2260156,
+    "status": "Solved",
+    "native_entered": true,
+    "native_entering_durable_at": 1794640604.386888,
+    "finished_at": 1794640604.409674,
+    "transport": {
+      "mode": "solve",
+      "model_id": "fab2d6f21db989aa8bf784d11b0ea896daba76d108571df62353388e7705154a",
+      "request_sha": "5744e9b236df17b1a908df4a67e5d9d6ef0736cf7fc10bc0a34eb5f1c72f7dbe",
+      "sent_bytes": 95474,
+      "received_bytes": 15712,
+      "worker_exitcode": 0,
+      "roundtrip_wall": 0.1822679042816162
+    },
+    "native_entered_at": 1794640604.3872805
+  },
+  {
+    "id": 2,
+    "round": 0,
+    "actor": "A2",
+    "model_id": "b1d29fadb2b3a2b167fea6285fb796387c76ab77ab284bdd675dc6d0872e2bb3",
+    "source_id": "f28e0b3947848a83dc000243560388a509930c9e9346a9885f9f5d8514854704",
+    "released_at": 1794640604.4795048,
+    "status": "Solved",
+    "native_entered": true,
+    "native_entering_durable_at": 1794640604.6360211,
+    "finished_at": 1794640604.6575818,
+    "transport": {
+      "mode": "solve",
+      "model_id": "b1d29fadb2b3a2b167fea6285fb796387c76ab77ab284bdd675dc6d0872e2bb3",
+      "request_sha": "369055cb77f438aed6ab8af8d5fdc246243b68c74215fa8213aa340d97379b06",
+      "sent_bytes": 94225,
+      "received_bytes": 15131,
+      "worker_exitcode": 0,
+      "roundtrip_wall": 0.1766982078552246
+    },
+    "native_entered_at": 1794640604.6363869
+  },
+  {
+    "id": 3,
+    "round": 0,
+    "actor": "B1",
+    "model_id": "8b42b467efee4b411fd20335c2bde082e6cc9aa16b132f75b65ddcb86e9c72d6",
+    "source_id": "f28e0b3947848a83dc000243560388a509930c9e9346a9885f9f5d8514854704",
+    "released_at": 1794640604.7062848,
+    "status": "Solved",
+    "native_entered": true,
+    "native_entering_durable_at": 1794640604.8611822,
+    "finished_at": 1794640604.8829937,
+    "transport": {
+      "mode": "solve",
+      "model_id": "8b42b467efee4b411fd20335c2bde082e6cc9aa16b132f75b65ddcb86e9c72d6",
+      "request_sha": "0f15dc8b6d5a5977b7ab89c50596d6c0c642cccd8b14ef48f34ca35dd7ff94c5",
+      "sent_bytes": 94277,
+      "received_bytes": 15056,
+      "worker_exitcode": 0,
+      "roundtrip_wall": 0.17535972595214844
+    },
+    "native_entered_at": 1794640604.8615782
+  },
+  {
+    "id": 4,
+    "round": 0,
+    "actor": "B2",
+    "model_id": "fe88a3d6cad01bf8f50e2a5bfa1572df363fef05f89e4bb7bde7986e21eaf44d",
+    "source_id": "f28e0b3947848a83dc000243560388a509930c9e9346a9885f9f5d8514854704",
+    "released_at": 1794640604.9528956,
+    "status": "Solved",
+    "native_entered": true,
+    "native_entering_durable_at": 1794640605.1110632,
+    "finished_at": 1794640605.1349113,
+    "transport": {
+      "mode": "solve",
+      "model_id": "fe88a3d6cad01bf8f50e2a5bfa1572df363fef05f89e4bb7bde7986e21eaf44d",
+      "request_sha": "ba60d4596ba44be724592c6c606c728e203eee4b9ac579e479db9ff3919b069c",
+      "sent_bytes": 94224,
+      "received_bytes": 15081,
+      "worker_exitcode": 0,
+      "roundtrip_wall": 0.18056631088256836
+    },
+    "native_entered_at": 1794640605.1113918
+  },
+  {
+    "id": 5,
+    "round": 1,
+    "actor": "A1",
+    "model_id": "fd6da7e1003443791d6b8a894079690e1039242a20ecff322e8ae94ca5f061a4",
+    "source_id": "b71c63594a25056f075a90d8f313f588e2a8bf06842e2ebe860aee64b112dd36",
+    "released_at": 1794640626.5820155,
+    "status": "Solved",
+    "native_entered": true,
+    "native_entering_durable_at": 1794640626.7377644,
+    "finished_at": 1794640626.7611656,
+    "transport": {
+      "mode": "solve",
+      "model_id": "fd6da7e1003443791d6b8a894079690e1039242a20ecff322e8ae94ca5f061a4",
+      "request_sha": "e9721e844dd41349d34bea391e230dacdea0cb85374dd06a6d5fb3eaa346911e",
+      "sent_bytes": 96757,
+      "received_bytes": 15595,
+      "worker_exitcode": 0,
+      "roundtrip_wall": 0.17741799354553223
+    },
+    "native_entered_at": 1794640626.738183
+  },
+  {
+    "id": 6,
+    "round": 1,
+    "actor": "A2",
+    "model_id": "bda309e267348be45f06cd02cb0ae6feabc8549d38da799e69f4a03cd68b8a1a",
+    "source_id": "b71c63594a25056f075a90d8f313f588e2a8bf06842e2ebe860aee64b112dd36",
+    "released_at": 1794640626.812055,
+    "status": "Solved",
+    "native_entered": true,
+    "native_entering_durable_at": 1794640626.9682226,
+    "finished_at": 1794640626.992731,
+    "transport": {
+      "mode": "solve",
+      "model_id": "bda309e267348be45f06cd02cb0ae6feabc8549d38da799e69f4a03cd68b8a1a",
+      "request_sha": "d6f0351ca105cd706eb1a352736d6e6cc5e487521777ac14ababfaf107248e64",
+      "sent_bytes": 96080,
+      "received_bytes": 15034,
+      "worker_exitcode": 0,
+      "roundtrip_wall": 0.1792588233947754
+    },
+    "native_entered_at": 1794640626.9686556
+  },
+  {
+    "id": 7,
+    "round": 1,
+    "actor": "B1",
+    "model_id": "c7d34de6eb5e65a3eafdafb4ff316e7cca5c8b845429dc48dc302cd374dc1b61",
+    "source_id": "b71c63594a25056f075a90d8f313f588e2a8bf06842e2ebe860aee64b112dd36",
+    "released_at": 1794640627.044772,
+    "status": "Solved",
+    "native_entered": true,
+    "native_entering_durable_at": 1794640627.2012777,
+    "finished_at": 1794640627.224193,
+    "transport": {
+      "mode": "solve",
+      "model_id": "c7d34de6eb5e65a3eafdafb4ff316e7cca5c8b845429dc48dc302cd374dc1b61",
+      "request_sha": "f2550dbba8d4c43fb14a17a0f8d11bf779d28ae82f1f671a2a87cac0313554aa",
+      "sent_bytes": 96145,
+      "received_bytes": 15137,
+      "worker_exitcode": 0,
+      "roundtrip_wall": 0.17801547050476074
+    },
+    "native_entered_at": 1794640627.2017272
+  },
+  {
+    "id": 8,
+    "round": 1,
+    "actor": "B2",
+    "model_id": "5b56496f1410e81248cebbf438bad94b42540e9ba171ce32fa28dcaaf52cb0cd",
+    "source_id": "b71c63594a25056f075a90d8f313f588e2a8bf06842e2ebe860aee64b112dd36",
+    "released_at": 1794640627.295101,
+    "status": "Solved",
+    "native_entered": true,
+    "native_entering_durable_at": 1794640627.450737,
+    "finished_at": 1794640627.4743466,
+    "transport": {
+      "mode": "solve",
+      "model_id": "5b56496f1410e81248cebbf438bad94b42540e9ba171ce32fa28dcaaf52cb0cd",
+      "request_sha": "797501775a8bb2e384988e8f9fcff0d31bd86b5a4ae980b811edb78c7dc337e3",
+      "sent_bytes": 96031,
+      "received_bytes": 15127,
+      "worker_exitcode": 0,
+      "roundtrip_wall": 0.17780089378356934
+    },
+    "native_entered_at": 1794640627.451193
+  }
+]

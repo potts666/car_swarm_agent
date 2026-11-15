@@ -1,0 +1,75 @@
+{
+  "version": "C0_fix_001",
+  "cause_diagnosis": {
+    "known_strict_failures": true,
+    "archive_444_reproduced": true,
+    "pre_postprocess_source": "unknown via public interface",
+    "linear_system_root_cause": "not established"
+  },
+  "original_rule_numerical_repair": {
+    "passed": false,
+    "statuses": [
+      "AlmostSolved",
+      "AlmostSolved",
+      "AlmostSolved",
+      "AlmostSolved"
+    ],
+    "tolerances_unchanged": true
+  },
+  "new_admission_rule": {
+    "passed": true,
+    "policy": "certificate_suboptimal_v1",
+    "conditional_theorem": "instructions/theory.md §8",
+    "strict_optimality_claim": false
+  },
+  "control_succession_closed": {
+    "passed": true,
+    "interfaces": {
+      "curve": {
+        "numerical_proposals": 1,
+        "full_certificate_passed": 1,
+        "joint_accepted": 1,
+        "actual_nonzero_prefix_changes": 32,
+        "actual_nonzero_all_changes": 33,
+        "first_divergence_phase": 5,
+        "shift_passed": 239,
+        "actual_source_derivative_recertifications": 1,
+        "K_executions": 1,
+        "parked_handoffs": 1,
+        "rejected_then_old_K_executed": 1,
+        "remaining_budget": 1039
+      },
+      "straight_acceleration": {
+        "numerical_proposals": 1,
+        "full_certificate_passed": 1,
+        "joint_accepted": 1,
+        "actual_nonzero_prefix_changes": 32,
+        "actual_nonzero_all_changes": 33,
+        "first_divergence_phase": 10,
+        "shift_passed": 239,
+        "actual_source_derivative_recertifications": 1,
+        "K_executions": 1,
+        "parked_handoffs": 1,
+        "rejected_then_old_K_executed": 1,
+        "remaining_budget": 1039
+      }
+    },
+    "independent_acceptance": true
+  },
+  "initial_solver_calls": 4,
+  "additional_solver_calls": 0,
+  "original_C0_gate_unchanged": true,
+  "original_history_preserved": true,
+  "formal_batch": false,
+  "C2": false,
+  "reservations": false,
+  "multiple_movers": false,
+  "papers_changed": false,
+  "git_commit": false,
+  "unresolved": [
+    "Strict Solved at 1e-10 remains unmet",
+    "Public callback exposes Unsolved before final AlmostSolved, not guaranteed pre-postprocess cause",
+    "Per-factorization regularization/refinement activity unavailable",
+    "Next actual anchor recertified and inherited; no second optimization or full-task performance claim"
+  ]
+}

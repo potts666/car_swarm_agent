@@ -1,0 +1,828 @@
+--- stage_c_fix_001/fix_common.py
++++ stage_c_fix_002/fix_common.py
+@@ -5,3 +5,19 @@
+ from c_common import *
+ HERE=ROOT
+ def setup():return Certificates(ROOT/"inputs"),legacy.load_model(REBUILD)
++
++
++def commit_id(token):return content_id(dict(context=token['context'],plans=token['plans']))
++
++
++def validate_commit_token(data,state,old,plan,token,phase):
++    """Execution selects the one plan whose complete context all four cars acknowledged."""
++    ctx=token['context'];c=data.cert['car']
++    expected=dict(cycle=phase,history=state['history'],state_time_s=str(phase*H),owner=c,permission_version=data.witness['version'],joint_source=data.edge['source'],joint_target=data.edge['target'],groups=A.groups(phase,c),pair_contracts=__import__('moving_objects').pair_partition(A.groups(phase,c)),receiver=plan['receiver'],pending_reset=plan['pending_reset'],witness=plan['witness'],witness_version=plan['witness_version'],budget=plan['budget'],plan_id=plan['id'])
++    if content_id(ctx)!=content_id(expected):raise ValueError('mixed commit context')
++    kind='locked_inherited' if plan['id']==old['id'] else 'box_prefix_and_actual_K'
++    ids={}
++    for car in CARS:
++        public=dict(car=car,context=ctx,controls=A.window(plan) if car==c else [(F(0),F(0))]*32,certificate=dict(plan_id=plan['id'],witness=plan['witness'],kind=kind));ids[car]=content_id(public)
++    if token['plans']!=ids or token['application_messages']!=40:raise ValueError('inconsistent four-car commit')
++    return commit_id(token)
+--- stage_c_fix_001/fix_socp.py
++++ stage_c_fix_002/fix_socp.py
+@@ -49,3 +49,39 @@
+         else:attempt.update(passed=False,failure_layer='rational_cone',rejection=cone['violations'])
+         attempts.append(attempt)
+     return record|dict(attempts=attempts,failure_layer=attempts[-1]['failure_layer'],rejection=attempts[-1]['rejection'])
++
++
++def admit_current(data,m,state,old,anchor,cert,raw):
++    """Bind a proposal to the current executed state before the existing A_cert."""
++    from derivatives import verify
++    current=anchor_for(data,m,state,old)
++    if content_id(current)!=content_id(anchor):raise ValueError('stale actual anchor')
++    verify(data,m,cert,anchor,recompute=False)
++    expected=dict(phase=old['phase'],history=state['history'],parent_plan_id=old['id'],anchor_id=content_id(anchor),derivative_id=content_id(cert))
++    if any(raw.get(k)!=v for k,v in expected.items()):raise ValueError('stale raw source binding')
++    return admit(data,m,anchor,cert,raw,'certificate_suboptimal_v1')
++
++
++def solve_current(data,m,state,old,anchor,cert,binding,output):
++    """Exactly one fresh solve on each actual anchor; raw and policy objects separate."""
++    from diagnostics import fields,exact_audit
++    from derivatives import verify
++    assert content_id(anchor_for(data,m,state,old))==content_id(anchor)
++    verify(data,m,cert,anchor,recompute=False)
++    rows=rows_for(data,m,anchor,cert,'B-JL');zero=evaluate(rows,[F(0)]*64)
++    inner,reserves=reserved_rows(rows,'Q');reference=np.array([[float(F(x)) for x in u] for u in old['remaining'][:32]]).ravel()
++    P,q,a,b,cones,model=assembly(inner,reference,F(1,10000));model.update(physical_rows=rows,assembled_rows=inner,rounding_reserves=reserves)
++    assembly_id=put(HERE/'objects',model)
++    cfg=clarabel.DefaultSettings();cfg.verbose=True;cfg.max_iter=300;cfg.time_limit=5.;cfg.tol_feas=cfg.tol_gap_abs=cfg.tol_gap_rel=1e-10
++    solver=clarabel.DefaultSolver(P,q,a,b,cones,cfg);solver.print_to_buffer();trace=[]
++    def callback(info):trace.append(fields(info));return False
++    solver.set_termination_callback(callback)
++    ledger=HERE/'results/solver_calls.json';calls=read(ledger) if ledger.exists() else []
++    assert len(calls)<4 and not any(x['binding']==binding for x in calls),'fixed four-call budget or duplicate actual source'
++    calls.append(dict(binding=binding,anchor_id=content_id(anchor),derivative_id=content_id(cert),assembly_id=assembly_id,started=True,completed=False));write(ledger,calls)
++    solution=solver.solve();info=fields(solver.get_info())
++    output.mkdir();(output/'solver.log').write_text(solver.get_print_buffer());write(output/'trace.json',trace);write(output/'settings.json',fields(solver.get_settings()));write(output/'exact_audit.json',exact_audit(model,solution))
++    raw=dict(**binding,history=state['history'],parent_plan_id=old['id'],method='B-JL',anchor_id=content_id(anchor),derivative_id=content_id(cert),assembly_id=assembly_id,rows=rows,solver_called=True,variables=65,input_variables=64,numerical_variable_scale='1/10000',physical_trust_radius=str(RHO),solver_tolerance=1e-10,solver_version=clarabel.__version__,status=str(solution.status),primal_residual=solution.r_prim,dual_residual=solution.r_dual,raw_solution=solution.x,raw_slack=solution.s,raw_dual=solution.z,raw_objective=solution.obj_val,raw_dual_objective=solution.obj_val_dual,iterations=solution.iterations,solver_wall_s=solution.solve_time,info=info,representation='centered',rounding_reserves=reserves,explicit_zero_increment_anchor=zero,settings_id=put(HERE/'objects',fields(solver.get_settings())),source_code_sha256=sha(Path(__file__)))
++    raw_id=put(HERE/'objects',raw);began=time.perf_counter();policy=admit_current(data,m,state,old,anchor,cert,raw);policy.update(raw_result_id=raw_id,admission_wall_s=time.perf_counter()-began)
++    policy_id=put(HERE/'objects',policy);calls[-1].update(completed=True,raw_result_id=raw_id,policy_result_id=policy_id,status=raw['status'],accepted=policy['accepted']);write(ledger,calls)
++    return raw_id,policy_id,policy
+--- stage_c_fix_001/execute_fix.py
++++ stage_c_fix_002/execute_fix.py
+@@ -4,7 +4,9 @@
+ import time
+ from fix_common import *
+ from derivatives import build,verify
+-from socp import diagnostic,rows_for,evaluate
++from fix_socp import solve_current
++from validate_fix import check
++from damage_checks import run_damage
+ 
+ 
+ def main():
+@@ -18,54 +20,53 @@
+     shared_anchor=get(HERE/'objects',item['anchor_id']);shared_cert=get(HERE/'objects',item['derivative_id']);start=shared_anchor['phase']
+     state=legacy.initial_state(m,data.cfg);old=A.initial_plan(data,state);budget=old['budget'];c=data.cert['car']
+     write(args.output/'config.json',dict(interface=args.interface,method=args.method,shared_anchor_id=item['anchor_id'],shared_derivative_id=item['derivative_id'],shift_recert=args.shift_recert,input_manifest_sha256=sha(HERE/'inputs/manifest.json'),prefix_start=start,endpoint=start+32,witness=data.witness_id,source_budget=budget,duration_ticks=239,formal_batch=False))
+-    failure=None;accepted=numeric_rejected=0;events=[];resets=[];bad_receipts=[];K_shifts=0;count=0;began=time.perf_counter()
++    failure=None;accepted=numeric_rejected=0;events=[];resets=[];bad_receipts=[];K_shifts=0;count=0;began=time.perf_counter();prefix=[];first_anchor=first_cert=None
+     with gzip.open(args.output/'execution.jsonl.gz','wt') as stream:
+         try:
+             for phase in range(data.cert['ticks']):
+                 proposal=old;event=None;damaged=None;candidate_id=None
+-                if phase==start and args.method!='anchor' or args.shift_recert and phase==start+1:
+-                    anchor=anchor_for(data,m,state,old);anchor_id=put(HERE/'objects',anchor)
+-                    if phase==start:
+-                        assert anchor_id==item['anchor_id'];cert=shared_cert;derivative_id=item['derivative_id'];attempt_subs=[cert['subdivisions']]
+-                    else:attempt_subs=[8,16,32]
+-                    if phase==start:
+-                        chosen=read(HERE/'results/probe/summary.json')[args.interface+'_centered']['chosen_id']
+-                        result=get(HERE/'objects',chosen);assert result['accepted'] and result['anchor_id']==anchor_id
+-                        result['interface']=args.interface;result_id=put(HERE/'objects',result)
+-                        proposal=result['accepted_proposal'];accepted+=1;candidate_id=result_id
+-                        event=dict(phase=phase,anchor_id=anchor_id,attempts=[dict(result_id=result_id,derivative_id=derivative_id,subdivisions=cert['subdivisions'],status=result['status'],accepted=True)],accepted=True,rejection_layer=None)
++                if phase in (start,start+1):
++                    round_number=phase-start+1;anchor=anchor_for(data,m,state,old);anchor_id=put(HERE/'objects',anchor)
++                    build_start=time.perf_counter();cert=build(data,m,anchor,32);verify(data,m,cert,anchor,recompute=False);derivative_id=put(HERE/'objects',cert)
++                    binding=dict(run_id='two_updates_001',interface=args.interface,round=round_number,phase=phase)
++                    raw_id,policy_id,result=solve_current(data,m,state,old,anchor,cert,binding,args.output/('round_'+str(round_number)))
++                    check(data,m,anchor,cert,result,recompute=False)
++                    event=dict(**binding,history=state['history'],parent_plan_id=old['id'],anchor_id=anchor_id,derivative_id=derivative_id,assembly_id=result['assembly_id'],raw_result_id=raw_id,policy_result_id=policy_id,accepted=result['accepted'],accepted_plan_id=result.get('accepted_proposal',{}).get('id'),commit_id=None,derivative_and_solve_and_cert_wall_s=time.perf_counter()-build_start,failure_layer=result.get('failure_layer'),old_pending_reset=old['pending_reset'])
++                    if result['accepted']:
++                        proposal=result['accepted_proposal'];accepted+=1;candidate_id=policy_id
++                        assert proposal['parent']==old['id'] and proposal['remaining'][33:]==old['remaining'][33:]
++                        event['new_pending_reset']=proposal['pending_reset'];event['old_K_disposition']='entire accepted prefix/receiver/K replaces old obligation atomically' if old['pending_reset'] else 'first box contract'
+                     else:
+-                        cert=build(data,m,anchor,32);verify(data,m,cert,anchor);derivative_id=put(HERE/'objects',cert)
+-                        zero=evaluate(rows_for(data,m,anchor,cert,'B-JL'),[F(0)]*64)
+-                        staged=copy.deepcopy(state)
+-                        for j,u in enumerate(A.window(old)):
+-                            if old['pending_reset'] and phase+j==old['pending_reset']['phase']:assert in_box(m,staged,c,data.row(phase+j))
+-                            legacy.execute(m,staged,c,u,data.cfg,data.cert['source']>0)
+-                        assert in_flow(m,staged,data.cert,phase+32)
+-                        event=dict(kind='actual_shift_recertification',phase=phase,anchor_id=anchor_id,derivative_id=derivative_id,free_box_zero_check=zero,inherited_plan_id=old['id'],remaining_budget=budget,actual_tail_continuously_verified=True,new_solve=False,accepted=False)
++                        numeric_rejected+=1;event['new_pending_reset']=old['pending_reset'];event['old_K_disposition']='old actual tail and pending K retained'
++                    if round_number==1:first_anchor,first_cert=anchor,cert
++                    else:
++                        assert old['parent']==events[0]['accepted_plan_id'] if events[0]['accepted'] else True
++                        if old['pending_reset']:
++                            run_damage(data,m,state,old,anchor,cert,get(HERE/'objects',raw_id),result,first_anchor,first_cert,prefix,args.output/'damage_forks')
+                     events.append(event)
+                 pending=old['pending_reset']
+                 if pending is not None and pending['phase']==phase:
+-                    # A valid fixture over the numerical old tail is corrupted;
+-                    # its rejection must leave that already accepted K executable.
+-                    bad=copy.deepcopy(old);rr=data.row(phase+32);a,w=map(F,old['remaining'][32])
+-                    bad.update(branch='box_candidate',parent=old['id'],receiver={**A.receiver(data.cert,phase),'component':'box','row_sha256':content_id(rr),'domain':rr['domain']},pending_reset=dict(phase=phase+32,next_phase=phase+33,row_sha256=content_id(rr),input=(a+F(1,100),w)))
+-                    bad=A.seal(bad)
++                    # Damage the saved contract while its real K is due; its ID must reject.
++                    bad=copy.deepcopy(old);bad['pending_reset']['input']=[str(F(bad['pending_reset']['input'][0])+F(1,100)),str(bad['pending_reset']['input'][1])]
+                     try:A.commit(m,data,state,old,bad,phase,phase)
+                     except ValueError as error:damaged=dict(kind='K_fixture_while_numerical_old_K_is_due',proposal=bad,rejection=str(error),old_first=A.window(old)[0],old_plan_id=old['id'])
+                     else:raise AssertionError('damaged K proposal accepted')
+                     bad_receipts.append(dict(phase=phase,old_plan_id=old['id']))
+-                commit_start=time.perf_counter();token=A.commit(m,data,state,old,proposal,phase,phase);commit_wall=time.perf_counter()-commit_start
++                commit_start=time.perf_counter();token=A.commit(m,data,state,old,proposal,phase,phase);commit_wall=time.perf_counter()-commit_start;number=validate_commit_token(data,state,old,proposal,token,phase)
++                if event:event['commit_id']=number;event['selected_plan_id']=proposal['id'];event['actual_selected_first']=list(map(str,A.window(proposal)[0]));event['old_first']=list(map(str,A.window(old)[0]))
+                 if event and not event['accepted']:assert proposal['id']==old['id']
+                 active_reset=proposal['pending_reset']
+                 if active_reset and phase==active_reset['phase']:
+                     assert in_box(m,state,c,data.row(phase));assert A.window(proposal)[0]==reset_input(state['v'][c],state['delta'][c],data.row(phase))
+                 actual=legacy.execute(m,state,c,A.window(proposal)[0],data.cfg,data.cert['source']>0)
++                prefix.append(tuple(map(F,actual['executed_input'])))
+                 if damaged:assert actual['executed_input']==list(map(str,damaged['old_first']))
++                if event:
++                    event['actual_output']=actual['executed_input'];event['actual_successor_history']=state['history'];event['actual_first_changed']=event['actual_output']!=event['old_first']
+                 if active_reset and phase==active_reset['phase']:
+                     assert in_flow(m,state,data.cert,phase+1);resets.append(dict(phase=phase,actual=actual))
+                 next_plan,transition=A.shift(data,proposal,state);K_shifts+=transition['kind']=='saved_state_dependent_K'
+-                stream.write(json.dumps(dict(kind='B',cycle=phase,phase=phase,actor=c,plan=proposal,old_plan_id=old['id'],solver_event=event,accepted_result_id=candidate_id,damaged_proposal=damaged,token=token,commit_wall_s=commit_wall,actual=actual,history=state['history'],budget_before=budget,budget_after=budget-1,shift=transition),default=str,separators=(',',':'))+'\n')
++                stream.write(json.dumps(dict(kind='B',cycle=phase,phase=phase,actor=c,plan=proposal,old_plan_id=old['id'],solver_event=event,accepted_result_id=candidate_id,damaged_proposal=damaged,token=token,commit_id=number,commit_wall_s=commit_wall,actual=actual,history=state['history'],budget_before=budget,budget_after=budget-1,shift=transition),default=str,separators=(',',':'))+'\n')
+                 budget-=1;count+=1;old=next_plan
+             assert legacy.state_in_node(state,data.cfg,data.edge['target'],data.cert['stage_radii']) and budget==1040
+             edge=data.witness['chain'][1];cert=data.objects[edge['object']];assert legacy.state_in_node(state,data.cfg,edge['source'],cert['stage_radii'])
+@@ -76,7 +77,7 @@
+             stream.write(json.dumps(dict(kind='parked_handoff',cycle=count,phase=0,actor=edge['actor'],edge=edge,token=token,actual=actual,history=state['history'],budget_before=budget,budget_after=budget-1),default=str,separators=(',',':'))+'\n');budget-=1;count+=1
+         except Exception as error:failure=repr(error)
+     summary=dict(passed=failure is None,error=failure,interface=args.interface,method=args.method,shift_recert=args.shift_recert,actual_steps=count,remaining_budget=budget,accepted_numeric_candidates=accepted,numeric_proposals_rejected=numeric_rejected,solver_events=events,K_executions=resets,saved_K_shifts=K_shifts,rejected_K_fixtures=bad_receipts,all_numeric_candidate_inputs_from_Clarabel=True,full_fourcar_task=False,formal_batch=False,wall_s=time.perf_counter()-began)
+-    write(args.output/'summary.json',summary);print(json.dumps(summary,default=str,indent=2));return 0 if summary['passed'] else 1
++    write(args.output/'events.json',events);write(args.output/'summary.json',summary);print(json.dumps(summary,default=str,indent=2));return 0 if summary['passed'] else 1
+ 
+ 
+ if __name__=='__main__':raise SystemExit(main())
+--- stage_c_fix_001/validate_fix.py
++++ stage_c_fix_002/validate_fix.py
+@@ -27,13 +27,19 @@
+         assert F(row['g_upper'])==-F(cert['geometry_margins'][j]) and F(row['gradient_error'])==F(cert['local_profiles'][j]['Gc']) and F(row['hessian'])==F(cert['local_profiles'][j]['Hc'])
+         assert not any(map(F,row['linear']))
+     trust=next(r for r in rows if r['name']=='hard_trust');assert F(trust['g_upper'])==-RHO and F(trust['gradient_error'])==1 and F(trust['hessian'])==0
+-    if not result['accepted']:return True
+     assert result['admission_policy'] in ('strict_solved_v1','certificate_suboptimal_v1')
+     allowed=('Solved',) if result['admission_policy']=='strict_solved_v1' else ('Solved','AlmostSolved')
+-    assert result['status'] in allowed and result['solver_called'] and result['variables']==65 and result['input_variables']==64
++    assert result['solver_called'] and result['variables']==65 and result['input_variables']==64
++    if result['accepted']:assert result['status'] in allowed
+     import math
+-    assert all(math.isfinite(v) for key in ('raw_solution','raw_slack','raw_dual') for v in result[key])
+-    sources=read(HERE/'results/probe/summary.json');source=get(HERE/'objects',sources[result['interface']+'_'+result['representation']]['result_id'])
++    if result['accepted']:assert all(math.isfinite(v) for key in ('raw_solution','raw_slack','raw_dual') for v in result[key])
++    source=get(HERE/'objects',result['raw_result_id'])
++    for key in ('run_id','interface','round','phase','history','parent_plan_id'):assert result[key]==source[key],key
++    assert source['phase']==anchor['phase'] and source['history']==anchor['state']['history'] and source['parent_plan_id']==anchor['plan']['id']
++    settings=get(HERE/'objects',source['settings_id'])
++    assert settings['tol_feas']==settings['tol_gap_abs']==settings['tol_gap_rel']==1e-10
++    assert settings['max_iter']==300 and settings['time_limit']==5
++    assert source['solver_version']=='0.11.1' and source['numerical_variable_scale']=='1/10000'
+     for key in ('raw_solution','raw_slack','raw_dual','assembly_id','status','anchor_id','derivative_id'):assert result[key]==source[key],key
+     model=get(HERE/'objects',result['assembly_id']);assert content_id(model['physical_rows'])==content_id(rows)
+     from fix_socp import assembly,reserved_rows
+@@ -42,6 +48,9 @@
+     rebuilt=assembly(inner,ref,F(1,10000))[-1]
+     for key in ('P','q','A','b','cone_dimensions'):assert model[key]==rebuilt[key],key
+     assert F(result['physical_trust_radius'])==RHO and result['solver_tolerance']<=1e-10
++    from socp import rows_for
++    assert content_id(rows)==content_id(rows_for(data,m,anchor,cert,result['method']))
++    if not result['accepted']:return True
+     raw=result['raw_solution'];scale=F(result['numerical_variable_scale']);alpha=F(result['accepted_alpha']);assert alpha in (1,F(1,2),F(1,4))
+     physical=[scale*F.from_float(float(x)) for x in raw[:64]]
+     delta=[F(round(alpha*x*10**12),10**12) for x in physical]
+--- stage_c_fix_001/accept_fix.py
++++ stage_c_fix_002/accept_fix.py
+@@ -1,116 +1,149 @@
+-#!/usr/bin/env python3
+-"""External B replay, numerical provenance and flexible multi-update acceptance."""
+-import argparse
+-import time
++"""Independent event-ID provenance, two actual anchors, atomic contracts and fork replay."""
++import argparse,time
+ from fix_common import *
+ from validate_fix import check
+ 
+ 
++def normal(value):return json.loads(json.dumps(value,default=str))
++
++
++def shifted(plan,audit,data,phase):
++    new=copy.deepcopy(plan);nextphase=phase+1;end=min(nextphase+32,239);c=data.cert['car'];pending=plan['pending_reset']
++    new.update(branch='locked_derived_suffix' if plan['ancestry'] else 'locked_inherited',phase=nextphase,parent=plan['id'],remaining=plan['remaining'][1:],budget=plan['budget']-1,source_history=audit.history,source_pose_Q=pose_rows(audit.p4[c]),v0=audit.v[c],delta0=audit.d[c],receiver=dict(component='flow' if end<239 else 'coarse_stopped',phase=end,domain_object=data.cert['_object_id'],deadline=end-nextphase))
++    if pending and pending['phase']<nextphase:new['pending_reset']=None
++    return normal(A.seal(new))
++
++
++def validate_token(data,audit,plan,old,token,phase):
++    ctx=token['context'];c=data.cert['car']
++    expected=dict(cycle=phase,history=audit.history,state_time_s=str(phase*H),owner=c,permission_version=data.witness['version'],joint_source=data.edge['source'],joint_target=data.edge['target'],groups=A.groups(phase,c),pair_contracts=__import__('moving_objects').pair_partition(A.groups(phase,c)),receiver=plan['receiver'],pending_reset=plan['pending_reset'],witness=plan['witness'],witness_version=plan['witness_version'],budget=plan['budget'],plan_id=plan['id'])
++    assert normal(expected)==ctx,'independent mixed commit context'
++    kind='locked_inherited' if plan['id']==old['id'] else 'box_prefix_and_actual_K';ids={}
++    for car in CARS:
++        ids[car]=content_id(dict(car=car,context=ctx,controls=A.window(plan) if car==c else [(F(0),F(0))]*32,certificate=dict(plan_id=plan['id'],witness=plan['witness'],kind=kind)))
++    assert ids==token['plans'] and token['application_messages']==40
++    return content_id(dict(context=ctx,plans=ids))
++
++
++def validate_new(data,m,audit,plan,old,phase):
++    assert A.seal(plan)['id']==plan['id'] and plan['parent']==old['id']
++    r=plan['receiver'];row=data.row(phase+32);reset=plan['pending_reset'];c=data.cert['car']
++    assert r['component']=='box' and r['domain_object']==data.cert['_object_id'] and r['phase']==phase+32 and r['deadline']==32
++    assert r['domain']==row['domain'] and r['row_sha256']==content_id(row)
++    assert reset['phase']==phase+32 and reset['next_phase']==phase+33 and reset['row_sha256']==content_id(row)
++    commands=[tuple(map(F,u)) for u in plan['remaining']];base=[tuple(map(F,u)) for u in old['remaining']]
++    assert len(commands)==len(base) and commands[33:]==base[33:]
++    assert H*sum(a*a+w*w for a,w in commands[:32])<=H*sum(a*a+w*w for a,w in base[:32])
++    v=audit.v[c]+H*sum(a for a,w in commands[:32]);d=audit.d[c]+H*sum(w for a,w in commands[:32]);domain=row['domain']
++    K=(F(domain['feedback_a_ref'])-(v-F(domain['center_v']))/H,F(domain['feedback_omega_ref'])-(d-F(domain['center_delta']))/H)
++    assert commands[32]==tuple(map(F,reset['input']))==K,'independent live K mismatch'
++    assert plan['budget']==len(commands)+plan['suffix_ticks']<=old['budget']
++    cloned=audit.clone()
++    for j,u in enumerate(commands[:33]):
++        if j==32:cloned.box(c,row)
++        cloned.step(c,u,data.cert['source']>0)
++    cloned.flow(c,data.cert,phase+33)
++
++
++def replay_step(data,m,audit,expected,row):
++    phase=row['phase'];plan=row['plan'];c=data.cert['car'];budget=expected['budget']
++    assert plan['object']==data.cert['_object_id'] and plan['phase']==phase and plan['source_history']==audit.history
++    assert A.seal(plan)['id']==plan['id'] and plan['source_pose_Q']==pose_rows(audit.p4[c]) and F(plan['v0'])==audit.v[c] and F(plan['delta0'])==audit.d[c]
++    assert plan['budget']==budget and plan['witness']==data.witness_id and plan['witness_version']==data.witness['version'] and plan['suffix_ticks']==data.suffix_ticks
++    assert row['commit_id']==validate_token(data,audit,plan,expected,row['token'],phase)
++    pending=plan['pending_reset']
++    if pending and phase==pending['phase']:
++        audit.box(c,data.row(phase));domain=data.row(phase)['domain']
++        K=(F(domain['feedback_a_ref'])-(audit.v[c]-F(domain['center_v']))/H,F(domain['feedback_omega_ref'])-(audit.d[c]-F(domain['center_delta']))/H)
++        assert A.window(plan)[0]==K
++    audit.step(c,A.window(plan)[0],data.cert['source']>0,row['actual'])
++    if pending and phase==pending['phase']:audit.flow(c,data.cert,phase+1)
++    nextplan=shifted(plan,audit,data,phase);tail=tuple(map(F,plan['remaining'][32])) if len(plan['remaining'])>32 else (F(0),F(0))
++    assert row['shift']['new_id']==nextplan['id'] and tuple(map(F,row['shift']['appended_input']))==tail
++    assert A.window(nextplan)==A.window(plan)[1:]+[tail]
++    assert row['history']==audit.history and row['budget_before']==budget and row['budget_after']==budget-1
++    return nextplan,bool(pending and phase==pending['phase'])
++
++
++def accept_damage(run,data,m,source_audit,anchor,old):
++    summary=read(run/'damage_forks/summary.json');assert summary['passed'];c=data.cert['car'];verified=[]
++    assert {case['kind'] for case in summary['cases']}=={'stale_anchor','stale_derivative','old_phase','damaged_K','mixed_commit_context'}
++    for case in summary['cases']:
++        req=case['request'];kind=case['kind'];assert req['kind']==kind and case['source_anchor_id']==content_id(anchor) and case['old_plan_id']==old['id']
++        assert content_id(case['old_pending_reset'])==content_id(old['pending_reset']) and case['invalid_commits']==case['invalid_executions']==0
++        if kind=='stale_anchor':assert content_id(get(HERE/'objects',req['anchor_id']))!=content_id(anchor)
++        elif kind=='stale_derivative':assert get(HERE/'objects',req['derivative_id'])['anchor_id']!=content_id(anchor)
++        elif kind=='old_phase':assert get(HERE/'objects',req['proposal_id'])['phase']!=old['phase']
++        elif kind=='damaged_K':
++            bad=get(HERE/'objects',req['proposal_id']);domain=data.row(old['phase']+32)['domain'];u=A.window(bad)
++            v=source_audit.v[c]+H*sum(a for a,w in u);d=source_audit.d[c]+H*sum(w for a,w in u)
++            K=(F(domain['feedback_a_ref'])-(v-F(domain['center_v']))/H,F(domain['feedback_omega_ref'])-(d-F(domain['center_delta']))/H)
++            assert tuple(map(F,bad['pending_reset']['input']))!=K
++        else:
++            template=get(HERE/'objects',req['template_plan_id'])
++            assert req['token']['context']['plan_id']!=template['id']
++        audit=source_audit.clone();expected=copy.deepcopy(old);count=K_count=0
++        with gzip.open(run/'damage_forks'/case['log_file'],'rt') as stream:
++            for row in map(json.loads,stream):
++                assert row['phase']==old['phase']+count and row['plan']==normal(expected)
++                expected,Kdone=replay_step(data,m,audit,expected,row);K_count+=Kdone;count+=1
++                if count==1:assert row['actual']['executed_input']==case['old_first']==case['first_actual_input']
++        assert K_count==1 and count==case['actual_steps'] and audit.history==case['final_history']
++        assert expected['budget']==case['budget_after']==old['budget']-count
++        verified.append(dict(kind=kind,passed=True,actual_steps=count,actual_old_K=K_count))
++    return dict(passed=True,cases=verified)
++
++
+ def accept(run):
+     data,m=setup();cfg=read(run/'config.json');summary=read(run/'summary.json');audit=Replay(m,data.cfg);audit.node(data.edge['source'],data.cert['stage_radii'])
+-    initial=A.initial_plan(data,legacy.initial_state(m,data.cfg));expected=json.loads(json.dumps(initial,default=str));budget=1279;accepted=resets=rejected=0;pending=None;seen=set();recert=[];count=0;start=time.perf_counter()
+-    def validate_new(plan,old,phase):
+-        assert A.seal(plan)['id']==plan['id'] and plan['parent']==old['id']
+-        r=plan['receiver'];row=data.row(phase+32);reset=plan['pending_reset'];c=data.cert['car']
+-        assert r['component']=='box' and r['domain_object']==data.cert['_object_id'] and r['phase']==phase+32 and r['deadline']==32
+-        assert r['domain']==row['domain'] and r['row_sha256']==content_id(row)
+-        assert reset['phase']==phase+32 and reset['next_phase']==phase+33 and reset['row_sha256']==content_id(row)
+-        commands=[tuple(map(F,u)) for u in plan['remaining']];base=[tuple(map(F,u)) for u in old['remaining']]
+-        assert len(commands)==len(base) and commands[33:]==base[33:]
+-        assert sum(a*a+w*w for a,w in commands[:32])<=sum(a*a+w*w for a,w in base[:32])
+-        v=audit.v[c]+H*sum(a for a,w in commands[:32]);d=audit.d[c]+H*sum(w for a,w in commands[:32]);domain=row['domain']
+-        K=(F(domain['feedback_a_ref'])-(v-F(domain['center_v']))/H,F(domain['feedback_omega_ref'])-(d-F(domain['center_delta']))/H)
+-        assert commands[32]==tuple(map(F,reset['input']))==K,'independent live K mismatch'
+-        cloned=audit.clone()
+-        for j,u in enumerate(commands[:33]):
+-            if j==32:cloned.box(c,row)
+-            cloned.step(c,u,data.cert['source']>0)
+-        cloned.flow(c,data.cert,phase+33)
+-    with gzip.open(run/'execution.jsonl.gz','rt') as f:
+-        for row in map(json.loads,f):
++    expected=normal(A.initial_plan(data,legacy.initial_state(m,data.cfg)));budget=1279;events=[];count=accepted=resets=damaged_due=0;start=time.perf_counter();forks=None
++    with gzip.open(run/'execution.jsonl.gz','rt') as stream:
++        for row in map(json.loads,stream):
+             assert row['cycle']==count
+             if row['kind']=='parked_handoff':
+-                assert count==239 and row['edge']==data.witness['chain'][1]
+-                audit.node(data.edge['target'],data.cert['stage_radii']);edge=row['edge'];cert=data.objects[edge['object']]
+-                assert row['token']['context']['physical_budget']==budget
++                assert count==239 and row['edge']==data.witness['chain'][1];audit.node(data.edge['target'],data.cert['stage_radii'])
++                edge=row['edge'];cert=data.objects[edge['object']];assert row['token']['context']['physical_budget']==budget
+                 audit.step(edge['actor'],tuple(map(F,cert['inputs'][0])),cert['source']>0,row['actual'])
++                assert row['history']==audit.history and row['budget_before']==budget and row['budget_after']==budget-1
+             else:
+-                phase=row['phase'];assert phase==count and row['old_plan_id']==expected['id'];plan=row['plan'];c=data.cert['car'];event=row['solver_event']
+-                if event and event.get('kind')=='actual_shift_recertification':
+-                    from derivatives import verify
+-                    from socp import rows_for,evaluate
++                phase=row['phase'];assert phase==count and row['old_plan_id']==expected['id'];plan=row['plan'];event=row['solver_event']
++                if event:
+                     anchor=anchor_for(data,m,dict(poses=audit.p4,v=audit.v,delta=audit.d,history=audit.history),expected)
+-                    assert content_id(anchor)==event['anchor_id']
+-                    cert=get(HERE/'objects',event['derivative_id']);verify(data,m,cert,anchor)
+-                    rows=rows_for(data,m,anchor,cert,'B-JL');zero=evaluate(rows,[F(0)]*64)
+-                    assert content_id(zero)==content_id(event['free_box_zero_check'])
+-                    assert event['inherited_plan_id']==expected['id'] and event['remaining_budget']==budget
+-                    trial=audit.clone()
+-                    for j,u in enumerate(A.window(expected)):
+-                        if expected['pending_reset'] and phase+j==expected['pending_reset']['phase']:trial.box(c,data.row(phase+j))
+-                        trial.step(c,u,data.cert['source']>0)
+-                    trial.flow(c,data.cert,phase+32)
+-                    recert.append(dict(phase=phase,new_anchor_id=content_id(anchor),different_from_initial=content_id(anchor)!=cfg['shared_anchor_id'],inherited_actual_tail_verified=True,free_box_available=zero['passed']))
+-                    assert plan['id']==expected['id'] and row['accepted_result_id'] is None
+-                elif event:
+-                    anchor=anchor_for(data,m,dict(poses=audit.p4,v=audit.v,delta=audit.d,history=audit.history),expected)
+-                    assert event['anchor_id']==content_id(anchor)
+-                    if phase==cfg['prefix_start']:assert event['anchor_id']==cfg['shared_anchor_id']
+-                    else:recert.append(dict(phase=phase,new_anchor_id=event['anchor_id'],different_from_initial=event['anchor_id']!=cfg['shared_anchor_id']))
+-                    result=None
+-                    for attempt in event['attempts']:
+-                        result=get(HERE/'objects',attempt['result_id']);cert=get(HERE/'objects',attempt['derivative_id'])
+-                        assert result['derivative_id']==attempt['derivative_id'] and result['accepted']==attempt['accepted']
+-                        check(data,m,anchor,cert,result,plan if result['accepted'] else None,recompute=attempt['derivative_id'] not in seen);seen.add(attempt['derivative_id'])
+-                    assert result['accepted']==event['accepted']
++                    assert event['anchor_id']==content_id(anchor) and event['history']==audit.history and event['parent_plan_id']==expected['id']
++                    assert event['run_id']=='two_updates_001' and event['interface']==cfg['interface'] and event['round']==len(events)+1 and event['phase']==phase
++                    cert=get(HERE/'objects',event['derivative_id']);raw=get(HERE/'objects',event['raw_result_id']);result=get(HERE/'objects',event['policy_result_id'])
++                    assert result['raw_result_id']==event['raw_result_id'] and result['assembly_id']==event['assembly_id'] and result['accepted']==event['accepted']
++                    for key in ('run_id','interface','round','phase','anchor_id','derivative_id','history','parent_plan_id'):assert result[key]==event[key]
++                    check(data,m,anchor,cert,result,plan if result['accepted'] else None,recompute=True)
++                    assert raw['anchor_id']==content_id(anchor)
++                    if len(events)==1:
++                        assert phase==events[0]['phase']+1 and anchor['plan']['parent']==events[0]['accepted_plan_id']
++                        assert event['anchor_id']!=events[0]['anchor_id'] and event['derivative_id']!=events[0]['derivative_id'] and event['assembly_id']!=events[0]['assembly_id']
++                        forks=accept_damage(run,data,m,audit.clone(),anchor,expected)
+                     if result['accepted']:
+-                        assert row['accepted_result_id']==event['attempts'][-1]['result_id'];validate_new(plan,expected,phase);accepted+=1
+-                    else:assert plan['id']==expected['id'] and row['accepted_result_id'] is None
+-                else:assert plan['id']==expected['id']
+-                if plan['id']==expected['id']:assert plan==expected
+-                assert plan['object']==data.cert['_object_id'] and plan['phase']==phase and plan['source_history']==audit.history
+-                assert plan['source_pose_Q']==pose_rows(audit.p4[c]) and F(plan['v0'])==audit.v[c] and F(plan['delta0'])==audit.d[c]
+-                assert plan['budget']==budget and plan['witness']==data.witness_id and plan['suffix_ticks']==1040
++                        assert row['accepted_result_id']==event['policy_result_id'] and event['accepted_plan_id']==plan['id'];validate_new(data,m,audit,plan,expected,phase);accepted+=1
++                        assert content_id(event['new_pending_reset'])==content_id(plan['pending_reset'])
++                    else:assert plan==expected and row['accepted_result_id'] is None
++                    assert event['selected_plan_id']==plan['id'] and event['commit_id']==row['commit_id'] and event['actual_output']==row['actual']['executed_input']
++                    assert event['old_first']==list(map(str,A.window(expected)[0])) and event['actual_first_changed']==(event['old_first']!=event['actual_output'])
++                    assert content_id(event['old_pending_reset'])==content_id(expected['pending_reset']);events.append(event)
++                else:assert plan==expected
+                 if row['damaged_proposal']:
+-                    bad=row['damaged_proposal'];assert bad['old_plan_id']==expected['id']
+-                    try:validate_new(bad['proposal'],expected,phase)
+-                    except (AssertionError,ValueError):rejected+=1
+-                    else:raise AssertionError('damaged proposal independently accepted')
+-                    assert tuple(map(F,bad['old_first']))==A.window(expected)[0]==A.window(plan)[0]
+-                    assert expected['pending_reset']['phase']==phase,'not an actual saved-K fallback'
+-                token=row['token'];ctx=token['context'];assert ctx['history']==audit.history and ctx['owner']==c and ctx['groups']==A.groups(phase,c)
+-                assert ctx['pair_contracts']==json.loads(json.dumps(__import__('moving_objects').pair_partition(A.groups(phase,c))))
+-                assert ctx['receiver']==plan['receiver'] and ctx['pending_reset']==plan['pending_reset'] and ctx['budget']==budget and ctx['witness']==data.witness_id and ctx['plan_id']==plan['id']
+-                assert set(token['plans'])==set(CARS) and token['application_messages']==40
+-                pending=plan['pending_reset']
+-                if pending and pending['phase']==phase:
+-                    audit.box(c,data.row(phase));d=data.row(phase)['domain']
+-                    live=(F(d['feedback_a_ref'])-(audit.v[c]-F(d['center_v']))/H,F(d['feedback_omega_ref'])-(audit.d[c]-F(d['center_delta']))/H)
+-                    assert A.window(plan)[0]==live
+-                audit.step(c,A.window(plan)[0],data.cert['source']>0,row['actual'])
+-                if pending and pending['phase']==phase:audit.flow(c,data.cert,phase+1);resets+=1
+-                # Rebuild the exact actual tail independently of the controller's shift function.
+-                nextplan=copy.deepcopy(plan);nextphase=phase+1;end=min(nextphase+32,239)
+-                nextplan.update(branch='locked_derived_suffix' if plan['ancestry'] else 'locked_inherited',phase=nextphase,parent=plan['id'],remaining=plan['remaining'][1:],budget=budget-1,source_history=audit.history,source_pose_Q=pose_rows(audit.p4[c]),v0=audit.v[c],delta0=audit.d[c],receiver=dict(component='flow' if end<239 else 'coarse_stopped',phase=end,domain_object=data.cert['_object_id'],deadline=end-nextphase))
+-                if pending and pending['phase']<nextphase:nextplan['pending_reset']=None
+-                nextplan=A.seal(nextplan);assert row['shift']['new_id']==nextplan['id']
+-                tail=tuple(map(F,plan['remaining'][32])) if len(plan['remaining'])>32 else (F(0),F(0))
+-                assert tuple(map(F,row['shift']['appended_input']))==tail and A.window(nextplan)==A.window(plan)[1:]+[tail]
+-                expected=json.loads(json.dumps(nextplan,default=str))
+-            assert row['history']==audit.history and row['budget_before']==budget and row['budget_after']==budget-1
++                    bad=row['damaged_proposal'];assert bad['old_plan_id']==expected['id'] and A.seal(bad['proposal'])['id']!=bad['proposal']['id']
++                    assert expected['pending_reset']['phase']==phase and bad['old_first']==list(map(str,A.window(expected)[0]));damaged_due+=1
++                expected,Kdone=replay_step(data,m,audit,expected,row);resets+=Kdone
++                if event:assert event['actual_successor_history']==audit.history
+             budget-=1;count+=1
+     assert summary['passed'] and count==summary['actual_steps']==240 and budget==summary['remaining_budget']==1039
+-    assert accepted==summary['accepted_numeric_candidates'] and resets==len(summary['K_executions'])
+-    assert rejected==len(summary['rejected_K_fixtures'])
+-    return dict(passed=True,actual_steps=count,accepted_numeric_candidates=accepted,actual_K_executions=resets,damaged_K_proposals_rejected_with_actual_old_K=rejected,remaining_budget=budget,reconstructed_completion_witness=data.witness_id,shift_recertifications=recert,minimum_road_lower_m=float(F(audit.road,m.Q)),minimum_pair_lower_m=float(F(audit.pair,m.Q)),wall_s=time.perf_counter()-start,shared=['interval arithmetic, trigonometry, propagation','certified variational generator and derivative replay','A identity helpers'],independent=['terminal Taylor parameter derivation','raw-to-rational input provenance','bodies, road, six pairs, permissions','actual boxes/K/flow, shift, completion witness and budget'])
++    assert accepted==summary['accepted_numeric_candidates'] and resets==len(summary['K_executions']) and damaged_due==len(summary['rejected_K_fixtures'])
++    assert len(events)==2 and [e['phase'] for e in events]==[cfg['prefix_start'],cfg['prefix_start']+1]
++    assert events==read(run/'events.json') and forks and forks['passed']
++    return dict(passed=True,actual_steps=count,solver_events=len(events),accepted_numeric_candidates=accepted,continuous_two_updates_accepted=accepted==2,actual_K_executions=resets,damaged_K_due_rejections=damaged_due,damage_forks=forks,remaining_budget=budget,reconstructed_completion_witness=data.witness_id,minimum_road_lower_m=float(F(audit.road,m.Q)),minimum_pair_lower_m=float(F(audit.pair,m.Q)),wall_s=time.perf_counter()-start,shared=['interval arithmetic/trigonometry/propagation','certified derivative generator','identity and window helpers'],independent=['actual anchors and per-event provenance','terminal rows and raw-to-rational commands','four public plans/atomic contexts','all continuous road/six-pair envelopes','K, inherited suffix shifts, budgets and controlled rejection forks'])
+ 
+ 
+ def main():
+-    p=argparse.ArgumentParser();p.add_argument('--run',type=Path,required=True);a=p.parse_args();dest=a.run/'independent_acceptance.json'
+-    if dest.exists():p.error('preserve acceptance evidence')
+-    try:value=accept(a.run)
++    p=argparse.ArgumentParser();p.add_argument('--run',type=Path,required=True);args=p.parse_args();dest=args.run/'independent_acceptance.json';assert not dest.exists()
++    try:result=accept(args.run)
+     except Exception as error:write(dest,dict(passed=False,error=repr(error)));raise
+-    write(dest,value);print(json.dumps(value,indent=2))
+-
+-
++    write(dest,result);print(json.dumps(result,indent=2))
+ if __name__=='__main__':main()
+--- /dev/null
++++ stage_c_fix_002/damage_checks.py
+@@ -0,0 +1,49 @@
++"""Copied second-round forks: reject damage, then execute the already accepted tail."""
++from fix_common import *
++from fix_socp import admit_current
++
++
++def run_damage(data,m,state,old,anchor,cert,raw,policy,first_anchor,first_cert,prefix,output):
++    assert old['pending_reset'] is not None,'first update did not establish a saved K'
++    output.mkdir();c=data.cert['car'];template=policy.get('accepted_proposal')
++    if template is None:
++        template=numerical_plan(data,state,old,A.window(old));A.validate_candidate(m,data,state,old,template,old['phase'])
++    audits=Replay(m,data.cfg)
++    for command in prefix:audits.step(c,command,data.cert['source']>0)
++    assert audits.history==state['history']
++    cases=[]
++    for kind in ('stale_anchor','stale_derivative','old_phase','damaged_K','mixed_commit_context'):
++        staged=copy.deepcopy(state);saved=copy.deepcopy(old);request=dict(kind=kind,anchor_id=content_id(anchor),derivative_id=content_id(cert),raw_result_id=put(HERE/'objects',raw),template_plan_id=put(HERE/'objects',template))
++        try:
++            if kind=='stale_anchor':
++                request['anchor_id']=put(HERE/'objects',first_anchor);admit_current(data,m,staged,saved,first_anchor,cert,raw)
++            elif kind=='stale_derivative':
++                request['derivative_id']=put(HERE/'objects',first_cert);admit_current(data,m,staged,saved,anchor,first_cert,raw)
++            elif kind in ('old_phase','damaged_K'):
++                bad=copy.deepcopy(template)
++                if kind=='old_phase':bad['phase']-=1
++                else:bad['pending_reset']['input']=[str(F(bad['pending_reset']['input'][0])+F(1,100)),str(bad['pending_reset']['input'][1])]
++                bad=A.seal(bad);request['proposal_id']=put(HERE/'objects',bad);A.commit(m,data,staged,saved,bad,saved['phase'],saved['phase'])
++            else:
++                # A complete old commit cannot select the new receiver/permission combination.
++                token=A.commit(m,data,staged,saved,saved,saved['phase'],saved['phase']);request['token']=token
++                validate_commit_token(data,staged,saved,template,token,saved['phase'])
++        except (ValueError,AssertionError) as error:rejection=str(error)
++        else:raise AssertionError('damaged request was allowed to execute: '+kind)
++        assert content_id(state_record(staged))==content_id(state_record(state)) and content_id(saved)==content_id(old)
++        audit=audits.clone();pending=copy.deepcopy(saved['pending_reset']);stop=pending['phase']+1;records=[]
++        for phase in range(saved['phase'],stop):
++            proposal=saved;token=A.commit(m,data,staged,saved,proposal,phase,phase);number=validate_commit_token(data,staged,saved,proposal,token,phase)
++            if phase==pending['phase']:assert in_box(m,staged,c,data.row(phase));audit.box(c,data.row(phase))
++            actual=legacy.execute(m,staged,c,A.window(proposal)[0],data.cfg,data.cert['source']>0);audit.step(c,A.window(proposal)[0],data.cert['source']>0,actual)
++            if phase==pending['phase']:
++                assert in_flow(m,staged,data.cert,phase+1);audit.flow(c,data.cert,phase+1)
++                assert actual['executed_input']==list(map(str,pending['input']))
++            saved,shift=A.shift(data,proposal,staged)
++            records.append(dict(phase=phase,plan=proposal,token=token,commit_id=number,actual=actual,history=staged['history'],budget_before=proposal['budget'],budget_after=saved['budget'],shift=shift))
++        path=output/(kind+'.jsonl.gz')
++        with gzip.open(path,'wt') as stream:
++            for record in records:stream.write(json.dumps(record,default=str,separators=(',',':'))+'\n')
++        cases.append(dict(kind=kind,request=request,rejection=rejection,invalid_commits=0,invalid_executions=0,source_anchor_id=content_id(anchor),old_plan_id=old['id'],old_pending_reset=pending,first_actual_input=records[0]['actual']['executed_input'],old_first=list(map(str,A.window(old)[0])),actual_steps=len(records),actual_old_K_phase=pending['phase'],final_history=staged['history'],budget_before=old['budget'],budget_after=saved['budget'],log_file=path.name,passed=True))
++    summary=dict(passed=True,cases=cases,scope='copied controlled forks at actual second-round state; excluded from main performance and solver counts')
++    write(output/'summary.json',summary);return summary
+--- /dev/null
++++ stage_c_fix_002/diagnostics.py
+@@ -0,0 +1,55 @@
++"""Four registered solves only; complete public callback and exact dyadic audit."""
++from fix_socp import *
++import platform,sys
++
++def fields(obj):
++    out={}
++    for k in dir(obj):
++        if k.startswith('_') or callable(getattr(obj,k)):continue
++        v=getattr(obj,k);out[k]=v if isinstance(v,(float,int,str,bool,list)) else str(v)
++    return out
++
++def strict_interior(model):
++    rows=model['assembled_rows'];T=min([RHO/2,F(1,2)]+[-F(r['g_upper'])/(2*(F(r['gradient_error'])+F(r['hessian'])/2)) for r in rows if F(r['gradient_error'])+F(r['hessian'])/2>0]);assert T>0
++    slack=[F.from_float(float(b))-F.from_float(float(a[-1]))*T/F(1,10000) for a,b in zip(model['A'],model['b'])];n=model['cone_dimensions'][0];assert all(x>0 for x in slack[:n])
++    for size in model['cone_dimensions'][1:]:
++        block=slack[n:n+size];assert block[0]>0 and block[0]**2>sum(x*x for x in block[1:]);n+=size
++    return dict(passed=True,T=str(T),all_binary64_coefficients_treated_as_exact=True)
++
++def exact_audit(model,solution):
++    cv=lambda v:[F.from_float(float(x)) for x in v]
++    x,s,z=cv(solution.x),cv(solution.s),cv(solution.z);a=[cv(r) for r in model['A']];p=[cv(r) for r in model['P']];q,b=cv(model['q']),cv(model['b'])
++    dot=lambda u,v:sum((t*w for t,w in zip(u,v) if t and w),F(0))
++    rp=[dot(row,x)+ss-bb for row,ss,bb in zip(a,s,b)]
++    rd=[dot(p[j],x)+q[j]+dot([r[j] for r in a],z) for j in range(65)]
++    px=dot(x,[dot(row,x) for row in p]);qx=dot(q,x);bz=dot(b,z)
++    def norm(v):return math.sqrt(float(dot(v,v)))
++    return dict(primal_vector=list(map(str,rp)),dual_vector=list(map(str,rd)),primal_norm=norm(rp),dual_norm=norm(rd),normalized_primal=norm(rp)/max(1,norm(b)+norm(x)+norm(s)),normalized_dual=norm(rd)/max(1,norm(q)+norm(x)+norm(z)),primal_objective=str(px/2+qx),dual_objective=str(-px/2-bz),b_dot_z=str(bz),cancellation_ratio=float(sum(abs(t*w) for t,w in zip(b,z))/max(1,abs(bz))),objective_energy_scale='1/10000')
++
++def main():
++    dest=HERE/'results/probe';assert not dest.exists();dest.mkdir(parents=True)
++    data,m=setup();levels=read(HERE/'base_c/analysis/numerical_levels.json');index=read(BASE/'results/enrichment_001/index.json');out={}
++    write(dest/'environment.json',dict(python=sys.version,platform=platform.platform(),clarabel=clarabel.__version__,numpy=np.__version__,settings_source='Clarabel.rs v0.11.1 default/settings.rs'))
++    for name,item in index.items():
++        anchor=get(HERE/'objects',item['anchor_id']);cert=get(HERE/'objects',item['derivative_id']);original=get(HERE/'objects',levels[name+'_Q_1_10000']['assembly_id']);rows=rows_for(data,m,anchor,cert,'B-JL');inner,res=reserved_rows(rows,'Q');assert content_id(inner)==content_id(original['assembled_rows'])
++        ref=np.array([[float(F(x)) for x in u] for u in anchor['plan']['remaining'][:32]]).ravel()
++        for representation in ('old','centered'):
++            P,q,a,b,cones,model=(old_assembly if representation=='old' else assembly)(inner,ref,F(1,10000))
++            for k in ('P','q','A','b','cone_dimensions'):
++                if representation=='old':assert model[k]==original[k],k
++            model.update(physical_rows=rows,assembled_rows=inner,rounding_reserves=res);assembly_id=put(HERE/'objects',model);interior=strict_interior(model)
++            cfg=clarabel.DefaultSettings();cfg.verbose=True;cfg.max_iter=300;cfg.time_limit=5.;cfg.tol_feas=cfg.tol_gap_abs=cfg.tol_gap_rel=1e-10
++            solver=clarabel.DefaultSolver(P,q,a,b,cones,cfg);solver.print_to_buffer();trace=[]
++            def callback(info):trace.append(fields(info));return False
++            solver.set_termination_callback(callback);solution=solver.solve();info=fields(solver.get_info());tag=name+'_'+representation
++            (dest/(tag+'.log')).write_text(solver.get_print_buffer());write(dest/(tag+'_trace.json'),trace);write(dest/(tag+'_settings.json'),fields(solver.get_settings()));write(dest/(tag+'_exact_audit.json'),exact_audit(model,solution))
++            result=dict(method='B-JL',anchor_id=item['anchor_id'],derivative_id=item['derivative_id'],rows=rows,solver_called=True,variables=65,input_variables=64,assembly_id=assembly_id,numerical_variable_scale='1/10000',physical_trust_radius=str(RHO),solver_tolerance=1e-10,solver_version=clarabel.__version__,status=str(solution.status),primal_residual=solution.r_prim,dual_residual=solution.r_dual,raw_solution=solution.x,raw_slack=solution.s,raw_dual=solution.z,raw_objective=solution.obj_val,raw_dual_objective=solution.obj_val_dual,iterations=solution.iterations,solver_wall_s=solution.solve_time,info=info,pre_postprocess_status='unknown: callback does not expose a guaranteed post-termination pre-postprocess state',unavailable=['per-factorization dynamic regularization events','per-iteration refinement counts'],interior=interior,representation=representation,rounding_reserves=res)
++            strict=admit(data,m,anchor,cert,result,'strict_solved_v1');strict_id=put(HERE/'objects',strict)
++            chosen=strict;policy_id=None
++            if representation=='centered' and solution.status==clarabel.SolverStatus.AlmostSolved:
++                chosen=admit(data,m,anchor,cert,result,'certificate_suboptimal_v1');policy_id=put(HERE/'objects',chosen)
++            out[tag]=dict(result_id=put(HERE/'objects',result),strict_id=strict_id,policy_id=policy_id,chosen_id=put(HERE/'objects',chosen),status=result['status'],strict_accepted=strict['accepted'],accepted=chosen['accepted'],policy=chosen['admission_policy'],info=info)
++            write(dest/'summary.json',out);print(tag,result['status'],'accepted',chosen['accepted'],flush=True)
++    assert len(out)==4
++    return out
++if __name__=='__main__':main()
+--- /dev/null
++++ stage_c_fix_002/run_stage.py
+@@ -0,0 +1,28 @@
++"""Four actual solves total; bounded stages, complete logs and checked checkpoints."""
++import os,sys,subprocess,json,hashlib
++from pathlib import Path
++ROOT=Path(__file__).resolve().parent
++ENV={**os.environ,'PYTHONPATH':'/tmp/dmpc-p0-deps','OPENBLAS_NUM_THREADS':'1','PYTHONDONTWRITEBYTECODE':'1'}
++def run(layer,args,evidence):
++    checkpoint=ROOT/'results'/(layer+'_checkpoint.json')
++    if checkpoint.exists():
++        record=json.loads(checkpoint.read_text());assert record['exit_code']==0
++        for name,digest in record['evidence'].items():assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==digest
++        for name,digest in record['code'].items():assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==digest,'checkpoint code changed: '+name
++        print(layer,'verified checkpoint',flush=True);return
++    sources={str(f.relative_to(ROOT)):hashlib.sha256(f.read_bytes()).hexdigest() for f in ROOT.glob('*.py')}
++    with (ROOT/'results'/(layer+'.log')).open('x') as log:
++        result=subprocess.run([sys.executable,*map(str,args)],env=ENV,stdout=log,stderr=subprocess.STDOUT,timeout=180)
++    record=dict(layer=layer,exit_code=result.returncode,code=sources,evidence={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in evidence if p.exists()})
++    checkpoint.write_text(json.dumps(record,indent=2));print(json.dumps({k:v for k,v in record.items() if k!='code'}),flush=True)
++    if result.returncode:raise SystemExit(result.returncode)
++def main():
++    (ROOT/'results').mkdir(exist_ok=True)
++    for name in ('curve','straight_acceleration'):
++        dest=ROOT/'results'/name
++        run('execute_'+name,[ROOT/'execute_fix.py','--index',ROOT/'base_c/base_b/results/enrichment_001/index.json','--output',dest,'--interface',name,'--method','B-JL','--shift-recert'],[dest/'summary.json',dest/'events.json',dest/'execution.jsonl.gz'])
++        assert json.loads((dest/'summary.json').read_text())['passed']
++        run('accept_'+name,[ROOT/'accept_fix.py','--run',dest],[dest/'independent_acceptance.json',dest/'execution.jsonl.gz'])
++    ledger=json.loads((ROOT/'results/solver_calls.json').read_text());assert len(ledger)==4 and all(x['completed'] for x in ledger)
++    print('Four solver calls and two independent acceptances completed',flush=True)
++if __name__=='__main__':main()
+--- /dev/null
++++ stage_c_fix_002/self_check.py
+@@ -0,0 +1,37 @@
++"""Check accepted overlap replacement and failed second-round inheritance evidence."""
++from fix_common import *
++from diagnostics import strict_interior
++
++
++def main():
++    checks=[]
++    calls=read(HERE/'results/solver_calls.json');assert len(calls)==4 and all(c['started'] and c['completed'] for c in calls)
++    for name in ('curve','straight_acceleration'):
++        run=HERE/'results'/name;events=read(run/'events.json');audit=read(run/'independent_acceptance.json')
++        assert audit['passed'] and audit['accepted_numeric_candidates']==2 and len(events)==2
++        first,second=events;anchor=get(HERE/'objects',second['anchor_id']);old=anchor['plan'];proposal=get(HERE/'objects',second['policy_result_id'])['accepted_proposal']
++        assert old['parent']==first['accepted_plan_id'] and second['parent_plan_id']==old['id']
++        assert old['pending_reset']['phase']==second['phase']+31 and proposal['pending_reset']['phase']==second['phase']+32
++        assert tuple(map(F,old['remaining'][31]))==tuple(map(F,old['pending_reset']['input']))
++        assert content_id(proposal['remaining'][33:])==content_id(old['remaining'][33:])
++        assert old['budget']==proposal['budget']==len(old['remaining'])+old['suffix_ticks']
++        with gzip.open(run/'execution.jsonl.gz','rt') as stream:rows=list(map(json.loads,stream))
++        old_K_phase=old['pending_reset']['phase'];new_K_phase=proposal['pending_reset']['phase']
++        assert rows[old_K_phase]['plan']['pending_reset']['phase']==new_K_phase
++        assert rows[old_K_phase]['actual']['executed_input']==list(map(str,proposal['remaining'][31]))
++        assert rows[new_K_phase]['actual']['executed_input']==proposal['pending_reset']['input']
++        assert len({e['raw_result_id'] for e in events})==len({e['policy_result_id'] for e in events})==len({e['commit_id'] for e in events})==2
++        interiors=[]
++        for e in events:
++            raw=get(HERE/'objects',e['raw_result_id']);model=get(HERE/'objects',e['assembly_id'])
++            assert raw['explicit_zero_increment_anchor']['passed']
++            interiors.append(dict(phase=e['phase'],witness=strict_interior(model)))
++            match=[c for c in calls if c['raw_result_id']==e['raw_result_id']];assert len(match)==1 and match[0]['binding']['phase']==e['phase']
++        forks=read(run/'damage_forks/summary.json')
++        assert all(c['passed'] and c['invalid_commits']==c['invalid_executions']==0 and c['actual_steps']==32 and c['old_first']==c['first_actual_input'] for c in forks['cases'])
++        assert all(content_id(c['old_pending_reset'])==content_id(old['pending_reset']) and c['actual_old_K_phase']==old_K_phase for c in forks['cases'])
++        checks.append(dict(interface=name,two_fresh_calls=True,source_parent_updated=True,old_K_inside_new_prefix=True,old_K_phase=old_K_phase,new_K_phase=new_K_phase,whole_contract_replaced=True,exact_saved_suffix=True,version_budget_preserved=True,rejected_forks_continue_same_old_K=5,independent_passed=True,strict_interiors=interiors))
++    for name,digest in read(HERE/'historical_hashes.json').items():assert sha(HERE.parent/name)==digest
++    result=dict(passed=True,solver_calls=4,additional_calls=0,checks=checks)
++    write(HERE/'self_checks.json',result);print(json.dumps(result,indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ stage_c_fix_002/summarize.py
+@@ -0,0 +1,113 @@
++"""Event-wise and non-overlapping actual metrics; gates derive from saved evidence."""
++from fix_common import *
++import csv,difflib,platform,sys
++import clarabel,numpy,scipy
++
++
++def main():
++    data,m=setup();p=HERE.parent;preservation={name:sha(p/name)==digest for name,digest in read(HERE/'historical_hashes.json').items()};assert all(preservation.values())
++    instruction_hashes={name:sha(HERE/'instructions'/name)==digest for name,digest in read(HERE/'instructions/SHA256SUMS.json').items()};assert all(instruction_hashes.values())
++    objects=[]
++    for f in (HERE/'objects').glob('*.json.gz'):get(HERE/'objects',f.name[:-8]);objects.append(f.name[:-8])
++    ledger=read(HERE/'results/solver_calls.json');assert len(ledger)==4 and all(x['completed'] for x in ledger)
++    comparison=[];interfaces={};event_index=[]
++    for name in ('curve','straight_acceleration'):
++        run=HERE/'results'/name;summary=read(run/'summary.json');audit=read(run/'independent_acceptance.json');events=read(run/'events.json');assert summary['passed'] and audit['passed'] and len(events)==2
++        with gzip.open(run/'execution.jsonl.gz','rt') as stream:logs=list(map(json.loads,stream))
++        start=events[0]['phase'];stop=events[-1]['phase']+33;actual=H*sum(F(x)**2 for r in logs[start:stop] for x in r['actual']['executed_input']);baseline=H*sum(F(x)**2 for u in data.cert['inputs'][start:stop] for x in u)
++        modified=[r['phase'] for r in logs if r['kind']=='B' and tuple(map(F,r['actual']['executed_input']))!=tuple(map(F,data.cert['inputs'][r['phase']]))]
++        for event in events:
++            raw=get(HERE/'objects',event['raw_result_id']);result=get(HERE/'objects',event['policy_result_id']);anchor=get(HERE/'objects',event['anchor_id']);info=raw['info'];old=anchor['plan'];new=result.get('accepted_proposal',old)
++            old_energy=H*sum(F(x)**2 for u in old['remaining'][:32] for x in u);new_energy=H*sum(F(x)**2 for u in new['remaining'][:32] for x in u);delta=list(map(F,result.get('accepted_delta',['0']*64)))
++            assert event['actual_output']==logs[event['phase']]['actual']['executed_input'] and logs[event['phase']]['commit_id']==event['commit_id']
++            if result['accepted']:assert new_energy<=old_energy
++            row=dict(interface=name,round=event['round'],phase=event['phase'],status=raw['status'],primal=info['res_primal'],dual=info['res_dual'],gap_abs=info['gap_abs'],gap_rel=info['gap_rel'],ktratio=info['ktratio'],iterations=raw['iterations'],solver_s=raw['solver_wall_s'],admission_s=result['admission_wall_s'],pipeline_s=event['derivative_and_solve_and_cert_wall_s'],accepted=result['accepted'],joint_committed=event['selected_plan_id']==event['accepted_plan_id'] if event['accepted'] else False,policy=result['admission_policy'],changed=result.get('changed',False),actual_first_changed=event['actual_first_changed'],old_first=';'.join(event['old_first']),actual_first=';'.join(event['actual_output']),norm_upper=str(norm_upper(delta)),alpha=result.get('accepted_alpha'),old_energy=str(old_energy),proposed_energy=str(new_energy),predicted_improvement_percent=float(100*(old_energy-new_energy)/old_energy),actual_prefix_ticks_before_replacement=1 if event['round']==1 else 32,budget=old['budget'],budget_after=old['budget']-1,old_K_phase=(event['old_pending_reset'] or {}).get('phase'),new_K_phase=(event['new_pending_reset'] or {}).get('phase'),minimum_road_m=audit['minimum_road_lower_m'],minimum_pair_m=audit['minimum_pair_lower_m'])
++            comparison.append(row);event_index.append(event)
++        interfaces[name]=dict(actual_source_update_passed=True,continuous_two_updates_accepted=audit['continuous_two_updates_accepted'],actual_safe_continuation_passed=audit['passed'],rejection_continuation_passed=audit['damage_forks']['passed'],new_numerical_proposals=2,full_certificate_passed=sum(e['accepted'] for e in events),joint_accepted=summary['accepted_numeric_candidates'],actual_changed_first_steps=sum(e['actual_first_changed'] for e in events),actual_modified_phases=modified,actual_steps=summary['actual_steps'],actual_K_phases=[r['phase'] for r in summary['K_executions']],parked_handoff_first_step=True,initial_budget=1279,final_budget=summary['remaining_budget'],control_wall_s=summary['wall_s'],independent_wall_s=audit['wall_s'],minimum_road_m=audit['minimum_road_lower_m'],minimum_pair_m=audit['minimum_pair_lower_m'],actual_energy_interval=dict(start_phase=start,stop_phase_exclusive=stop,ticks=stop-start,baseline_energy=str(baseline),actual_energy=str(actual),difference=str(baseline-actual),improvement_percent=float(100*(baseline-actual)/baseline)),predicted_window_gains_not_added=True)
++    write(HERE/'event_index.json',event_index);write(HERE/'metrics.json',interfaces)
++    with (HERE/'comparison.csv').open('w') as stream:
++        writer=csv.DictWriter(stream,fieldnames=list(comparison[0]));writer.writeheader();writer.writerows(comparison)
++    (HERE/'comparison_windows.csv').write_bytes(b'\xef\xbb\xbf'+(HERE/'comparison.csv').read_bytes())
++    write(HERE/'preservation_check.json',dict(passed=True,historical_files_unchanged=len(preservation),instruction_hashes=instruction_hashes))
++    write(HERE/'object_identity_check.json',dict(passed=True,objects=sorted(objects),count=len(objects)))
++    write(HERE/'versions.json',dict(python=sys.version,platform=platform.platform(),clarabel=clarabel.__version__,numpy=numpy.__version__,scipy=scipy.__version__))
++    (HERE/'requirements.txt').write_text(f'clarabel=={clarabel.__version__}\nnumpy=={numpy.__version__}\nscipy=={scipy.__version__}\n')
++    gate=dict(version='C0_fix_002',passed=all(v['continuous_two_updates_accepted'] and v['actual_safe_continuation_passed'] and v['rejection_continuation_passed'] for v in interfaces.values()),policy='certificate_suboptimal_v1',solver_calls=4,additional_solver_calls=0,interfaces=interfaces,strict_Solved_repair_passed=all(r['status']=='Solved' for r in comparison),independent_acceptance=True,history_preserved=True,C2=False,reservations=False,vehicle_priority_rule='not designed; first-come refers to research order only',multiple_movers=False,formal_batch=False,papers_changed=False,git_commit=False,limits=['Only two consecutive re-optimizations per interface','All four raw solver statuses AlmostSolved; strict optimality remains unproved','Nominal ZOH controlled replay, synchronous in-process commits, no persistent physical clock','End-to-end construction/admission not a 0.2 s hard-real-time guarantee','Region reservation boundaries/vehicle priority/multiple-mover initial states remain separate tasks'])
++    write(HERE/'GATE.json',gate)
++    patch=[];prior=HERE.parent/'stage_c_fix_001'
++    for name in ('fix_common.py','fix_socp.py','execute_fix.py','validate_fix.py','accept_fix.py'):
++        patch+=list(difflib.unified_diff((prior/name).read_text().splitlines(True),(HERE/name).read_text().splitlines(True),fromfile='stage_c_fix_001/'+name,tofile='stage_c_fix_002/'+name))
++    for name in ('damage_checks.py','diagnostics.py','run_stage.py','self_check.py','summarize.py','verify_delivery.py','package_delivery.py'):
++        patch+=list(difflib.unified_diff([],(HERE/name).read_text().splitlines(True),fromfile='/dev/null',tofile='stage_c_fix_002/'+name))
++    (HERE/'changes.patch').write_text(''.join(patch))
++    table='\n'.join(f"|{r['interface']}|{r['round']} / {r['phase']}|{r['status']}|{r['primal']:.3g}|{r['gap_abs']:.3g}|{r['alpha']}|{r['predicted_improvement_percent']:.6f}%|{r['new_K_phase']}|" for r in comparison)
++    actual_table='\n'.join(f"|{name}|[{v['actual_energy_interval']['start_phase']},{v['actual_energy_interval']['stop_phase_exclusive']})|{v['actual_energy_interval']['improvement_percent']:.6f}%|{v['minimum_road_m']:.6f}|{v['minimum_pair_m']:.6f}|" for name,v in interfaces.items())
++    report=f'''# C0_fix_002 连续两轮实际重新优化
++
++本轮通过：弯道phase5/6和直线phase10/11均重新生成实际状态锚点、导数、模型并真正调用Clarabel，各两份数值新候选完成完整证书认证、四车共同提交和实际首拍输出修改。两个接口均完成240拍及独立验收。总共4次新求解，无定点追加、无缓存旧求解结果替代第一轮。
++
++四次原始状态仍为AlmostSolved。受理采用certificate_suboptimal_v1，严格Solved修复仍未通过。此结果只支持两个既有接口的连续两轮，不推广为任意后续拍持续SOCP可行或全程性能保证。
++
++## 理论、实现与观察分层
++
++理论依据为instructions/theory.md §7 的R-S/R-R/R-F条件性定理，以及previous_instructions/theory.md §8 的完整证书受理命题。新前缀与可执行后续在共同提交前匹配，拒绝保留旧策略，执行真实首拍后预算下降；区域预约R1–R9仍属设计，没有新增地图证书。用户“先来后到”仅为研究先后顺序，车辆优先规则仍待设计。
++
++实现调用链：anchor_for(实际五状态/history/已移位旧计划) → build(32子段) / verify → rows_for → Q预留 → 65维居中assembly → Clarabel新求解 → raw对象 → admit_current / admit → 原行、33拍ZOH、盒/K/流像/真实后续/能量/预算认证 → 独立来源核对 → A.commit → 执行端共同编号核对 → 实际execute → A.shift。
++
++新求解入口和事件ID绑定在fix_socp.py；调度在execute_fix.py；validate_fix.py从每次raw_result_id读取来源，移除固定probe键；accept_fix.py独立重建实际状态、导数、终端行、K、四份公开计划及组合、移位和预算。damage_checks.py保留复制分支原始证据。模型、权限、分组、h=.2、N=32、rho=.001、Q预留、scale=1e-4、容差1e-10、300迭代/5秒以及停车换权均保持。
++
++## 逐轮结果（各轮32拍预测窗重叠，不相加）
++
++|接口|轮 / phase|求解状态|原始残差|绝对gap|alpha|本轮同窗预测输入能量改善|新接收/K phase|
++|---|---|---|---:|---:|---:|---:|---:|
++{table}
++
++四个首拍均与当时旧候选的首拍不同，精确有理输入、改动范数、对偶残差、相对gap、预算、solver/admission/pipeline开销在comparison.csv。第一轮仅首拍实际执行，其余预测前缀被第二轮替换，不能把第一轮整窗预测改善当作已执行收益。第二轮32拍前缀实际执行完毕，随后执行其新K。
++
++## 重叠接收/K整体替换
++
++第一轮保存K37/42。移位后它位于第二轮32拍窗口的最后一拍。第二轮以旧真实尾段为优化锚点，重新认证整个32拍前缀及K38/43，使后继进入原流像39/44，保留第二轮offset33之后实际旧尾段。旧K37/42及旧接收盒义务随第二轮完整合同一起被新合同替换；旧时刻的输入由新前缀覆盖，不强行宣称仍精确执行原K。权限仍为当前车，车组触发不变。
++
++四车共同计划的receiver、pending_reset、权限版本、witness、budget及plan_id在同一context里。执行端重新计算四份公开计划身份并核对共同编号，避免把旧提交配新K。事件显式保存run/interface/phase/history/parent/anchor/derivative/assembly/raw/policy/accepted_plan和commit ID；第二轮parent是第一轮共同受理后从实际后继得到的移位计划，且两轮锚点、导数与组装内容不同。
++
++拒绝分支各自从第二轮实际状态复制：陈旧anchor、陈旧derivative、旧phase、损坏K，以及混合提交context。十个分支全部零非法提交/输出，拒绝后保存旧pending_reset全部字段及父链，实际执行旧首拍并沿尾段执行32拍，包含旧K37/42和后继流像核对。分支控制记录与主分支分开，未计入求解数或性能。主分支新K到期时还注入一次内容身份损坏，拒绝后实际执行该已认可K。
++
++## 实际收益、连续安全和预算
++
++在同一个不重叠的实际34拍区间（第一轮首拍+第二轮32拍前缀+新K）重算输入平方代价，与原认证连接在相同绝对拍号的命令比较：
++
++|接口|实际计费区间phase|输入代价改善|道路净空下界m|六对车身净空下界m|
++|---|---|---:|---:|---:|
++{actual_table}
++
++这里只比较固定时长的输入代价，无加速结论。单接口239拍连接+下一持有车首拍=240拍，预算1279→1039，每拍精确减1。当前8连接同版完成见证保持d038db36d63515f7775265ffff5907dfe4a337a08d9672a4a43f7fb30377ca4e，未上调预算或另取文档常数。独立Replay使用4/8子段、连续角点误差包络和六对矩形检查，核对源域、盒、实际仿射v/delta复位、继承流像、停车粗节点及下一车首拍。
++
++## 分项验收与证据
++
++- 实际来源更新：通过，四次新求解，第二轮实际history和移位parent逐事件复核；results/solver_calls.json、event_index.json。
++- 连续重新优化受理：通过，各2次认证、2次共同受理、2次真实首拍改变；各results/<interface>/events.json。
++- 实际安全接续：通过，各240拍、一个实际新K、停车换权，预算1039；execution.jsonl.gz和independent_acceptance.json。
++- 拒绝续行：通过，5类×2接口复制分支，含实际旧K续行；damage_forks/和独立报告。
++- 严格Solved数值修复：未通过，完整认证策略与数值状态分开保存。
++
++四轮原约束及Q组装的严格内点均有精确有理见证（self_checks.json），本次第二轮未丢失可行内空间。历史A/B/C/C0_fix_001共{len(preservation)}个非缓存文件SHA未变；新包指令清单核对通过；{len(objects)}个本地内容对象ID复核通过。原P0、论文、分支保持，无Git提交。
++
++## 复核、限制与后续
++
++在本目录使用requirements.txt所列版本，复核已保存结果：
++
++```bash
++OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 run_stage.py
++OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 verify_delivery.py
++```
++
++run_stage通过内容与执行代码checkpoint复用本次运行，不追加求解。verify_delivery验证分发清单、四个逐事件来源及两个独立接续和拒绝重放，不求解。要做新的数值重复，须另建目录与计划，不覆盖本次证据。
++
++仍是名义ZOH受控重放、每拍一辆活动车、进程内同步协议；h=.2是逻辑采样步长。逐轮构造/认证开销在CSV中，不构成0.2秒硬实时声明。原始状态AlmostSolved，不提供严格最优性、扰动稳定性或任意拍数持续局部SOCP可行性证明。
++
++未执行区域预约、多活动车、C2或正式批量；下一步先审查本次连续来源与K整体替换证据。资源边界、车辆优先规则、多车初始安排、持续物理时钟和独立进程并行均另立任务。
++'''
++    (HERE/'report.md').write_text(report)
++    (HERE/'HANDOFF.md').write_text('目标：两个既有接口连续两轮重新优化及实际接续。\n状态：4次新求解完成，各2次受理/首拍改变，两个240拍独立验收与10个拒绝续行分支通过；严格Solved未通过。\n约束：不改历史/P0/论文；不推进预约、多活动车、C2或批量。\n源提交：'+read(HERE/'plan.json')['source_commit']+'\n证据：GATE.json、comparison.csv、metrics.json、event_index.json、results/*/independent_acceptance.json。\n恢复：OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 run_stage.py\n分发复核：OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 verify_delivery.py\n')
++    print(json.dumps(dict(passed=gate['passed'],interfaces=interfaces),ensure_ascii=False,indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ stage_c_fix_002/verify_delivery.py
+@@ -0,0 +1,14 @@
++"""Read-only independent verification from an extracted distribution; zero solver calls."""
++from fix_common import *
++from accept_fix import accept
++
++
++def main():
++    manifest=read(HERE/'DELIVERY_MANIFEST.json')
++    for name,item in manifest['files'].items():assert sha(HERE/name)==item['sha256'],name
++    for call in read(HERE/'results/solver_calls.json'):
++        raw=get(HERE/'objects',call['raw_result_id']);assert raw['source_code_sha256']==sha(HERE/'fix_socp.py')
++    audits={name:accept(HERE/'results'/name) for name in ('curve','straight_acceleration')}
++    assert all(a['passed'] and a['accepted_numeric_candidates']==2 and a['damage_forks']['passed'] for a in audits.values())
++    print(json.dumps(dict(passed=True,files_verified=len(manifest['files']),solver_calls=0,independent=audits),indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ stage_c_fix_002/package_delivery.py
+@@ -0,0 +1,60 @@
++"""Deduplicate the archive, independently replay after relocation, export Windows data."""
++from fix_common import *
++import os,sys,subprocess,tarfile,tempfile,zipfile,shutil
++
++
++def source_files():return [f for f in sorted(HERE.rglob('*')) if f.is_file() and '__pycache__' not in f.parts and 'delivery' not in f.relative_to(HERE).parts]
++
++
++def manifest():
++    files={str(f.relative_to(HERE)):dict(bytes=f.stat().st_size,sha256=sha(f)) for f in source_files() if f!=HERE/'DELIVERY_MANIFEST.json'}
++    write(HERE/'DELIVERY_MANIFEST.json',dict(files=files,source_commit=read(HERE/'plan.json')['source_commit'],object_store='objects/<content-id>.json.gz'))
++
++
++def tarball(dest):
++    seen={}
++    with tarfile.open(dest,'w:gz') as tar:
++        for f in source_files():
++            name=str(Path(HERE.name)/f.relative_to(HERE));item=tar.gettarinfo(str(f),arcname=name);digest=sha(f)
++            if digest in seen:item.type=tarfile.LNKTYPE;item.linkname=seen[digest];item.size=0;tar.addfile(item)
++            else:
++                seen[digest]=name
++                with f.open('rb') as stream:tar.addfile(item,stream)
++
++
++def main():
++    output=HERE/'delivery';assert not output.exists();output.mkdir()
++    manifest()
++    with tempfile.TemporaryDirectory(prefix='dmpc-two-update-relocation-') as tmp:
++        candidate=Path(tmp)/'candidate.tar.gz';tarball(candidate)
++        with tarfile.open(candidate) as tar:tar.extractall(tmp,filter='data')
++        env={**os.environ,'PYTHONPATH':'/tmp/dmpc-p0-deps','OPENBLAS_NUM_THREADS':'1','PYTHONDONTWRITEBYTECODE':'1'}
++        result=subprocess.run([sys.executable,str(Path(tmp)/HERE.name/'verify_delivery.py')],cwd=tmp,env=env,capture_output=True,text=True,timeout=180)
++        (output/'relocation_stdout.log').write_text(result.stdout);(output/'relocation_stderr.log').write_text(result.stderr)
++        assert result.returncode==0,(result.returncode,result.stderr)
++        write(HERE/'relocation_check.json',dict(passed=True,exit_code=result.returncode,solver_calls=0,independent=json.loads(result.stdout),source_root_available_but_not_referenced=True,new_root=tmp))
++    manifest();tarpath=output/'DMPC_C0_fix_002_2026-11-13.tar.gz';tarball(tarpath)
++    zippath=output/'DMPC_C0_fix_002_2026-11-13.zip'
++    with zipfile.ZipFile(zippath,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as archive:
++        for f in source_files():archive.write(f,str(Path(HERE.name)/f.relative_to(HERE)))
++    with zipfile.ZipFile(zippath) as archive:assert archive.testzip() is None
++    analysis=output/'C0_fix_002_Windows_analysis_2026-11-13';analysis.mkdir()
++    for name in ('report.md','GATE.json','comparison.csv','comparison_windows.csv','metrics.json','event_index.json','versions.json','plan.json','HANDOFF.md','changes.patch','self_checks.json','preservation_check.json','object_identity_check.json','relocation_check.json','requirements.txt','DELIVERY_MANIFEST.json'):
++        shutil.copy2(HERE/name,analysis/name)
++    shutil.copy2(HERE/'results/solver_calls.json',analysis/'solver_calls.json')
++    for name in ('curve','straight_acceleration'):
++        target=analysis/name;target.mkdir();src=HERE/'results'/name
++        for f in ('config.json','summary.json','events.json','execution.jsonl.gz','independent_acceptance.json'):shutil.copy2(src/f,target/f)
++        (target/'execution.jsonl').write_bytes(gzip.decompress((src/'execution.jsonl.gz').read_bytes()))
++        for d in ('round_1','round_2','damage_forks'):shutil.copytree(src/d,target/d)
++    for f in (tarpath,zippath):
++        f.with_suffix(f.suffix+'.sha256').write_text(sha(f)+'  '+f.name+'\n');shutil.copy2(f,analysis/f.name);shutil.copy2(f.with_suffix(f.suffix+'.sha256'),analysis/(f.name+'.sha256'))
++    (analysis/'先读我_Windows.txt').write_text('C0_fix_002：连续两轮真实重新优化（2026-11-13）\n\n先读report.md、GATE.json和comparison_windows.csv（UTF-8 BOM，便于Excel）。\n四次新求解，各接口两轮受理/首拍修改、240拍独立验收及损坏拒绝续行均通过；原始状态仍全为AlmostSolved。\nmetrics.json按不重叠34拍实际区间计算收益；每轮32拍预测改善不可相加。\nevent_index.json及solver_calls.json绑定四次求解及提交来源。\ncurve/、straight_acceleration/含原始日志、完整设置、数值输出、控制执行与独立验收；execution.jsonl已解压。damage_forks是复制控制分支，与主性能分开。\n完整代码、对象、冻结依赖及任务书在DMPC_C0_fix_002_2026-11-13.zip，解压后运行verify_delivery.py可独立复核（需requirements.txt中的Python库）。\nDELIVERY_MANIFEST.json对应ZIP内stage_c_fix_002目录；SHARED_FILES_SHA256.json对应本分析目录。\n未开展区域预约、多活动车、C2或批量；车辆优先规则仍待设计。历史结果和论文未改。\n',encoding='utf-8-sig')
++    hashes={str(f.relative_to(analysis)):dict(bytes=f.stat().st_size,sha256=sha(f)) for f in sorted(analysis.rglob('*')) if f.is_file()}
++    write(analysis/'SHARED_FILES_SHA256.json',hashes)
++    shared=Path('/media/sf_DMPC_Theory')/analysis.name;assert not shared.exists(),'preserve an existing shared delivery'
++    shutil.copytree(analysis,shared)
++    for name,item in hashes.items():assert sha(shared/name)==item['sha256'],name
++    assert sha(shared/'SHARED_FILES_SHA256.json')==sha(analysis/'SHARED_FILES_SHA256.json')
++    print(json.dumps(dict(passed=True,local_directory=str(output),shared_directory=str(shared),shared_files_verified=len(hashes)+1,archive_sha256=sha(tarpath),archive_bytes=tarpath.stat().st_size,zip_sha256=sha(zippath),zip_bytes=zippath.stat().st_size,relocation_passed=True),ensure_ascii=False,indent=2))
++if __name__=='__main__':main()

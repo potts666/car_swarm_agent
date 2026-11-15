@@ -1,0 +1,74 @@
+{
+  "cases": {
+    "curve_B-ZG": {
+      "executed_safely": true,
+      "solver_candidate_accepted": true,
+      "numeric_nonzero_executed": true,
+      "status": "Solved"
+    },
+    "curve_B-ZL": {
+      "executed_safely": true,
+      "solver_candidate_accepted": true,
+      "numeric_nonzero_executed": true,
+      "status": "Solved"
+    },
+    "curve_B-JL": {
+      "executed_safely": true,
+      "solver_candidate_accepted": false,
+      "numeric_nonzero_executed": false,
+      "status": "AlmostSolved"
+    },
+    "straight_acceleration_B-ZG": {
+      "executed_safely": true,
+      "solver_candidate_accepted": true,
+      "numeric_nonzero_executed": true,
+      "status": "Solved"
+    },
+    "straight_acceleration_B-ZL": {
+      "executed_safely": true,
+      "solver_candidate_accepted": true,
+      "numeric_nonzero_executed": true,
+      "status": "Solved"
+    },
+    "straight_acceleration_B-JL": {
+      "executed_safely": true,
+      "solver_candidate_accepted": false,
+      "numeric_nonzero_executed": false,
+      "status": "NumericalError"
+    }
+  },
+  "shift": {
+    "curve": {
+      "recertified_after_actual_first_step": true,
+      "first_JL_candidate_accepted": false,
+      "second_JL_candidate_accepted": false,
+      "all_statuses": [
+        [
+          "AlmostSolved"
+        ],
+        [
+          "AlmostSolved",
+          "AlmostSolved",
+          "AlmostSolved"
+        ]
+      ],
+      "first_step_was_fallback": true
+    },
+    "straight_acceleration": {
+      "recertified_after_actual_first_step": true,
+      "first_JL_candidate_accepted": false,
+      "second_JL_candidate_accepted": false,
+      "all_statuses": [
+        [
+          "NumericalError"
+        ],
+        [
+          "AlmostSolved",
+          "AlmostSolved",
+          "AlmostSolved"
+        ]
+      ],
+      "first_step_was_fallback": true
+    }
+  }
+}

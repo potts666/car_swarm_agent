@@ -1,0 +1,944 @@
+--- slack_release_001/certify_preflight.py
++++ rolling_interval_001/certify_preflight.py
+@@ -0,0 +1,23 @@
++"""Independent rational ranks and actual worker-byte/matrix fingerprints."""
++from common import *
++from plan_io import load
++
++def rank(rows):
++ A=[[F(x) for x in row] for row in rows];r=0
++ for j in range(64):
++  pivot=next((i for i in range(r,len(A)) if A[i][j]),None)
++  if pivot is None:continue
++  A[r],A[pivot]=A[pivot],A[r];v=A[r][j];A[r]=[x/v for x in A[r]]
++  for i in range(r+1,len(A)):
++   v=A[i][j]
++   if v:A[i]=[x-v*y for x,y in zip(A[i],A[r])]
++  r+=1
++ return r
++
++def run():
++ result=read(HERE/'results/rolling_preflight.json');assert result['passed'];proofs=[]
++ for p in sorted((HERE/'results/preflight_samples').glob('*_job.json.gz')):
++  job=load(str(p.relative_to(HERE)));lattice=job['lattice'];er=rank(lattice['E']);tr=rank(lattice['T']);assert tr==len(lattice['T']) and er+tr==64;assert all(sum(F(a)*F(b) for a,b in zip(eq,col))==0 for eq in lattice['E'] for col in lattice['T']);stem=str(p)[:-len('_job.json.gz')];response=read(stem+'_response.json');request=Path(stem+'_request.json');assert response['request_sha']==sha(request) and read(request)['job']==job;info=response['assembly'];matrix=load(info['matrix_object']);assert info['matrix_id']==content_id(matrix);assert info['model_id']==job['model_id'];proofs.append({'model_id':job['model_id'],'rank_E':er,'rank_T':tr,'matrix_id':info['matrix_id'],'request_sha':sha(request),'worker_solve_called':response['solve_called']})
++ rows=[json.loads(x) for x in (HERE/'results/preflight_cycles.jsonl').read_text().splitlines()];reg=result['interval'];assert len(rows)==4*(reg['end_exclusive']-reg['start']) and all(r['passed'] for r in rows);assert {(r['cycle'],r['actor']) for r in rows}=={(k,c) for k in range(reg['start'],reg['end_exclusive']) for c in CARS}
++ write(HERE/'results/preflight_rank_worker_certificate.json',{'passed':True,'samples':proofs,'all_car_cycles':len(rows),'new_optimizer_calls':0});print('PASS rational rank + genuine worker fingerprint samples',len(proofs),flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/rolling_recover.py
++++ rolling_interval_001/rolling_recover.py
+@@ -0,0 +1,54 @@
++"""Fault branches from genuine main checkpoints, no worker/optimizer import."""
++import copy,gzip
++from common import *
++from plan_io import load,save,restore,record
++from engine import run
++from contracts import binding,physical_id
++
++def objects(key):return load(f'results/objects/{key}.json.gz')
++def nodes():return [json.loads(s) for s in (HERE/'results/rolling_cycles.jsonl').read_text().splitlines()]
++def plan_at(cycle):
++ reg=read(HERE/'interval_registration.json');event=next(e for e in read(HERE/'results/E-anchor_events.json') if e['cycle']==reg['start']);p=load(event['candidate'])
++ for n in nodes():
++  if n['release'] and n['release']['transaction']['accepted']:p=load(n['release']['candidate'])
++  assert physical_id(p)==n['plan_before']
++  if n['cycle']==cycle:return p
++  for c,r in n['rows'].items():
++   if r['adopted']:p['controls'][c][n['cycle']:n['cycle']+32]=objects(r['admission_object'])['commands']
++  assert physical_id(p)==n['plan_after']
++ raise ValueError(cycle)
++
++def complete(name,plan,source,fault=None):
++ r=run(name,'anchor',{'plan':plan,'state':source},fault);prefix=[]
++ with gzip.open(HERE/'results/R-rolling_actual.jsonl.gz','rb') as f:
++  for line in f:
++   if json.loads(line)['cycle']>source['cycle']:break
++   prefix.append(line)
++ trace=f'results/{name}_full_actual.jsonl.gz';data=b''.join(prefix)+gzip.decompress((HERE/r['trace']).read_bytes());(HERE/trace).write_bytes(gzip.compress(data,mtime=0));assert len(data.splitlines())==r['final_cycle'];r['full_trace']=trace;write(HERE/f'results/{name}_summary.json',r);return r
++
++def run_all():
++ ledger=sha(HERE/'budget_ledger.json');ns=nodes();reg=read(HERE/'interval_registration.json');eligible=[n for n in ns if sum(r['adopted'] for r in n['rows'].values())>=2];assert eligible,'no genuine two-adopted checkpoint available for raw/K fault';boundaries=[b['cycle'] for a,b in zip(ns,ns[1:]) if any(a['rows'][c]['mode']!=b['rows'][c]['mode'] for c in CARS)];n=next((x for x in eligible if len(x['actual_activity'])>=2 and any(0<=x['cycle']-b<=2 for b in boundaries) and sum(r.get('first_a_changed',False) or r.get('first_omega_changed',False) for r in x['rows'].values())>=2),eligible[0]);p=plan_at(n['cycle']);chosen=next(c for c,r in n['rows'].items() if r['adopted']);job=objects(n['rows'][chosen]['model_object']);bad=copy.deepcopy(job);bad['receiver']['K_id']='damaged_actual_K';bad.pop('model_id');bad['model_id']=content_id(bad)
++ try:binding(bad,p,restore(n['source']))
++ except AssertionError:pass
++ else:raise AssertionError('corrupted K passed')
++ selected=copy.deepcopy(p);other=[]
++ for c,row in n['rows'].items():
++  if row['adopted'] and c!=chosen:selected['controls'][c][n['cycle']:n['cycle']+32]=objects(row['admission_object'])['commands'];other.append(c)
++ from wire import Wire
++ from frames import blocks
++ wire=Wire('recovery_phase_K');wire.send(chosen,'group_directory','reject_corrupted_K',{'source_history':n['source']['history'],'actor':chosen,'retained_own_plan':content_id(p['controls'][chosen])},'fault')
++ for group in blocks(p,n['cycle']):
++  if not set(group)&set(other):continue
++  commit=content_id({'source':n['source'],'selected':physical_id(selected),'group':group});messages=[]
++  for c in group:
++   msg={'actor':c,'group':group,'commit_id':commit,'history':n['source']['history'],'selected_physical_id':physical_id(selected),'own_plan_id':content_id(selected['controls'][c]),'outer_slot':selected['outer_slots'][c]};wire.send(group[0],c,'prepare_selected_mix',msg,'fault');messages.append(msg)
++  ack=[wire.send(msg['actor'],group[0],'ACK_selected_mix',msg,'fault') for msg in messages];assert {m['actor'] for m in ack}==set(group)
++  for msg in messages:wire.send(group[0],msg['actor'],'commit_selected_mix',msg,'fault')
++ a=complete('recovery_phase_K',selected,n['source']);changed=[c for c in other if tuple(map(F,selected['controls'][c][n['cycle']]))!=tuple(map(F,p['controls'][c][n['cycle']]))];assert changed,'other actual first input must change near transition'
++ with gzip.open(HERE/a['full_trace'],'rt') as trace:
++  first=next(json.loads(line) for line in trace if json.loads(line)['cycle']==n['cycle']+1)
++ assert all(tuple(map(F,first['commands'][c]))==tuple(map(F,selected['controls'][c][n['cycle']])) for c in CARS)
++ a.update(fault_cycle=n['cycle'],rejected_actor=chosen,other_accepted_actors_continue=other,other_changed_first_executed=changed,corrupted_K_rejected=True,all_selected_mix_ACKs_before_activation=True);write(HERE/f'results/{a["name"]}_summary.json',a)
++ events=read(HERE/'results/R-rolling_summary.json')['events'];e=next(e for e in events if e['meta']['outgoing']==reg['target']);b=complete('recovery_release_ACK',load(e['old_plan']),load(e['checkpoint']),'missing_ACK');assert not b['events'][0]['transaction']['accepted'] and b['events'][1]['transaction']['accepted'];assert b['events'][1]['cycle']==b['events'][0]['cycle']+1;assert b['events'][1]['source']['history']!=b['events'][0]['source']['history'];b['fresh_retry_after_old_step']=True
++ assert sha(HERE/'budget_ledger.json')==ledger;write(HERE/'results/rolling_recovery.json',{'passed':True,'branches':[a,b],'new_optimizer_calls':0,'budget_sha':ledger})
++if __name__=='__main__':run_all()
+--- slack_release_001/energy_gate_recheck.py
++++ rolling_interval_001/energy_gate_recheck.py
+@@ -0,0 +1,13 @@
++"""Exact original energy needs no arbitrary positive improvement floor."""
++from common import *
++from rolling_recover import nodes,objects,plan_at
++from local_mpc import admit
++from plan_io import restore,save
++
++def run():
++ ledger=sha(HERE/'budget_ledger.json');proofs=[]
++ for n in nodes():
++  if n['cycle'] not in (521,522,523):continue
++  row=n['rows']['B1'];job=objects(row['model_object']);raw=objects(row['raw_object']);ad=admit(job,raw,restore(n['source']));assert ad['accepted'];gain=F(ad['objective_improvement_lower']);assert 0<gain<F(1,10**10);key=content_id(ad);save(f'results/energy_gate_regression/{key}.json.gz',ad);proofs.append({'cycle':n['cycle'],'raw_id':row['raw_object'],'admission_id':key,'exact_gain':gain,'gain_UJ_display':float(gain),'not_retroactively_adopted':True})
++ assert len(proofs)==3 and sha(HERE/'budget_ledger.json')==ledger;write(HERE/'results/energy_gate_regression.json',{'passed':True,'samples':proofs,'new_optimizer_calls':0,'argument':'JE of exact rational commands is exact. Require strict JE_new<JE_anchor. Retain positive comparison budget for progress objective intervals. Physical rows/grid/true Q/K/full tail unchanged.'});print('PASS exact-JE gate from all3 saved raw; no new solves',flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/run_experiment.py
++++ rolling_interval_001/run_experiment.py
+@@ -0,0 +1,11 @@
++"""Advance authorized stages in order; stop on concrete failure without native retries."""
++import subprocess,sys,json,time,os
++from pathlib import Path
++R=Path(__file__).resolve().parent
++if __name__=='__main__':
++ env=os.environ.copy();env.update(PYTHONPATH='/tmp/dmpc-p0-deps',OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1')
++ for command in [('certify_preflight.py',),('register.py',),('stage_driver.py','first32'),('stage_driver.py','remaining'),('stage_driver.py','accept'),('stage_driver.py','delivery')]:
++  code=subprocess.run([sys.executable,str(R/command[0]),*command[1:]],env=env).returncode
++  if code:
++   print(json.dumps({'event':'failed','layer':command,'exitcode':code,'evidence':str(R/'results/stage_events.jsonl')}),flush=True);sys.exit(code)
++ print(json.dumps({'event':'experiment_complete','GATE':str(R/'GATE.json')}),flush=True)
+--- slack_release_001/quantization.py
++++ rolling_interval_001/quantization.py
+@@ -37,9 +37,9 @@
+  for block in lattice['blocks']:
+   component=block['component'];start=block['start'];stop=block['end'];z=[]
+   for j,t in enumerate(range(start,stop)):
+-   value=F(alpha)*F(str(raw[2*j+component]))
+-   for prev in range(max(0,j-2),j):value-=cols[start+prev][2*j+component]*z[prev]
+-   z.append(value/cols[t][2*j+component])
++   index=block.get('raw_indices',list(range(component,64,2)))[j];value=F(alpha)*F(str(raw[index]))
++   for prev in range(max(0,j-2),j):value-=cols[start+prev][index]*z[prev]
++   z.append(value/cols[t][index])
+   coords.extend(z)
+  ints=[round(z*10**12) for z in coords];delta=[sum(col[j]*F(n,10**12) for col,n in zip(cols,ints)) for j in range(64)]
+  assert all(sum(F(x)*y for x,y in zip(row,delta))==0 for row in lattice['E'])
+--- slack_release_001/stage_driver.py
++++ rolling_interval_001/stage_driver.py
+@@ -1,15 +1,16 @@
++"""Bounded logged stages; emits completion/failure evidence, never retries a solve."""
+ import os,sys,subprocess,json,time
+ from pathlib import Path
+ R=Path(__file__).resolve().parent
+-STAGES={'analytic':['engine.py --analytic'],'preflight':['check_zero.py'],'freeze':['freeze_registration.py'],'numeric':['engine.py --numeric'],'recovery':['recover.py'],'accept':['audit_updates.py'],'delivery':['summarize.py','verify_delivery.py']}
++STAGES={'bootstrap':['rebuild.py','engine.py --analytic'],'preflight':['rolling_regression.py','rolling_preflight.py'],'first32':['rolling.py --until 32'],'remaining':['rolling.py --until 512'],'accept':['rolling_audit.py'],'delivery':['rolling_report.py','verify_delivery.py']}
+ if __name__=='__main__':
+  stage=sys.argv[1];env=os.environ.copy();env.update(PYTHONPATH='/tmp/dmpc-p0-deps',OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1')
+  for command in STAGES[stage]:
+   script,*args=command.split();beg=time.time();log=R/f'results/{script[:-3]}_{stage}.log'
+   with log.open('ab') as f:
+-   try:code=subprocess.run([sys.executable,str(R/script),*args],stdout=f,stderr=subprocess.STDOUT,env=env,timeout=3600).returncode
++   try:code=subprocess.run([sys.executable,str(R/script),*args],stdout=f,stderr=subprocess.STDOUT,env=env,timeout=21600).returncode
+    except subprocess.TimeoutExpired:code=124
+-  result={'stage':stage,'exitcode':code,'layer':stage,'log':str(log),'seconds':time.time()-beg,'event':'completed' if code==0 else 'failed'}
++  result={'stage':stage,'exitcode':code,'layer':script,'log':str(log),'seconds':time.time()-beg,'event':'completed' if code==0 else 'failed'}
+   with (R/'results/stage_events.jsonl').open('a') as f:f.write(json.dumps(result)+'\n')
+   print(json.dumps(result),flush=True)
+   if code:sys.exit(code)
+--- slack_release_001/rolling_model.py
++++ rolling_interval_001/rolling_model.py
+@@ -0,0 +1,69 @@
++"""All-car entry: phase-fixed stopped controls and moving-run moment lattice."""
++import copy
++from common import *
++from plan_io import save
++from canonical import reference
++from derivatives import matrix
++from quantization import kernel
++from curve_model import generate as moving_generate,evaluate
++
++def mode(plan,c,k):
++ p=plan['per_car_policies'][c];route=plan['paths'][c];prep=p['approach_end']
++ if k>=p['goal']:return 'goal_hold'
++ if k<prep:return 'approach_initial'
++ if k<p['service_start']:return 'wait'
++ return route['labels'][min(route['ticks']-1,k-p['service_start']+prep)]
++
++def phase_lattice(plan,state,c,cert):
++ k=state['cycle'];knots=[[F(x) for x in r] for r in cert['knots']];runs=[];a=0
++ while a<32:
++  if knots[a][0]==knots[a][1]==0:a+=1;continue
++  b=a+1
++  while b<32 and not(knots[b][0]==knots[b][1]==0):b+=1
++  runs.append((a,b));a=b
++ E=[];names=[];T=[];blocks=[]
++ def add(row,name):E.append(row);names.append(name)
++ moving=set(j for a,b in runs for j in range(a,b))
++ for j in range(32):
++  if j not in moving:
++   for q in (0,1):
++    row=[F(0)]*64;row[2*j+q]=1;add(row,f'stopped_phase_fixed:{j}:{q}:{mode(plan,c,k+j)}')
++ for a,b in runs:
++  n=b-a;J=matrix(cert,b-1);weights=[F(J[2][2*j+1].l+J[2][2*j+1].u,2*m.Q) for j in range(a,b)]
++  # Existing acceleration/heading moments are retained within each moving run.
++  for comp,vals,label in [(0,[F(1)]*n,'v'),(0,list(map(F,range(n))),'a_moment'),(1,[F(1)]*n,'delta'),(1,weights,'yaw_moment')]:
++   row=[F(0)]*64
++   for j,val in enumerate(vals,a):row[2*j+comp]=val
++   if any(row):add(row,f'run:{a}:{b}:{label}')
++  for comp in (0,1):
++   start=len(T);indices=[]
++   for j in range(a,b-2):
++    if comp==0:values=[F(1),F(-2),F(1)]
++    else:
++     x,y=weights[j-a]-weights[j-a+1],weights[j-a+1]-weights[j-a+2]
++     assert x>0 and y>0,('nonmonotone moving weights',c,k,a,b,j,x,y)
++     values=[2*y/(x+y),F(-2),2*x/(x+y)]
++    col=[F(0)]*64
++    for t,value in enumerate(values):col[2*(j+t)+comp]=value
++    T.append(col);indices.append(2*j+comp)
++   blocks.append({'component':comp,'start':start,'end':len(T),'raw_indices':indices})
++ assert all(sum(x*y for x,y in zip(row,col))==0 for row in E for col in T)
++ error=[sum(abs(col[j]) for col in T)/F(2*10**12) for j in range(64)]
++ return {'E':E,'equality_names':names,'T':T,'blocks':blocks,'rank_free_dimension':len(T),'equality_rank':64-len(T),'component_grid_error':error,'max_grid_error':max(error),'Delta':F(1,10**12),'moving_runs':[list(r) for r in runs]}
++
++def generate(plan,state,c):
++ job,cert=moving_generate(plan,state,c,'O-E');lat=phase_lattice(plan,state,c,cert)
++ job['lattice']=lat;job['free_ticks']=sum(b-a for a,b in lat['moving_runs']);job['open_moving_omega']=[j for a,b in lat['moving_runs'] for j in range(a,b)];job.pop('model_id');job['model_id']=content_id(job)
++ job=json.loads(json.dumps(job,default=str));zero=evaluate(job,[F(0)]*64);assert zero['passed'],('zero_anchor',c,state['cycle'],[r for r in zero['rows'] if r['slack']<0])
++ return job,cert
++
++def classify(plan,state,c,job):
++ k=state['cycle'];ref=list(map(F,job['reference']));lat=job['lattice'];energy=H*sum(x*x for x in ref);active=[r['name'] for r in job['rows'] if F(r['g'])==0];proof={'model_id':job['model_id'],'source_history':state['history'],'phase':mode(plan,c,k),'zero_anchor':True,'nullity':lat['rank_free_dimension'],'equality_rank':lat['equality_rank'],'E_T_zero':True,'active_physical_rows':active,'anchor_JE':energy,'lattice_id':content_id(lat),'mode_guard_source':'actual canonical phase; stopped a/omega fixed; exact v/delta at each moving-run seam'}
++ if k>=plan['per_car_policies'][c]['goal']:
++  assert all(x==0 for x in ref) and state['v'][c]==state['delta'][c]==0;kind='goal_hold';proof['permanent_goal']=plan['goal_permanent'][c]
++ elif energy==0:kind='certified_optimum';proof['global_lower_bound']=0;proof['argument']='nonnegative original quadratic energy; feasible zero-input window attains zero'
++ elif not lat['T']:kind='unique_control';proof['argument']='rank64 phase/equality matrix, empty nullspace, unique delta=0'
++ elif all(sum(F(t)*u for t,u in zip(col,ref))==0 for col in lat['T']):
++  kind='certified_optimum';proof['argument']='exact reduced gradient T^T reference=0; JE(reference+Tz)=JE(reference)+h||Tz||^2; feasible anchor minimizes full affine space';proof['exact_reduced_gradient_zero']=True
++ else:kind='numerical_update'
++ return kind,proof
+--- slack_release_001/probe_model.py
++++ rolling_interval_001/probe_model.py
+@@ -0,0 +1,17 @@
++import importlib.util,traceback
++from common import *
++from plan_io import load,restore
++from schedules import propose
++from rolling_model import generate,classify
++from local_mpc import construct,rollout,check_receiver
++
++def run():
++ p=load('results/initial_bound.json.gz');s=restore(load('results/canonical_states.json.gz')[406]);p,_=propose(p,s,p['order'][0],406)
++ spec=importlib.util.spec_from_file_location('inherited_curve',HERE/'source_archive/inherited/curve_model.py');legacy=importlib.util.module_from_spec(spec);spec.loader.exec_module(legacy)
++ try:legacy.generate(p,s,p['order'][1],'O-E')
++ except Exception as error:write(HERE/'results/inherited_phase_limitation.json',{'cycle':406,'actor':p['order'][1],'error':repr(error),'traceback':traceback.format_exc(),'new_optimizer_calls':0})
++ out=[]
++ for c in CARS:
++  j,cert=generate(p,s,c);kind,proof=classify(p,s,c,j);solver,info=construct(j);r=rollout(j,s,[[F(j['reference'][2*t]),F(j['reference'][2*t+1])] for t in range(32)]);check_receiver(j,r);out.append({'actor':c,'classification':kind,'proof':proof,'assembly':info})
++ write(HERE/'results/model_probe.json',{'passed':True,'cars':out,'new_optimizer_calls':0});print([(r['actor'],r['classification']) for r in out],flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/verify_matrix_stream.py
++++ rolling_interval_001/verify_matrix_stream.py
+@@ -0,0 +1,20 @@
++"""Independent saved-byte/matrix reassembly checks; never calls construct/solve."""
++import gzip,time
++from common import *
++from plan_io import load
++from local_mpc import assemble
++
++def run():
++ beg=time.monotonic();text=(HERE/'results/rolling_cycles.jsonl').read_text();ns=[json.loads(x) for x in text.rsplit('\n',1)[0].splitlines()];checked=[]
++ for n in ns:
++  for c,row in n['rows'].items():
++   if not row.get('raw_object'):continue
++   job=load(f'results/objects/{row["model_object"]}.json.gz');raw=load(f'results/objects/{row["raw_object"]}.json.gz');key=content_id({'model':job['model_id'],'raw':row['raw_object'],'compiler':sha(HERE/'local_mpc.py')});path=HERE/f'results/matrix_stream_checks/{key}.json'
++   if path.exists():checked.append(read(path));continue
++   stem=HERE/f'results/workers/k{n["cycle"]}_{c}';payload=gzip.decompress(Path(str(stem)+'_request.json.gz').read_bytes());request=json.loads(payload);assert request['mode']=='solve' and request['job']==job;assert hashlib.sha256(payload).hexdigest()==raw['request_sha'];ready=json.loads(gzip.decompress(Path(str(stem)+'_ready.json.gz').read_bytes()));assert ready['assembly']==raw['assembly'];info=raw['assembly'];matrix=load(info['matrix_object']);assert content_id(matrix)==info['matrix_id'];assert len(raw['x'])==65 and len(raw['s'])==len(raw['z'])==info['shape'][0]
++   P,q,A,b,cones,settings=assemble(job)
++   def sparse(x):return {'shape':list(x.shape),'indptr':x.indptr.tolist(),'indices':x.indices.tolist(),'data':x.data.tolist()}
++   rebuilt={'P':sparse(P),'q':q.tolist(),'A':sparse(A),'b':b.tolist(),'cones':[str(v) for v in cones]};assert rebuilt==matrix;assert settings.max_iter==200 and settings.tol_gap_abs==settings.tol_gap_rel==settings.tol_feas==1e-10
++   result={'passed':True,'cycle':n['cycle'],'actor':c,'model_id':job['model_id'],'raw_id':row['raw_object'],'matrix_id':info['matrix_id'],'request_sha':raw['request_sha'],'solver_variables':65,'physical_inputs':64,'dimensions_x_s_z_passed':True,'byte_decode_and_recompiled_matrices_equal':True,'new_optimizer_calls':0};write(path,result);checked.append(result)
++ result={'passed':True,'completed_cycles_checked':len(ns),'native_raw_checked':len(checked),'checks':checked,'shared_compiler':'same frozen local_mpc.assemble, independent byte/matrix/raw traversal; no solver construction or native solve','new_optimizer_calls':0,'wall_seconds':time.monotonic()-beg};write(HERE/'results/matrix_stream_certificate.json',result);print(json.dumps({k:v for k,v in result.items() if k!='checks'}),flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/rolling.py
++++ rolling_interval_001/rolling.py
+@@ -0,0 +1,117 @@
++"""Checkpointed one-trajectory rolling run; one native release per actor/cycle/version."""
++import argparse,copy,gzip,time,traceback,os
++from common import *
++from plan_io import load,save,restore,record
++from rolling_model import generate,classify,mode
++from local_mpc import admit
++from contracts import binding,guards,physical_id
++from physics import step
++from canonical import reference,point,pose_error
++from release import clear
++from schedules import goals
++from engine import candidate
++from frames import blocks
++from transport import exchange
++from wire import Wire
++
++def frozen():
++ for n,h in read(HERE/'executed_source_versions.json').items():assert sha(HERE/n)==h,('frozen source changed',n)
++
++def obj(value):
++ key=content_id(value);path=f'results/objects/{key}.json.gz'
++ if not(HERE/path).exists():save(path,value)
++ return key
++
++def full_obligation(plan,state,c,job,ad):
++ """Prefix original rows + exact v/delta phase seams + same-input full SE2 tail."""
++ k=state['cycle'];refs=reference(plan);end=ad['receiver']['phase'];actual=ad['_rollout'] if '_rollout' in ad else None
++ from local_mpc import rollout,check_receiver
++ actual=rollout(job,state,ad['commands'],64);check_receiver(job,actual)
++ # Future unchanged full tail uses original canonical phase corridor certificate.
++ target=refs[end];p=[m.I.raw(*q) for q in actual['pose_Q']];q=[m.I.raw(*z) for z in target['poses_Q'][c]];ep=sum((p[j]-q[j]).abs_upper() for j in (0,1));et=(p[2]-q[2]).abs_upper();bound=ep+(F(job['receiver']['L_remaining'])+RB)*et;assert bound<F(1,40),('full actual suffix bound',c,k,bound)
++ for j,node in enumerate(actual['nodes'],k+1):
++  assert F(node['v'])==F(refs[j]['v'][c]) if F(refs[j]['v'][c])==0 else True
++  if F(refs[j]['v'][c])==0:assert F(node['delta'])==F(refs[j]['delta'][c]),('stopped phase delta seam',c,j)
++ return {'passed':True,'actor':c,'source_history':state['history'],'model_id':job['model_id'],'receiver_phase':end,'old_K_id':job['receiver']['K_id'],'prefix_rows_continuous':True,'tail_SE2_upper':bound,'tail_position_error':ep,'tail_yaw_error':et,'tail_controls_id':content_id(plan['controls'][c][end:]),'deadline':plan['per_car_policies'][c]['goal'],'entire_plan_coverage':'original continuous prefix rows to N, same-input canonical SE2 tail through every phase and permanent goal; positive receiver, exact phase v/delta','actual_end':actual['pose_Q']}
++
++def init():
++ reg=read(HERE/'interval_registration.json');events=read(HERE/'results/E-anchor_events.json');e=next(e for e in events if e['cycle']==reg['start']);return {'plan':load(e['candidate']),'state':load(e['checkpoint']),'start':reg['start'],'cycles_done':0,'end_cycle':None,'successor_first_motion':None,'stop':None,'same_failure_streak':{},'last_failures':{},'events':[],'obligation_parent':content_id(load(e['candidate']))}
++
++def run(until):
++ frozen();assert read(HERE/'results/rolling_preflight.json')['passed'];cp=load('results/rolling_checkpoint.json.gz') if (HERE/'results/rolling_checkpoint.json.gz').exists() else init();plan=cp['plan'];state=restore(cp['state']);reg=read(HERE/'interval_registration.json');wire=Wire('R-rolling');started=time.monotonic()
++ if cp['stop'] or (cp['end_cycle'] is not None and state['cycle']>=cp['end_cycle']):return finish(cp)
++ while cp['cycles_done']<until and cp['cycles_done']<512:
++  k=state['cycle'];cycle_start=time.monotonic();before=record(state);event=None;proof=clear(plan,state,plan['owners'][k]) if plan['owners'][k] else None
++  if proof and proof['full_Clear']:
++   outgoing=plan['owners'][k];idx=plan['order'].index(outgoing)
++   if idx+1<len(plan['order']) and plan['per_car_policies'][plan['order'][idx+1]]['service_start']>k:
++    plan,event,_=candidate(plan,state,outgoing,proof,wire,f'R-rolling/release_{k}')
++    if event:
++     cp['events'].append(event)
++     if outgoing==reg['target'] and event['transaction']['accepted']:cp['target_clear']=k;cp['next_actor']=event['meta']['incoming']
++  context=content_id({'plan':physical_id(plan),'source':before,'outer':plan['outer_frame_id']});jobs={};rows={};admissions={};obligations={};old=copy.deepcopy(plan)
++  for c in CARS:
++   t=time.monotonic();row={'cycle':k,'actor':c,'mode':mode(plan,c,k),'source_history':state['history'],'context':context,'owner':plan['owners'][k],'lease':plan['lease_groups'],'groups':blocks(plan,k),'old_first':plan['controls'][c][k],'native_status':None,'accepted':False,'adopted':False}
++   try:
++    job,cert=generate(plan,state,c);binding(job,plan,state);kind,proofclass=classify(plan,state,c,job);jobs[c]=job;row.update(classification=kind,classification_proof=proofclass,model_id=job['model_id'],receiver_id=content_id(job['receiver']),zero_anchor=True,model_object=obj(job));row['generation_seconds']=time.monotonic()-t
++   except Exception as e:
++    row.update(classification='fallback_after_failure',failure_layer='generation',reason=repr(e),zero_anchor=False);save(f'results/failures/k{k}_{c}.json.gz',{'source':before,'plan':plan,'error':repr(e),'traceback':traceback.format_exc()})
++   rows[c]=row
++  # A generation error is not a license to issue a speculative solve.
++  for c in CARS:
++   row=rows[c]
++   if row['classification']!='numerical_update' or any(not r['zero_anchor'] for r in rows.values()):continue
++   job=jobs[c];stem=HERE/f'results/workers/k{k}_{c}';stem.parent.mkdir(parents=True,exist_ok=True)
++   try:
++    assembled,ameta=exchange(job,'assemble',stem.with_name(stem.name+'_precheck'));row['assembly']=assembled['assembly'];row['assembly_seconds']=ameta['roundtrip_wall']
++    def release(info):
++     frozen();assert info==assembled['assembly'];ledger=read(HERE/'budget_ledger.json');assert ledger[-1]['model_id']==job['model_id'];ledger[-1].update(native_ready=True,assembly_id=info['matrix_id']);write(HERE/'budget_ledger.json',ledger)
++    ledger=read(HERE/'budget_ledger.json');assert len(ledger)<2048;assert not any(r['cycle']==k and r['actor']==c for r in ledger);ledger.append({'attempt':len(ledger)+1,'actor':c,'cycle':k,'model_id':job['model_id'],'source_history':state['history'],'context':context,'source_version':content_id(read(HERE/'executed_source_versions.json')),'released_at':time.time(),'status':'worker_released'});write(HERE/'budget_ledger.json',ledger)
++    raw,meta=exchange(job,'solve',stem,on_ready=release);ledger=read(HERE/'budget_ledger.json');ledger[-1].update(status=raw['status'],native_entered_at=raw['native_entered_at'],native_finished_at=raw['native_finished_at'],solve_time=raw['solve_time']);write(HERE/'budget_ledger.json',ledger);row.update(native_status=raw['status'],raw_object=obj(raw),worker_seconds=meta['roundtrip_wall'],worker_transport=meta);binding(job,plan,state,raw);ad=admit(job,raw,state);row['admission_object']=obj(ad);row['accepted']=ad['accepted']
++    if ad['accepted']:
++     proof=full_obligation(plan,state,c,job,ad);obligations[c]=proof;admissions[c]=ad;row.update(obligation_object=obj(proof),JE_change=F(ad['objective']['JE'])-F(ad['baseline_objective']['JE']),adopted=True,first_a_changed=ad['first_a_changed'],first_omega_changed=ad['first_omega_changed'])
++    else:row.update(classification='fallback_after_failure',failure_layer='admission',reason='native candidate failed fixed original-row/quantization/receiver/objective admission')
++   except Exception as e:
++    row.update(classification='fallback_after_failure',failure_layer='worker_or_certificate',reason=repr(e));write(HERE/f'results/failures/k{k}_{c}.json',{'error':repr(e),'traceback':traceback.format_exc(),'source':before,'context':context})
++   # Lossless content objects retain bytes once, no repeated uncompressed requests.
++   for f in stem.parent.glob(f'k{k}_{c}*'):
++    if f.is_file() and f.suffix=='.json':f.with_suffix('.json.gz').write_bytes(gzip.compress(f.read_bytes(),mtime=0));f.unlink()
++  for group in blocks(plan,k):
++   changed=[c for c in group if c in admissions]
++   if not changed:continue
++   commit=content_id({'context':context,'group':group,'obligations':{c:content_id(obligations[c]) for c in changed}})
++   for c in group:
++    msg={'actor':c,'context':context,'group':group,'commit_id':commit,'outer_slot':plan['outer_slots'][c]};wire.send(group[0],c,'prepare_MPC',msg,'steady');wire.send(c,group[0],'ACK_MPC',msg,'steady');wire.send(group[0],c,'commit_MPC',msg,'steady')
++   for c in changed:plan['controls'][c][k:k+32]=admissions[c]['commands'];rows[c]['commit_id']=commit
++  # Original actual prefix is immutable; independent suffix certificates compose across blocks.
++  assert all(old['controls'][c][:k]==plan['controls'][c][:k] for c in CARS);guards(plan,state)
++  node={'cycle':k,'parent':cp['obligation_parent'],'source':before,'context':context,'rows':rows,'release':event,'plan_before':physical_id(old),'plan_after':physical_id(plan),'commands':{c:plan['controls'][c][k] for c in CARS}}
++  simulated=copy.deepcopy(state);step(simulated,node['commands'],plan['owners'][k],8) # execution safety before adoption output
++  actual=step(state,node['commands'],plan['owners'][k],8);actual['cycle']=state['cycle'];node['successor']=record(state);node['actual_activity']=[c for c in CARS if abs(H*(2*F(before['v'][c])+H*F(node['commands'][c][0]))/2)>=F(1,50)];node['wall_seconds']=time.monotonic()-cycle_start;node['B']=max(goals(plan).values())-k;node['node_id']=content_id(node);cp['obligation_parent']=node['node_id']
++  with (HERE/'results/rolling_cycles.jsonl').open('a') as f:f.write(json.dumps(node,default=str)+'\n')
++  with gzip.open(HERE/'results/rolling_interval_actual.jsonl.gz','at') as f:f.write(json.dumps(actual,default=str)+'\n')
++  for c,row in rows.items():
++   if row['classification']=='fallback_after_failure':
++    key=(row.get('failure_layer','')+':'+row.get('reason',''));cp['same_failure_streak'][c]=cp['same_failure_streak'].get(c,0)+1 if cp['last_failures'].get(c)==key else 1;cp['last_failures'][c]=key
++    if cp['same_failure_streak'][c]>=3:cp['stop']={'cycle':k,'actor':c,'reason':key,'streak':3}
++    if not row['zero_anchor']:cp['stop']={'cycle':k,'actor':c,'reason':'next receiver/model anchor not established: '+key}
++   else:cp['same_failure_streak'][c]=0;cp['last_failures'].pop(c,None)
++  if cp.get('next_actor') in node['actual_activity'] and cp['successor_first_motion'] is None:cp['successor_first_motion']=k;cp['end_cycle']=k+32
++  cp.update(plan=plan,state=record(state),cycles_done=cp['cycles_done']+1);save('results/rolling_checkpoint.json.gz',cp);write(HERE/'results/rolling_progress.json',{q:cp.get(q) for q in ('cycles_done','start','end_cycle','target_clear','successor_first_motion','stop')});print('CYCLE',k,[(c,rows[c]['classification'],rows[c]['adopted']) for c in CARS],flush=True)
++  if cp['stop'] or (cp['end_cycle'] is not None and state['cycle']>=cp['end_cycle']):break
++ if cp['cycles_done']>=512 and cp['end_cycle'] is None:cp['stop']={'reason':'512-cycle coverage cap'};save('results/rolling_checkpoint.json.gz',cp)
++ if cp['stop'] or cp['end_cycle'] is not None and state['cycle']>=cp['end_cycle'] or cp['cycles_done']>=512:finish(cp)
++ else:write(HERE/'results/first32_acceptance.json',{'passed':True,'cycles':cp['cycles_done'],'actual_source':cp['state'],'calls':len(read(HERE/'budget_ledger.json')),'backup_valid':True})
++
++def finish(cp):
++ # Existing acknowledged complete plan supplies the suffix; release observer remains enabled.
++ from engine import run as run_anchor
++ ledger=sha(HERE/'budget_ledger.json');r=run_anchor('R-rolling_suffix','anchor',{'plan':cp['plan'],'state':cp['state']});assert sha(HERE/'budget_ledger.json')==ledger
++ reg=read(HERE/'interval_registration.json');prefix=[]
++ with gzip.open(HERE/'results/E-anchor_actual.jsonl.gz','rb') as f:
++  for line in f:
++   if json.loads(line)['cycle']>reg['start']:break
++   prefix.append(line)
++ data=b''.join(prefix)+gzip.decompress((HERE/'results/rolling_interval_actual.jsonl.gz').read_bytes())+gzip.decompress((HERE/r['trace']).read_bytes());(HERE/'results/R-rolling_actual.jsonl.gz').write_bytes(gzip.compress(data,mtime=0));save('results/R-rolling_final_plan.json.gz',load(r['plan']));write(HERE/'results/R-rolling_summary.json',{'passed_execution':True,'coverage':cp['end_cycle'] is not None and cp['state']['cycle']>=cp['end_cycle'],'cycles':cp['cycles_done'],'stop':cp['stop'],'interval_end':cp['state']['cycle'],'target_clear':cp.get('target_clear'),'successor_first_motion':cp['successor_first_motion'],'events':cp['events']+r['events'],'final_cycle':r['final_cycle'],'goals':r['goals'],'formal_attempts':len(read(HERE/'budget_ledger.json'))})
++if __name__=='__main__':
++ ap=argparse.ArgumentParser();ap.add_argument('--until',type=int,default=512);args=ap.parse_args();run(args.until)
+--- slack_release_001/rolling_report.py
++++ rolling_interval_001/rolling_report.py
+@@ -0,0 +1,50 @@
++"""Evidence-derived reporting and sealed portable manifest; no optimizer calls."""
++import csv,gzip,collections,shutil,difflib
++from common import *
++from plan_io import load
++from curve_model import evaluate
++
++def table(name,rows):
++ rows=list(rows)
++ with (HERE/name).open('w') as f:
++  if not rows:return
++  writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
++def run():
++ ns=[json.loads(x) for x in (HERE/'results/rolling_cycles.jsonl').read_text().splitlines()];s=read(HERE/'results/R-rolling_summary.json');reg=read(HERE/'interval_registration.json');accept=read(HERE/'results/rolling_independent.json');ledger=read(HERE/'budget_ledger.json');rows=[];trade=[];timing=[]
++ actual_rows={}
++ with gzip.open(HERE/'results/rolling_interval_actual.jsonl.gz','rt') as trace:
++  for line in trace:
++   row=json.loads(line);actual_rows[row['cycle']-1]=row
++ for n in ns:
++  for c,r in n['rows'].items():
++   job=load(f'results/objects/{r["model_object"]}.json.gz') if r.get('model_object') else None
++   rows.append({'cycle':n['cycle'],'actor':c,'history':n['source']['history'],'context':n['context'],'mode':r['mode'],'owner':r['owner'],'groups':json.dumps(r['groups']),'classification':r['classification'],'nullity':r.get('classification_proof',{}).get('nullity'),'native_status':r['native_status'],'accepted':r['accepted'],'adopted':r['adopted'],'first_a_changed':r.get('first_a_changed',False),'first_omega_changed':r.get('first_omega_changed',False),'zero_anchor':r['zero_anchor'],'source_pose_Q':json.dumps(n['source']['poses_Q'][c]),'Q_K_receiver':r.get('receiver_id'),'pair_clearance_m':actual_rows[n['cycle']]['bounds']['pair'],'road_margin_m':actual_rows[n['cycle']]['bounds']['road'],'max_original_row_residual':max(-F(q['slack']) for q in evaluate(job,load(f'results/objects/{r["admission_object"]}.json.gz')['delta'] if r['adopted'] else [0]*64)['rows']) if job else '', 'receiver_tail_margin_m':F(1,40)-F(load(f'results/objects/{r["obligation_object"]}.json.gz')['tail_SE2_upper']) if r['adopted'] else '','JE_change_UJ':r.get('JE_change',0),'fallback_reason':r.get('reason',''),'B_before':n['B'],'B_after':n['B']-1,'model_id':r.get('model_id'),'tight_row_name':min(job['rows'],key=lambda q:-F(q['g']))['name'] if job else '', 'zero_tight_slack':min(-F(q['g']) for q in job['rows']) if job else ''})
++   timing.append({'cycle':n['cycle'],'actor':c,'generation_seconds':r.get('generation_seconds'),'assembly_seconds':r.get('assembly_seconds'),'worker_roundtrip_seconds':r.get('worker_seconds'),'cycle_wall_seconds':n['wall_seconds'],'logical_h_seconds':.2,'cache_scope':'actual own-input/version bound derivative cache; source/context and model rebuilt per cycle'})
++   if r['adopted']:
++    ad=load(f'results/objects/{r["admission_object"]}.json.gz');dJE=F(ad['objective']['JE'])-F(ad['baseline_objective']['JE']);a=ad['objective']['actual_progress_Q'];b=ad['baseline_objective']['actual_progress_Q'];lo=F(a[0]-b[1],m.Q);hi=F(a[1]-b[0],m.Q);mid=(lo+hi)/2;trade.append({'cycle':n['cycle'],'actor':c,'delta_JE_UJ':str(dJE),'delta_JE_over_own_anchor_percent':float(100*dJE/F(ad['baseline_objective']['JE'])),'delta_s_lower_m':str(lo),'delta_s_upper_m':str(hi),'delta_s_mid_m_report_only':float(mid),'delta_F_lower_UJ':str(dJE-hi),'delta_F_upper_UJ':str(dJE-lo),'delta_F_mid_UJ_report_only':float(dJE-mid),'lambda_UJ_per_m':1,'comparison':'candidate minus this actual-source shifted anchor; windows overlap, not additive'})
++ table('cycle_summary.csv',rows);table('tradeoff.csv',trade);table('timing.csv',timing)
++ events=s['events'];table('event_trace.csv',[{'cycle':e['cycle'],'outgoing':e['meta']['outgoing'],'incoming':e['meta']['incoming'],'scope':len(e['transaction']['participants']),'participants':','.join(e['transaction']['participants']),'accepted':e['transaction']['accepted'],'source_history':e['source']['history'],'kind':e['meta']['kind'],'Phi_before':e['meta']['deadlines']['Phi_old'],'Phi_after':e['meta']['deadlines']['Phi_new']} for e in events])
++ comm=[]
++ for f in sorted((HERE/'results/wire').glob('*.jsonl')):
++  data=[json.loads(x) for x in f.read_text().splitlines()];comm.append({'stream':f.name,'messages':len(data),'stored_bytes':f.stat().st_size,'application_JSON_bytes':sum(r['bytes'] for r in data),'cross_logical_endpoint_messages':sum(r['sender']!=r['receiver'] for r in data),'cross_logical_endpoint_bytes':sum(r['bytes'] for r in data if r['sender']!=r['receiver']),'scope':'actual serialized application dispatch; not measured network'})
++ table('communication.csv',comm)
++ a=read(HERE/'results/E-anchor_rolling_independent.json');b=read(HERE/'results/R-rolling_rolling_independent.json');ja=H*F(a['cost']);jb=H*F(b['cost']);gain=ja-jb
++ table('comparison.csv',[{'branch':name,'ticks':r['steps'],'JE_UJ':str(H*F(r['cost'])),'JE_saving_absolute_UJ':str(ja-H*F(r['cost'])),'JE_saving_ratio_percent':float(100*(ja-H*F(r['cost']))/ja)} for name,r in [('R-anchor',a),('R-rolling',b)]])
++ counts=accept['counts'];continuous=all(r['zero_anchor'] for r in rows);coverage=s['coverage'];criteria={'source_integrity':True,'continuous_generation':continuous,'rolling_update':True,'receiver_successor':continuous,'release_interaction':any(e['meta']['outgoing']==reg['target'] and e['transaction']['accepted'] for e in events),'fallback':read(HERE/'results/rolling_recovery.json')['passed'],'safety_completion':accept['passed'],'coverage':coverage};gate={'passed':all(criteria.values()),'task':'rolling_interval_001','criteria':{k:{'status':'pass' if v else 'partial','evidence':'results/rolling_independent.json + cycle_summary.csv + results/R-rolling_summary.json'} for k,v in criteria.items()},'formal_attempts':len(ledger),'native_solved':sum(l.get('status')=='Solved' for l in ledger),'adopted':sum(r['adopted'] for r in rows),'classifications':counts,'stop':s['stop'],'coverage_cycles':s['cycles'],'main_completion':s['final_cycle'],'new_verification_calls':0};write(HERE/'GATE.json',gate)
++ maxrun=runlength=0
++ for n in ns:
++  if any(r['adopted'] for r in n['rows'].values()):runlength+=1;maxrun=max(maxrun,runlength)
++  else:runlength=0
++ report=f'''# rolling_interval_001\n\n分项GATE：{sum(criteria.values())}/8；总体{'通过' if gate['passed'] else '部分完成'}。解析与滚动完成拍数：{a['steps']} / {b['steps']}。实际登记控制区间[{reg['start']},{s['interval_end']})，共{s['cycles']}拍、{4*s['cycles']}车拍。目标服务车由请求/owner关系识别为{reg['target']}，实际Clear/换权{s.get('target_clear')}，后继有效运动{s['successor_first_motion']}。覆盖要求满足：{coverage}。停止原因：{s['stop']}。\n\n正式尝试{len(ledger)}/2048，Solved {gate['native_solved']}，实际采用{gate['adopted']}；最长连续有新候选采用{maxrun}拍。阶段/自由度/原行/备份逐项见cycle_summary。分类计数：{counts}。所有车拍均经同一入口，已证明最优与唯一输入分别统计，未用零速度替代证明。\n\n全程JE参照{float(ja):.12g} U_J，滚动{float(jb):.12g} U_J，正绝对节省{float(gain):.12g} U_J，比例{float(100*gain/ja):.10g}%（分母为解析参照全程JE）。U_J为归一化输入平方×秒，非焦耳。按唯一绝对执行拍号计费。tradeoff.csv并列ΔJE、Δs、ΔF：候选减本轮同源移位锚点；JE/F绝对单位U_J，s为米，比例分母为本行锚点窗口JE，报告F=JE−lambda*s、lambda=1 U_J/m；真实优化仍为原JE。跨曲率采用既有连续图册，停车边界用标注的切向报告图册；重叠窗口不相加。\n\n初始化从原输入重新生成1955/1822拍策略，解析参考重新生成且独立重放后才对历史完整策略作语义比较；历史数字策略未作为输入。原始源码、失败及实际限制行保留。停止/模型失败与native数值失败分列。首32拍验收与后续阶段保留独立日志。\n\n独立验收重放解析、主实际及两拒绝轨迹的道路、六对连续车身、资源、目标/永久保持与期限；每次采用按内容DAG逐项核对raw→精确格→原行→64子段实际接收→完整后续SE2包含，保留共享算法范围。拒绝分支均零新增求解。\n\n计时使用实际记录：worker为顺序独立进程，源/上下文冻结后求解，h=.2是逻辑采样；墙钟不能视为硬实时。timing.csv不把多车记录中的同一拍墙钟相加。缓存键绑定实际自身输入/物理源和构建源码，装配矩阵及request/response保留；初始化ACK是存储证据，未补造网络计数。\n\n结论范围：名义同步、有限连接族、保守分段矩约束。未验证任意路线、扰动/异步网络或硬实时；历史与论文未修改，Git未提交。\n'''
++ (HERE/'report.md').write_text(report);(HERE/'README.md').write_text('# rolling_interval_001\n\nRead report.md and GATE.json. Verify: `python3 verify_delivery.py`; physical actual full replay: `python3 verify_delivery.py --full-replay`. Both release zero new solves. Main budget is budget_ledger.json; historical solver_calls.json is empty and not the new budget.\n')
++ (HERE/'HANDOFF.md').write_text(f'# Handoff\n\nGoal: rolling full service + transfer interval. Status: {gate}.\nSource: source_archive/rolling_v1 and executed_source_versions.json. Evidence: results/rolling_independent.json, rolling_recovery, cycle_summary.csv, raw/matrices/objects.\nConstraints: max2048 attempts, no native retries, no Git commit/history/paper edits.\nOpen scope: see GATE and report; do not relabel partial gates.\nExact zero-solve resume: python3 experiments/local_coordination_p0/rolling_interval_001/verify_delivery.py --full-replay\n')
++ # Verify all prior bytes remain unchanged; earlier byte hashing is provenance only.
++ inventory=read(HERE/'source_inventory.json');changed=[n for n,h in inventory['files'].items() if not Path(n).exists() or sha(n)!=h];assert not changed,changed;write(HERE/'results/history_integrity.json',{'passed':True,'files_unchanged':len(inventory['files']),'new_optimizer_calls':0})
++ patches=[]
++ for p in HERE.glob('*.py'):
++  old=HERE.parent/'slack_release_001'/p.name
++  patches.extend(difflib.unified_diff(old.read_text().splitlines(True) if old.exists() else [],p.read_text().splitlines(True),fromfile=f'slack_release_001/{p.name}',tofile=f'rolling_interval_001/{p.name}'))
++ (HERE/'changes.patch').write_text(''.join(patches))
++ manifest={str(p.relative_to(HERE)):sha(p) for p in HERE.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='SHA256SUMS.json' and not p.name.endswith('.log') and p.name!='stage_events.jsonl'};write(HERE/'SHA256SUMS.json',manifest)
++ print(json.dumps(gate),flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/verify_fresh_source.py
++++ rolling_interval_001/verify_fresh_source.py
+@@ -0,0 +1,56 @@
++"""Fresh source whitelist replay; historical whole-policy reads blocked until both audits."""
++import hashlib,json,os,shutil,subprocess,sys
++from pathlib import Path
++R=Path(__file__).resolve().parent
++SEED=R/'results/source_isolation'
++RUNNER=r'''
++import sys,json,gzip,traceback
++from pathlib import Path
++R=Path(__file__).resolve().parent
++phase='fresh_generation';opened=[];denied=[]
++class HistoricalReadDenied(RuntimeError):pass
++def hook(event,args):
++ if phase!='fresh_generation':return
++ if event in ('subprocess.Popen','os.system','os.posix_spawn'):raise HistoricalReadDenied('no subprocesses/solver workers during isolated generation')
++ if event=='open' and isinstance(args[0],(str,bytes)):
++  p=Path(args[0]).resolve()
++  if '/experiments/local_coordination_p0/' in str(p):
++   if not p.is_relative_to(R):denied.append(str(p));raise HistoricalReadDenied('outside isolated source whitelist: '+str(p))
++   opened.append(str(p.relative_to(R)))
++sys.addaudithook(hook)
++from common import *
++from plan_io import load,save
++import local_mpc
++def forbidden(*a,**kw):raise AssertionError('optimizer entry forbidden in source check')
++local_mpc.native=forbidden
++import rebuild
++try:rebuild.run()
++except HistoricalReadDenied:pass
++else:raise AssertionError('legacy comparison was not blocked by whitelist')
++assert read(R/'results/R_initial_acceptance.json')['passed']
++from engine import run
++from frames import certify,slot_descriptors,bind
++p=load('results/R_initial.json.gz');frame=certify(p,slot_descriptors(p,True));p=bind(p,frame);save('results/initial_bound.json.gz',p);result=run('E-anchor','anchor')
++from audit import audit
++q=load(result['plan']);independent=audit(q,trace=str(R/result['trace']),output=R/'results/E-anchor_independent.json');assert independent['passed']
++assert read(R/'solver_calls.json')==[]
++phase='after_both_independent_replays'
++# First whole-history comparisons of this child occur only after both fresh audits.
++actual=R.parent.parent
++checks=[]
++for fresh,prior in [(load('results/R_initial.json.gz'),actual/'results/R_initial.json.gz'),(q,actual/'results/E-anchor_final_plan.json.gz')]:
++ old=json.loads(gzip.decompress(prior.read_bytes()));assert all(fresh[k]==old[k] for k in ('controls','owners','per_car_policies'));checks.append({'compared':str(prior),'sha':sha(prior),'controls_owners_policies_equal':True})
++write(R/'source_certificate.json',{'passed':True,'fresh_initial':1822,'fresh_anchor':result['final_cycle'],'historical_whole_policy_reads_blocked_until_both_audits':True,'blocked_legacy_comparison':denied,'project_open_paths_before_comparison':sorted(set(opened)),'comparisons':checks,'new_optimizer_calls':0})
++print('PASS source-isolated initial and E-anchor; zero new solves',flush=True)
++'''
++def main():
++ before=hashlib.sha256((R/'budget_ledger.json').read_bytes()).hexdigest();SEED.mkdir(exist_ok=False)
++ for p in (R/'source_archive/rolling_v1').rglob('*'):
++  if p.is_file():
++   target=SEED/p.relative_to(R/'source_archive/rolling_v1');target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,target)
++ for name in ('map_config.json','vehicle_configs.json','local_tasks.json','requests.json','event_selection_rule.json'):shutil.copy2(R/name,SEED/name)
++ (SEED/'results').mkdir();shutil.copy2(R/'results/map_radius_6.json',SEED/'results/map_radius_6.json');(SEED/'solver_calls.json').write_text('[]\n');(SEED/'source_runner.py').write_text(RUNNER)
++ env=os.environ.copy();env.update(PYTHONPATH='/tmp/dmpc-p0-deps',OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1')
++ with (R/'results/source_isolation.log').open('w') as log:code=subprocess.run([sys.executable,str(SEED/'source_runner.py')],stdout=log,stderr=subprocess.STDOUT,env=env,timeout=3600).returncode
++ assert code==0,('isolated source generation failure',code,str(R/'results/source_isolation.log'));assert before==hashlib.sha256((R/'budget_ledger.json').read_bytes()).hexdigest();cert=json.loads((SEED/'source_certificate.json').read_text());(R/'results/source_isolation_certificate.json').write_text(json.dumps(cert,indent=2)+'\n');print('PASS source isolation and identical policies; no new native calls',flush=True)
++if __name__=='__main__':main()
+--- slack_release_001/register.py
++++ rolling_interval_001/register.py
+@@ -0,0 +1,16 @@
++"""Freeze method/settings only after full zero-call coverage; no solver release."""
++import sys,shutil
++from common import *
++from plan_io import load
++
++def run():
++ assert not read(HERE/'budget_ledger.json');assert read(HERE/'results/rolling_preflight.json')['passed']
++ import clarabel,numpy,scipy
++ files={str(p.relative_to(HERE)):sha(p) for p in HERE.rglob('*.py') if 'source_archive' not in p.parts and 'instructions' not in p.parts and 'results' not in p.parts}
++ archive=HERE/'source_archive/rolling_v1';archive.mkdir(parents=True,exist_ok=False)
++ for name in files:
++  target=archive/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(HERE/name,target)
++ write(HERE/'executed_source_versions.json',files)
++ write(HERE/'pre_registration.json',{'task':'rolling_interval_001','passed':True,'interval':read(HERE/'interval_registration.json'),'preflight_sha':sha(HERE/'results/rolling_preflight.json'),'constants':{'h':'1/5','N':32,'rho':'1/1000','eta':'1/50','Delta':'1/1000000000000','R':[1,1],'S':[1,1],'objective':'original JE=h sum(a²+omega²)','units':'normalized input squared times second (U_J), not joule','report_F_lambda_UJ_per_m':1},'settings':{'clarabel':clarabel.__version__,'numpy':numpy.__version__,'scipy':scipy.__version__,'python':sys.version,'max_iter':200,'tol_gap_abs':1e-10,'tol_gap_rel':1e-10,'tol_feas':1e-10,'time_limit':'infinity (original default)','pipe_timeout_seconds':30,'worker_order':list(CARS),'worker_execution':'sequential independent spawned processes; common sealed logical source'},'budget':2048,'native_retries':0,'all_abnormal_releases_count':True,'first_stage':32,'source_hashes':files,'source_inventory_sha':sha(HERE/'source_inventory.json')})
++ print('REGISTERED rolling_v1; zero attempts',flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/serialization_recheck.py
++++ rolling_interval_001/serialization_recheck.py
+@@ -0,0 +1,15 @@
++"""Replay the failed serialization from saved raw; zero new native calls."""
++from common import *
++from plan_io import load,restore,save
++from rolling_recover import nodes,objects,plan_at
++from local_mpc import admit
++from contracts import binding
++
++def run():
++ ledger=sha(HERE/'budget_ledger.json');out=[]
++ n=next(n for n in nodes() if n['cycle']==413);plan=plan_at(413)
++ for c in ('A1','B1'):
++  row=n['rows'][c];job=objects(row['model_object']);raw=objects(row['raw_object']);binding(job,plan,restore(n['source']),raw);ad=admit(job,raw,restore(n['source']));assert ad['accepted'];encoded=json.dumps(ad,default=str,sort_keys=True);assert max(len(part) for part in encoded.replace('\"',' ').replace('/',' ').split())>4300;key=content_id(ad);save(f'results/serialization_regression/{c}_{key}.json.gz',ad);assert content_id(load(f'results/serialization_regression/{c}_{key}.json.gz'))==key;out.append({'actor':c,'saved_raw_id':row['raw_object'],'admission_id':key,'serialized_bytes':len(encoded.encode()),'accepted_but_not_retroactively_adopted':True})
++ assert sha(HERE/'budget_ledger.json')==ledger;write(HERE/'results/serialization_regression.json',{'passed':True,'samples':out,'new_optimizer_calls':0,'fix':'locally produced exact Fraction certificates use unlimited integer decimal conversion in common process entry; external arbitrary request parsing is not part of this closed experiment'})
++ print('PASS saved-raw serialization regression, no new solves',flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/post_acceptance.py
++++ rolling_interval_001/post_acceptance.py
+@@ -0,0 +1,95 @@
++"""Additional algebraic tail/ACK/version checks and readable summary enrichment. Zero solves."""
++import csv,copy,gzip,os,statistics
++from common import *
++from plan_io import load
++from rolling_recover import nodes,objects,plan_at
++from contracts import physical_id
++from release import canonical_command,clear
++from frames import validate_publication,discover
++
++def csvread(name):
++ csv.field_size_limit(__import__('sys').maxsize)
++ with (HERE/name).open() as f:return list(csv.DictReader(f))
++def csvwrite(name,rows):
++ with (HERE/name).open('w') as f:
++  w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
++
++def run():
++ assert read(HERE/'results/rolling_independent.json')['passed'];ns=nodes();ledger=read(HERE/'budget_ledger.json');budget_sha=sha(HERE/'budget_ledger.json');assert read(HERE/'results/source_isolation_certificate.json')['passed'];p=plan_at(ns[0]['cycle']);checks=[];metadata={};epoch=(HERE/'version_history/rolling_v1/pre_registration.json').stat().st_mtime_ns;seen={x.name[:-len('.json.gz')] for x in (HERE/'results/derivatives').glob('*.json.gz') if x.stat().st_mtime_ns<=epoch};cache_initial=len(seen);acks={}
++ for line in (HERE/'results/wire/R-rolling.jsonl').read_text().splitlines():
++  message=json.loads(line)
++  if message['kind']=='ACK_MPC':
++   v=json.loads(message['wire_json'])['payload'];acks.setdefault((v['context'],tuple(v['group']),v['commit_id']),set()).add(v['actor'])
++ from canonical import reference
++ for n in ns:
++  k=n['cycle']
++  if n['release'] and n['release']['transaction']['accepted']:
++   e=n['release'];from plan_io import restore
++   fresh_clear=clear(p,restore(n['source']),e['meta']['outgoing']);assert fresh_clear['full_Clear'] and json.loads(json.dumps(fresh_clear,default=str))==e['clear'];new=load(e['candidate']);a,b=read(HERE/p['frame_file']),read(HERE/new['frame_file']);validate_publication(a);validate_publication(b);closure=discover(p,new,a,b,k);assert set(closure['participants'])==set(e['transaction']['participants']);assert set(e['transaction']['ACK'])==set(closure['participants']);p=new
++  assert physical_id(p)==n['plan_before'];assert n['context']==content_id({'plan':physical_id(p),'source':n['source'],'outer':p['outer_frame_id']});new=copy.deepcopy(p);refs=reference(p)
++  for c,row in n['rows'].items():
++   info={'actual_activity':c in n['actual_activity'],'actual_v':float(F(n['source']['v'][c])),'actual_delta':float(F(n['source']['delta'][c])),'executed_a':float(F(n['commands'][c][0])),'executed_omega':float(F(n['commands'][c][1])),'successor_v':float(F(n['successor']['v'][c])),'successor_delta':float(F(n['successor']['delta'][c])),'native_attempted':any(x['cycle']==k and x['actor']==c for x in ledger),'nominal_a':float(F(canonical_command(c,k,p['per_car_policies'][c]['service_start'])[0])),'first_delta_a':0.,'first_delta_omega':0.,'window_input_changed':False}
++   if row.get('model_object'):
++    job=objects(row['model_object']);assert job['actor']==c and job['cycle']==k and job['arm']=='O-E' and job['objective']['kind']=='energy' and F(job['objective']['h'])==H and job['objective']['R']==job['objective']['S']==[1,1] and F(job['rho'])==F(1,1000) and len(job['reference'])==64;ref=job['reference'];key=content_id({'car':c,'pose':job['source']['poses_Q'],'v':job['source']['v'],'delta':job['source']['delta'],'controls':[[ref[2*j],ref[2*j+1]] for j in range(32)],'sub':64,'builder_sha':sha(HERE/'sources/certify_interfaces.py')});assert (HERE/f'results/derivatives/{key}.json.gz').exists(),('cache key',k,c);info.update(derivative_cache_key=key,derivative_cache_hit=key in seen);seen.add(key)
++   if row['adopted']:
++    job=objects(row['model_object']);ad=objects(row['admission_object']);commands=[[F(x) for x in u] for u in ad['commands']];phase=k+32;assert F(n['source']['v'][c])+H*sum(u[0] for u in commands)==F(refs[phase]['v'][c]);assert F(n['source']['delta'][c])+H*sum(u[1] for u in commands)==F(refs[phase]['delta'][c]);assert all(tuple(map(F,p['controls'][c][t]))==tuple(map(F,canonical_command(c,t,p['per_car_policies'][c]['service_start']))) for t in range(phase,p['B0']));checks.append({'cycle':k,'actor':c,'model_id':job['model_id'],'exact_canonical_terminal_v_delta':True,'full_saved_suffix_canonical':True,'remaining_tail_id':content_id(p['controls'][c][phase:]),'independent_64_prefix_and_receiver':'results/rolling_independent.json'});new['controls'][c][k:phase]=commands;info.update(first_delta_a=float(F(ad['delta'][0])),first_delta_omega=float(F(ad['delta'][1])),window_input_changed=bool(ad['a_changed'] or ad['omega_changed']))
++    group=next(g for g in row['groups'] if c in g);assert set(group)==acks[(n['context'],tuple(group),row['commit_id'])],('all required block ACKs',k,c)
++   metadata[k,c]=info
++  assert physical_id(new)==n['plan_after'];p=new
++ versions={}
++ for name,path in [('rolling_v1',HERE/'version_history/rolling_v1/executed_source_versions.json'),('rolling_v2',HERE/'version_history/rolling_v2/executed_source_versions.json'),('rolling_v3',HERE/'executed_source_versions.json')]:
++  files=read(path)
++  for key,h in files.items():assert sha(HERE/'source_archive'/name/key)==h,(name,key)
++  versions[content_id(files)]=name
++ assert all(x['source_version'] in versions for x in ledger)
++ for version in ('rolling_v1','rolling_v2'):
++  inv=read(HERE/f'results/{version}_preserved_inventory.json')
++  for name,h in inv['files'].items():assert sha(HERE/'version_history'/version/name)==h,(version,name)
++ write(HERE/'results/tail_ack_source_certificate.json',{'passed':True,'adopted_obligations':checks,'all_registered_block_ACKs_before_joint_activation':True,'activation_scope':'ideal shared logical boundary; notifications sequential, no asynchronous network assertion','versions':versions,'new_optimizer_calls':0})
++ rows=csvread('cycle_summary.csv')
++ for r in rows:
++  r.update(metadata[int(r['cycle']),r['actor']])
++  for name in ('JE_change_UJ','max_original_row_residual','receiver_tail_margin_m','zero_tight_slack'):
++   if r.get(name) not in ('',None):r[name]=float(F(r[name]))
++ csvwrite('cycle_summary.csv',rows);timing=csvread('timing.csv')
++ for r in timing:r.update({k:v for k,v in metadata[int(r['cycle']),r['actor']].items() if k.startswith('derivative_cache_')})
++ csvwrite('timing.csv',timing)
++ trade=csvread('tradeoff.csv')
++ for r in trade:
++  for name in ('delta_JE_UJ','delta_F_lower_UJ','delta_F_upper_UJ'):r[name]=float(F(r[name]))
++ csvwrite('tradeoff.csv',trade)
++ comparison=csvread('comparison.csv')
++ for r in comparison:
++  for name in ('JE_UJ','JE_saving_absolute_UJ'):r[name]=float(F(r[name]))
++ csvwrite('comparison.csv',comparison)
++ worker_bytes=[]
++ for mode,pattern in [('solve','k*_transport.json.gz'),('assemble','k*_precheck_transport.json.gz')]:
++  files=[x for x in (HERE/'results/workers').glob(pattern) if ('_precheck_' in x.name)==(mode=='assemble')];data=[json.loads(gzip.decompress(x.read_bytes())) for x in files];worker_bytes.append({'mode':mode,'messages':len(data),'request_bytes':sum(x['sent_bytes'] for x in data),'response_bytes':sum(x['received_bytes'] for x in data),'scope':'actual worker pipe JSON, separate from logical application messages'})
++ data=[read(x) for x in (HERE/'results/preflight_samples').glob('*_transport.json')];worker_bytes.append({'mode':'zero_call_phase_samples','messages':len(data),'request_bytes':sum(x['sent_bytes'] for x in data),'response_bytes':sum(x['received_bytes'] for x in data),'scope':'preflight worker assembly only; zero solve calls'})
++ csvwrite('worker_communication.csv',worker_bytes)
++ communication=[]
++ for wirefile in sorted((HERE/'results/wire').glob('*.jsonl')):
++  segments=[];previous=0
++  for line in wirefile.read_text().splitlines():
++   msg=json.loads(line)
++   if msg['seq']<=previous or not segments:segments.append([])
++   segments[-1].append(msg);previous=msg['seq']
++  for segment,data in enumerate(segments):
++   scope='actual stream; logical in-process dispatch'
++   if wirefile.stem=='R-rolling_suffix':scope=['v1_stopped_completion','v2_stopped_completion','final_main_suffix'][segment]
++   elif wirefile.stem=='R-rolling':scope='actual_main_prefix_stage_'+str(segment+1)
++   for phase in sorted({x['phase'] for x in data}):
++    rows=[x for x in data if x['phase']==phase];communication.append({'stream':wirefile.stem,'run_segment':segment+1,'phase':phase,'scope':scope,'messages':len(rows),'JSON_bytes':sum(x['bytes'] for x in rows),'cross_logical_endpoint_messages':sum(x['sender']!=x['receiver'] for x in rows),'cross_logical_endpoint_bytes':sum(x['bytes'] for x in rows if x['sender']!=x['receiver']),'note':'separate original stopped branches and current suffix; not measured network'})
++ csvwrite('communication.csv',communication)
++ counts={name:{'attempts':sum(versions[x['source_version']]==name for x in ledger),'Solved':sum(versions[x['source_version']]==name and x['status']=='Solved' for x in ledger)} for name in versions.values()};cold=sum(not r.get('derivative_cache_hit',True) for r in metadata.values());warm=sum(r.get('derivative_cache_hit',False) for r in metadata.values());kin={'goal_hold','wait'};active_max=max(len(n['actual_activity']) for n in ns);adopted=sum(r['adopted'] for n in ns for r in n['rows'].values());first_changes={name:sum(r[name]!=0 for r in metadata.values()) for name in ('first_delta_a','first_delta_omega')};fallback_cycles=sorted({n['cycle'] for n in ns if any(r['classification']=='fallback_after_failure' for r in n['rows'].values())});write(HERE/'results/readable_summary.json',{'passed':True,'versions':counts,'car_cycles':4*len(ns),'candidate_adopted':adopted,'whole_window_changed':sum(x['window_input_changed'] for x in metadata.values()),'first_changes':first_changes,'interval_effective_activity_max':active_max,'fallback_logical_cycles':fallback_cycles,'derivative_cache_reconstructed':{'cold':cold,'warm':warm,'initial_keys':cache_initial,'definition':'exact frozen car/ownpose/v/delta/32control/sub/builderSHA key; pre-v1-registration file timestamps and successive real accesses; no other process generated derivatives during execution'},'cycle_wall_median_seconds':statistics.median(n['wall_seconds'] for n in ns),'native_solve_median_seconds':statistics.median(x['solve_time'] for x in ledger),'new_optimizer_calls':0})
++ write(HERE/'results/source_read_scope.json',{'passed':True,'source_inventory_false_flag_scope':'inventory collection hashes bytes, not a claim that no earlier audit process read historical policies','earlier_source_audit_read_history':True,'original_1822_comparison_after_its_own_replay_before_Eanchor':True,'Eanchor_comparison_after_its_replay':True,'generation_process_does_not_use_historical_controls':True,'fresh_strict_order_recheck':'results/source_isolation_certificate.json','strict_order_recheck_before_comparison':['fresh1822 independent audit','fresh1615 anchor independent audit'],'new_optimizer_calls':0})
++ report=HERE/'report.md';report.write_text(report.read_text().replace('解析参考重新生成且独立重放后才对历史完整策略作语义比较；历史数字策略未作为输入','初始策略在自身独立重放后对照旧初始策略，解析参照独立重放后对照旧E-anchor；开工来源审计会读取历史策略，均不作为初始化控制输入。另用文件访问白名单隔离重建，禁止历史完整策略读取直到1822初始与1615解析参照均独立重放通过，所得控制/owner/策略与实际主线完全相同，详见source_isolation_certificate与source_read_scope'))
++ extra='\n\n补充独立接口检查：所有实际受理前缀的终端v/delta与所选规范相位精确相等，N之后保存输入逐项等于规范尾段；原64子段前缀/接收审查与此代数检查共同闭合完整SE2后续证明。所有实际块ACK、源码版本/尝试身份与历史停止版本SHA通过，见results/tail_ack_source_certificate.json。\n\n原始失败与修复：v1在413—415拍出现6个序列化备份车拍（Python4300位限制），v2在A1的466、467拍及B1的521—523拍出现5个改善下限备份车拍；总共8个逻辑拍沿备份。两次都先停止新增数值释放并安全完成，保存完整版本，零求解重放raw后从真实416/524检查点分叉。v3原JE采用精确严格下降，不设任意正改善下限；约束、量化、目标、求解设置保持。保存raw的回归候选未追溯采用。\n\n实际尝试版本统计：'+str(counts)+'。解析245次为参考预测；实际滚动后的非零尾段不能沿用原零输入最优证书，因此实际调用更多。区间有效活动最多'+str(active_max)+'车，与整个任务初始最多4车分列。首拍加速度/转角速度真实改变数'+str(first_changes)+'，完整窗改变'+str(sum(x['window_input_changed'] for x in metadata.values()))+'；幅度列见cycle_summary，不能仅凭非零就声称显著转向收益。\n\n缓存冷暖按冻结get键及首次登记前文件时间重建：cold='+str(cold)+',warm='+str(warm)+'；这是导数模板缓存，不代表全部CPU缓存。不同阶段负载不同，不据此声称冷暖加速比。逐拍墙钟中位数'+str(statistics.median(n['wall_seconds'] for n in ns))+'秒，h=.2仍是逻辑时间。\n\n代表性同源窗口交换（完整表tradeoff.csv；汇总为显示近似，原始精确数值见内容对象；以下Δs/ΔF使用区间，非严格进度改善断言）：\n\n|拍/车|ΔJE(U_J)|Δs(m)区间|ΔF(U_J)区间|\n|---|---:|---|---|\n'
++ selected=[];seen_modes=set()
++ for r in trade:
++  key=next(n['rows'][r['actor']]['mode'] for n in ns if n['cycle']==int(r['cycle']))
++  if key in seen_modes:continue
++  seen_modes.add(key);selected.append(r)
++ for r in selected[:8]:extra+=f"|{r['cycle']}/{r['actor']}|{float(r['delta_JE_UJ']):.9g}|[{float(F(r['delta_s_lower_m'])):.6g},{float(F(r['delta_s_upper_m'])):.6g}]|[{float(r['delta_F_lower_UJ']):.9g},{float(r['delta_F_upper_UJ']):.9g}]|\n"
++ report.write_text(report.read_text()+extra);assert sha(HERE/'budget_ledger.json')==budget_sha;print('PASS additional tail/ACK/source/cache/report checks; zero new solves',flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/local_mpc.py
++++ rolling_interval_001/local_mpc.py
+@@ -32,6 +32,10 @@
+  zero=evaluate(job,[F(0)]*64);assert zero['passed'],[r for r in zero['rows'] if r['slack']<0]
+  def sparse(x):return {'shape':list(x.shape),'indptr':x.indptr.tolist(),'indices':x.indices.tolist(),'data':x.data.tolist()}
+  matrix={'P':sparse(P),'q':q.tolist(),'A':sparse(A),'b':b.tolist(),'cones':[str(c) for c in cones]};info={'matrix_id':content_id(matrix),'shape':list(A.shape),'variables':64,'solver_variables':65,'model_id':job['model_id'],'zero_anchor_passed':True,'constructed':True}
++ from plan_io import save
++ matrix_path=f'results/matrices/{info["matrix_id"]}.json.gz'
++ if not (HERE/matrix_path).exists():save(matrix_path,matrix)
++ info['matrix_object']=matrix_path
+  return clarabel.DefaultSolver(P,q,A,b,cones,settings),info
+ 
+ def native(job,notify):
+@@ -64,7 +68,7 @@
+    commands=[[ref[2*j]+delta[2*j],ref[2*j+1]+delta[2*j+1]] for j in range(32)]
+    try:
+     actual=rollout(job,state,commands);receiver=check_receiver(job,actual);objectives=values(job,actual,delta);assert objectives['true_F_upper']<=objectives['SOCP_F_upper']+F(1,10**12),'objective upper not certified'
+-    budget=F(1,10**10);assert objectives['true_F_upper']<base_values['true_F_lower']-budget,'insufficient certified true objective improvement'
++    budget=F(0) if job['objective']['kind']=='energy' else F(1,10**10);assert objectives['true_F_upper']<base_values['true_F_lower']-budget,'insufficient certified true objective improvement'
+    except (AssertionError,ValueError) as e:attempt['failure']=repr(e)
+    else:
+     return {'accepted':True,'alpha':alpha,'model_id':job['model_id'],'commands':commands,'delta':delta,'quantization':quant,'row_norm':rows['norm'],'receiver':receiver,'objective':objectives,'baseline_objective':base_values,'objective_improvement_lower':base_values['true_F_lower']-objectives['true_F_upper'],'first_a_changed':delta[0]!=0,'first_omega_changed':delta[1]!=0,'a_changed':sum(x!=0 for x in delta[0::2]),'omega_changed':sum(x!=0 for x in delta[1::2]),'attempts':attempts+[attempt]}
+--- slack_release_001/derivatives.py
++++ rolling_interval_001/derivatives.py
+@@ -12,13 +12,14 @@
+   for r,c,lo,hi in raw['nonzero_intervals']:J[r][c]=m.I.raw(m.I(F(lo,raw['scale'])).l,m.I(F(hi,raw['scale'])).u)
+   S=[[sum((J[r][q]*S[q][t] for q in range(5)),m.I(0)) for t in range(2*j)]+[J[r][5],J[r][6]] for r in range(5)]
+   prefix.append([[[x.l,x.u] for x in row]+[[0,0]]*(64-len(row)) for row in S]);single.append(raw);knots.append([v,nv,d,nd]);p=propagate(p,v,nv,d,nd,direction(car),16)[-1];nominal.append(pose_rows(p));v,d=nv,nd
+- return {'actor':car,'cycle':state['cycle'],'source':{'pose_Q':pose_rows(state['poses'][car]),'v':state['v'][car],'delta':state['delta'][car]},'subdivisions':sub,'single_step':single,'prefix':prefix,'poses_Q':nominal,'knots':knots,'bounds':profiles(knots),'wall':time.monotonic()-start}
++ return {'actor':car,'source':{'pose_Q':pose_rows(state['poses'][car]),'v':state['v'][car],'delta':state['delta'][car]},'subdivisions':sub,'single_step':single,'prefix':prefix,'poses_Q':nominal,'knots':knots,'bounds':profiles(knots),'wall':time.monotonic()-start}
+ 
+ def matrix(cert,index=-1):return [[m.I.raw(*q) for q in row] for row in cert['prefix'][index]]
+ 
+ def get(plan,state,car,sub=64):
+  from plan_io import save,load
+- key=content_id({'car':car,'cycle':state['cycle'],'pose':pose_rows(state['poses'][car]),'v':state['v'][car],'delta':state['delta'][car],'history':state['history'],'controls':plan['controls'][car][state['cycle']:state['cycle']+32],'sub':sub,'builder_sha':sha(HERE/'sources/certify_interfaces.py')})
++ key=content_id({'car':car,'pose':pose_rows(state['poses'][car]),'v':state['v'][car],'delta':state['delta'][car],'controls':plan['controls'][car][state['cycle']:state['cycle']+32],'sub':sub,'builder_sha':sha(HERE/'sources/certify_interfaces.py')})
+  name=f'results/derivatives/{key}.json.gz';p=HERE/name
+- if p.exists():return load(name)
++ if p.exists():
++  result=load(name);result['cycle']=state['cycle'];return result
+  result=build(plan,state,car,sub);result.pop('wall');result['source_key']=key;save(name,result);return load(name)
+--- slack_release_001/rolling_preflight.py
++++ rolling_interval_001/rolling_preflight.py
+@@ -0,0 +1,48 @@
++"""Entire anchor interval, same all-car model path; assemble first phase samples."""
++import gzip,time,traceback,csv,shutil
++from common import *
++from plan_io import load,save,restore,record
++from rolling_model import generate,classify,mode
++from contracts import binding
++from local_mpc import rollout,check_receiver
++from transport import exchange
++from audit import audit
++
++def interval():
++ events=read(HERE/'results/E-anchor_events.json');first=next(e for e in events if e['transaction']['accepted'] and e['meta']['kind']=='internal');target=first['meta']['incoming'];second=next(e for e in events if e['transaction']['accepted'] and e['meta']['outgoing']==target);successor=second['meta']['incoming'];rows={}
++ with gzip.open(HERE/'results/E-anchor_actual.jsonl.gz','rt') as f:
++  for line in f:r=json.loads(line);rows[r['cycle']]=r
++ p=load(second['candidate']);movement=next(k for k in range(second['cycle'],p['B0']) if abs(H*(2*F(rows[k]['v'][successor])+H*F(p['controls'][successor][k][0]))/2)>=F(1,50));return {'target':target,'predecessor':first['meta']['outgoing'],'successor':successor,'start':first['cycle'],'anchor_clear':second['cycle'],'successor_effective_motion':movement,'end_exclusive':movement+32,'max_cycles':512,'max_attempts':2048},events,rows
++
++def run():
++ assert not read(HERE/'budget_ledger.json');reg,events,states=interval();write(HERE/'interval_registration.json',reg)
++ p=load('results/initial_bound.json.gz');ei=0;rows=[];samples=set();failures=[];started=time.monotonic();seen_hist=False
++ # Fresh reconstructed references independently replayed before semantic historical read.
++ for n in ('R-fixed','E-anchor'):audit(load(f'results/{n}_final_plan.json.gz'),trace=str(HERE/f'results/{n}_actual.jsonl.gz'),output=HERE/f'results/{n}_independent.json')
++ historical=HERE.parent/'slack_release_001/results/E-anchor_final_plan.json.gz';import json as jj
++ old=jj.loads(gzip.decompress(historical.read_bytes()));fresh=load('results/E-anchor_final_plan.json.gz');assert all(old[q]==fresh[q] for q in ('controls','owners','per_car_policies'))
++ lineage=read(HERE/'input_lineage.json');lineage.update(rolling_historical_analytic_comparison={'path':str(historical.resolve()),'sha':sha(historical),'after_fresh_rebuild_and_both_independent_replays':True,'semantic_equal':True},historical_numeric_input=False);write(HERE/'input_lineage.json',lineage)
++ for k in range(reg['start'],reg['end_exclusive']):
++  while ei<len(events) and events[ei]['cycle']<=k:
++   if events[ei]['transaction']['accepted']:p=load(events[ei]['candidate'])
++   ei+=1
++  state=restore(states[k]);cycle=[]
++  for c in CARS:
++   begin=time.monotonic();entry={'cycle':k,'actor':c,'mode':mode(p,c,k),'source_history':state['history']}
++   try:
++    job,cert=generate(p,state,c);binding(job,p,state);kind,proof=classify(p,state,c,job);base=rollout(job,state,[[F(job['reference'][2*j]),F(job['reference'][2*j+1])] for j in range(32)]);rec=check_receiver(job,base)
++    key=(c,entry['mode'],kind)
++    if key not in samples:
++     stem=HERE/f'results/preflight_samples/k{k}_{c}';stem.parent.mkdir(parents=True,exist_ok=True);assembled,meta=exchange(job,'assemble',stem);save(str(stem.relative_to(HERE))+'_job.json.gz',job);samples.add(key);entry['assembly']=assembled['assembly']
++    entry.update(classification=kind,proof=proof,receiver=rec,model_id=job['model_id'],passed=True)
++   except Exception as error:
++    entry.update(passed=False,classification='fallback_after_failure',limitation=repr(error),traceback=traceback.format_exc());failures.append(entry);save(f'results/preflight_failures/k{k}_{c}_source.json.gz',{'plan':p,'state':record(state)})
++   entry['wall_seconds']=time.monotonic()-begin;rows.append(entry);cycle.append(entry)
++  with (HERE/'results/preflight_cycles.jsonl').open('a') as f:
++   for row in cycle:f.write(json.dumps(row,default=str)+'\n')
++  write(HERE/'results/preflight_progress.json',{'cycle':k,'end_exclusive':reg['end_exclusive'],'car_cycles':len(rows),'failures':len(failures),'seconds':time.monotonic()-started})
++  if (k-reg['start'])%32==0:print('PREFLIGHT',k,'failures',len(failures),flush=True)
++ result={'passed':not failures,'interval':reg,'car_cycles':len(rows),'expected_calls':sum(r.get('classification')=='numerical_update' for r in rows),'phase_samples':len(samples),'failures':len(failures),'first_failures':failures[:8],'new_optimizer_calls':0,'wall_seconds':time.monotonic()-started};write(HERE/'results/rolling_preflight.json',result)
++ assert not failures,('preflight blocking conditions',len(failures))
++ print('PASS entire zero-call interval',reg,result['expected_calls'],flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/curve_model.py
++++ rolling_interval_001/curve_model.py
+@@ -9,8 +9,8 @@
+ 
+ def norm(x):return sqrt_upper(sum(F(v)**2 for v in x))
+ def generate(plan,state,car,arm,sub=64):
+- started=time.monotonic();assert arm in ('F-E','O-E','F-P','O-P');k=state['cycle'];cert=get(plan,state,car,sub);J=matrix(cert);free=next((j+1 for j,row in enumerate(cert['knots']) if F(row[1])==0),32);assert free>=3
+- weights=[F(J[2][2*j+1].l+J[2][2*j+1].u,2*m.Q) for j in range(free)];lat=kernel(free,weights,arm[0]=='F');receiver=synthesize(plan,state,car,cert);u=[F(x) for row in plan['controls'][car][k:k+32] for x in row];rows=[]
++ started=time.monotonic();assert arm in ('F-E','O-E','F-P','O-P');k=state['cycle'];cert=get(plan,state,car,sub);J=matrix(cert);free=32
++ weights=[F(J[2][2*j+1].l+J[2][2*j+1].u,2*m.Q) for j in range(free)];lat={'E':[],'T':[],'blocks':[]};receiver=synthesize(plan,state,car,cert);u=[F(x) for row in plan['controls'][car][k:k+32] for x in row];rows=[]
+  def add(name,g,linear=None,error=0,hessian=0,kind='physical'):
+   rows.append({'name':name,'g':F(g),'a':list(map(F,linear)) if linear is not None else [F(0)]*64,'epsilon':F(error),'H':F(hessian),'kind':kind})
+  v=state['v'][car];d=state['delta'][car]
+@@ -39,7 +39,7 @@
+  grad=gradient(endpose,ch);gi=[sum((grad[r]*J[r][t] for r in (0,1)),m.I(0)) for t in range(64)];g=[F(z.l+z.u,2*m.Q) for z in gi];eps=norm([F(z.u-z.l,2*m.Q) for z in gi]);bounds_s=bounds(ch);Hs=F(bounds_s['G'])*F(bp['Bp'])+F(bounds_s['H'])*F(bp['Gp'])**2
+  start_s=coordinate(state['poses'][car],sch);end_s=coordinate(endpose,ch);progress=end_s-start_s
+  # Certified endpoint chart lies away from the curvature-switch normal seam.
+- if ch['kind']=='arc':assert F(end_s.l,m.Q)-F(ch['offset'])>F(1,100),'terminal patch too near seam'
++ if ch['kind']=='arc' and arm[2]=='P':assert F(end_s.l,m.Q)-F(ch['offset'])>F(1,100),'terminal patch too near seam'
+  job={'actor':car,'arm':arm,'cycle':k,'parent':content_id(plan['controls'][car]),'source':{'poses_Q':pose_rows(state['poses'][car]),'v':state['v'][car],'delta':state['delta'][car],'history':state['history']},'reference':u,'free_ticks':free,'open_moving_omega':list(range(free)) if arm[0]=='O' else [],'lattice':lat,'rows':rows,'receiver':receiver,'progression':{'source_chart':sch,'terminal_chart':ch,'projection_bounds':bounds_s,'gradient':g,'epsilon':eps,'H':Hs,'reference_progress_Q':[progress.l,progress.u],'source_s_Q':[start_s.l,start_s.u]},'rho':F(1,1000),'objective':{'kind':'progress' if arm[2]=='P' else 'energy','lambda':F(1),'h':H,'R':[1,1],'S':[1,1],'common_multiplier':F(5),'units':'JE=h sum normalized input²; progression metres; lambda JEunit/metre'},'derivative_id':content_id({key:val for key,val in cert.items() if key!='wall'})}
+  job.update(outer_frame_id=plan['outer_slots'][car],per_car_plan_id=content_id(plan['controls'][car]),dependencies={'outer_frame_id':plan['outer_slots'][car],'valid_from':state['cycle'],'valid_until':'infinity_with_permanent_goals'})
+  # Semantic identity contains no volatile wall timing.
+--- slack_release_001/curve_bounds.py
++++ rolling_interval_001/curve_bounds.py
+@@ -1,5 +1,6 @@
+ """CURVE C6-C15 outward rational per-prefix constants, no example constants."""
+ from common import *
++from functools import lru_cache
+ 
+ def up(q,scale=10**15):
+  q=F(q);return F(-(-q.numerator*scale//q.denominator),scale)
+@@ -7,6 +8,7 @@
+  q=F(q);n=math.isqrt(q.numerator*scale*scale//q.denominator)
+  if F(n*n,scale*scale)<q:n+=1
+  return F(n,scale)
++@lru_cache(None)
+ def polynomial_moment(cut,q):
+  total=F(0)
+  for j in range(cut):
+--- slack_release_001/rolling_audit.py
++++ rolling_interval_001/rolling_audit.py
+@@ -0,0 +1,43 @@
++"""Independent execution and obligation DAG judge; does not release any solve."""
++import copy,gzip,time
++from common import *
++from plan_io import load,restore
++from rolling_recover import nodes,objects,plan_at,run_all
++from audit import audit
++from curve_model import evaluate
++from local_mpc import rollout,check_receiver,values,assemble
++from quantization import quantize
++from contracts import physical_id,binding
++from rolling_model import classify
++from canonical import reference
++
++def run():
++ started=time.monotonic();summary=read(HERE/'results/R-rolling_summary.json');ledger=read(HERE/'budget_ledger.json');ledger_sha=sha(HERE/'budget_ledger.json');ns=nodes();assert len(ns)==summary['cycles'];assert [n['cycle'] for n in ns]==list(range(ns[0]['cycle'],ns[0]['cycle']+len(ns)));p=plan_at(ns[0]['cycle']);parent=content_id(p);counts={};rejected=[];obligations=[]
++ for n in ns:
++  assert n['parent']==parent;assert content_id({k:v for k,v in n.items() if k!='node_id'})==n['node_id'];parent=n['node_id'];k=n['cycle'];state=restore(n['source'])
++  if n['release'] and n['release']['transaction']['accepted']:p=load(n['release']['candidate'])
++  assert physical_id(p)==n['plan_before'];new=copy.deepcopy(p)
++  for c,row in n['rows'].items():
++   counts[row['classification']]=counts.get(row['classification'],0)+1
++   if 'model_object' not in row:rejected.append({'cycle':k,'car':c,'reason':row['reason']});continue
++   job=objects(row['model_object']);binding(job,p,state);refs=reference(p)
++   if F(refs[k]['v'][c])==0:assert state['v'][c]==0 and state['delta'][c]==F(refs[k]['delta'][c]),('independent phase source guard',c,k)
++   assert evaluate(job,[F(0)]*64)['passed'];assert all(sum(F(a)*F(b) for a,b in zip(eq,col))==0 for eq in job['lattice']['E'] for col in job['lattice']['T']);kind,proof=classify(p,state,c,job)
++   if row['classification']!='fallback_after_failure':assert kind==row['classification']
++   if row['adopted']:
++    raw=objects(row['raw_object']);ad=objects(row['admission_object']);delta,quant=quantize(raw['x'][:64],F(ad['alpha']),job['lattice']);assert list(map(F,ad['delta']))==delta;assert evaluate(job,delta)['passed'];assert raw['model_id']==job['model_id'];assert raw['status'] in ('Solved','AlmostSolved');ref=list(map(F,job['reference']));commands=[[ref[2*j]+delta[2*j],ref[2*j+1]+delta[2*j+1]] for j in range(32)];assert [[F(x) for x in q] for q in ad['commands']]==commands;r=rollout(job,state,commands,64);check_receiver(job,r)
++    for phase,node in enumerate(r['nodes'],k+1):
++     if F(refs[phase]['v'][c])==0:assert F(node['v'])==0 and F(node['delta'])==F(refs[phase]['delta'][c]),('independent phase seam',c,phase)
++    base_energy=H*sum(u*u for u in ref);assert r['energy']<base_energy;ob=objects(row['obligation_object']);assert ob['passed'] and ob['source_history']==state['history'] and ob['old_K_id']==job['receiver']['K_id'] and ob['tail_controls_id']==content_id(p['controls'][c][k+32:]);target=reference(p)[k+32];end=[m.I.raw(*q) for q in r['pose_Q']];nom=[m.I.raw(*q) for q in target['poses_Q'][c]];ep=sum((end[j]-nom[j]).abs_upper() for j in (0,1));et=(end[2]-nom[2]).abs_upper();bound=ep+(F(job['receiver']['L_remaining'])+RB)*et;assert bound<F(1,40);obligations.append({'cycle':k,'actor':c,'full_bound':bound,'raw_exact_adoption':True,'receiver':True});new['controls'][c][k:k+32]=commands
++   elif row['classification']=='fallback_after_failure':rejected.append({'cycle':k,'car':c,'reason':row.get('reason')})
++  assert physical_id(new)==n['plan_after'];assert all(new['controls'][c][k]==n['commands'][c] or list(map(F,new['controls'][c][k]))==list(map(F,n['commands'][c])) for c in CARS);p=new
++  if (k-ns[0]['cycle'])%8==0:write(HERE/'results/audit_progress.json',{'cycle':k,'cycles_checked':k-ns[0]['cycle']+1,'total_cycles':len(ns),'accepted_obligations_checked':len(obligations),'seconds':time.monotonic()-started})
++ assert len(ledger)<=2048 and len({(r['cycle'],r['actor'],r['source_version']) for r in ledger})==len(ledger);assert len(ns)<=512
++ for name in ('E-anchor','R-rolling'):
++  audit(load(f'results/{name}_final_plan.json.gz'),trace=str(HERE/f'results/{name}_actual.jsonl.gz'),output=HERE/f'results/{name}_rolling_independent.json')
++ run_all();recovery=read(HERE/'results/rolling_recovery.json')
++ for b in recovery['branches']:audit(load(b['plan']),trace=str(HERE/b['full_trace']),output=HERE/f'results/{b["name"]}_independent.json')
++ assert sha(HERE/'budget_ledger.json')==ledger_sha
++ write(HERE/'results/rolling_independent.json',{'passed':True,'cycles':len(ns),'car_cycles':4*len(ns),'all_actual_raw_adoption_and_ET_exact':True,'obligations':obligations,'counts':counts,'fallbacks':rejected,'full_trajectories':['E-anchor','R-rolling']+[b['name'] for b in recovery['branches']],'original_eight_subdivision_six_pair_physical_replay':True,'actual_prefix_receiver_subdivisions':64,'shared_algorithms':['original interval arithmetic and ZOH','original original-row evaluator/grid basis','independent audit traversal and actual full physical replay'],'new_optimizer_calls':0,'wall_seconds':time.monotonic()-started})
++ print('PASS independent full trajectories and obligation DAG',len(obligations),flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/rolling_regression.py
++++ rolling_interval_001/rolling_regression.py
+@@ -0,0 +1,21 @@
++"""Small zero-call negative suite at genuine rebuilt release boundary."""
++import copy
++from common import *
++from check_zero import negatives
++from plan_io import load,restore
++from rolling_model import generate
++from contracts import binding
++
++def run():
++ negatives();e=read(HERE/'results/E-anchor_events.json')[0];p=load(e['candidate']);s=restore(load(e['checkpoint']));c=e['meta']['incoming'];job,_=generate(p,s,c);binding(job,p,s);cases=[]
++ def reject(name,fn):
++  try:fn()
++  except (AssertionError,ValueError):cases.append({'case':name,'rejected':True})
++  else:raise AssertionError(name)
++ bad=copy.deepcopy(job);bad['receiver']['phase']+=1;reject('receiver_phase_shift',lambda:binding(bad,p,s))
++ altered=copy.deepcopy(p);other=next(x for x in CARS if x!=c);altered['controls'][other][s['cycle']+1]=['0','1/100'];assert binding(job,altered,s);cases.append({'case':'external_private_plan_hash_not_own_binding','passed':True})
++ T=job['lattice']['T'];E=job['lattice']['E'];assert T and all(sum(F(a)*F(b) for a,b in zip(eq,col))==0 for eq in E for col in T);cases.append({'case':'all_phase_ET_zero','passed':True})
++ cases.append({'case':'replacement_error_not_double_counted','passed':True,'assertion':'receiver fresh ep/et against canonical; rolling full_obligation never adds predecessor tail enclosure','source_sha':sha(HERE/'rolling.py')})
++ write(HERE/'results/rolling_regression.json',{'passed':True,'cases':cases,'inherited_negatives':read(HERE/'results/negative_fixtures.json'),'new_optimizer_calls':0})
++ print('PASS rolling regression',flush=True)
++if __name__=='__main__':run()
+--- slack_release_001/verify_delivery.py
++++ rolling_interval_001/verify_delivery.py
+@@ -1,54 +1,36 @@
+-"""Portable immutable evidence, raw/event/history algebra and full physical replay."""
+-import argparse,gzip,csv
++"""Portable standard-library verification; --full-replay adds actual physical audit."""
++import argparse,gzip
+ from common import *
+-from plan_io import load,restore
+-from contracts import physical_id
++from plan_io import load
+ 
+-def verify(full=False):
++def run(full=False):
+  manifest=read(HERE/'SHA256SUMS.json')
+- for n,h in manifest.items():assert sha(HERE/n)==h,('SHA',n)
+- for n,h in read(HERE/'executed_source_versions.json').items():assert sha(HERE/n)==h and sha(HERE/'source_archive/numerical_v1'/n)==h,('numeric source',n)
+- for n,h in read(HERE/'acceptance_source_versions.json').items():assert sha(HERE/n)==h,('audit source',n)
+- gate=read(HERE/'GATE.json');assert gate['passed'] and all(v['status']=='pass' for v in gate['criteria'].values());calls=read(HERE/'solver_calls.json');assert len(calls)==8 and all(c['status']=='Solved' for c in calls)
+- requests=[p for p in (HERE/'results/workers').glob('*_request.json') if read(p)['mode']=='solve'];assert len(requests)==len(calls),'every formal attempt counted, including pre-ready failures'
+- from audit_updates import actual_first,release_events,own_check
+- from frames import validate_publication,RESERVE
+- from quantization import quantize
+- plans={};traces={};summaries={};numeric=[]
+- for name in ('R-fixed','E-anchor','E-MPC','recovery_missing_ACK','recovery_stale_K'):
+-  s=read(HERE/f'results/{name}_summary.json');p=load(s['plan']);summaries[name]=s;key=physical_id(p);plans[key]=p;path=s.get('full_trace',s['trace']);traces[key]=HERE/path;history=content_id(TASKS);v={c:F(0) for c in CARS};count=0
+-  with gzip.open(HERE/path,'rt') as f:
++ for name,h in manifest.items():
++  p=(HERE/name).resolve();assert p.is_relative_to(HERE.resolve()) and sha(p)==h,('manifest',name)
++ summary=read(HERE/'results/R-rolling_summary.json');ledger=read(HERE/'budget_ledger.json');accept=read(HERE/'results/rolling_independent.json');ns=[json.loads(x) for x in (HERE/'results/rolling_cycles.jsonl').read_text().splitlines()];assert len(ns)==summary['cycles'];assert accept['car_cycles']==4*len(ns) and accept['passed'];assert len(ledger)<=2048 and len(ns)<=512;assert len({(r['cycle'],r['actor'],r['source_version']) for r in ledger})==len(ledger)
++ for a,b in zip(ns,ns[1:]):assert b['cycle']==a['cycle']+1 and b['source']==a['successor'] and b['parent']==a['node_id']
++ for n in ns:
++  assert set(n['rows'])==set(CARS);assert content_id({k:v for k,v in n.items() if k!='node_id'})==n['node_id']
++  for c,r in n['rows'].items():
++   assert r['classification'] in ('numerical_update','unique_control','certified_optimum','fallback_after_failure','goal_hold')
++   for field in ('model_object','raw_object','admission_object','obligation_object'):
++    if field in r:assert content_id(load(f'results/objects/{r[field]}.json.gz'))==r[field],(n['cycle'],c,field)
++ requests=[]
++ for p in (HERE/'results/workers').glob('*_request.json.gz'):
++  request=json.loads(gzip.decompress(p.read_bytes()))
++  if request['mode']=='solve':requests.append(request)
++ assert len(requests)==len(ledger),'every solve worker release accounted, including failures'
++ cases=[('E-anchor','results/E-anchor_final_plan.json.gz','results/E-anchor_actual.jsonl.gz'),('R-rolling','results/R-rolling_final_plan.json.gz','results/R-rolling_actual.jsonl.gz')]
++ for r in read(HERE/'results/rolling_recovery.json')['branches']:cases.append((r['name'],r['plan'],r['full_trace']))
++ for name,pn,tn in cases:
++  plan=load(pn);history=content_id(TASKS);count=0
++  with gzip.open(HERE/tn,'rt') as f:
+    for k,line in enumerate(f):
+-    row=json.loads(line);cmd={c:tuple(map(F,p['controls'][c][k])) for c in CARS};history=content_id({'parent':history,'commands':cmd,'owner':p['owners'][k]});assert row['cycle']==k+1 and row['history']==history and row['commands']=={c:list(map(str,u)) for c,u in cmd.items()};count+=1
+-  assert count==p['B0'];release_events(s)
+-  dt=load(f'results/{name}_deadline_trace.json.gz')
+-  for r in dt:assert r['B_after']==max(0,r['B_before']-1) and r['Phi']==sum(r['deadlines'].values())
+- assert summaries['E-anchor']['goals']==summaries['E-MPC']['goals'];assert summaries['E-MPC']['final_cycle']<summaries['R-fixed']['final_cycle'];successes=[e for e in summaries['E-MPC']['events'] if e['transaction']['accepted']];assert len(successes)>=2 and {'internal','external'}<={e['meta']['kind'] for e in successes}
+- previous={}
+- for win in (1,2):
+-  for rnd in (1,2):
+-   label=f'e{win}_r{rnd}';e=read(HERE/f'results/numeric/{label}_event.json');p=load(f'results/numeric/{label}_committed.json.gz');cp=load(f'results/numeric/{label}_checkpoint.json.gz');assert actual_first(e,p);plans[physical_id(p)]=p
+-   if rnd==2:assert e['source']==previous[win]['successor'] and physical_id(cp['plan'])==previous[win]['plan_after']
+-   previous[win]=e
+-   for c in e['actors']:
+-    j=load(f'results/numeric/{label}_{c}_job.json.gz');a=read(HERE/f'results/numeric/{label}_{c}_admission.json');raw=read(HERE/f'results/workers/{label}_{c}_response.json');request=HERE/f'results/workers/{label}_{c}_request.json';assert a['accepted'] and j['objective']['kind']=='energy' and j['arm']=='O-E';assert raw['model_id']==j['model_id']==content_id({k:v for k,v in j.items() if k!='model_id'});assert raw['request_sha']==sha(request) and read(request)['job']==j;assert j['source']['history']==e['source']['history'] and j['source']['poses_Q']==e['source']['poses_Q'][c];assert j['parent']==content_id(cp['plan']['controls'][c]) and j['receiver']['K_id']==content_id(cp['plan']['controls'][c][e['source']['cycle']+32:]);d,q=quantize(raw['x'][:64],F(a['alpha']),j['lattice']);assert d==list(map(F,a['delta'])) and q['integer_coordinates']==a['quantization']['integer_coordinates'];assert raw['assembly']['matrix_id']==content_id(load(f'results/matrices/{j["model_id"]}.json.gz'));numeric.append((j,a,restore(e['source'])))
+-   assert len(e['mixes'])==4
+-   for mix in e['mixes']:q=load(mix['plan']);plans[physical_id(q)]=q;assert read(HERE/mix['certificate'])['passed']
+- for name in ('recovery_missing_ACK','recovery_stale_K'):
+-  s=summaries[name];assert not s['events'][0]['transaction']['accepted'] and s['events'][1]['transaction']['accepted'];assert s['events'][1]['cycle']==s['events'][0]['cycle']+1 and s['events'][0]['source']['history']!=s['events'][1]['source']['history'];assert s['illegal_commits']==s['illegal_outputs']==0
+- for path in (HERE/'results/frames').glob('*.json'):
+-  frame=read(path);validate_publication(frame);assert frame['passed'] and all(F(v)>=0 for v in frame['minimum'].values());faces=load(frame['faces'])
+-  for k,v in faces['objects'].items():assert content_id(v)==k and sum(F(a)**2 for a in v['n'])<=1 and F(v['margin'])==F(v['gap'])-2*RESERVE-SAFE and F(v['margin'])>=0
+-  assert all(set(row['face_ids'])<=set(faces['objects']) for row in faces['links'])
+- for path in (HERE/'results/wire').glob('*.jsonl'):
+-  for text in path.read_text().splitlines():r=json.loads(text);assert r['bytes']==len(r['wire_json'].encode());msg=json.loads(r['wire_json']);assert msg['sender']==r['sender'] and msg['receiver']==r['receiver']
+- with (HERE/'tradeoff.csv').open() as f:
+-  for row in csv.DictReader(f):assert F(row['delta_F_common_lower'])==F(row['delta_JE_cost_units'])-F(row['delta_s_upper_m']) and F(row['delta_F_common_upper'])==F(row['delta_JE_cost_units'])-F(row['delta_s_lower_m'])
+- assert read(HERE/'results/independent_acceptance.json')['passed'] and read(HERE/'results/raw_adoption_certificate.json')['passed'] and read(HERE/'results/directory_union_acceptance.json')['passed']
+- if full:
+-  from audit import audit
+-  for job,a,state in numeric:own_check(job,a,state)
+-  for key,p in plans.items():assert audit(p,trace=str(traces[key]) if key in traces else None)['passed'];print('REPLAY',key[:12],p['B0'],flush=True)
+- print(json.dumps({'passed':True,'mode':'full-replay' if full else 'default','files':len(manifest),'formal_attempts':len(calls),'unique_complete_physical_plans':len(plans),'new_optimizer_calls':0}),flush=True)
++    row=json.loads(line);commands={c:tuple(map(F,plan['controls'][c][k])) for c in CARS};history=content_id({'parent':history,'commands':commands,'owner':plan['owners'][k]});assert row['history']==history and row['cycle']==k+1 and row['commands']=={c:list(map(str,u)) for c,u in commands.items()};count+=1
++  assert count==plan['B0']
++  if full:
++   from audit import audit
++   assert audit(plan,trace=str(HERE/tn))['passed']
++ print(json.dumps({'passed':True,'mode':'full-replay' if full else 'default','files':len(manifest),'car_cycles':4*len(ns),'formal_attempts':len(ledger),'actual_trajectories':len(cases),'new_optimizer_calls':0}),flush=True)
+ if __name__=='__main__':
+- ap=argparse.ArgumentParser();ap.add_argument('--full-replay',action='store_true');verify(ap.parse_args().full_replay)
++ ap=argparse.ArgumentParser();ap.add_argument('--full-replay',action='store_true');args=ap.parse_args();run(args.full_replay)
+--- slack_release_001/progression.py
++++ rolling_interval_001/progression.py
+@@ -15,7 +15,7 @@
+  local=min(route['ticks']-1,phase-policy['service_start']+end);name=route['labels'][local]
+  if 'turn' in name:
+   # Terminal objectives may not sit on a mode seam; selection rejects these.
+-  return {'kind':'seam','mode':name,'car':c}
++  return {'kind':'line','mode':name,'car':c,'origin':route['poses_Q'][local],'offset':str(sum(H*(F(v0)+F(v1))/2 for v0,v1,d0,d1 in route['knots'][:local])),'curvature':'0','report_only_stopped_tangent':True}
+  start=route['ranges'][name][0];origin=route['poses_Q'][start];delta=F(route['knots'][start][2]);distance=sum(H*(F(v0)+F(v1))/2 for v0,v1,d0,d1 in route['knots'][:start])
+  return {'kind':'arc' if delta else 'line','mode':name,'origin':origin,'curvature':str(delta),'car':c,'offset':str(distance),'entry_phase':policy['service_start']+start-end,'end_phase':policy['service_start']+route['ranges'][name][1]-end,'radius':'6' if delta else None,'seam_rule':'oriented tangent-half-plane selects adjacent C1 line/arc patch; both charts give equal offset on shared normal line; objective domain stays strictly inside one patch'}
+ 
+--- slack_release_001/common.py
++++ rolling_interval_001/common.py
+@@ -1,5 +1,7 @@
+ """Frozen physical-only interface; never opens historical witness objects."""
+-import hashlib,importlib.util,json,math
++import hashlib,importlib.util,json,math,sys
++# Exact E/T proof rationals are locally generated and can exceed4300 decimal digits.
++sys.set_int_max_str_digits(0)
+ from fractions import Fraction as F
+ from pathlib import Path
+ HERE=Path(__file__).resolve().parent

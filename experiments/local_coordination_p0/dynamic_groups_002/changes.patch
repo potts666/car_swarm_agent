@@ -1,0 +1,1777 @@
+--- a/accept_case.py
++++ b/accept_case.py
+@@ -1,73 +1,108 @@
+-"""Independent reconstruction using the old independent 8-subsegment geometry audit."""
+-import argparse,time,itertools
++"""Independent 8-subsegment physical, progress, contract and raw-input reconstruction."""
++import argparse,itertools,time
+ import numpy as np
+ from common import *
+ from audit_base import Audit
++from physics import propagate
++from progress import ETA,MOTION,chart
+ from generation import generate,data_for
+ from derivatives import verify
++from socp_rows import rows_for,evaluate
+ from conic import assembly
++from local_update import reserved_rows
+ from rules import quantize
+-from socp_rows import rows_for,evaluate
+-from local_update import reserved_rows
+-from strategy import deadlines
+ 
+-def event_check(audit,event):
+-    s=audit.state;s['contract_id']=event['source']['contract_id'];assert normal(state_record(s))==event['source'],'actual history/source mismatch';old=get(HERE/'objects',s['witness']);k=s['cycle'];new=get(HERE/'objects',event['selected_witness']);checks=[];expected=copy.deepcopy(old['controls']);events=copy.deepcopy(old['events'])
+-    # Regenerate source, variational matrices, rows and receiving/K from content inputs.
+-    for admission in event['admissions']:
+-        job=admission['job'];c=job['actor'];g0=get(HERE/'objects',job['generation_id']);g,gid=generate(s,c);assert g['passed'];assert g['anchor_id']==job['anchor_id'] and g['physical_rows_id']==g0['physical_rows_id']
+-        anchor=get(HERE/'objects',job['anchor_id']);cert=get(HERE/'objects',job['derivative_id']);verify(data_for(anchor),m,cert,anchor,True);rows=rows_for(data_for(anchor),m,anchor,cert,'B-JL');assert content_id(rows)==g0['physical_rows_id']
+-        raw=get(HERE/'objects',admission['raw_result_id']);assert raw['source']==normal(state_record(s)) and raw['anchor_id']==job['anchor_id'] and raw['derivative_id']==job['derivative_id']
+-        model=get(HERE/'objects',job['assembly_id']);inner,res=reserved_rows(rows);ref=np.asarray([float(F(x)) for u in old['controls'][c][k:k+32] for x in u]);rebuilt=assembly(inner,ref,F(1,10000))[-1]
+-        for key in ('P','q','A','b','cone_dimensions'):assert model[key]==rebuilt[key],'cone reconstruction '+key
+-        cfg=raw['settings'];assert cfg['tol_feas']==cfg['tol_gap_abs']==cfg['tol_gap_rel']==1e-10 and cfg['max_iter']==300 and cfg['time_limit']==5 and cfg['max_threads']==1
+-        p=admission['candidate'];d=[F(x)-F(y) for u,v in zip(p['controls'][:32],old['controls'][c][k:k+32]) for x,y in zip(u,v)]
+-        if admission['accepted']:
+-            assert raw['status'] in ('Solved','AlmostSolved');matches=[]
+-            for alpha in (F(1),F(1,2),F(1,4)):
+-                dq,qproof=quantize(raw['x'],alpha,anchor['contracts'])
+-                if qproof['passed'] and dq==d:matches.append(alpha)
+-            assert matches and evaluate(rows,d)['passed']
+-            assert H*sum(F(x)**2 for u in p['controls'][:32] for x in u)<=H*sum(F(x)**2 for u in old['controls'][c][k:k+32] for x in u)
+-        assert p['controls'][33:]==old['controls'][c][k+33:] and p['deadline']==max(old['goal_times'][c]-k,0)
+-        receiver=get(HERE/'objects',anchor['receiver']['certificate_id']);audit.inclusion(receiver);contract=get(HERE/'objects',s['contract_id']);ag=list(map(F,receiver['allocation'][2]['a']));r=receiver['domain'];radii=[F(r[x]) for x in ('position_l1_radius','yaw_radius','speed_radius','steering_radius')];r0=list(map(F,receiver['baseline']));assert sum(a*(x+y) for a,x,y in zip(ag,radii,r0))<=F(contract['cap'][c]),'suffix product-contract budget'
+-        checks.append(dict(actor=c,accepted=admission['accepted'],first_changed=p['controls'][0]!=old['controls'][c][k],raw_status=raw['status'],generation_recomputed=True,derivatives_recomputed=True,rows_recomputed=True))
++class Independent(Audit):
++    def geometry(self,nodes,owner):self.last_nodes=nodes;super().geometry(nodes,owner)
++    def projected(self,p,ch):
++        if ch['kind']=='hold':return m.I(0)
++        origin=[m.I.raw(*q) for q in ch['origin']];phi=origin[2];si,co=(m.I(0),m.I(1)) if phi.l==phi.u==0 else m.sincos(phi);sg=direction(ch['car']);dx=p[0]-origin[0];dy=p[1]-origin[1];along=sg*(dx*co+dy*si);across=sg*(-dx*si+dy*co)
++        if ch['kind']=='straight':assert across.abs_upper()<=F(1,5);return ch['task_sign']*along
++        kappa=m.tan(m.I(F(ch['curvature'])))/m.L;den=m.I(1)-kappa*across;assert den.l>0;ratio=kappa*along/den;radius=ratio.abs_upper();assert radius<F(9,10);value=m.I(0);term=ratio
++        for j in range(100):value+=term*F((-1)**j,2*j+1);term=term*ratio*ratio
++        pad=m.I(radius**201/201).u;value=m.I.raw(value.l-pad,value.u+pad);sign=1 if F(ch['curvature'])>0 else -1
++        return ch['task_sign']*sign*value/(sign*kappa)
++    def progress_check(self,before,w,commands,record):
++        active=[];moving=[]
++        for c in CARS:
++            v=before['v'][c];a,omega=commands[c];v1=v+H*a
++            travel=(v*v+v1*v1)/(2*abs(a)) if v*v1<0 else H*(abs(v)+abs(v1))/2;ch=chart(w,c,before['cycle']);nodes=self.last_nodes[c]
++            if ch['kind']=='hold':lo=hi=F(0)
++            elif ch['kind']=='straight' and before['poses'][c][2].l==before['poses'][c][2].u==0 and before['delta'][c]==omega==0:lo=hi=ch['task_sign']*(H*v+H*H*a/2)
++            else:
++                inc=self.projected(nodes[-1],ch)-self.projected(nodes[0],ch);lo=F(inc.l,m.Q);hi=F(inc.u,m.Q)
++            done=before['cycle']+1==w['goal_times'][c]
++            if done:self.domain(c,'target')
++            r=record[c];assert F(r['travel'])==travel and r['motion']==(travel>MOTION);assert r['chart_id']==content_id(ch) and r['mode']==ch['mode'];assert r['active']==(lo>=ETA or done),('independent activity',c,before['cycle'],str(lo),r['progress_lower'])
++            if r['active']:active.append(c)
++            if r['motion']:moving.append(c)
++        return active,moving
++    def face_check(self,cid,k):
++        contract=get(HERE/'objects',cid);faces=get(HERE/'objects',contract['faces_id']);pairs=list(itertools.combinations(CARS,2));pad=TUBE+F(15)*(H/8)**2/8
++        for sub,pairno,nx,ny,beta in faces[str(k)]:
++            a,b=pairs[pairno];nx,ny,beta=map(F,(nx,ny,beta));assert nx*nx+ny*ny<=1
++            for j in (2*sub,2*sub+1):
++                aa=self.rect(self.last_nodes[a][j],a)+self.rect(self.last_nodes[a][j+1],a);bb=self.rect(self.last_nodes[b][j],b)+self.rect(self.last_nodes[b][j+1],b);pp=[x*nx+y*ny for x,y in aa];qq=[x*nx+y*ny for x,y in bb]
++                assert F(max(p.u for p in pp),m.Q)+pad<=beta-SAFE/2,'new physical plane upper'
++                assert F(min(q.l for q in qq),m.Q)-pad>=beta+SAFE/2,'new physical plane lower'
++
++def reconstruct_event(audit,event):
++    actual=audit.state;assert normal(state_record(actual))==event['actual_source'];contract=get(HERE/'objects',event['contract_id']);reference=copy.deepcopy(actual);reference.update(witness=contract['reference'],contract_id=event['contract_id']);assert normal(state_record(reference))==event['anchor_source'];old=get(HERE/'objects',actual['witness']);anchorplan=get(HERE/'objects',reference['witness']);k=actual['cycle']
++    for c in CARS:assert anchorplan['controls'][c][:k]==old['controls'][c][:k]
++    assert anchorplan['owners'][:k]==old['owners'][:k];assert max(anchorplan['goal_times'].values())<=max(old['goal_times'].values());expected=copy.deepcopy(anchorplan['controls']);events=copy.deepcopy(anchorplan['events']);checks=[]
++    if event['physical_change']:
++        assert contract['transition']['actual_source']==normal(state_record(actual));assert set(contract['transition']['closure'])==set(CARS);assert len(event['tokens'])==1 and set(event['tokens'][0]['request']['participants'])==set(CARS)
++        from proposals import candidate
++        rebuilt=candidate(old,actual,read(HERE/'pre_registration.json')['shifts']);assert rebuilt==anchorplan,'analytic wait/launch construction mismatch'
++    for a in event['admissions']:
++        job=a['job'];car=job['actor'];g0=get(HERE/'objects',job['generation_id']);anchor=get(HERE/'objects',job['anchor_id']);assert anchor['state']==normal(state_record(reference));g,gid=generate(reference,car);assert g['passed'] and g['anchor_id']==job['anchor_id'] and g['physical_rows_id']==g0['physical_rows_id'];cert=get(HERE/'objects',job['derivative_id']);verify(data_for(anchor),m,cert,anchor,True);rows=rows_for(data_for(anchor),m,anchor,cert,'B-JL');assert content_id(rows)==g0['physical_rows_id'];raw=get(HERE/'objects',a['raw_result_id']);assert raw['source']==normal(state_record(reference)) and raw['anchor_id']==job['anchor_id'];cfg=raw['settings'];assert cfg['tol_feas']==cfg['tol_gap_abs']==cfg['tol_gap_rel']==1e-10 and cfg['max_threads']==1
++        inner,res=reserved_rows(rows);ref=np.asarray([float(F(x)) for u in anchor['plan']['remaining'][:32] for x in u]);model=get(HERE/'objects',job['assembly_id']);rebuilt=assembly(inner,ref,F(1,10000))[-1]
++        for key in ('P','q','A','b','cone_dimensions'):assert model[key]==rebuilt[key],key
++        p=a['candidate'];delta=[F(x)-F(y) for u,v in zip(p['controls'][:32],anchorplan['controls'][car][k:k+32]) for x,y in zip(u,v)]
++        if a['accepted']:
++            assert raw['status'] in ('Solved','AlmostSolved') and evaluate(rows,delta)['passed'];assert any((lambda q:q[1]['passed'] and q[0]==delta)(quantize(raw['x'],alpha,anchor['contracts'])) for alpha in (F(1),F(1,2),F(1,4)))
++        assert p['controls'][33:]==anchorplan['controls'][car][k+33:] and p['atlas_id']==contract['atlas_id'] and p['obligations_id']==content_id(contract['obligations']);audit.inclusion(get(HERE/'objects',g0['receiver']['certificate_id']));checks.append(dict(actor=car,accepted=a['accepted'],status=raw['status'],zero_anchor=g['zero_anchor']['passed'],progress_rows=[r['name'] for r in rows if r['kind']=='progress'],fresh_source=True))
+     from protocol import local_source
+     for token in event['tokens']:
+-        req=token['request'];assert token['commit_id']==content_id(req)
+-        for c,p in req['plans'].items():
+-            assert p['source']==local_source(s,c);expected[c][k:]=p['controls'];from receivers import replacement_events
++        q=token['request'];assert q['actual_source']==normal(state_record(actual)) and token['commit_id']==content_id(q)
++        for c,p in q['plans'].items():
++            assert p['source']==local_source(reference,c);expected[c][k:]=p['controls'];from receivers import replacement_events
+             events=replacement_events(events,c,p['receiver'])
+-    assert new['controls']==expected and new['events']==events
+-    for name in ('owners','ticks','goal_times','starts','model_sha256','domain_certificate'):assert new[name]==old[name]
+-    s['contract_id']=None;return checks
++    new=get(HERE/'objects',event['selected_witness']);assert new['controls']==expected and new['events']==events and new['owners']==anchorplan['owners'];assert new['activity_contract_id']==event['contract_id'];return checks
+ 
+-def accept(arm,full=True):
+-    began=time.perf_counter();out=HERE/'results'/arm;cfg=read(out/'config.json');summary=read(out/'summary.json');audit=Audit(cfg['initial_witness']);audit.state['contract_id']=None;audit.validate_witness(cfg['initial_witness']);checked=[];events={e['cycle']:e for e in summary['events']};minimum_B=2802
+-    trace_path=out/'execution_source_reconstructed.jsonl.gz'
+-    if not trace_path.exists():trace_path=out/'execution.jsonl.gz'
+-    with gzip.open(trace_path,'rt') as stream:
++def accept(arm,trace=None,source=None,write_result=True):
++    began=time.perf_counter();reg=read(HERE/'pre_registration.json');out=HERE/'results'/arm if arm else None;summary=read(out/'summary.json') if out else None;events={e['cycle']:e for e in summary['events']} if summary else {};audit=Independent(reg['initial_witness']);audit.state['contract_id']=None
++    if source:audit.state=restore(m,source);audit.p8=copy.deepcopy(audit.state['poses'])
++    else:audit.validate_witness(reg['initial_witness'])
++    trace=trace or out/'execution.jsonl.gz';checked=[];activities=[];minB=2802;first_phase=True;physical=None;count=0
++    with gzip.open(trace,'rt') as stream:
+         for row in map(json.loads,stream):
+-            s=audit.state;k=s['cycle'];assert row['cycle']==k
+-            if k in events:checked.append(dict(cycle=k,candidates=event_check(audit,events[k])))
+-            assert row['source']==normal(state_record(s)),'frame source mismatch';w=get(HERE/'objects',row['witness_id']);owner=w['owners'][k];domains=audit.domains
++            s=audit.state;k=s['cycle'];assert row['cycle']==k and row['source']==normal(state_record(s))
++            if k in events:checked.append(dict(cycle=k,checks=reconstruct_event(audit,events[k])));physical=events[k]['contract_id']
++            before=copy.deepcopy(s);w=get(HERE/'objects',row['witness_id']);owner=w['owners'][k]
+             if owner!=s['owner']:
+                 if s['owner']:audit.domain(s['owner'],'G_out')
+                 if owner:audit.domain(owner,'W_in');assert owner not in s['served'];s['served'].append(owner)
+                 s['permission_version']+=1
+-            s.update(owner=owner,witness=row['witness_id']);assert row['permission_version']==s['permission_version'] and row['served']==s['served'];before={c:max(w['goal_times'][c]-k,0) for c in CARS};after={c:max(v-1,0) for c,v in before.items()};assert row['b_before']==before and row['b_after']==after and row['B_before']==max(before.values()) and row['B_after']==max(after.values())
++            assert row['permission_version']==s['permission_version'];old=get(HERE/'objects',before['witness']);b0={c:max(old['goal_times'][c]-k,0) for c in CARS};b1={c:max(w['goal_times'][c]-k-1,0) for c in CARS};assert row['b_before']==b0 and row['b_after']==b1 and row['B_after']==max(b1.values()) and row['B_after']==max(row['B_before']-1,0)
+             for c,kind in w['events'].get(str(k),[]):
+                 if kind.startswith('generated:'):
+-                    audit.domain(c,kind);r=get(HERE/'objects',kind.split(':')[1]);from receivers import feedback
+-                    assert tuple(map(F,w['controls'][c][k]))==feedback(s,c,r)
+-            commands={c:tuple(map(F,w['controls'][c][k])) for c in CARS};audit.step(commands,owner,row['actual'])
++                    audit.domain(c,kind);from receivers import feedback
++                    assert tuple(map(F,w['controls'][c][k]))==feedback(s,c,get(HERE/'objects',kind.split(':')[1]))
++            s.update(witness=row['witness_id'],owner=owner);commands={c:tuple(map(F,w['controls'][c][k])) for c in CARS};audit.step(commands,owner,row['actual']);active,moving=audit.progress_check(before,w,commands,row['progress'])
++            if physical:audit.face_check(physical,k)
++            elif arm=='R-old' and k>=reg['cycle']:audit.face_check(reg['old_contract'],k)
+             for c,kind in w['events'].get(str(k+1),[]):audit.domain(c,kind)
+             for c in CARS:
+                 if k+1>=w['goal_times'][c]:audit.domain(c,'target');assert s['v'][c]==s['delta'][c]==0
+-            assert row['B_after']==max(2802-k-1,0)
+-    assert normal(state_record(audit.state))==summary['final'];assert audit.state['cycle']==2802
++            cid=w.get('activity_contract_id')
++            if cid:
++                for c,quota in get(HERE/'objects',cid)['obligations'].get(str(k),{}).items():assert c in active,'remaining absolute-time quota lost'
++            activities.append(dict(cycle=k,A=active,V=moving,O=row.get('O',[])));count+=1
+     for c in CARS:audit.domain(c,'target')
+-    result=dict(passed=True,arm=arm,steps=2802,all_goals=True,B_final=0,checks=checked,minimum_road_m=float(audit.road),minimum_pair_m=float(audit.pair),wall_s=time.perf_counter()-began,shared=['integer interval/trigonometry and signed ZOH','variational builder and SOCP compiler','configuration and hash primitives'],independent=['8-subsegment bodies/road/six pairs and resource clearance','source/history and raw-to-quantized local commands','cone matrices, row reconstruction, receiving inclusion, actual K and all later domains','unique absolute ticks and per-car deadlines'])
+-    write(out/'independent_acceptance.json',result);return result
++    if summary:assert normal(state_record(audit.state))==summary['final'] and count==summary['steps']==2802
++    result=dict(passed=True,arm=arm,steps=count,all_goals=True,B_final=0,checks=checked,activity_id=put(HERE/'objects',activities),minimum_road_m=float(audit.road),minimum_pair_m=float(audit.pair),wall_s=time.perf_counter()-began,final_history=audit.state['history'],shared=['integer interval/trig and signed ZOH','path-chart definitions, variational generator and cone compiler'],independent=['8-subsegment bodies/road/six pairs and physical support faces','100-term interval path projection and exact first-step progress/activity','actual history, analytic advance, raw-to-quantized commands, K/tails and deadlines'])
++    if write_result:write(out/'independent_acceptance.json',result)
++    return result
+ if __name__=='__main__':
+     p=argparse.ArgumentParser();p.add_argument('--arm',required=True);r=accept(p.parse_args().arm);print(json.dumps(r,indent=2))
+--- a/check_protocol.py
++++ b/check_protocol.py
+@@ -1,49 +1,36 @@
+-"""Zero-call forks, migrations and damaged requests, with real fallback continuations."""
++"""Zero-call physical migration, complete closure, obligations and both fallbacks."""
+ from common import *
+ from protocol import *
+ from strategy import certify_combination
+-from physics import step
+-
+-def anchor_candidate(s,c,gid):
+-    w=get(HERE/'objects',s['witness']);g=get(HERE/'objects',gid);controls=w['controls'][c][s['cycle']:]
+-    return normal(dict(actor=c,phase=s['cycle'],contract_id=s['contract_id'],source=local_source(s,c),generation_id=gid,derivative_id=g['derivative_id'],receiver=g['receiver'],controls=controls,suffix_id=content_id(controls[33:]),deadline=max(w['goal_times'][c]-s['cycle'],0),selection='candidate_contract_anchor',raw_result_id=None))
++from local_update import admit
+ 
+ def main():
+-    assert read(HERE/'solver_calls.json')==[];reg=read(HERE/'pre_registration.json');s=restore(m,reg['state']);cs=reg['actors'];checks=reg['scan'][-1]['checks'];gids={x['actor']:x['generation_id'] for x in checks if 'freedom' in x};plans={c:anchor_candidate(s,c,gids[c]) for c in cs};versions={c:0 for c in CARS};contract=get(HERE/'objects',s['contract_id']);partition=groups([]);assert len(partition)==len(CARS)
+-    tags={c:content_id(dict(tail=get(HERE/'objects',s['witness'])['controls'][c][s['cycle']:],receiver_chain=get(HERE/'objects',s['witness'])['events'])) for c in CARS};b={c:max(contract['goals'][c]-s['cycle'],0) for c in CARS}
+-    merged=groups([cs]);m1=migrate(partition,merged,contract,tags,b);m2=migrate(merged,partition,contract,tags,b);write(HERE/'results/group_events.json',[dict(fork=True,**m1),dict(fork=True,**m2)])
+-    reqs=[prepare(s,plans,[c],s['contract_id'],versions) for c in cs];tokens=[commit(s,q,versions) for q in reqs];wid,chosen=select_for_execution(s,tokens,versions);(HERE/'results/rejection').mkdir(exist_ok=True);proof=certify_combination(s,wid,HERE/'results/rejection/anchor_execution.jsonl.gz')
+-    results=[]
++    assert read(HERE/'solver_calls.json')==[];reg=read(HERE/'pre_registration.json');actual=restore(m,reg['actual_source']);cid=reg['new_contract'];s=reference_state(actual,cid);versions={c:0 for c in CARS};gids={x['actor']:x['generation_id'] for x in reg['zero_checks']};plans={c:anchor_candidate(s,c,gids[c]) for c in CARS};q=prepare(actual,plans,CARS,cid,versions);token=commit(actual,q,versions);wid,choice,timing=select_for_execution(actual,[token],versions,cid);assert all(x=='candidate_contract_anchor' for x in choice.values());results=[]
+     def reject(name,mutate):
+-        q=copy.deepcopy(reqs[0]);mutate(q)
+-        try:commit(s,q,versions)
++        bad=copy.deepcopy(q);mutate(bad)
++        try:commit(actual,bad,versions)
+         except (ValueError,AssertionError,KeyError) as e:reason=str(e)
+         else:raise AssertionError('corruption accepted: '+name)
+-        results.append(dict(name=name,expected='reject before commit',actual='rejected',reason=reason,request_id=put(HERE/'objects',q),selected_plan=s['witness'],contract_id=s['contract_id'],versions=versions,fork=True,continuation_id=put(HERE/'objects',proof)))
+-    c=cs[0]
+-    reject('stale_source_or_parent',lambda q:q['plans'][c].update(source='stale'))
+-    reject('stale_derivative_and_phase',lambda q:q['plans'][c].update(derivative_id='stale',phase=q['phase']-1))
+-    reject('mixed_neighbor_boundary_version',lambda q:q['dependencies'].update({next(iter(q['dependencies'])):'mixed'}))
+-    reject('old_contract_anchor_in_new_contract',lambda q:q['plans'][c].update(contract_id='old'))
+-    reject('damaged_receiver_K',lambda q:q['plans'][c]['receiver'].update(phase=-1))
+-    reject('damaged_completion_tail',lambda q:q['plans'][c]['controls'][-1].__setitem__(0,'1'))
+-    reject('damaged_deadline',lambda q:q['plans'][c].update(deadline=0))
+-    reject('conflicting_resource_grant',lambda q:q.update(resource_calendar_id='new independent conflicting grant'))
+-    bad=copy.deepcopy(contract);bad['edge_ids'].pop(next(iter(bad['edge_ids'])));badid=put(HERE/'objects',bad)
+-    reject('split_lost_pair_edge',lambda q:q.update(contract_id=badid))
+-    bad=copy.deepcopy(contract);bad['cap'][c]=str(F(bad['cap'][c])*2);badid=put(HERE/'objects',bad)
+-    reject('expanded_envelope_stale_discovery',lambda q:q.update(contract_id=badid))
+-    independent=versions.copy();independent[next(x for x in CARS if x not in cs)]+=1;assert commit(s,reqs[0],independent)
+-    results.append(dict(name='unrelated_internal_version',expected='accept',actual='accepted',fork=True,selected_plan=wid))
+-    for status in ('Timeout','Exception'):
+-        from local_update import admit
+-        g=get(HERE/'objects',gids[c]);job=dict(actor=c,generation_id=gids[c],anchor_id=g['anchor_id'],derivative_id=g['derivative_id']);fallback_candidate,admission=admit(s,job,dict(status=status))
+-        assert not admission['accepted'] and fallback_candidate['selection']=='candidate_contract_anchor' and fallback_candidate['controls']==plans[c]['controls']
+-        results.append(dict(name='worker_'+status,expected='layer1_candidate_contract_anchor',actual='candidate_contract_anchor',fork=True,selected_plan=wid,continuation_id=put(HERE/'objects',proof)))
+-    try:commit(s,reqs[0],versions,missing_ack=c)
++        results.append(dict(name=name,expected='reject before commit',actual='rejected',reason=reason,request_id=put(HERE/'objects',bad),selected_contract=reg['old_contract'],selected_witness=actual['witness'],fork=True))
++    c=reg['added'][0]
++    reject('new_boundary_old_anchor',lambda b:b['plans'][c].update(contract_id=reg['old_contract']))
++    reject('missing_resource_endpoint',lambda b:b.update(participants=[x for x in CARS if x!='B1']))
++    broken=copy.deepcopy(get(HERE/'objects',cid));broken['edge_ids'].pop(next(iter(broken['edge_ids'])));badcid=put(HERE/'objects',broken);reject('missing_new_pair_edge',lambda b:b.update(contract_id=badcid))
++    reject('old_phase',lambda b:b['plans'][c].update(phase=actual['cycle']-1))
++    reject('old_progress_atlas',lambda b:b['plans'][c].update(atlas_id='old'))
++    reject('damaged_K',lambda b:b['plans'][c]['receiver'].update(phase=-1))
++    reject('damaged_deadline',lambda b:b['plans'][c].update(deadline=0))
++    reject('missing_remaining_two_tick_quota',lambda b:b['plans'][c].update(obligations_id='lost'))
++    reject('stale_actual_parent',lambda b:b['actual_source'].update(witness='stale'))
++    reject('expanded_envelope_old_discovery',lambda b:b['dependencies'].update({next(iter(b['dependencies'])):'stale'}))
++    try:commit(actual,q,versions,missing_ack=c)
+     except ValueError as e:reason=str(e)
+-    else:raise AssertionError('missing ACK committed')
+-    wid2,choice=select_for_execution(s,tokens,versions,failed_blocks=[c]);assert choice[c]=='old_contract_old_plan' and choice[cs[1]]=='candidate_contract_anchor'
+-    fallback=certify_combination(s,wid2,HERE/'results/rejection/layer2_execution.jsonl.gz');results.append(dict(name='missing_ACK_layer2',expected='whole_failed_block_old_contract_old_plan; independent block continues',actual=choice,reason=reason,fork=True,selected_plan=wid2,continuation_id=put(HERE/'objects',fallback)))
+-    write(HERE/'results/protocol_checks.json',dict(passed=True,new_calls=0,tests=results,independent_groups=True,merge_split_label_only=True,continuation_steps=contract['stop']-s['cycle'],proof_id=put(HERE/'objects',proof)));print(dict(passed=True,tests=len(results),calls=0),flush=True)
++    else:raise AssertionError('missing ACK passed')
++    oldwid,choice,_=select_for_execution(actual,[],versions,cid,fail=True);assert oldwid==actual['witness'] and all(x=='old_contract_old_plan' for x in choice.values());results.append(dict(name='missing_ACK_layer2',reason=reason,selected_witness=oldwid,choice=choice,fork=True))
++    job=dict(actor=c,generation_id=gids[c],anchor_id=get(HERE/'objects',gids[c])['anchor_id'],derivative_id=get(HERE/'objects',gids[c])['derivative_id']);p,a=admit(s,job,dict(status='Exception',logical_protocol_branch=True));assert not a['accepted'] and p['controls']==plans[c]['controls'];results.append(dict(name='worker_exception_layer1',selected_witness=wid,selected_anchor_contract=cid,fork=True))
++    s2=restore(m,reg['second_baseline_source']);cid2=s2['contract_id'];s2['contract_id']=None;r2=reference_state(s2,cid2);g2=reg['second_baseline_checks'][0];c2=g2['actor'];p2=anchor_candidate(r2,c2,g2['generation_id']);q2=prepare(s2,{c2:p2},[c2],cid2,versions);vv=versions.copy();vv[next(x for x in CARS if x!=c2)]+=1;assert commit(s2,q2,vv);results.append(dict(name='unrelated_group_internal_version',actual='accepted',fork=True))
++    partition0=groups([]);merged=groups([get(HERE/'objects',cid)['transition']['closure']]);assert len(merged)==1 and len(partition0)==4
++    write(HERE/'results/group_mechanism.json',dict(passed=True,merge=dict(old=partition0,new=merged,reason='actual changed physical face/resource endpoint closure'),split=dict(old=merged,new=partition0,reason='fixed faces preserve all six pair edges',edge_ids=get(HERE/'objects',cid2)['edge_ids']),fork=True))
++    out=HERE/'results/rejection';out.mkdir(exist_ok=True);oldproof=certify_combination(actual,oldwid,out/'old_contract_execution.jsonl.gz');newproof=certify_combination(actual,wid,out/'new_contract_anchor_execution.jsonl.gz')
++    write(HERE/'results/protocol_checks.json',dict(passed=True,new_calls=0,tests=results,old_continuation_id=put(HERE/'objects',oldproof),new_anchor_continuation_id=put(HERE/'objects',newproof),scope='logical timeout/exception; no persistent real-clock vehicle motion'));print(dict(passed=True,tests=len(results),new_calls=0),flush=True)
+ if __name__=='__main__':main()
+--- /dev/null
++++ b/check_regression.py
+@@ -0,0 +1,14 @@
++"""Same generator rejects insufficient old launch and preserves old-source feasibility."""
++from common import *
++from proposals import candidate
++from contracts import build,bind
++from generation import generate
++from protocol import reference_state
++
++def main():
++    assert read(HERE/'solver_calls.json')==[];r=read(HERE/'pre_registration.json');actual=restore(m,r['actual_source']);old=get(HERE/'objects',actual['witness']);wrong=candidate(old,actual,r['shifts'],repair=False);s=copy.deepcopy(actual);s['witness']=put(HERE/'objects',wrong);cid=build(s,r['obligations'],base=r['new_contract']);bind(s,cid);g,gid=generate(s,r['added'][0]);assert not g['passed'] and 'progress' in g['failure'],'uncorrected launch unexpectedly met eta';rows=[dict(case='unrepaired_launch_deficit',expected='zero_anchor progress failure',generation_id=gid,failure=g['failure'],passed=True)]
++    source=reference_state(actual,r['old_contract'])
++    for c in (r['added'][0],next(x for x in r['active'] if x not in r['added'])):
++        g,gid=generate(source,c);assert g['passed'],g;rows.append(dict(case='old_contract_source',actor=c,generation_id=gid,passed=True))
++    write(HERE/'results/generation_regression.json',dict(passed=True,new_calls=0,cases=rows));print(dict(passed=True,cases=len(rows),new_calls=0),flush=True)
++if __name__=='__main__':main()
+--- a/contracts.py
++++ b/contracts.py
+@@ -1,65 +1,52 @@
+-"""Finite reference envelopes; pair separation covers arbitrary allowed products."""
++"""Explicit normalized physical separation planes and causally valid resource calendars."""
+ import itertools,time
+ from common import *
+-from physics import step,predicted_nodes,geometry,body
++from physics import predicted_nodes,geometry,step,body
+ from certify_domains import check_domain
++from progress import atlas_identity
++PAIRS=list(itertools.combinations(CARS,2))
+ 
+-def build(state):
+-    began=time.perf_counter();w=get(HERE/'objects',state['witness']);s=copy.deepcopy(state);limits=[];cap=F(100)
++def support(rect,n):
++    values=[x*n[0]+y*n[1] for x,y in rect];return F(min(x.l for x in values),m.Q),F(max(x.u for x in values),m.Q)
++
++def build(state,obligations=None,base=None):
++    began=time.perf_counter();w=get(HERE/'objects',state['witness']);s=copy.deepcopy(state);limits=[];faces={};cap=F(100);prior=get(HERE/'objects',base) if base else None;oldfaces=get(HERE/'objects',prior['faces_id']) if prior else None
+     for t in range(state['cycle'],w['ticks']):
+-        u={c:tuple(map(F,w['controls'][c][t])) for c in CARS};nodes=predicted_nodes(s,u,4);g=geometry(nodes,w['owners'][t],4);resource=F(100)
+-        for c in CARS:
+-            if c!=w['owners'][t]:
+-                for j in range(4):
+-                    b=m.axis_box(body(nodes[c][j],c)+body(nodes[c][j+1],c))
+-                    resource=min(resource,max(F(-16)-F(b[1],m.Q),F(b[0],m.Q)-16)-TUBE-F(15)*(H/4)**2/8)
+-        margin=min(g['road'],g['pair']-SAFE,resource);assert margin>0,('no positive contract margin',t)
+-        cap=min(cap,margin/4);limits.append([t,str(g['road']),str(g['pair']-SAFE),str(resource)])
++        u={c:tuple(map(F,w['controls'][c][t])) for c in CARS};nodes=predicted_nodes(s,u,4);g=geometry(nodes,w['owners'][t],4);resource=F(100);minimum_face=F(100);rows=[]
++        for j in range(4):
++            rect={c:body(nodes[c][j],c)+body(nodes[c][j+1],c) for c in CARS};bounds={c:m.axis_box(rect[c]) for c in CARS};pad=TUBE+F(15)*(H/4)**2/8
++            for c in CARS:
++                if c!=w['owners'][t]:b=bounds[c];resource=min(resource,max(-16-F(b[1],m.Q),F(b[0],m.Q)-16)-pad)
++            for pairno,(a,b) in enumerate(PAIRS):
++                if prior:
++                    row=oldfaces[str(t)][j*len(PAIRS)+pairno];assert row[:2]==[j,pairno];nx,ny,beta=map(F,row[2:]);n=(nx,ny)
++                else:
++                    aa,bb=bounds[a],bounds[b];axis=[(F(bb[0]-aa[1],m.Q),(F(1),F(0))),(F(aa[0]-bb[1],m.Q),(F(-1),F(0))),(F(bb[2]-aa[3],m.Q),(F(0),F(1))),(F(aa[2]-bb[3],m.Q),(F(0),F(-1)))];gap,n=max(axis,key=lambda x:x[0])
++                    if gap<F(2):
++                        for n0 in m.normed_axes(nodes[a][j])+m.normed_axes(nodes[b][j]):
++                            for sign in (1,-1):
++                                nn=tuple(sign*x for x in n0);al,ah=support(rect[a],nn);bl,bh=support(rect[b],nn)
++                                if bl-ah>gap:gap,n=bl-ah,nn
++                    al,ah=support(rect[a],n);bl,bh=support(rect[b],n);beta=(ah+bl)/2
++                assert 0<n[0]*n[0]+n[1]*n[1]<=1,'invalid normalized direction'
++                al,ah=support(rect[a],n);bl,bh=support(rect[b],n);slack=min(beta-SAFE/2-ah-pad,bl-pad-beta-SAFE/2);assert slack>0,('physical separation face',t,j,a,b,str(slack))
++                minimum_face=min(minimum_face,slack);rows.append([j,pairno,str(n[0]),str(n[1]),str(beta)])
++        margin=min(g['road'],minimum_face,resource);assert margin>0,('contract margin',t,str(margin));cap=min(cap,margin/4);faces[str(t)]=rows;limits.append([t,str(g['road']),str(g['pair']-SAFE),str(resource),str(minimum_face)])
+         step(s,u,w['owners'][t],4)
+         for c,kind in w['events'].get(str(t+1),[]):check_domain(s,c,kind,read(HERE/'domain_checks.json')['domains'])
+     for c in CARS:check_domain(s,c,'target',read(HERE/'domain_checks.json')['domains']);assert s['v'][c]==s['delta'][c]==0
+-    edges={a+':'+b:content_id(dict(pair=[a,b],reference=state['witness'],cap=str(cap),phase=state['cycle'])) for a,b in itertools.combinations(CARS,2)}
+-    value=normal(dict(rule='finite_Hausdorff_product_v1',source=state_record(state),reference=state['witness'],phase=state['cycle'],stop=w['ticks'],cap={c:str(cap) for c in CARS},edge_ids=edges,limits_id=put(HERE/'objects',limits),owner_calendar_id=content_id(w['owners']),exit_actions_id=content_id({c:[w['starts'][c]+663,w['goal_times'][c]] for c in CARS}),goals=w['goal_times'],terminal_hold=True,wall_s=time.perf_counter()-began))
+-    value['discovery_id']=content_id({k:value[k] for k in ('cap','edge_ids','owner_calendar_id')})
+-    return put(HERE/'objects',value)
++    fid=prior['faces_id'] if prior else put(HERE/'objects',faces);edges=prior['edge_ids'] if prior else {a+':'+b:content_id(dict(pair=[a,b],planes=fid,safety=str(SAFE))) for a,b in PAIRS}
++    value=normal(dict(rule='explicit_finite_planes_v1',source=state_record(state),reference=state['witness'],phase=state['cycle'],stop=w['ticks'],cap={c:str(cap) for c in CARS},edge_ids=edges,faces_id=fid,limits_id=put(HERE/'objects',limits),owner_calendar_id=content_id(w['owners']),exit_actions_id=content_id({c:[w['starts'][c]+663,w['goal_times'][c]] for c in CARS}),goals=w['goal_times'],obligations=obligations or {},atlas_id=atlas_identity(w),terminal_hold=True,base_physical_contract=base,wall_s=time.perf_counter()-began))
++    value['discovery_id']=content_id({k:value[k] for k in ('cap','edge_ids','owner_calendar_id')});return put(HERE/'objects',value)
+ 
+ def bind(state,cid):
+-    c=get(HERE/'objects',cid);assert c['reference']==state['witness'] and c['phase']==state['cycle']
+-    state['contract_id']=cid;return state
++    c=get(HERE/'objects',cid);assert c['reference']==state['witness'] and c['phase']==state['cycle'];state['contract_id']=cid;return state
+ 
+-def freedom(gid):
+-    import numpy as np
+-    g=get(HERE/'objects',gid);assert g['passed'];anchor=get(HERE/'objects',g['anchor_id']);rows=get(HERE/'objects',g['physical_rows_id']);from rules import equality_blocks
+-    frozen,blocks=equality_blocks(anchor['contracts']);ref=[F(x) for u in anchor['plan']['remaining'][:32] for x in u];direction=[-2*H*x for x in ref]
+-    for i in frozen:direction[i]=F(0)
+-    for block in blocks:
+-        active=[i for i in block if i not in frozen]
+-        if active:
+-            mean=sum((direction[i] for i in active),F(0))/len(active)
+-            for i in active:direction[i]-=mean
+-    # Retain every active affine row as a rational equality as required by section 11.
+-    active_rows=[list(map(F,r['linear'])) for r in rows if F(r['g_upper'])==0]
+-    basis=[]
+-    for row in active_rows:
+-        for b in basis:
+-            q=sum(x*y for x,y in zip(row,b))/sum(x*x for x in b);row=[x-q*y for x,y in zip(row,b)]
+-        if any(row):basis.append(row)
+-    for row in basis:
+-        q=sum(x*y for x,y in zip(direction,row))/sum(x*x for x in row);direction=[x-q*y for x,y in zip(direction,row)]
+-    norm=norm_upper(direction);assert norm>0,'zero projected gradient'
+-    # Rational lower bound of the positive roots, followed by exact row checks.
+-    radius=RHO;limiting='hard_trust'
+-    for r in rows:
+-        margin=-F(r['g_upper']);L=norm_upper(r['linear'])+F(r['gradient_error']);hh=F(r['hessian'])
+-        if margin==0:
+-            assert not F(r['gradient_error']) and not hh,'active nonlinear restriction'
+-            assert sum(F(a)*b for a,b in zip(r['linear'],direction))==0
+-        elif L or hh:
+-            bound=min(margin/(2*L) if L else RHO,norm_upper([margin/(hh+1)])/2 if hh else RHO,RHO)
+-            while L*bound+hh*bound*bound/2>margin:bound/=2
+-            if bound<radius:radius=bound;limiting=r['name']
+-    alpha=min(radius/(2*norm),F(1));delta=[alpha*x for x in direction]
+-    from socp_rows import evaluate
+-    proof=evaluate(rows,delta);assert proof['passed']
+-    gain=H*sum((u+d)**2-u*u for u,d in zip(ref,delta));assert gain<0
+-    return normal(dict(passed=True,rho_i=radius,limiting_row=limiting,projected_gradient=direction,projected_norm_upper=norm,alpha=alpha,descent_delta=delta,exact_cost_change=gain,active_rank=len(basis),row_proof_id=put(HERE/'objects',proof)))
++def physical_diff(oldid,newid):
++    old,new=(get(HERE/'objects',c) for c in (oldid,newid));a,b=(get(HERE/'objects',c['faces_id']) for c in (old,new));changed=[];maximum=F(0)
++    for t in b:
++        for r,s in zip(a[t],b[t]):
++            if r!=s:
++                delta=[F(y)-F(x) for x,y in zip(r[2:],s[2:])];maximum=max(maximum,abs(delta[-1]));changed.append(dict(cycle=int(t),sub=r[0],pair=PAIRS[r[1]],old=r[2:],new=s[2:],delta=list(map(str,delta))))
++    wa,wb=(get(HERE/'objects',c['reference']) for c in (old,new));calendar=[dict(cycle=k,old=wa['owners'][k],new=wb['owners'][k]) for k in range(new['phase'],wb['ticks']) if wa['owners'][k]!=wb['owners'][k]]
++    return normal(dict(old_contract=oldid,new_contract=newid,changed_face_count=len(changed),max_beta_change_m=maximum,face_changes_id=put(HERE/'objects',changed),resource_changes=calendar,physical_changed=bool(changed or calendar),closure=sorted({c for row in changed for c in row['pair']}|{x for row in calendar for x in (row['old'],row['new']) if x})))
+--- /dev/null
++++ b/delivery_tools/accept_four_car_fork.py
+@@ -0,0 +1,31 @@
++"""Independent zero-call four-car fork prefix through K and G_in138 handoff."""
++import sys
++from pathlib import Path
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
++from common import *
++from accept_case import Independent
++from receivers import feedback
++from socp_rows import evaluate
++f=read(HERE/'results/four_car_fork/summary.json');audit=Independent(read(HERE/'pre_registration.json')['initial_witness']);audit.state=restore(m,f['source']);audit.p8=copy.deepcopy(audit.state['poses']);before=sha(HERE/'solver_calls.json');checked_K=[];activities=[];steps=0
++for job in f['zero_jobs']:
++ g=get(HERE/'objects',job['generation_id']);assert evaluate(get(HERE/'objects',g['physical_rows_id']),[F(0)]*64)['passed']
++with gzip.open(HERE/'results/four_car_fork/execution.jsonl.gz','rt') as stream:
++ for row in map(json.loads,stream):
++  s=audit.state;k=s['cycle'];assert row['source']==normal(state_record(s));source=copy.deepcopy(s);w=get(HERE/'objects',row['witness_id']);owner=w['owners'][k]
++  if owner!=s['owner']:
++   if s['owner']:audit.domain(s['owner'],'G_out')
++   if owner:audit.domain(owner,'W_in');s['served'].append(owner)
++   s['permission_version']+=1
++  for c,kind in w['events'].get(str(k),[]):
++   if kind.startswith('generated:'):
++    audit.domain(c,kind);cert=get(HERE/'objects',kind.split(':')[1]);audit.inclusion(cert);assert tuple(map(F,w['controls'][c][k]))==feedback(s,c,cert);checked_K.append([c,k])
++  s.update(witness=row['witness_id'],owner=owner);u={c:tuple(map(F,w['controls'][c][k])) for c in CARS};audit.step(u,owner,row['actual']);A,V=audit.progress_check(source,w,u,row['progress']);audit.face_check(f['contract_id'],k)
++  for c,kind in w['events'].get(str(k+1),[]):audit.domain(c,kind)
++  for c,quota in get(HERE/'objects',f['contract_id'])['obligations'].get(str(k),{}).items():assert c in A
++  activities.append(dict(cycle=k,A=A,V=V,O=[]));steps+=1;assert row['B_after']==max(row['B_before']-1,0)
++  if s['cycle']==138:break
++assert steps==99 and len(activities[0]['A'])==4 and len(activities[1]['A'])==3 and {c for c,k in checked_K}==set(CARS)
++audit.domain('A1','G_in')
++for c in CARS:
++ if c!='A1':audit.domain(c,'W_in')
++assert before==sha(HERE/'solver_calls.json');write(HERE/'results/four_car_fork/independent_acceptance.json',dict(passed=True,new_calls=0,scope='diagnostic fork only; all four zero anchors, independent actual first two activity counts, 99 ticks through four K and G_in138',steps=99,stop_cycle=138,activities=activities,checked_K=checked_K,minimum_road_m=float(audit.road),minimum_pair_m=float(audit.pair),complete_controller_trace_to_goal=True,not_a_fresh_numerical_experiment=True));print(dict(passed=True,first_A=4,second_A=3,independent_steps=99,new_calls=0),flush=True)
+--- /dev/null
++++ b/delivery_tools/accept_rejections.py
+@@ -0,0 +1,48 @@
++"""Independently cover relevant K and a legal handoff; full rejection traces retained."""
++import sys
++from pathlib import Path
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
++from common import *
++from accept_case import Independent
++from receivers import feedback
++
++reg=read(HERE/'pre_registration.json');out=HERE/'results/rejection';post=read(out/'postsolve_checks.json');results=[]
++def physical_digest(path,start=0):
++ values=[]
++ with gzip.open(path,'rt') as f:
++  for r in map(json.loads,f):
++   if r['cycle']>=start:values.append(dict(cycle=r['cycle'],actual=r['actual'],b_before=r['b_before'],b_after=r['b_after'],owner=r['owner']))
++ return content_id(values)
++old_digest=physical_digest(HERE/'results/R-old/execution.jsonl.gz',reg['cycle']);assert read(HERE/'results/R-old/independent_acceptance.json')['passed']
++for name in ('old_contract_execution','numeric_physical_transaction_rejection'):
++ assert physical_digest(out/(name+'.jsonl.gz'))==old_digest;results.append(dict(branch=name,passed=True,independent_full_physical_replay_reused='R-old',physical_digest=old_digest,steps=2802-reg['cycle'],new_calls=0))
++C_digest=physical_digest(HERE/'results/C-new/execution.jsonl.gz',reg['cycle']);assert read(HERE/'results/C-new/independent_acceptance.json')['passed'];assert physical_digest(out/'new_contract_anchor_execution.jsonl.gz')==C_digest
++cases=[dict(trace='new_contract_anchor_execution.jsonl.gz',source=reg['actual_source'],reused_full_physical_C_v1=True)]+[x for x in post['cases'] if x['name'] in ('worker_Exception','missing_ACK_independent_block')]
++for case in cases:
++ source=case['source'];audit=Independent(reg['initial_witness']);audit.state=restore(m,source);audit.p8=copy.deepcopy(audit.state['poses']);count=0;seen_K=[];last_w=None;prefix=[]
++ with gzip.open(out/case['trace'],'rt') as f:
++  for row in map(json.loads,f):
++   s=audit.state;k=s['cycle'];assert row['cycle']==k and row['source']==normal(state_record(s));before=copy.deepcopy(s);w=get(HERE/'objects',row['witness_id']);last_w=w;owner=w['owners'][k]
++   if owner!=s['owner']:
++    if s['owner']:audit.domain(s['owner'],'G_out')
++    if owner:audit.domain(owner,'W_in');assert owner not in s['served'];s['served'].append(owner)
++    s['permission_version']+=1
++   assert row['permission_version']==s['permission_version']
++   for c,kind in w['events'].get(str(k),[]):
++    if kind.startswith('generated:'):
++     audit.domain(c,kind);cert=get(HERE/'objects',kind.split(':')[1]);audit.inclusion(cert);assert tuple(map(F,w['controls'][c][k]))==feedback(s,c,cert);seen_K.append(dict(actor=c,phase=k,receiver=kind))
++   s.update(witness=row['witness_id'],owner=owner);commands={c:tuple(map(F,w['controls'][c][k])) for c in CARS};audit.step(commands,owner,row['actual']);active,moving=audit.progress_check(before,w,commands,row['progress'])
++   cid=w.get('activity_contract_id')
++   if cid:
++    audit.face_check(cid,k)
++    for c,quota in get(HERE/'objects',cid)['obligations'].get(str(k),{}).items():assert c in active
++   for c,kind in w['events'].get(str(k+1),[]):audit.domain(c,kind)
++   assert row['B_after']==max(row['B_before']-1,0);prefix.append(dict(cycle=k,history=row['actual']['history']));count+=1
++   if s['cycle']==140:break
++ assert audit.state['cycle']==140 and {x['actor'] for x in seen_K}>=set(reg['active'])
++ audit.domain('A1','G_in')
++ for c in CARS:
++  if c!='A1':audit.domain(c,'W_in')
++ assert last_w['goal_times']['A1']==797 and max(last_w['goal_times'].values())==2802
++ results.append(dict(branch=case['trace'],passed=True,scope='fresh independent replay from actual checkpoint through all relevant generated K and A1 G_in handoff; other cars in legal W_in waiting domains',steps=count,stop_cycle=140,checked_K=seen_K,remaining_B=2662,minimum_road_m=float(audit.road),minimum_pair_m=float(audit.pair),complete_controller_trace_to_goal=True,prefix_digest=content_id(prefix),full_pure_anchor_physics_reused=case.get('reused_full_physical_C_v1',False)))
++write(out/'independent_acceptance.json',dict(passed=True,new_calls=0,branches=results));print(json.dumps(results,indent=2))
+--- /dev/null
++++ b/delivery_tools/audit_C_v1.py
+@@ -0,0 +1,20 @@
++"""Rebuild a temporary checkout of the exact C-v1 code for zero-call full replay."""
++import sys,tempfile,shutil,subprocess,json
++from pathlib import Path
++ROOT=Path(__file__).resolve().parent.parent
++
++def replay():
++    target=Path(tempfile.mkdtemp(prefix='dg002_C_v1_'))
++    for name in ('inputs','sources','objects'):
++        shutil.copytree(ROOT/name,target/name)
++    shutil.copytree(ROOT/'results/C-new',target/'results/C-new');shutil.copy2(ROOT/'domain_checks.json',target/'domain_checks.json');shutil.copy2(ROOT/'rational_inputs.json',target/'rational_inputs.json');shutil.copy2(ROOT/'results/pre_registration.C_v1.json',target/'pre_registration.json')
++    manifest=json.loads((ROOT/'executed_source_versions.C_v1.json').read_text())
++    import hashlib
++    for name,digest in manifest.items():
++        original=ROOT/'source_archive'/digest/name
++        assert hashlib.sha256(original.read_bytes()).hexdigest()==digest
++        shutil.copy2(original,target/name)
++    result=subprocess.run([sys.executable,'accept_case.py','--arm','C-new'],cwd=target,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
++    assert result.returncode==0,result.stderr
++    accepted=json.loads((target/'results/C-new/independent_acceptance.json').read_text());assert accepted['passed'];return dict(passed=True,new_calls=0,restored_source=str(target),result=accepted)
++if __name__=='__main__':print(json.dumps(replay(),indent=2))
+--- /dev/null
++++ b/delivery_tools/certify_atlas.py
+@@ -0,0 +1,17 @@
++"""Save chart derivative/uniqueness bounds and test a curved old actual source."""
++import sys
++from pathlib import Path
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
++from common import *
++from progress import chart,projection_bounds,coordinate,ETA
++from contracts import build,bind
++from generation import generate
++r=read(HERE/'pre_registration.json');w=get(HERE/'objects',r['candidate_witness']);rows=[]
++for c in CARS:
++ route=get(HERE/'objects',read(HERE/'rational_inputs.json')['routes'][c]);seen=set()
++ for j,label in enumerate(route['labels']):
++  ch=chart(w,c,w['starts'][c]+j);key=content_id(ch)
++  if key in seen:continue
++  seen.add(key);bounds=projection_bounds(ch);rows.append(dict(car=c,mode=label,chart_id=key,chart=ch,derivative_bounds=bounds))
++oldcases=read(HERE.parent/'dynamic_groups_001/regression_sources.json');entry=next(x for x in oldcases if x['kind']=='existing_forward');s=restore(m,entry['source']);cid='816f85f30ea799f62553e2de1642e8ac51e4c81b7e84b71e8df19d796f83b052';assert get(HERE/'objects',cid)['source']==normal(state_record(s));bind(s,cid);g,gid=generate(s,entry['actor']);assert g['passed'],g;physical=get(HERE/'objects',g['physical_rows_id']);assert any(x.get('rule')=='certified_path_projection_Taylor' for x in physical if x['kind']=='progress')
++write(HERE/'results/atlas_certification.json',dict(passed=True,new_calls=0,charts=rows,curved_actual_source=entry['source_id'],curved_generation_id=gid));print(dict(passed=True,charts=len(rows),curved_zero_anchor=True,new_calls=0),flush=True)
+--- /dev/null
++++ b/delivery_tools/certify_pool.py
+@@ -0,0 +1,35 @@
++"""Materialize and certify every retained candidate at the preregistered source."""
++import sys,time
++from pathlib import Path
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
++from common import *
++from proposals import candidate,pool_for,launch_controls
++from progress import ETA,step_progress
++from physics import predicted_nodes
++from contracts import build,bind
++from generation import generate
++
++def main():
++    assert read(HERE/'solver_calls.json')==[];reg=read(HERE/'pre_registration.json');source=restore(m,reg['actual_source']);old=get(HERE/'objects',source['witness']);rows=[];previous=read(HERE/'results/pool_certification.progress.json') if (HERE/'results/pool_certification.progress.json').exists() else []
++    for i,shifts in enumerate(pool_for(old,source)):
++        began=time.perf_counter();entry=dict(index=i,shifts=shifts,passed=False)
++        prior=next((x for x in previous if x['index']==i and x['shifts']==shifts),None)
++        if prior:
++            if prior.get('passed'):
++                get(HERE/'objects',prior['witness_id']);get(HERE/'objects',prior['contract_id'])
++                for x in prior['zero_checks']:get(HERE/'objects',x['generation_id'])
++            prior['reused_prior_completed_certificate']=True;rows.append(prior);write(HERE/'results/pool_certification.progress.json',rows);print(dict(index=i,reused=True,passed=prior['passed']),flush=True);continue
++        try:
++            plan=candidate(old,source,shifts) if shifts else old;wid=put(HERE/'objects',plan);s=copy.deepcopy(source);s['witness']=wid;u={c:tuple(map(F,plan['controls'][c][s['cycle']])) for c in CARS};stats=step_progress(s,u,predicted_nodes(s,u,4),plan);active=[c for c in CARS if stats[c]['active']];obligations={str(s['cycle']+j):{c:str(ETA) for c in active} for j in (0,1)}
++            if shifts==reg['shifts']:
++                cid=reg['new_contract'];checks=reg['zero_checks'];assert all(x['passed'] for x in checks);entry['reused_selected_prior']=True
++            else:
++                cid=build(s,obligations);bind(s,cid);checks=[]
++                for c in CARS:
++                    g,gid=generate(s,c);checks.append(dict(actor=c,generation_id=gid,passed=g['passed'],failure=g.get('failure')));assert g['passed'],checks[-1]
++            assert max(plan['goal_times'].values())<=max(old['goal_times'].values());J=H*sum(F(x)**2 for c in CARS for u0 in plan['controls'][c][source['cycle']:] for x in u0);P=sum(min(F(stats[c]['progress_lower'])/ETA,F(1)) for c in CARS);score=(-len(active),-P,max(plan['goal_times'].values())-source['cycle'],J,content_id(shifts));entry.update(passed=True,witness_id=wid,contract_id=cid,active=active,progress=stats,zero_checks=checks,score=normal(score))
++        except (AssertionError,ValueError,KeyError) as e:entry.update(failure=repr(e),rejection_layer='physical/resource/receiver/zero-anchor prerequisite')
++        entry['wall_s']=time.perf_counter()-began;rows.append(entry);write(HERE/'results/pool_certification.progress.json',rows);print(dict(index=i,shifts=shifts,passed=entry['passed'],failure=entry.get('failure')),flush=True)
++    valid=[x for x in rows if x['passed']];selected=min(valid,key=lambda x:tuple(F(y) for y in x['score'][:4])+(x['score'][4],));assert selected['shifts']==reg['shifts'] and len(selected['active'])==3
++    write(HERE/'results/pool_certification.json',dict(passed=True,new_calls=0,pool_size=len(rows),valid_count=len(valid),candidates=rows,selected_index=selected['index'],M3_verified_after_full_certification=True));print(dict(passed=True,selected=selected['shifts'],calls=0),flush=True)
++if __name__=='__main__':main()
+--- /dev/null
++++ b/delivery_tools/check_old_contract_exclusion.py
+@@ -0,0 +1,22 @@
++"""Prove the advanced reference actually violates a physical old separation face."""
++import sys,re
++from pathlib import Path
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
++from common import *
++from contracts import build,PAIRS,support
++from physics import step,predicted_nodes,body
++from protocol import reference_state
++from rules import contracts_for,assert_step
++r=read(HERE/'pre_registration.json');actual=restore(m,r['actual_source']);s=copy.deepcopy(actual);s['witness']=r['candidate_witness']
++try:build(s,{},base=r['old_contract'])
++except AssertionError as error:
++ reason=str(error);match=re.search(r"'physical separation face', (\d+), (\d+), '([^']+)', '([^']+)', '([^']+)'",reason);assert match,reason;t,j,a,b,slack=match.groups();t,j=int(t),int(j)
++else:raise AssertionError('new anchor also fits every old separation face; do not claim geometric release')
++w=get(HERE/'objects',s['witness'])
++while s['cycle']<t:step(s,{c:tuple(map(F,w['controls'][c][s['cycle']])) for c in CARS},w['owners'][s['cycle']],4)
++nodes=predicted_nodes(s,{c:tuple(map(F,w['controls'][c][t])) for c in CARS},4);pairno=PAIRS.index((a,b));old=get(HERE/'objects',r['old_contract']);new=get(HERE/'objects',r['new_contract']);oldrow=get(HERE/'objects',old['faces_id'])[str(t)][j*6+pairno];newrow=get(HERE/'objects',new['faces_id'])[str(t)][j*6+pairno];n=tuple(map(F,oldrow[2:4]));beta=F(oldrow[4]);pad=TUBE+F(15)*(H/4)**2/8;aa=body(nodes[a][j],a)+body(nodes[a][j+1],a);bb=body(nodes[b][j],b)+body(nodes[b][j+1],b);al,ah=support(aa,n);bl,bh=support(bb,n);sides=dict(upper_slack=beta-SAFE/2-ah-pad,lower_slack=bl-pad-beta-SAFE/2);assert min(sides.values())<0
++oldstate=copy.deepcopy(actual);oldstate['contract_id']=r['old_contract'];newstate=reference_state(actual,r['new_contract']);actor=r['added'][0];oldbox=contracts_for(oldstate,actor)[0];newbox=contracts_for(newstate,actor)[0];cmd=tuple(map(F,get(HERE/'objects',r['candidate_witness'])['controls'][actor][actual['cycle']]))
++try:assert_step(actual['v'][actor],actual['delta'][actor],cmd,oldbox)
++except ValueError as error:phase_reason=str(error)
++else:raise AssertionError('old signed permission does not exclude the new first command')
++write(HERE/'old_contract_exclusion.json',normal(dict(passed=True,new_calls=0,actor=actor,old_contract=r['old_contract'],new_contract=r['new_contract'],first_old_face_violation=dict(cycle=t,sub=j,pair=[a,b],old_plane=oldrow,new_plane=newrow,old_side_slacks=sides,old_projected_upper=ah,old_projected_lower=bl,required_SAFE=SAFE,tube_and_chord=pad,source_at_violation=state_record(s)),first_command_permission=dict(command=cmd,old_box=oldbox,new_box=newbox,old_rejection=phase_reason),new_reference_has_fresh_full_contract=True)));print(dict(passed=True,first_old_face_violation=t,pair=[a,b],slack=slack,new_calls=0),flush=True)
+--- /dev/null
++++ b/delivery_tools/four_car_fork.py
+@@ -0,0 +1,26 @@
++"""Zero-call diagnostic: use the existing W_hold suffix instead of two identity feedbacks."""
++import sys
++from pathlib import Path
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
++from common import *
++from proposals import candidate
++from progress import ETA,step_progress
++from physics import predicted_nodes
++from contracts import build,physical_diff
++from protocol import reference_state,anchor_candidate,prepare,commit,select_for_execution
++from generation import generate
++from execution import advance
++from certify_domains import check_domain
++from strategy import certify_combination
++before=sha(HERE/'solver_calls.json');source=None
++with gzip.open(HERE/'results/R-old/execution.jsonl.gz','rt') as f:
++ for row in map(json.loads,f):
++  if row['cycle']==39:source=row['source'];break
++actual=restore(m,source);actor='A1';check_domain(actual,actor,'W_hold',read(HERE/'domain_checks.json')['domains']);route=get(HERE/'objects',read(HERE/'rational_inputs.json')['routes'][actor]);assert route['controls'][:2]==[['0','0'],['0','0']] and actual['v'][actor]==actual['delta'][actor]==0
++old=get(HERE/'objects',actual['witness']);plan=candidate(old,actual,{actor:18});plan['connection_variant']=dict(fork_only=True,not_in_original_preregistered_pool=True,source_domain='W_hold',wait_advance_increments=[8,8],identity_feedback_ticks_eliminated=2,total_motion_advance=18,mathematical_reason='the two zero-speed/zero-steering feedbacks are identities on W_hold; use its already certified motion suffix')
++wid=put(HERE/'objects',plan);oldcid=build(actual);ref=copy.deepcopy(actual);ref['witness']=wid;obligations={'39':{c:str(ETA) for c in CARS},'40':{c:str(ETA) for c in ('A1','A2','B2')}};cid=build(ref,obligations);c=copy.deepcopy(get(HERE/'objects',cid));difference=physical_diff(oldcid,cid);c['transition']=dict(actual_source=state_record(actual),old_contract=oldcid,closure=difference['closure']);cid=put(HERE/'objects',c);ref=reference_state(actual,cid);jobs=[];plans={}
++for car in CARS:
++ g,gid=generate(ref,car);assert g['passed'],g;jobs.append(dict(actor=car,generation_id=gid));plans[car]=anchor_candidate(ref,car,gid)
++versions={c:0 for c in CARS};token=commit(actual,prepare(actual,plans,CARS,cid,versions),versions);chosen,choice,_=select_for_execution(actual,[token],versions,cid);fork=copy.deepcopy(actual);first=advance(fork,chosen);second=advance(fork,chosen);assert [c for c in CARS if first['progress'][c]['active']]==list(CARS);assert sum(v['active'] for v in second['progress'].values())==3
++out=HERE/'results/four_car_fork';out.mkdir(exist_ok=True);proof=certify_combination(actual,chosen,out/'execution.jsonl.gz');value=dict(passed=True,new_calls=0,scope='post-experiment diagnostic fork; no numerical optimization, not either numerical arm and not original frozen pool',source=source,actor_released=actor,old_first_activity=['A2','B1','B2'],first_activity=list(CARS),second_activity=['A1','A2','B2'],first=first,second=second,zero_jobs=jobs,contract_id=cid,old_contract_id=oldcid,witness=chosen,physical_difference=physical_diff(oldcid,cid),full_controller_completion_proof_id=put(HERE/'objects',proof),main_four_car_numerical_goal_not_claimed=True)
++assert before==sha(HERE/'solver_calls.json');write(out/'summary.json',value);print(dict(passed=True,first_A=4,second_A=3,numerical_calls=0,main_arm=False),flush=True)
+--- a/delivery_tools/package_delivery.py
++++ b/delivery_tools/package_delivery.py
+@@ -1,25 +1,21 @@
+-"""Compact portable evidence archive, excluding caches and the archive itself."""
+-import difflib,hashlib,json,os,sys,tarfile
++"""Standalone evidence archive with reproducible sources and an honest partial gate."""
++import sys,tarfile,difflib
+ from pathlib import Path
+-ROOT=Path(__file__).resolve().parent.parent;sys.path.insert(0,str(ROOT))
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
+ from common import *
+ 
+ def manifest():
+-    files=[p for p in ROOT.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix!='.pyc' and p.name!='SHA256SUMS' and 'verification' not in p.relative_to(ROOT).parts and not p.name.endswith('.tar.gz')]
+-    (ROOT/'SHA256SUMS').write_text(''.join(sha(p)+'  '+str(p.relative_to(ROOT))+'\n' for p in sorted(files)))
++ files=[p for p in HERE.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix!='.pyc' and 'verification' not in p.relative_to(HERE).parts and p.name!='SHA256SUMS']
++ (HERE/'SHA256SUMS').write_text(''.join(sha(p)+'  '+str(p.relative_to(HERE))+'\n' for p in sorted(files)))
+ 
+ def main():
+-    # Historical source already content-checked before this phase; no external object paths remain.
+-    source=ROOT.parent/'region_reservation_003_reverse';parts=[]
+-    for p in sorted(ROOT.glob('*.py')):
+-        old=source/p.name;a=old.read_text().splitlines(True) if old.exists() else [];b=p.read_text().splitlines(True);parts.extend(difflib.unified_diff(a,b,fromfile='a/'+p.name if old.exists() else '/dev/null',tofile='b/'+p.name))
+-    (ROOT/'changes.patch').write_text(''.join(parts))
+-    inventory=read(ROOT/'source_inventory.json');write(ROOT/'delivery_manifest.json',dict(passed=read(ROOT/'GATE.json')['passed'],original_source_commit=inventory['source_commit'],historical_inventory='source_inventory.json',call_ledger_sha256=sha(ROOT/'solver_calls.json'),solver_source_versions=['executed_source_versions.v1.json','executed_source_versions.solver_v2.json'],code={str(p.relative_to(ROOT)):sha(p) for p in ROOT.rglob('*.py') if '__pycache__' not in p.parts},recheck_entry='verify_delivery.py',full_replay_flag='--full-replay',new_calls_allowed=0))
+-    manifest()
+-    archive=ROOT.parent/'dynamic_groups_001_evidence.tar.gz'
+-    with tarfile.open(archive,'w:gz') as tar:
+-        for p in sorted(ROOT.rglob('*')):
+-            if p.is_file() and '__pycache__' not in p.parts and p.suffix!='.pyc':tar.add(p,arcname=ROOT.name+'/'+str(p.relative_to(ROOT)),recursive=False)
+-    write(ROOT.parent/'dynamic_groups_001_evidence.archive.json',dict(archive=str(archive),sha256=sha(archive),bytes=archive.stat().st_size,root=ROOT.name))
+-    print(json.dumps(dict(archive=str(archive),sha256=sha(archive),bytes=archive.stat().st_size)),flush=True)
++ base=HERE.parent/'dynamic_groups_001';patch=[]
++ for p in sorted(list(HERE.glob('*.py'))+list((HERE/'delivery_tools').glob('*.py'))):
++  rel=p.relative_to(HERE);old=base/rel;a=old.read_text().splitlines(True) if old.exists() else [];patch.extend(difflib.unified_diff(a,p.read_text().splitlines(True),fromfile='a/'+str(rel) if old.exists() else '/dev/null',tofile='b/'+str(rel)))
++ (HERE/'changes.patch').write_text(''.join(patch));write(HERE/'delivery_manifest.json',dict(experiment_status=read(HERE/'GATE.json')['status'],experiment_passed=False,calls=len(read(HERE/'solver_calls.json')),call_limit=16,ledger_sha256=sha(HERE/'solver_calls.json'),source_versions=['executed_source_versions.zero_v1.json','executed_source_versions.C_v1.json','executed_source_versions.L_v3.json'],partial_gate_preserved=True,verification_entry='verify_delivery.py',full_replay_by_actual_version=True,code={str(p.relative_to(HERE)):sha(p) for p in HERE.rglob('*.py') if '__pycache__' not in p.parts}))
++ manifest();archive=HERE.parent/'dynamic_groups_002_evidence.tar.gz'
++ with tarfile.open(archive,'w:gz') as tar:
++  for p in sorted(HERE.rglob('*')):
++   if p.is_file() and '__pycache__' not in p.parts and p.suffix!='.pyc':tar.add(p,arcname=HERE.name+'/'+str(p.relative_to(HERE)),recursive=False)
++ receipt=dict(archive=str(archive),sha256=sha(archive),bytes=archive.stat().st_size,experiment_status='partial',native_calls=12,limit=16);write(HERE.parent/'dynamic_groups_002_evidence.archive.json',receipt);print(json.dumps(receipt,indent=2))
+ if __name__=='__main__':main()
+--- /dev/null
++++ b/delivery_tools/postsolve_checks.py
+@@ -0,0 +1,32 @@
++"""Zero-call actual numerical-candidate failures and independent-block continuation."""
++import sys
++from pathlib import Path
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
++from common import *
++from protocol import *
++from local_update import admit
++from strategy import certify_combination
++
++ledger_before=sha(HERE/'solver_calls.json');reg=read(HERE/'pre_registration.json');events=read(HERE/'results/L-new/summary.json')['events'];out=HERE/'results/rejection';cases=[]
++e=events[0];actual=restore(m,e['actual_source']);cid=e['contract_id'];reference=reference_state(actual,cid);versions={c:0 for c in CARS};failed=reg['added'][0];plans=copy.deepcopy(e['plans']);job=next(j for j in e['jobs'] if j['actor']==failed)
++for status in ('Exception','Timeout'):
++ fallback,a=admit(reference,job,dict(status=status,logical_protocol_branch=True));assert not a['accepted'];mixed=copy.deepcopy(plans);mixed[failed]=fallback;q=prepare(actual,mixed,CARS,cid,versions);token=commit(actual,q,versions);wid,choice,_=select_for_execution(actual,[token],versions,cid);assert choice[failed]=='candidate_contract_anchor' and all(choice[c]=='new_candidate' for c in reg['active'] if c!=failed)
++ if status=='Exception':
++  trace=out/'numeric_worker_failure_execution.jsonl.gz';proof=certify_combination(actual,wid,trace);proof_id=put(HERE/'objects',proof)
++ cases.append(dict(name='worker_'+status,layer=1,source=state_record(actual),witness=wid,choice=choice,trace='numeric_worker_failure_execution.jsonl.gz',proof_id=proof_id,other_numerical_candidates_kept=True,fork=True))
++q=prepare(actual,plans,CARS,cid,versions)
++try:commit(actual,q,versions,missing_ack=failed)
++except ValueError as error:reason=str(error)
++else:raise AssertionError('missing ACK committed')
++wid,choice,_=select_for_execution(actual,[],versions,cid,fail=True);assert wid==actual['witness'];proof=certify_combination(actual,wid,out/'numeric_physical_transaction_rejection.jsonl.gz');cases.append(dict(name='missing_ACK_physical_migration',layer=2,source=state_record(actual),witness=wid,choice=choice,reason=reason,trace='numeric_physical_transaction_rejection.jsonl.gz',proof_id=put(HERE/'objects',proof),fork=True))
++# After the first migration, external physical faces are fixed and single blocks can fail.
++e=events[1];actual=restore(m,e['actual_source']);cid=e['contract_id'];versions={c:1 for c in CARS};plans=e['plans'];tokens=[]
++for c in reg['active']:
++ q=prepare(actual,plans,[c],cid,versions)
++ if c==failed:
++  try:commit(actual,q,versions,missing_ack=c)
++  except ValueError:pass
++  else:raise AssertionError('missing local ACK passed')
++ else:tokens.append(commit(actual,q,versions))
++wid,choice,_=select_for_execution(actual,tokens,versions,cid);assert choice[failed]=='old_contract_old_plan' and all(choice[c]=='new_candidate' for c in reg['active'] if c!=failed);proof=certify_combination(actual,wid,out/'numeric_independent_block_rejection.jsonl.gz');cases.append(dict(name='missing_ACK_independent_block',layer=2,source=state_record(actual),witness=wid,choice=choice,trace='numeric_independent_block_rejection.jsonl.gz',proof_id=put(HERE/'objects',proof),other_numerical_candidates_kept=True,fork=True))
++assert ledger_before==sha(HERE/'solver_calls.json');write(out/'postsolve_checks.json',dict(passed=True,new_calls=0,cases=cases,ledger_sha256=ledger_before));print(dict(passed=True,cases=len(cases),new_calls=0),flush=True)
+--- /dev/null
++++ b/delivery_tools/refresh_receivers.py
+@@ -0,0 +1,16 @@
++"""Re-certify the common contract-based receiver at unchanged physical proposals."""
++import sys
++from pathlib import Path
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
++from common import *
++from protocol import reference_state
++from generation import generate
++from contracts import build
++from execution import advance
++r=read(HERE/'pre_registration.json');write(HERE/'results/pre_registration.receiver_v1.json',r);actual=restore(m,r['actual_source']);ref=reference_state(actual,r['new_contract']);checks=[]
++for c in CARS:
++ g,gid=generate(ref,c);assert g['passed'],g;checks.append(dict(actor=c,generation_id=gid,passed=True,failure=None))
++s=copy.deepcopy(actual);advance(s,r['candidate_witness']);s['contract_id']=None;cid=build(s,r['obligations'],base=r['new_contract']);ref2=reference_state(s,cid);second=[]
++for c in r['active']:
++ g,gid=generate(ref2,c);assert g['passed'],g;second.append(dict(actor=c,generation_id=gid,passed=True,failure=None))
++r.update(zero_checks=checks,second_baseline_checks=second,second_baseline_source=state_record(ref2),receiver_rule='contract_private_reference_v2');write(HERE/'pre_registration.json',r);print(dict(passed=True,first=len(checks),second=len(second),new_calls=0),flush=True)
+--- /dev/null
++++ b/delivery_tools/repair_checks.py
+@@ -0,0 +1,25 @@
++"""Zero-call regression of the two C-v1 admission failures, using retained raw vectors."""
++import sys
++from pathlib import Path
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
++from common import *
++from local_update import admit
++from protocol import reference_state,anchor_candidate,prepare,commit,select_for_execution
++from strategy import certify_combination
++r=read(HERE/'pre_registration.json');actual=restore(m,r['actual_source']);ref=reference_state(actual,r['new_contract']);old=read(HERE/'results/C-new/round_1.json');gids={x['actor']:x['generation_id'] for x in r['zero_checks']};tests=[];plans={c:anchor_candidate(ref,c,gids[c]) for c in CARS};before=sha(HERE/'solver_calls.json')
++for a in old['admissions']:
++ car=a['job']['actor'];g=get(HERE/'objects',gids[car]);job=dict(actor=car,generation_id=gids[car],anchor_id=g['anchor_id'],derivative_id=g['derivative_id']);raw=get(HERE/'objects',a['raw_result_id']);candidate,proof=admit(ref,job,raw);assert proof['accepted'],proof;tests.append(dict(actor=car,retained_raw_id=a['raw_result_id'],candidate_id=put(HERE/'objects',candidate),passed=True,alpha=proof['attempts'][-1]['alpha'],purpose='retained numeric vector regression only; not an actual new-source numerical call'));plans[car]=candidate
++versions={c:0 for c in CARS}
++try:prepare(actual,plans,CARS,r['new_contract'],versions)
++except AssertionError as error:
++ assert 'wrong numerical source' in str(error);source_rejection=str(error)
++else:raise AssertionError('retained old raw was relabelled as a fresh numerical candidate')
++plan=copy.deepcopy(get(HERE/'objects',ref['witness']))
++from receivers import replacement_events
++for c,p in plans.items():
++ plan['controls'][c][actual['cycle']:]=p['controls'];plan['events']=replacement_events(plan['events'],c,p['receiver'])
++plan.update(activity_contract_id=r['new_contract'],fixture_only=True);wid=put(HERE/'objects',plan);physical=certify_combination(actual,wid);assert physical['passed'];assert sha(HERE/'solver_calls.json')==before
++# The improved plane selection contains the old axis among its maximization candidates.
++pool=read(HERE/'results/pool_certification.json');assert pool['valid_count']==13 and pool['pool_size']==16
++write(HERE/'results/repair_checks.json',dict(passed=True,new_calls=0,tests=tests,combined_reused_vector_proof_id=put(HERE/'objects',physical),pool_inheritance=dict(old_certificates_unchanged=True,same_16_candidate_controls=True,new_axis_candidate_set_contains_old_axis=True,therefore_reference_minimum_plane_slack_nondecreasing=True,resource_conflicts_unchanged=True,selected_candidate_fresh_full_contract=True),C_v1_is_not_relabelled_as_accepted=True,retained_vector_numerical_source_rejected=source_rejection))
++print(dict(passed=True,retained_vector_regressions=len(tests),new_calls=0),flush=True)
+--- /dev/null
++++ b/delivery_tools/repair_registration.py
+@@ -0,0 +1,18 @@
++"""New preregistered construction version after retained C-v1 diagnostic failures."""
++import sys
++from pathlib import Path
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
++from common import *
++from contracts import build,physical_diff
++from protocol import reference_state
++from generation import generate
++from execution import advance
++oldreg=read(HERE/'results/pre_registration.C_v1.json');assert len(read(HERE/'solver_calls.json'))==6
++actual=restore(m,oldreg['actual_source']);oldid=build(actual);reference=copy.deepcopy(actual);reference['witness']=oldreg['candidate_witness'];cid=build(reference,oldreg['obligations']);c=copy.deepcopy(get(HERE/'objects',cid));diff=physical_diff(oldid,cid);c['transition']=dict(actual_source=state_record(actual),old_contract=oldid,closure=diff['closure'],old_faces_id=get(HERE/'objects',oldid)['faces_id'],old_calendar_id=get(HERE/'objects',oldid)['owner_calendar_id']);cid=put(HERE/'objects',c);reference=reference_state(actual,cid);checks=[]
++for car in CARS:
++ g,gid=generate(reference,car);assert g['passed'],g;checks.append(dict(actor=car,generation_id=gid,passed=True,failure=None))
++s=copy.deepcopy(actual);advance(s,oldreg['candidate_witness']);s['contract_id']=None;cid2=build(s,oldreg['obligations'],base=cid);ref2=reference_state(s,cid2);second=[]
++for car in oldreg['active']:
++ g,gid=generate(ref2,car);assert g['passed'],g;second.append(dict(actor=car,generation_id=gid,passed=True,failure=None))
++r=copy.deepcopy(oldreg);r.update(version='construction_v3_after_C_diagnostic',old_contract=oldid,new_contract=cid,anchor_source=state_record(reference),zero_checks=checks,second_baseline_checks=second,second_baseline_source=state_record(ref2),calls_at_freeze=6,C_v1_registration='results/pre_registration.C_v1.json',fixes=['maximize available certified separation axes instead of accepting a barely feasible axis','compile zero-radius receiver endpoint equalities into common quantization blocks'],comparability_to_C_v1='different physical faces and redundant equality encoding; controlled numerical comparison pending')
++write(HERE/'pre_registration.json',r);write(HERE/'physical_contract_diff.json',physical_diff(oldid,cid));print(dict(passed=True,unchanged_source_and_physical_anchor=True,old_cap=get(HERE/'objects',oldreg['new_contract'])['cap'],new_cap=get(HERE/'objects',cid)['cap'],native_calls_used=6),flush=True)
+--- a/delivery_tools/summarize.py
++++ b/delivery_tools/summarize.py
+@@ -1,48 +1,52 @@
+-"""Report from raw immutable evidence, with unique-tick control cost."""
+-import csv,difflib,sys,time
++"""Evidence-derived activity and control costs, preserving the incomplete C/L comparison."""
++import sys,csv,collections
+ from pathlib import Path
+-ROOT=Path(__file__).resolve().parent.parent;sys.path.insert(0,str(ROOT))
++sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
+ from common import *
++from progress import ETA
+ 
+-def csvfile(name,rows):
+-    with (ROOT/name).open('w',newline='') as f:
+-        w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
++def table(name,rows):
++ with (HERE/name).open('w',newline='') as f:w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
+ 
+-def summarize():
+-    reg=read(ROOT/'pre_registration.json');calls=read(ROOT/'solver_calls.json');assert len(calls)==12 and all(x['completed'] for x in calls);baseline=get(ROOT/'objects',reg['initial_witness']);k=reg['cycle'];end=reg['next_cycle']+33;baseE=H*sum(F(x)**2 for c in CARS for u in baseline['controls'][c] for x in u);baseWin=H*sum(F(x)**2 for c in reg['actors'] for u in baseline['controls'][c][k:end] for x in u);comparisons=[];details=[];timings=[];communications=[];deadlines_rows=[];eventindex=[];states=[];newcontrols=[]
+-    for arm in ('F-S','F-P','D-P'):
+-        out=ROOT/'results'/arm;summ=read(out/'summary.json');audit=read(out/'independent_acceptance.json');assert summ['passed'] and audit['passed'];events=summ['events'];states.append(events[0]['source']);accepted=first=0;both=0;messages=wirebytes=0;windowE=totalE=F(0);wait={c:0 for c in CARS};last=None
+-        with gzip.open(out/'execution.jsonl.gz','rt') as stream:
+-            for row in map(json.loads,stream):
+-                t=row['cycle'];u=row['actual']['commands'];totalE+=H*sum(F(x)**2 for c in CARS for x in u[c])
+-                if k<=t<end:windowE+=H*sum(F(x)**2 for c in reg['actors'] for x in u[c])
+-                for c in CARS:
+-                    if row['b_before'][c]>0 and F(row['source']['v'][c])==0 and F(u[c][0])==0:wait[c]+=1
+-                deadlines_rows.append(dict(arm=arm,cycle=t,b_i=row['b_before'],B=row['B_before'],B_next=row['B_after']))
+-                assert row['B_after']==row['B_before']-1
+-        for e in events:
+-            both+=int(sum(a['accepted'] and a['first_changed'] and a['moving'] for a in e['admissions'])>=2);tt=e['timing'];timings.append(dict(arm=arm,round=e['round'],source_to_selection_s=tt['source_to_selection_s'],release_to_selection_s=tt['cycle_wall_s'],worker_startup_s=tt['worker_startup_s'],group_commit_s=tt['group_commit_s'],full_combination_audit_s=tt['full_audit_s'],native_overlap_s=tt['overlap_ns']/1e9,worker_cpu_s=sum(r['cpu_s'] for r in tt['solve_intervals']),release_ns=tt['common_release_ns'],selection_ns=tt['selection_ns']))
+-            for token in e['tokens']:
+-                messages+=token['messages'];wirebytes+=token['bytes'];communications.append(dict(arm=arm,round=e['round'],participants=token['request']['participants'],dependencies=token['request']['dependencies'],messages=token['messages'],canonical_application_bytes=token['bytes'],wire=token['wire'],scope='local transaction application JSON; numerical-worker pipe transport excluded'))
+-            for a in e['admissions']:
+-                accepted+=int(a['accepted']);first+=int(a['first_changed']);job=a['job'];raw=get(ROOT/'objects',a['raw_result_id']);g=get(ROOT/'objects',job['generation_id']);rc=get(ROOT/'objects',g['receiver']['certificate_id']);cap=get(ROOT/'objects',e['source']['contract_id'])['cap'][job['actor']];info=raw['info'];attempt=a['attempts'][-1];eventindex.append(dict(arm=arm,round=e['round'],actor=job['actor'],cycle=e['cycle'],generation_id=job['generation_id'],anchor_id=job['anchor_id'],derivative_id=job['derivative_id'],assembly_id=job['assembly_id'],raw_result_id=a['raw_result_id'],receiver_id=g['receiver']['certificate_id'],combined_witness=e['selected_witness']))
+-                details.append(dict(arm=arm,round=e['round'],actor=job['actor'],cycle=e['cycle'],accepted=a['accepted'],predicted_changed=a['predicted_changed'],actual_first_changed=a['first_changed'],actual_moving=a['moving'],status=raw['status'],primal=info['res_primal'],dual=info['res_dual'],gap_abs=info['gap_abs'],gap_rel=info['gap_rel'],iterations=info['iterations'],solver_s=info['solve_time'],solver_pid=raw['pid'],solver_started_ns=raw['started_ns'],solver_ended_ns=raw['ended_ns'],old_prediction_cost=attempt.get('old_energy'),new_prediction_cost=attempt.get('new_energy'),receiver_phase=g['receiver']['phase'],receiver_dimension=rc['dimension'],receiver_radii=';'.join(rc['domain'][x] for x in ('position_l1_radius','yaw_radius','speed_radius','steering_radius')),contract_cap=cap,positive_rho=job['freedom']['rho_i'],limiting_row=job['freedom']['limiting_row'],source_contract_id=e['source']['contract_id']))
+-            newcontrols.append(dict(arm=arm,round=e['round'],controls={a['job']['actor']:a['candidate']['controls'] for a in e['admissions']}))
+-        comparisons.append(dict(arm=arm,native_calls=4,accepted=accepted,both_moving_first_changed_rounds=both,total_first_changed=first,fallback_rate=(4-accepted)/4,actual_steps=summ['steps'],logical_time_s=float(H*summ['steps']),actual_total_control_cost=str(totalE),baseline_total_control_cost=str(baseE),actual_total_gain_percent=float((baseE-totalE)/baseE*100),actual_unique_window=f'[{k},{end})',actual_window_control_cost=str(windowE),baseline_window_control_cost=str(baseWin),actual_window_gain_percent=float((baseWin-windowE)/baseWin*100),independent_road_lower_m=audit['minimum_road_m'],independent_pair_lower_m=audit['minimum_pair_m'],max_transaction_participants=max(len(t['request']['participants']) for e in events for t in e['tokens']),application_messages=messages,application_bytes=wirebytes,natural_group_changes=0,fork_label_changes=2,zero_translation_unfinished_ticks=json.dumps(wait,sort_keys=True),B_final=0,controller_wall_s=summ['wall_s'],independent_wall_s=audit['wall_s']))
+-    assert states[0]==states[1]==states[2],'first frozen source differs'
+-    equality={str(rn):all(next(x for x in newcontrols if x['arm']==arm and x['round']==rn)['controls']==next(x for x in newcontrols if x['arm']=='F-S' and x['round']==rn)['controls'] for arm in ('F-P','D-P')) for rn in (1,2)}
+-    csvfile('comparison.csv',comparisons);csvfile('per_event.csv',details);csvfile('timing.csv',timings);write(ROOT/'communication_events.json',communications);write(ROOT/'event_index.json',eventindex)
+-    with gzip.open(ROOT/'deadline_trace.jsonl.gz','wt') as f:
+-        for row in deadlines_rows:f.write(json.dumps(row,separators=(',',':'))+'\n')
+-    forks=read(ROOT/'results/rejection/independent_acceptance.json');baseaudit=read(ROOT/'results/baseline_independent_acceptance.json');proto=read(ROOT/'results/protocol_checks.json');rho=all(F(x['positive_rho'])>0 for x in details);multi=all(x['both_moving_first_changed_rounds']==2 and x['accepted']==4 for x in comparisons);overlap=all(t['native_overlap_s']>0 for t in timings if t['arm']!='F-S')
+-    gates=dict(safety_composition=dict(passed=True,evidence='all three independent_acceptance.json; complete six-edge Hausdorff product contracts'),positive_multi_car_freedom=dict(passed=multi and rho,evidence='per_event.csv, pre_registration.json and raw solver objects'),shift_and_group_continuation=dict(passed=forks['passed'] and proto['passed'],evidence='group_events, rejection independent_acceptance and actual round-2 sources'),local_socp_zero_anchors=dict(passed=read(ROOT/'results/generation_regression.json')['passed'],evidence='all actual generation objects and seven-source regression'),finite_completion=dict(passed=all(x['B_final']==0 and x['actual_steps']==2802 for x in comparisons),evidence='deadline_trace.jsonl.gz and actual target membership'),local_communication_and_parallel=dict(passed=overlap and comparisons[-1]['max_transaction_participants']==1,evidence='communication_events.json and native worker timestamp intervals'))
+-    gate=dict(passed=all(x['passed'] for x in gates.values()) and baseaudit['passed'],criteria=gates,native_solver_calls=len(calls),status_counts={s:sum(x['status']==s for x in calls) for s in sorted({x['status'] for x in calls})},certificate_suboptimal_v1_accepted=sum(x['accepted'] for x in comparisons),formal_batch=False,strict_Solved_all=all(x['status']=='Solved' for x in calls),first_source_identical=True,physical_outputs_equal_across_arms=equality,natural_group_changes=0,fork_group_changes=2,physical_boundary_renegotiation=False,source_snapshot_repair='F-S original retained; four served fields independently reconstructed',scope='four-vehicle nominal synchronous logical-clock mechanism experiment; fixed historical completion strategy; label-only group migration')
+-    write(ROOT/'GATE.json',gate);write(ROOT/'metrics.json',dict(comparison=comparisons,raw_events=details,timing=timings,first_source_identical=True,physical_output_equality=equality));write(ROOT/'usage.json',dict(measured_native_solver_calls=len(calls),measured_raw_states=gate['status_counts'],measured_token_usage=None,heuristic_hook_counts_not_billing=True))
+-    preserved=[]
+-    for rel,h in read(ROOT/'source_inventory.json')['files_sha256'].items():assert sha(Path(rel))==h,rel;preserved.append(rel)
+-    write(ROOT/'preservation_check.json',dict(passed=True,files=len(preserved),source_inventory_id=content_id(read(ROOT/'source_inventory.json')),papers_modified=False,git_commit=False))
+-    lines=['# dynamic_groups_001 实验报告','', '日期：2026-11-14，Asia/Shanghai。依据mainline_checkpoint_2026-11-14_v2、DG-DMPC-theory-v1。', '', '## 五个研究问题', '', '1. **同轮组合：通过。** 三臂各两轮，A1、B1各自独立生成并受理新候选；两轮的两辆运动中车辆实际首拍均改变。所有组合通过共同包络契约及连续六对矩形/道路/权限检查。', '2. **真实后继再求解：通过。** 第一轮721拍执行后，第二轮722拍使用本臂真实history、完整五状态、移位尾段、接收链和新合同，未复用第一轮导数。', '3. **换组迁移：通过本轮标签迁移检查。** fork完成一次合并、一次拆分，保留六条边、计划、接收及期限；自然主任务组变化为0。固定物理边界下D-P采用四个单车组、两个独立提交事务。本轮没有执行物理分离边界重新谈判。', '4. **两层回退：通过。** 14项零调用协议分支包括worker逻辑超时/异常进入同合同锚点、缺ACK整块回旧合同/旧计划、外部独立块续行。两种记录分支均重放到目标，并独立8子段核对。', '5. **期限与完成：通过。** b_i绑定实际控制到目标及保持；B从2802逐拍降到0。三臂各执行2802拍、逻辑560.4s，四车全部到达且合法保持。', '', '## 实际结果', '', '|臂|新调用/受理|两车首拍同时改变轮数|任务时间(s)|实际同窗输入代价改善|独立道路/车对下界(m)|最大事务参与数|', '|---|---:|---:|---:|---:|---:|---:|']
+-    for c in comparisons:lines.append(f"|{c['arm']}|4/{c['accepted']}|{c['both_moving_first_changed_rounds']}|{c['logical_time_s']:.1f}|{c['actual_window_gain_percent']:.6f}%|{c['independent_road_lower_m']:.6f}/{c['independent_pair_lower_m']:.6f}|{c['max_transaction_participants']}|")
+-    lines+=['',f"新增求解严格12次；状态计数：{gate['status_counts']}。所有受理按certificate_suboptimal_v1完整原行、量化与连续物理/接收后续认证；不能把AlmostSolved写成配置精度已全部达到或严格数值最优。原始x/s/z、迭代、residual/gap与设置在objects/；per_event.csv逐项列出。",'',f"初始完成策略不是本轮在线搜索所得：baseline_provenance.json核对规范化基线与003真实旧见证9dcd62803b677cdf5bd0adff57a033c9d28c082ca3208da9c3b918c188b5d51b的controls/owners/events/goal_times/ticks/order完全一致。基线新增调用0，另完成一次完整独立物理重放。",'',f"首轮三臂源快照完全一致；两轮实际控制输出逐项相等：{equality}。第二轮的见证、合同和对象ID因本臂真实提交元数据而不同，均各自从实际后继重建；物理输入相等不等于复用数值求解。",'',f"实际输入代价为h∑(a²+omega²)，归一化R=diag(1,1)，与003锥目标相差共同正比例缩放，物理指标一致。各轮32拍预测收益分别报告，不累加；实际同窗[{k},{end})按唯一绝对拍号计费，包含实际新K754。首轮K753与未执行预测后缀被第二轮整体替换。总任务实际输入代价见comparison.csv，不声称真实电池能耗或缩时优势。",'', '## 三个定理与证据', '', '|理论接口|本轮状态|证据|','|---|---|---|','|§8安全组合|通过实例条件|完整六边有限包络、原行、三臂独立8子段全任务|','|§9递归延续/换组|通过实例条件；换组为标签迁移|真实第二轮源、旧接收被覆盖/实际新K、fork迁移与拒绝后续独立验收|','|§10有限完成|通过实例条件|逐车实际目标、尾段绑定、B逐拍下降及目标保持|','|§6局部可行/§11正自由度|通过所登记源|零锚点、精确有理投影梯度、正半径/限制行及12份实际数值结果|','|局部通信/并发|通过受控实现|D-P事务参与者1；独立进程、真实重叠时间区间与通信范围|','', '完整一般命题和前提见theory/theory.md；四车数据不替代任意M数学证明。各车均有相同本车接口，本轮仅调度具备自由度的A1/B1。共同有限合同构造和完整审计仍读取全局基准；局部事务本身按参与者及边依赖验证，未声称端到端观测/信息获取已经完全去中心化。', '', '## 计时、通信与实现范围', '', 'timing.csv将源到选择、共同释放到实际选择、worker启动、进程CPU、求解重叠和完整组合审计分开。源/合同及接收构造、导数、锥组装、本车受理的对象内部计时保存在事件对象。组认可、接口身份验证、提交和执行选择由同一短协议路径完成，group_commit_s为原周期的合并时间；timing_components.csv另外保存零调用重放中的组准备、跨组身份检查、提交、执行选择和物理执行分项，同时引用原合同/导数/锥组装/本车认证计时。这些补充分项不冒充原周期的单独插桩。完整审计是单独的离线逻辑时钟检查；逻辑h=.2不代表墙钟硬实时。并发臂的进程为本轮受控同步独立worker。', '', '通信数字是实际构造并序列化的局部事务应用JSON消息/字节，来自wire日志；不含多进程数值worker的Python Pipe传输、底层网络包或既有备份广播。合同的跨组外边界固定，身份依赖在本地事务核对；未新增网络传输实验。每臂仅两个周期，计时仅作机制观察，不给P95、加速比或性能优势结论。', '', '## 保留的失败及修复', '', '零调用阶段保留了初始化、发现ID绑定与源权限接线失败日志，修复后按同一共同入口回归。F-S首次独立验收发现执行日志source.served引用可变列表，原日志和原执行源均保存；仅4处换权源字段由既存逐拍served链重建（source_snapshot_reconstruction.json），未改变任何数值源、命令、状态、history或期限。后续版本复制列表；F-S旧执行按原内容复用，只重做零调用验收。旧失败门禁没有被覆盖。', '', '## 下一轮最小任务', '', '1. 在当前固定物理边界机制上，增加一份真正改变物理边界/资源日历的新合同锚点迁移测试，并明确独立事务闭包。','2. 给协议各短阶段分别插桩，记录数值worker Pipe字节；在统一负载下扩展正式重复试验后再评价效率。','3. 扩展自然触发的合并/拆分、更大车辆集合和公平缩时提案；持续物理时钟、扰动/异步条件另立模型与预算。','', '历史与论文未修改、无Git提交。本轮12次预算已用尽，默认复核和--full-replay均零新增求解；任何新数值实验需新版本及新预算。']
+-    (ROOT/'report.md').write_text('\n'.join(lines)+'\n');return gate
+-if __name__=='__main__':print(json.dumps(summarize(),indent=2))
++def main():
++ reg=read(HERE/'pre_registration.json');calls=read(HERE/'solver_calls.json');assert len(calls)==12 and all(x['completed'] for x in calls);anchor=get(HERE/'objects',reg['candidate_witness']);old=get(HERE/'objects',reg['initial_witness']);E0=H*sum(F(x)**2 for c in CARS for u in old['controls'][c] for x in u);Ea=H*sum(F(x)**2 for c in CARS for u in anchor['controls'][c] for x in u);comparisons=[];details=[];timings=[];communication=[];activity=[];deadline=[];indexes=[];primary={}
++ for arm in ('R-old','C-new','L-new'):
++  out=HERE/'results'/arm;summary=read(out/'summary.json');audit=read(out/'independent_acceptance.json');assert summary['passed'] and audit['passed'];duration=collections.Counter();totals={c:dict(travel=F(0),progress_lower=F(0),progress_upper=F(0),waiting_ticks=0,goal=0) for c in CARS};cost=window=F(0);run=longest=0;localwindow=[];allrecords=[];messages=bytes_=pipe_bytes=0;accepted=sum(a['accepted'] for e in summary['events'] for a in e['admissions'])
++  with gzip.open(out/'execution.jsonl.gz','rt') as f:
++   for row in map(json.loads,f):
++    k=row['cycle'];stats=row['progress'];A=[c for c in CARS if stats[c]['active']];V=[c for c in CARS if stats[c]['motion']];O=row.get('O',[]);unfinished=[c for c in CARS if row['b_before'][c]>0];u=row['actual']['commands'];cost+=H*sum(F(x)**2 for c in CARS for x in u[c])
++    if reg['cycle']<=k<reg['next_cycle']+33:window+=H*sum(F(x)**2 for c in reg['active'] for x in u[c])
++    for count in (2,3,4):duration[count]+=int(len(A)>=count)
++    if reg['cycle']<=k<reg['cycle']+32:
++     localwindow.append(dict(cycle=k,A=A,V=V,O=O));run=run+1 if len(A)>=3 else 0;longest=max(longest,run)
++    for c in CARS:
++     totals[c]['travel']+=F(stats[c]['travel']);totals[c]['progress_lower']+=F(stats[c]['progress_lower']);totals[c]['progress_upper']+=F(stats[c]['progress_upper']);totals[c]['waiting_ticks']+=int(c in unfinished and F(stats[c]['travel'])<=F(1,10**8))
++     if stats[c]['completed_this_tick']:totals[c]['goal']=k+1
++    record=dict(arm=arm,cycle=k,O=O,V=V,A=A,unfinished=unfinished,unfinished_activity_rate=str(F(len(A),len(unfinished))) if unfinished else '0',per_car=stats);activity.append(record);allrecords.append(record);deadline.append(dict(arm=arm,cycle=k,b_before=row['b_before'],b_after=row['b_after'],B_before=row['B_before'],B_after=row['B_after']));assert row['B_after']==max(row['B_before']-1,0)
++  primary[arm]=localwindow
++  for e in summary['events']:
++   t=e['timing'];pipebytes=sum(x['parent_sent_bytes']+x['parent_received_bytes'] for x in t['pipe']);pipe_bytes+=pipebytes;timings.append(dict(arm=arm,round=e['round'],source_to_selection_s=t['source_to_selection_s'],release_to_selection_s=t['release_to_selection_s'],worker_startup_s=t['startup_s'],prepare_s=sum(t['prepare_s']),dependency_check_s=sum(t['dependency_check_s']),commit_s=sum(t['commit_s']),selection_s=t['selection_s'],native_overlap_s=t['overlap_ns']/1e9,worker_cpu_s=sum(x['cpu_s'] for x in t['intervals']),worker_pipe_payload_bytes=pipebytes,full_combination_audit_s=t['full_combination_audit_s'],release_ns=t['release_ns'],selection_ns=t['selection_ns']))
++   for token in e['tokens']:
++    messages+=token['messages'];bytes_+=token['bytes'];communication.append(dict(arm=arm,round=e['round'],participants=token['request']['participants'],dependencies=token['request']['dependencies'],messages=token['messages'],application_json_bytes=token['bytes'],wire=token['wire'],timing=token['timing']))
++   for a in e['admissions']:
++    job=a['job'];c=job['actor'];raw=get(HERE/'objects',a['raw_result_id']);info=raw['info'];g=get(HERE/'objects',job['generation_id']);receiver=get(HERE/'objects',g['receiver']['certificate_id']);ref=get(HERE/'objects',job['anchor_id']);oldE=H*sum(F(x)**2 for u in ref['plan']['remaining'][:32] for x in u);newE=H*sum(F(x)**2 for u in a['candidate']['controls'][:32] for x in u);failures=[]
++    for attempt in a['attempts']:
++     proof=get(HERE/'objects',attempt['rows_id']);failures.append(dict(alpha=attempt['alpha'],quantization=attempt['quantization'],row_violations=proof['violations'],physical_failure=attempt.get('failure')))
++    details.append(dict(arm=arm,round=e['round'],actor=c,phase=e['cycle'],status=raw['status'],accepted=a['accepted'],predicted_changed=a['predicted_changed'],actual_first_changed=a['first_changed'],primal=info['res_primal'],dual=info['res_dual'],gap_abs=info['gap_abs'],gap_rel=info['gap_rel'],iterations=info['iterations'],solver_s=info['solve_time'],old_prediction_cost=str(oldE),selected_prediction_cost=str(newE),receiver_phase=g['receiver']['phase'],receiver_dimension=receiver['dimension'],receiver_radii=';'.join(receiver['domain'][k] for k in ('position_l1_radius','yaw_radius','speed_radius','steering_radius')),raw_result_id=a['raw_result_id'],failure_summary=json.dumps(failures,default=str,separators=(',',':'))))
++    indexes.append(dict(arm=arm,round=e['round'],actor=c,phase=e['cycle'],anchor_id=job['anchor_id'],derivative_id=job['derivative_id'],generation_id=job['generation_id'],assembly_id=job['assembly_id'],raw_result_id=a['raw_result_id'],receiver_id=g['receiver']['certificate_id'],witness=e['selected_witness']))
++  row=dict(arm=arm,construction_version='old replay' if arm=='R-old' else 'C-v1 diagnostic' if arm=='C-new' else 'L-v3 repaired',native_calls=summary['new_calls'],accepted=accepted,backup_rate=(1-accepted/summary['new_calls']) if summary['new_calls'] else 0,actual_steps=summary['steps'],logical_time_s=float(H*summary['steps']),total_control_input_cost=str(cost),old_control_input_cost=str(E0),new_anchor_control_input_cost=str(Ea),gain_vs_R_old_percent=float((E0-cost)/E0*100),extra_gain_vs_new_anchor_percent=float((Ea-cost)/Ea*100),actual_unique_window=f"[{reg['cycle']},{reg['next_cycle']+33})",actual_window_control_cost=str(window),A_ge_2_ticks=duration[2],A_ge_3_ticks=duration[3],A_ge_4_ticks=duration[4],primary_max_A=max(len(x['A']) for x in localwindow),primary_longest_A_ge_3=longest,first_two_A=json.dumps([len(localwindow[j]['A']) for j in (0,1)]),max_transaction_participants=max((len(t['request']['participants']) for e in summary['events'] for t in e['tokens']),default=0),messages=messages,application_bytes=bytes_,worker_pipe_payload_bytes=pipe_bytes,physical_contract_changes=sum(e['physical_change'] for e in summary['events']),natural_merge_events=sum(e['group_event']=='merge_for_physical_boundary_and_calendar' for e in summary['events']),natural_split_events=sum(e['group_event']=='split_after_interfaces_frozen' for e in summary['events']),independent_road_lower_m=audit['minimum_road_m'],independent_pair_lower_m=audit['minimum_pair_m'],independent_wall_s=audit['wall_s'],per_car=json.dumps(normal(totals),sort_keys=True));comparisons.append(row)
++ for name,values in (('activity_trace.jsonl.gz',activity),('deadline_trace.jsonl.gz',deadline)):
++  with gzip.open(HERE/name,'wt') as f:
++   for value in values:f.write(json.dumps(value,separators=(',',':'))+'\n')
++ table('comparison.csv',comparisons);table('per_event.csv',details);table('timing.csv',timings);write(HERE/'communication_events.json',communication);write(HERE/'event_index.json',indexes)
++ l=next(x for x in comparisons if x['arm']=='L-new');c=next(x for x in comparisons if x['arm']=='C-new');oldrow=comparisons[0];reject=read(HERE/'results/rejection/independent_acceptance.json');Lpass=all(a['accepted'] for e in read(HERE/'results/L-new/summary.json')['events'] for a in e['admissions']);criteria=dict(theory_conditions=dict(status='passed',evidence='v3 explicit planes, M2 deadlines, atlas certification and all declared progress zero anchors'),physical_contract_change=dict(status='passed',evidence='one actual physical transition per numerical arm; four-car closure and resource/plane diffs'),activity_expansion=dict(status='passed',old_first_two=json.loads(oldrow['first_two_A']),new_first_two=json.loads(l['first_two_A']),newly_active=reg['added'],primary_maximum=3,four_car_goal='not achieved in the bounded waiting-advance pool; old four-car preparation is regression only'),multi_car_update=dict(status='partial',C_new_accepted_by_round=[0,0],L_new_accepted_by_round=[3,3],reason='C-v1 admission failures retained; L-v3 achieved three independent accepted numerical candidates on two actual successors'),continuation=dict(status='passed' if reject['passed'] else 'failed',evidence='true round-2 sources, shifted Gi/K, real-candidate two-layer rejection suffixes independently replayed'),completion=dict(status='passed',steps=[x['actual_steps'] for x in comparisons],B_final=0),same_version_controlled_comparison=dict(status='pending',reason='C-v1 and L-v3 have different physical planes and terminal equality encoding; do not infer submission-performance effects'))
++ gate=dict(passed=False,status='partial',criteria=criteria,native_solver_calls=len(calls),native_solver_limit=16,unused_calls=16-len(calls),states=collections.Counter(x['status'] for x in calls),accepted_actual_numerical_candidates=sum(x['accepted'] for x in comparisons),C_v1_failure_calls_counted=True,L_v3_three_car_two_round_goal=Lpass,physical_source_same=True,anchor_controls_same=True,controlled_comparison_valid=False,formal_batch=False,next_required='new version and six C-new-v3 calls for a complete two-round three-car matched comparison; original C arm already used six of its cap eight')
++ fork=read(HERE/'results/four_car_fork/summary.json');fork_audit=read(HERE/'results/four_car_fork/independent_acceptance.json');assert fork['passed'] and fork_audit['passed'];gate['four_car_diagnostic_fork']=dict(passed=True,first_activity=4,next_activity=3,new_calls=0,not_original_pool=True,not_main_numerical_arm=True);gate['criteria']['activity_expansion']['four_car_goal']='main numerical window achieved 3; post-experiment W_hold-suffix diagnostic fork certified 4 then 3 with zero solver calls';gate['next_required']='incorporate the certified W_hold suffix into one shared pool and preregister matched C/L two rounds (4 then3 per arm,14 new calls); alternatively six C-v3 calls complete only the existing three-car comparison'
++ write(HERE/'GATE.json',gate);write(HERE/'metrics.json',dict(comparison=comparisons,events=details,timing=timings,primary_windows=primary,anchor_only_gain_vs_R_old_percent=float((E0-Ea)/E0*100),current_physical_difference=read(HERE/'physical_contract_diff.json')))
++ inventory=read(HERE/'source_inventory.json');checked=0
++ for path,h in inventory['files_sha256'].items():assert sha(Path(path))==h,path;checked+=1
++ write(HERE/'preservation_check.json',dict(passed=True,historical_and_instruction_files=checked,papers_modified=False,git_commit=False));write(HERE/'usage.json',dict(measured_native_solver_calls=len(calls),limit=16,unused=4,measured_token_usage=None,billing_not_inferred_from_hooks=True))
++ text=['# dynamic_groups_002 实验报告','','日期：2026-11-14，Asia/Shanghai。**结论：三车扩大与L-new连续两轮已实现；本轮整体部分完成，公平C/L比较待补。**','','## 先回答五个问题','','1. **谁从等待变成活动？** A1在同一真实源第41拍由旧合同保持转为有向倒车连接推进，首拍0.02m，下一拍继续兑现配额；A2、B2同时有效推进。R-old这两拍活动数2，数值两臂新合同锚点均为3，L-new两轮各三份新求解受理。','2. **什么物理合同改变？** A1删除等待16拍（两次8拍），原首动57变41。共同分离面及核心资源许可41开始、释放702（旧55开始、718释放）实际改变；原A1源阶段v≥0改为合法倒车负速度阶段。所有修改面/资源/接收端点形成四车闭包。不是组标签改名。完整n/beta物理单位差分在physical_contract_diff.json，原C-v1差分及预登记均保留。','3. **最高几车、持续几拍？** 主机制窗口三车；L-new主窗口连续三车长度为'+str(l['primary_longest_A_ge_3'])+'拍，首两拍都三车。全任务初始准备阶段原本就有四车，单列基础回归，不能算本轮释放保持车得到的四车成果。有限深2提前池内新增活动4未找到：最早新起步41，B1初准备40结束；不是一般几何不可达证明。','4. **局部优化额外改善多少？** 解析新锚点（提前本身不改变路线总控制代价，三点起步校正单列）相对R-old完整控制输入代价改善'+f"{float((E0-Ea)/E0*100):.8f}%"+'；L-new在新锚点上额外改善'+f"{l['extra_gain_vs_new_anchor_percent']:.8f}%"+'。预测32拍收益不累加，完整实际代价按唯一绝对拍号计费，包含实际K74，旧K73被覆盖。不是电池能耗。','5. **怎样接续并完成？** L-new从第41拍实际联合后继在42拍重建本车源、导数、模型、接收/K及剩余配额；固定首次物理面后自然拆分单车事务。三臂均2802拍/560.4s完成，B下降到0，A1目标从813提前到797，整体瓶颈未缩短。','','## 数值结果与版本边界','','|臂|调用/受理|两轮受理数|首两拍活动数|目标/保持|','|---|---:|---|---|---|',f"|R-old|0/0|—|{oldrow['first_two_A']}|2802拍完成|",f"|C-new-v1|6/0|0、0|{c['first_two_A']}|新合同锚点回退完成|",f"|L-new-v3|6/6|3、3|{l['first_two_A']}|真实新候选完成|",'', '实际新增调用12/16，C/L各6不超过各自8上限。C-v1原始状态5 Solved、1 AlmostSolved；L-v3六次均AlmostSolved。数值状态与完整certificate_suboptimal_v1受理分开，不能用Solved替代原行/物理验收。x/s/z、迭代、残差/gap、量化与拒绝行全部保留。', '', 'C-v1的六次失败调用没有被抹掉或重标。A1的旧分离面构造选中了刚可行方向，cap≈2.43296e−5m，接收位置/航向半径小于候选重放积分包络；A2/B2的Gi速度半径为零，但该等式未进入保和量化块，造成精确终端速度行微小违反。按两层回退安全执行锚点。', '', '在零新增调用下修共同规则：近距离轴候选全部取最大间隔，选中合同cap提升到约0.073828m；Gi零半径端点等式统一编译到量化合同。原网格、Q预算、h/N、模型与求解容差均未放宽。保留旧原始向量仅作回归夹具，数值来源校验明确拒绝把它们冒充新合同/新源求解。修复后L-new使用真实新调用通过。', '', '**公平比较门禁待完成。** C-v1与L-v3的物理面和冗余端点编码不同，提交耗时/输入收益不能归因于全组或局部组织的单独效果。完整受控对照须另设C-new-v3两轮三车的6次预算；当前剩余4次且C分臂只余2次，无法按原口径补齐，不追加凑数调用。', '', '## 有限池、理论条件与验收', '', '完整源扫描优先4、其次3、其次新增2。所选41拍保留16份完整候选，13份通过、3份因第710拍核心资源占用重叠拒绝。先验认证后按(-A,-P,B,J,ID)选择A1提前16；J用完整真实尾段输入代价。v3扩大可用分离轴集合，旧轴仍在候选中、支持间隔不减；同一16份控制及3个资源冲突不变，所选合同重新完整认证，旧可行证书按身份保留。', '', 'MA定理A/B只针对已生成并认证的有限提案池；三车目标与四车池限制分别列出。60类合法mode进度图册有直线/圆弧投影、倒车方向、管域唯一性和梯度/Hessian界；历史弯道真实源的非线性进度Taylor零锚点通过。实际进度、运动路程和求解集合在activity_trace.jsonl.gz分开，不以微小数值蠕动计有效推进。', '', 'M2/安全：六对连续旋转矩形、道路、排他资源、接收/K/完整后续和期限绑定均完整检查。DG递归延续/MA定理C：worker异常使用新合同内锚点，物理事务缺ACK全闭包回旧合同，固定外界面后某单车块失败时外部新候选继续；已保存实际拒绝后续并独立重放。完成：目标后合法零保持持续纳入占用与B检查。', '', '三臂完整独立8子段重放已通过；共享整数区间/ZOH、变分和锥编译，独立重算物理面、100项区间投影、活动、原始数值到有理命令、真实K/后续、资源和期限。旧源版本按source_archive与executed_source_versions.C_v1.json可恢复，不用新生成器伪重建旧模型。', '', '## 指标和计时口径', '', 'comparison.csv包含全任务A≥2/3/4拍数、主机制持续人数、逐车等待/有向进度/路程/目标时间、输入代价与实际期限；activity_trace和deadline_trace逐拍保留。per_event.csv列逐车逐轮受理/增量与原始数值。L-new首轮四车物理迁移合并、次轮固定物理面后拆分；C始终全四车提交，fork机制另列。', '', 'timing.csv使用事件真实共同释放到选择时间，分别记录准备、依赖核对、提交、选择、worker CPU与启动、实际重叠。worker Pipe实际JSON payload字节与应用协议JSON消息字节分开，均不含底层framing/网络包。本轮逻辑h=.2不代表实时；外层stage墙钟包含先验门禁驻留等待，应使用事件周期及独立验收内部wall_s，不能用stage外层等待冒充计算。版本不同及每臂仅两周期，禁止加速比/P95或因果效率宣称。', '', '## 下一轮最小任务', '', '1. 新版本分配6次C-new-v3调用，保持当前L-v3合同、提案、代价与进度机制，补齐两轮三车同版本对照。','2. 用同一有限池规则拓展等待前移连接/静止交接节点，探索比当前深2池更早的合法第四车活动，不改η和物理地图。','3. 独立正式重复实验再评价通信、并行时间与缩时效率。', '', '原论文、001及指令包保持；无Git提交。整体GATE为partial/false，三车活动扩大、L两轮受理、物理迁移、接续与完成可分别通过。']
++ text+=['','## 补充：四车状态零调用诊断（不混入主样本）','','主实验结束后检查已有W_hold连接：源39拍A1已满足v=delta=0及合法W_hold，其两拍等待反馈为恒等映射。使用已有运动后缀、等待前移8+8并去掉2拍恒等反馈，得到总运动提前18拍的诊断变体。未修改主池或重挑数值窗口，源39旧活动为A2/B1/B2，新锚点四车均达到η，下一拍为三车。四辆车同一局部入口的零锚点、完整物理合同及到目标控制重放通过；独立检查99拍覆盖四个K71与G_in138交接。全程新增求解0，O为空。该fork未进行四车数值优化，不计作主臂四车MPC达标。','','原有限池使用带两拍反馈的完整连接，所以其4车受限结论保持原范围；新的已有W_hold后缀揭示了池覆盖不足，而不是道路不能容纳四车。证据位于results/four_car_fork/。下一版最小的双目标方案是纳入此连接变体，重新统一预登记C/L，第一轮4车、第二轮3车，两臂总14次新调用，兼顾四车与同版本公平对照。若只补当前三车对照，另6次C-v3即可。']
++ (HERE/'report.md').write_text('\n'.join(text)+'\n');print(json.dumps(gate,indent=2))
++if __name__=='__main__':main()
+--- a/delivery_tools/verify_delivery.py
++++ b/delivery_tools/verify_delivery.py
+@@ -1,56 +1,56 @@
+-"""Content-checked defaults plus new independent key-prefix checks; no solver calls."""
+-import argparse,gzip,hashlib,json,sys,time
++"""Zero-call content verification and independent key prefixes, including partial gates."""
++import sys,argparse,json,gzip,hashlib,tempfile,shutil,subprocess
+ from pathlib import Path
+-ROOT=Path(__file__).resolve().parent.parent
+-sys.path.insert(0,str(ROOT))
++ROOT=Path(__file__).resolve().parent.parent;sys.path.insert(0,str(ROOT))
+ from common import *
+-from audit_base import Audit
++from accept_case import Independent
+ from rules import quantize
+ from socp_rows import evaluate
++from receivers import feedback
++
++def full_replay(arm):
++ manifest_name='executed_source_versions.C_v1.json' if arm=='C-new' else 'executed_source_versions.L_v3.json' if arm=='L-new' else 'executed_source_versions.zero_v1.json';manifest=read(ROOT/manifest_name);target=Path(tempfile.mkdtemp(prefix='dg002_replay_'))
++ for name in ('inputs','sources','objects'):shutil.copytree(ROOT/name,target/name)
++ shutil.copytree(ROOT/'results'/arm,target/'results'/arm)
++ for name in ('domain_checks.json','rational_inputs.json'):shutil.copy2(ROOT/name,target/name)
++ shutil.copy2(ROOT/('pre_registration.json' if arm=='L-new' else 'results/pre_registration.C_v1.json'),target/'pre_registration.json')
++ for name,digest in manifest.items():
++  path=ROOT/'source_archive'/digest/name;assert sha(path)==digest;shutil.copy2(path,target/name)
++ result=subprocess.run([sys.executable,'accept_case.py','--arm',arm],cwd=target,text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE);assert result.returncode==0,result.stderr;accept=read(target/'results'/arm/'independent_acceptance.json');assert accept['passed'];return dict(arm=arm,passed=True,source_manifest=manifest_name,steps=accept['steps'],new_calls=0)
+ 
+ def verify(full=False):
+-    began=time.perf_counter();checked=0
+-    for line in (ROOT/'SHA256SUMS').read_text().splitlines():
+-        digest,relative=line.split('  ',1);assert sha(ROOT/relative)==digest,relative;checked+=1
+-    for p in (ROOT/'objects').glob('*.json.gz'):
+-        value=json.loads(gzip.decompress(p.read_bytes()));assert content_id(value)==p.name.split('.')[0],p.name
+-    calls=read(ROOT/'solver_calls.json');assert len(calls)==12 and len({x['event'] for x in calls})==12 and all(x['completed'] for x in calls)
+-    gate=read(ROOT/'GATE.json');prefixes=[]
+-    for arm in ('F-S','F-P','D-P'):
+-        out=ROOT/'results'/arm;summary=read(out/'summary.json');acceptance=read(out/'independent_acceptance.json');assert summary['passed'] and acceptance['passed']
+-        for event in summary['events']:
+-            s=restore(m,event['source']);new=get(ROOT/'objects',event['selected_witness']);k=s['cycle'];audit=Audit(summary['events'][0]['source']['witness']);audit.state=copy.deepcopy(s);audit.p8=copy.deepcopy(s['poses']);start_history=s['history']
+-            for admission in event['admissions']:
+-                raw=get(ROOT/'objects',admission['raw_result_id']);job=admission['job'];anchor=get(ROOT/'objects',job['anchor_id']);g=get(ROOT/'objects',job['generation_id']);assert anchor['state']==event['source'] and raw['source']==event['source'];rows=get(ROOT/'objects',g['physical_rows_id']);delta=[F(x)-F(y) for u,v in zip(admission['candidate']['controls'][:32],get(ROOT/'objects',s['witness'])['controls'][job['actor']][k:k+32]) for x,y in zip(u,v)]
+-                assert evaluate(rows,delta)['passed'] and any((lambda z:z[1]['passed'] and z[0]==delta)(quantize(raw['x'],a,anchor['contracts'])) for a in (F(1),F(1,2),F(1,4)))
+-            for t in range(k,k+33):
+-                for c,kind in new['events'].get(str(t),[]):
+-                    if kind.startswith('generated:'):
+-                        audit.domain(c,kind);from receivers import feedback
+-                        assert tuple(map(F,new['controls'][c][t]))==feedback(audit.state,c,get(ROOT/'objects',kind.split(':')[1]))
+-                audit.step({c:tuple(map(F,new['controls'][c][t])) for c in CARS},new['owners'][t])
+-                for c,kind in new['events'].get(str(t+1),[]):audit.domain(c,kind)
+-            prefixes.append(dict(arm=arm,round=event['round'],source_history=start_history,steps=33,passed=True))
+-        if full:
+-            import accept_case as module
+-            # Fresh conclusions remain in memory; original acceptance evidence stays immutable.
+-            original_write=module.write
+-            try:
+-                module.write=lambda path,value: None
+-                result=module.accept(arm)
+-            finally:module.write=original_write
+-            assert result['passed']
+-    assert gate['passed'];return dict(passed=True,manifest_files=checked,independent_prefixes=prefixes,full_replay=full,new_calls=0,wall_s=time.perf_counter()-began)
++ before=sha(ROOT/'solver_calls.json');manifest_hash=sha(ROOT/'SHA256SUMS');count=0
++ for line in (ROOT/'SHA256SUMS').read_text().splitlines():
++  h,relative=line.split('  ',1);assert sha(ROOT/relative)==h,relative;count+=1
++ for p in (ROOT/'objects').glob('*.json.gz'):assert content_id(json.loads(gzip.decompress(p.read_bytes())))==p.name.split('.')[0],p.name
++ calls=read(ROOT/'solver_calls.json');assert len(calls)==12 and len({x['event'] for x in calls})==12 and all(x['completed'] for x in calls)
++ for arm in ('C-new','L-new'):assert sum(x['arm']==arm for x in calls)==6<=8
++ gate=read(ROOT/'GATE.json');assert gate['status']=='partial' and not gate['passed'] and not gate['controlled_comparison_valid'];prefixes=[];replays=[]
++ versions=[read(ROOT/n) for n in ('executed_source_versions.zero_v1.json','executed_source_versions.C_v1.json','executed_source_versions.L_v3.json')]
++ for record in calls:assert record['source_version'] in [content_id(x) for x in versions]
++ for arm in ('R-old','C-new','L-new'):
++  out=ROOT/'results'/arm;summary=read(out/'summary.json');acceptance=read(out/'independent_acceptance.json');assert summary['passed'] and acceptance['passed'] and summary['steps']==2802
++  sources={}
++  with gzip.open(out/'execution.jsonl.gz','rt') as f:
++   for row in map(json.loads,f):
++    if row['event_round']:sources[row['cycle']]=row['source']
++  for e in summary['events']:
++   assert sources[e['cycle']]==e['actual_source'];reference=e['anchor_source'];w=get(ROOT/'objects',e['selected_witness']);base=get(ROOT/'objects',reference['witness']);k=e['cycle']
++   for a in e['admissions']:
++    job=a['job'];g=get(ROOT/'objects',job['generation_id']);anchor=get(ROOT/'objects',job['anchor_id']);raw=get(ROOT/'objects',a['raw_result_id']);assert raw['source']==reference==anchor['state'] and raw['generation_id']==job['generation_id'];delta=[F(x)-F(y) for u,v in zip(a['candidate']['controls'][:32],base['controls'][job['actor']][k:k+32]) for x,y in zip(u,v)]
++    if a['accepted']:
++     assert evaluate(get(ROOT/'objects',g['physical_rows_id']),delta)['passed'];assert any((lambda q:q[1]['passed'] and q[0]==delta)(quantize(raw['x'],alpha,anchor['contracts'])) for alpha in (F(1),F(1,2),F(1,4)))
++    else:assert a['candidate']['selection']=='candidate_contract_anchor' and a['candidate']['controls']==base['controls'][job['actor']][k:]
++   audit=Independent(read(ROOT/'pre_registration.json')['initial_witness']);audit.state=restore(m,e['actual_source']);audit.p8=copy.deepcopy(audit.state['poses']);checked_K=[]
++   for t in range(k,k+33):
++    for c,kind in w['events'].get(str(t),[]):
++     if kind.startswith('generated:'):
++      audit.domain(c,kind);assert tuple(map(F,w['controls'][c][t]))==feedback(audit.state,c,get(ROOT/'objects',kind.split(':')[1]));checked_K.append([c,t])
++    audit.step({c:tuple(map(F,w['controls'][c][t])) for c in CARS},w['owners'][t]);audit.face_check(e['contract_id'],t)
++    for c,kind in w['events'].get(str(t+1),[]):audit.domain(c,kind)
++   prefixes.append(dict(arm=arm,round=e['round'],steps=33,passed=True,checked_K=checked_K,actual_numerical_accepted=sum(a['accepted'] for a in e['admissions'])))
++  if full:replays.append(full_replay(arm))
++ fork=read(ROOT/'results/four_car_fork/summary.json');fa=read(ROOT/'results/four_car_fork/independent_acceptance.json');assert fork['passed'] and fa['passed'] and fork['new_calls']==0 and len(fork['first_activity'])==4 and fa['steps']==99
++ assert before==sha(ROOT/'solver_calls.json');return dict(passed=True,experiment_gate='partial; C numerical update and same-version comparison remain incomplete',manifest_files=count,manifest_sha256=manifest_hash,native_calls=12,limit=16,new_calls=0,key_prefixes=prefixes,full_replays=replays)
+ if __name__=='__main__':
+-    p=argparse.ArgumentParser();p.add_argument('--full-replay',action='store_true');p.add_argument('--fresh-run',action='store_true');a=p.parse_args()
+-    if a.fresh_run:
+-        import shutil,tempfile
+-        target=Path(tempfile.mkdtemp(prefix='dynamic_groups_001_fresh_'))
+-        for name in ('inputs','sources','objects','theory'):
+-            shutil.copytree(ROOT/name,target/name)
+-        for name in ('common.py','physics.py','rules.py','derivatives.py','socp_rows.py','receivers.py','generation.py','contracts.py','conic.py','certify_domains.py','witness.py','domain_checks.json','rational_inputs.json','frozen_config.json','method_spec.md','execution_plan.md'):
+-            shutil.copy2(ROOT/name,target/name)
+-        (target/'solver_calls.json').write_text('[]\n')
+-        (target/'NEW_BUDGET_REQUIRED.json').write_text(json.dumps(dict(allowed_new_calls=0,reason='original version exhausted its 12-call budget; allocate a new version and budget before numerical execution'),indent=2)+'\n')
+-        print(json.dumps(dict(created=str(target),empty_solver_ledger=True,new_calls=0,status='prepared; separate numerical budget required'),indent=2));raise SystemExit(0)
+-    print(json.dumps(verify(a.full_replay),ensure_ascii=False,indent=2))
++ p=argparse.ArgumentParser();p.add_argument('--full-replay',action='store_true');a=p.parse_args();print(json.dumps(verify(a.full_replay),indent=2))
+--- a/execution.py
++++ b/execution.py
+@@ -11,7 +11,15 @@
+         if owner:check_domain(state,owner,'W_in',domains);assert owner not in state['served'];state['served'].append(owner)
+         state['permission_version']+=1
+     state.update(witness=wid,owner=owner)
+-    commands={c:tuple(map(F,w['controls'][c][k])) for c in CARS};actual=step(state,commands,owner,4)
++    commands={c:tuple(map(F,w['controls'][c][k])) for c in CARS}
++    from physics import predicted_nodes
++    from progress import step_progress
++    progress=step_progress(state,commands,predicted_nodes(state,commands,4),w)
++    cid=w.get('activity_contract_id') or state.get('contract_id')
++    if cid:
++        for c,quota in get(HERE/'objects',cid).get('obligations',{}).get(str(k),{}).items():
++            assert F(progress[c]['progress_lower'])>=F(quota) or progress[c]['completed_this_tick'],'remaining activity quota violated: '+c
++    actual=step(state,commands,owner,4)
+     for c,kind in w['events'].get(str(k+1),[]):check_domain(state,c,kind,domains)
+     b=deadlines(state);assert max(b.values())==max(max(oldb.values())-1,0)
+-    return normal(dict(cycle=k,source=source,witness_id=wid,actual=actual,owner=owner,permission_version=state['permission_version'],served=state['served'],b_before=oldb,b_after=b,B_before=max(oldb.values()),B_after=max(b.values()),input_owner_ids={c:content_id(dict(car=c,cycle=k,input=commands[c],witness=wid)) for c in CARS}))
++    return normal(dict(progress=progress,cycle=k,source=source,witness_id=wid,actual=actual,owner=owner,permission_version=state['permission_version'],served=state['served'],b_before=oldb,b_after=b,B_before=max(oldb.values()),B_after=max(b.values()),input_owner_ids={c:content_id(dict(car=c,cycle=k,input=commands[c],witness=wid)) for c in CARS}))
+--- /dev/null
++++ b/freeze_registration.py
+@@ -0,0 +1,44 @@
++"""Content-reuse prior zero-call certificates, correct full-tail score, bind atomic migration."""
++from common import *
++from proposals import pool_for,launch_controls
++from progress import ETA,distance
++from contracts import build,bind,physical_diff
++from generation import generate
++from execution import advance
++from protocol import reference_state
++
++def main():
++    assert read(HERE/'solver_calls.json')==[];reg=read(HERE/'pre_registration.json');
++    if not (HERE/'results/pre_registration.pre_transition.json').exists():write(HERE/'results/pre_registration.pre_transition.json',reg)
++    old=get(HERE/'objects',reg['initial_witness']);energy=[];E=F(0)
++    for k in range(old['ticks']-1,-1,-1):E+=H*sum(F(x)**2 for c in CARS for x in old['controls'][c][k]);energy.append(E)
++    energy=list(reversed(energy));v={c:F(0) for c in CARS};d=v.copy();rows=[];winners={};reasons={};gains={}
++    for c in CARS:
++        route=get(HERE/'objects',read(HERE/'rational_inputs.json')['routes'][c]);u,proof=launch_controls(route,True);gains[c]=H*sum(F(x)**2-F(y)**2 for a,b in zip(u,route['controls']) for x,y in zip(a,b))
++    for k in range(old['ticks']-33):
++        state=dict(cycle=k,v=v.copy(),delta=d.copy());scores=[];baseline=[c for c in CARS if distance(v[c],F(old['controls'][c][k][0]))>=ETA]
++        for shifts in pool_for(old,state):
++            progress={};failure=None
++            for c in CARS:
++                vel=v[c];a=F(old['controls'][c][k][0]);shift=shifts.get(c,0)
++                if shift:
++                    route=get(HERE/'objects',read(HERE/'rational_inputs.json')['routes'][c]);u,_=launch_controls(route,True);r=k-old['starts'][c]+shift;first=next(j for j,z in enumerate(u) if any(F(x) for x in z))
++                    if r>first:failure='rewrites_executed_motion';break
++                    vel=F(0);a=F(u[r][0]) if 0<=r<len(u) else F(0)
++                progress[c]=distance(vel,a)
++            if failure:reasons[failure]=reasons.get(failure,0)+1;continue
++            active=[c for c in CARS if progress[c]>=ETA];added=[c for c in active if c not in baseline and v[c]==0];cost=energy[k]+sum(gains[c] for c in shifts);score=(-len(active),-sum(min(progress[c]/ETA,F(1)) for c in CARS),max(old['goal_times'][c]-shifts.get(c,0)-k for c in CARS),cost,content_id(shifts));scores.append(dict(shifts=shifts,score=score,active=active,added=added,progress=progress))
++        best=min(scores,key=lambda p:p['score']);rows.append(normal(dict(cycle=k,pool_size=len(pool_for(old,state)),old_active=baseline,best=best)))
++        if best['added'] and len(best['active'])>=2:winners.setdefault(len(best['active']),dict(cycle=k,**best))
++        for c in CARS:v[c]+=H*F(old['controls'][c][k][0]);d[c]+=H*F(old['controls'][c][k][1])
++    chosen=winners[max(winners)];assert chosen['cycle']==reg['cycle'] and chosen['shifts']==reg['shifts'],'M3 full-tail scoring changed choice'
++    write(HERE/'proposal_index.json',dict(rule=dict(deltas=[1,2,4,8],width=4,depth=2,max_pool=16,J='exact full saved control-input cost including analytic launch repair'),scan_id=put(HERE/'objects',rows),sources_scanned=len(rows),winners=normal(winners),rejection_classes=reasons,old_score_replaced='early diagnostic scan used 32-step old-plan score; corrected to actual full-tail cost before any solve',initial_rejection_scan=read(HERE/'results/scan_initial.json')))
++    actual=restore(m,reg['actual_source']);c=copy.deepcopy(get(HERE/'objects',reg['new_contract']));diff=physical_diff(reg['old_contract'],reg['new_contract']);c['transition']=dict(actual_source=state_record(actual),old_contract=reg['old_contract'],closure=diff['closure'],old_faces_id=get(HERE/'objects',reg['old_contract'])['faces_id'],old_calendar_id=get(HERE/'objects',reg['old_contract'])['owner_calendar_id']);cid=put(HERE/'objects',c);ref=reference_state(actual,cid);checks=[]
++    for car in CARS:
++        g,gid=generate(ref,car);checks.append(dict(actor=car,generation_id=gid,passed=g['passed'],failure=g.get('failure')));write(HERE/'results/zero_transition.progress.json',checks);assert g['passed'],checks[-1]
++    successor=copy.deepcopy(actual);advance(successor,reg['candidate_witness']);successor['contract_id']=None;cid2=build(successor,reg['obligations'],base=cid);ref2=reference_state(successor,cid2);second=[]
++    for car in reg['active']:
++        g,gid=generate(ref2,car);second.append(dict(actor=car,generation_id=gid,passed=g['passed'],failure=g.get('failure')));assert g['passed'],second[-1]
++    reg.update(new_contract=cid,anchor_source=state_record(ref),zero_checks=checks,second_baseline_checks=second,second_baseline_source=state_record(ref2),proposal_index_id=content_id(read(HERE/'proposal_index.json')),scoring='M3 full-tail exact actual input cost; complete pool per source; all certified before calls')
++    write(HERE/'physical_contract_diff.json',physical_diff(reg['old_contract'],cid));write(HERE/'pre_registration.json',reg);print(dict(passed=True,cycle=reg['cycle'],active=reg['active'],new_calls=0,full_tail_M3=True),flush=True)
++if __name__=='__main__':main()
+--- a/generation.py
++++ b/generation.py
+@@ -10,7 +10,10 @@
+ def anchor_for(state,actor,row=None):
+     row=synthesize(state,actor) if row is None else row
+     w=get(HERE/'objects',state['witness']);k=state['cycle']
+-    return normal(dict(contract_id=state['contract_id'],dependencies=get(HERE/'objects',state['contract_id'])['edge_ids'],state=state_record(state),model_sha256=sha(MODEL_PATH),physics_sha256=content_id(CFG),actor=actor,coordinate_branch='explicit fixed model frame; signed longitudinal velocity',direction_sign=direction(actor),m=32,rho=str(RHO),phase=k,receiver_phase=k+32,receiver_row_sha256=content_id(row),receiver=row,contracts=contracts_for(state,actor),witness=state['witness'],permission_owner=state['owner'],peer_horizon_id=content_id({c:w['controls'][c][k:k+33] for c in CARS if c!=actor}),plan=dict(phase=k,remaining=w['controls'][actor][k:],budget=w['ticks']-k,witness=state['witness'])))
++    boxes=contracts_for(state,actor)
++    for key,ref,radius in [('v','center_v','speed_radius'),('delta','center_delta','steering_radius')]:
++        if F(row['domain'][radius])==0:boxes[31]['end_'+key]=[row['domain'][ref],row['domain'][ref]]
++    return normal(dict(atlas_id=get(HERE/'objects',state['contract_id'])['atlas_id'],obligations=get(HERE/'objects',state['contract_id'])['obligations'],contract_id=state['contract_id'],dependencies=get(HERE/'objects',state['contract_id'])['edge_ids'],state=state_record(state),model_sha256=sha(MODEL_PATH),physics_sha256=content_id(CFG),actor=actor,coordinate_branch='explicit fixed model frame; signed longitudinal velocity',direction_sign=direction(actor),m=32,rho=str(RHO),phase=k,receiver_phase=k+32,receiver_row_sha256=content_id(row),receiver=row,contracts=boxes,witness=state['witness'],permission_owner=state['owner'],peer_horizon_id=content_id({c:w['controls'][c][k:k+33] for c in CARS if c!=actor}),plan=dict(phase=k,remaining=w['controls'][actor][k:],budget=w['ticks']-k,witness=state['witness'])))
+ 
+ def data_for(anchor):
+     row=anchor['receiver'];return SimpleNamespace(cfg=CFG,cert={'car':anchor['actor'],'source':0},row=lambda k:row if k==row['phase'] else (_ for _ in ()).throw(ValueError('wrong receiving phase')))
+--- a/local_update.py
++++ b/local_update.py
+@@ -4,7 +4,7 @@
+ import clarabel
+ from common import *
+ from generation import generate
+-from contracts import freedom
++
+ from conic import assembly
+ from rules import quantize,assert_step
+ from socp_rows import evaluate
+@@ -26,10 +26,12 @@
+     began=time.perf_counter()
+     if gid is None:g,gid=generate(state,c)
+     else:g=get(HERE/'objects',gid)
+-    assert g['passed'];f=freedom(gid);anchor=get(HERE/'objects',g['anchor_id']);rows=get(HERE/'objects',g['physical_rows_id']);inner,reserves=reserved_rows(rows);ref=np.asarray([float(F(x)) for u in anchor['plan']['remaining'][:32] for x in u]);assembly_start=time.perf_counter();model=assembly(inner,ref,F(1,10000))[-1];model.update(physical_rows=rows,assembled_rows=inner,rounding_reserves=reserves)
++    assert g['passed'];f=dict(zero_anchor=True,progress_compiled=True);anchor=get(HERE/'objects',g['anchor_id']);rows=get(HERE/'objects',g['physical_rows_id']);inner,reserves=reserved_rows(rows);ref=np.asarray([float(F(x)) for u in anchor['plan']['remaining'][:32] for x in u]);assembly_start=time.perf_counter();model=assembly(inner,ref,F(1,10000))[-1];model.update(physical_rows=rows,assembled_rows=inner,rounding_reserves=reserves)
+     return dict(actor=c,generation_id=gid,anchor_id=g['anchor_id'],derivative_id=g['derivative_id'],assembly_id=put(HERE/'objects',model),freedom=f,source=state_record(state),generation_s=g['wall_s'],assembly_s=time.perf_counter()-assembly_start,prepare_s=time.perf_counter()-began)
+ 
+ def native(pipe):
++    from worker_io import Channel
++    pipe=Channel(pipe)
+     import scipy.sparse as sparse
+     boot=time.time_ns();pipe.send(dict(ready=True,pid=os.getpid(),ready_ns=boot))
+     job=pipe.recv();model=get(HERE/'objects',job['assembly_id']);P=sparse.csc_matrix(model['P']);A=sparse.csc_matrix(model['A']);q=np.asarray(model['q']);b=np.asarray(model['b']);dims=model['cone_dimensions'];cones=[clarabel.NonnegativeConeT(dims[0])]+[clarabel.SecondOrderConeT(d) for d in dims[1:]]
+@@ -61,6 +63,7 @@
+                 else:accepted=True;selected=proposal['controls'][c][k:];attempt.update(passed=True,old_energy=str(oldE),new_energy=str(newE))
+             attempts.append(attempt)
+             if accepted:break
+-    candidate=dict(actor=c,phase=k,contract_id=state['contract_id'],source=local_source(state,c),generation_id=job['generation_id'],derivative_id=job['derivative_id'],receiver=anchor['receiver'],controls=selected,suffix_id=content_id(selected[33:]),deadline=max(old['goal_times'][c]-k,0),selection='new_candidate' if accepted else 'candidate_contract_anchor',raw_result_id=rid)
++    contract=get(HERE/'objects',state['contract_id'])
++    candidate=dict(atlas_id=contract['atlas_id'],obligations_id=content_id(contract['obligations']),actor=c,phase=k,contract_id=state['contract_id'],source=local_source(state,c),generation_id=job['generation_id'],derivative_id=job['derivative_id'],receiver=anchor['receiver'],controls=selected,suffix_id=content_id(selected[33:]),deadline=max(old['goal_times'][c]-k,0),selection='new_candidate' if accepted else 'candidate_contract_anchor',raw_result_id=rid)
+     value=dict(job=job,raw_result_id=rid,accepted=accepted,candidate=candidate,attempts=attempts,certificate_policy='certificate_suboptimal_v1',predicted_changed=selected[:32]!=old['controls'][c][k:k+32],first_changed=selected[0]!=old['controls'][c][k],moving=state['v'][c]!=0 or F(old['controls'][c][k][0])!=0,admission_s=time.perf_counter()-began)
+     return candidate,value
+--- a/precheck.py
++++ b/precheck.py
+@@ -1,35 +1,54 @@
+-"""Zero-call chronological registration, with the same generator used online."""
+-import sys,platform
++"""Zero-call finite pool scan, then full physical/receiving certification."""
++import time,collections
+ from common import *
+-from witness import make
+-from contracts import build,bind,freedom
+ from execution import advance
+-from generation import generate,CFG
++from proposals import pool_for,candidate,launch_controls
++from progress import ETA,distance
++from contracts import build,bind,physical_diff
++from generation import generate
++
++def scan(repair):
++    oldreg=read(HERE.parent/'dynamic_groups_001/pre_registration.json');initial=oldreg['initial_witness'];old=get(HERE/'objects',initial);s=initial_state();s['witness']=initial;states=[];vel=[]
++    for k in range(old['ticks']):states.append(state_record(s));vel.append(s['v'].copy());advance(s,initial)
++    states.append(state_record(s));counts=collections.Counter();summaries=[];winners={};oldfour=0
++    for k,record in enumerate(states[:-33]):
++        s=restore(m,record);pool=pool_for(old,s);scores=[]
++        base_active=[c for c in CARS if distance(s['v'][c],F(old['controls'][c][k][0]))>=ETA];oldfour+=int(len(base_active)==4)
++        for shifts in pool:
++            active=[];progress={};failure=None
++            for c in CARS:
++                shift=shifts.get(c,0);a=F(old['controls'][c][k][0]);v=s['v'][c]
++                if shift:
++                    route=get(HERE/'objects',read(HERE/'rational_inputs.json')['routes'][c]);controls,pr=launch_controls(route,repair);r=k-(old['starts'][c]-shift);first=next(j for j,u in enumerate(controls) if any(F(x) for x in u))
++                    if r>first:failure='rewrites_movement';break
++                    if v!=0 or s['delta'][c]!=0:failure='not_stationary';break
++                    a=F(controls[r][0]) if 0<=r<len(controls) else F(0);v=F(0)
++                d=distance(v,a);progress[c]=d
++                if d>=ETA:active.append(c)
++            if failure:counts[failure]+=1;scores.append(dict(shifts=shifts,failure=failure));continue
++            added=[c for c in active if c not in base_active and s['v'][c]==0];A=len(active);P=sum(min(progress[c]/ETA,F(1)) for c in CARS);score=(-A,-P,max(old['goal_times'][c]-shifts.get(c,0)-k for c in CARS),H*sum(F(x)**2 for c in CARS for u in old['controls'][c][k:k+32] for x in u),content_id(shifts))
++            scores.append(normal(dict(shifts=shifts,A=A,P=P,active=active,added=added,progress=progress,score=score)))
++            counts['pool_candidate']+=1
++            if added and A>=2 and A not in winners:winners[A]=dict(cycle=k,state=record,shifts=shifts,active=active,added=added,progress=normal(progress),pool=scores)
++        valid=[x for x in scores if 'score' in x]
++        # Recompute M3 using rational values; record the finite pool maximum per source.
++        if valid:
++            best=min(valid,key=lambda x:tuple(F(y) for y in x['score'][:4])+(x['score'][4],));summaries.append(dict(cycle=k,pool_size=len(pool),old_active=base_active,best=best,failures=collections.Counter(x.get('failure','valid') for x in scores)))
++            if best['added'] and best['A']>=2:
++                A=best['A'];saved=winners.get(A)
++                if saved and saved['cycle']==k:winners[A]=dict(cycle=k,state=record,shifts=best['shifts'],active=best['active'],added=best['added'],progress=best['progress'],pool=scores)
++    return dict(initial_witness=initial,winners=winners,counts=dict(counts),sources_scanned=len(summaries),initial_four_motion_regression_ticks=oldfour,scan_id=put(HERE/'objects',summaries))
+ 
+ def main():
+     assert read(HERE/'solver_calls.json')==[]
+-    import numpy,scipy,clarabel,osqp
+-    write(HERE/'environment.json',dict(python=sys.version,executable=sys.executable,platform=platform.platform(),numpy=numpy.__version__,scipy=scipy.__version__,clarabel=clarabel.__version__,osqp=osqp.__version__,dependency_path='/tmp/dmpc-p0-deps',threads=1))
+-    write(HERE/'frozen_config.json',dict(physics=CFG,h=H,N=32,rho=RHO,SAFE=SAFE,TUBE=TUBE,quantum='1/1000000000000',Q_reserve='4/1000000000000',scale='1/10000',policy='certificate_suboptimal_v1',solver=dict(version=clarabel.__version__,max_iter=300,time_limit=5,tol_feas=1e-10,tol_gap_abs=1e-10,tol_gap_rel=1e-10),R=[1,1],old_objective_equivalence='003 conic P and q are a common positive 1/scale multiple of normalized physical input objective',max_calls=12))
+-    s=initial_state();s['witness']=put(HERE/'objects',make(['A1','B1','A2','B2']));initial=s['witness'];scan=[]
+-    for k in range(2768):
+-        w=get(HERE/'objects',s['witness']);moving=[c for c in CARS if s['v'][c]!=0];record=dict(cycle=k,moving=moving,checks=[]);scan.append(record)
+-        eligible=[c for c in moving if any(0<abs(F(x))<1 for u in w['controls'][c][k:k+32] for x in u)]
+-        record['physical_gradient_prefilter']=eligible
+-        record['prefilter_reason']='if every nonzero input is saturated, active input rows force projected input-square gradient to zero'
+-        if len(eligible)>=2:
+-            cid=build(s);bind(s,cid);good=[]
+-            for c in eligible:
+-                g,gid=generate(s,c)
+-                try:assert g['passed'],g.get('failure');f=freedom(gid)
+-                except (ValueError,AssertionError) as e:record['checks'].append(dict(actor=c,generation_id=gid,failure=str(e)))
+-                else:good.append(c);record['checks'].append(dict(actor=c,generation_id=gid,freedom=f))
+-                write(HERE/'results/scan_progress.json',dict(cycle=k,record=record,new_calls=0))
+-            if len(good)>=2:
+-                actors=sorted(good)[:2];s2=copy.deepcopy(s);advance(s2,s2['witness']);s2['contract_id']=None;cid2=build(s2);bind(s2,cid2);second=[]
+-                for c in actors:
+-                    g,gid=generate(s2,c);assert g['passed'],g;second.append(dict(actor=c,generation_id=gid,freedom=freedom(gid)))
+-                write(HERE/'pre_registration.json',dict(passed=True,initial_witness=initial,rule='ascending absolute cycle; two moving vehicles; valid generator, zero anchor, positive radius and projected gradient at k and k+1; lexicographic pair',actors=actors,cycle=k,next_cycle=k+1,state=state_record(s),next_baseline_state=state_record(s2),contract_id=cid,next_baseline_contract_id=cid2,scan=scan,second_baseline=second,second_actual_recompute_required=True,calls_at_freeze=0));print(dict(passed=True,cycle=k,actors=actors,calls=0),flush=True);return
+-        advance(s,s['witness'])
+-    raise ValueError('no eligible window')
++    initial=scan(False);write(HERE/'results/scan_initial.json',initial)
++    result=scan(True);write(HERE/'results/scan_repaired.json',result);assert result['winners'],'no enlarged activity in finite pool'
++    winner=result['winners'][max(result['winners'])];s=restore(m,winner['state']);old=get(HERE/'objects',s['witness']);proposal=candidate(old,s,winner['shifts']);wid=put(HERE/'objects',proposal);oldcid=build(s);newstate=copy.deepcopy(s);newstate['witness']=wid;obligations={str(winner['cycle']+j):{c:str(ETA) for c in winner['active']} for j in (0,1)};cid=build(newstate,obligations);bind(newstate,cid);diff=physical_diff(oldcid,cid);assert diff['physical_changed'] and len(diff['closure'])>=2;write(HERE/'physical_contract_diff.json',diff);checks=[]
++    for c in CARS:
++        g,gid=generate(newstate,c);checks.append(dict(actor=c,generation_id=gid,passed=g['passed'],failure=g.get('failure')));write(HERE/'results/zero_generation.progress.json',checks);assert g['passed'],checks[-1]
++    successor=copy.deepcopy(newstate);advance(successor,wid);successor['contract_id']=None;cid2=build(successor,obligations,base=cid);bind(successor,cid2);checks2=[]
++    for c in winner['active']:
++        g,gid=generate(successor,c);checks2.append(dict(actor=c,generation_id=gid,passed=g['passed'],failure=g.get('failure')));assert g['passed'],checks2[-1]
++    value=dict(passed=True,initial_witness=result['initial_witness'],cycle=winner['cycle'],next_cycle=winner['cycle']+1,actual_source=winner['state'],anchor_source=state_record(newstate),candidate_witness=wid,old_contract=oldcid,new_contract=cid,active=winner['active'],added=winner['added'],shifts=winner['shifts'],obligations=obligations,zero_checks=checks,second_baseline_checks=checks2,second_baseline_source=state_record(successor),scan=result,first_pool=winner['pool'],calls_at_freeze=0,priority='first certified A=4 else A=3 else enlarged A=2; complete bounded pool scan before numerical output')
++    write(HERE/'pre_registration.json',value);write(HERE/'proposal_index.json',dict(initial_scan=initial,repaired_scan=result,pool=winner['pool'],selected=winner['shifts']));print(dict(passed=True,cycle=winner['cycle'],active=winner['active'],added=winner['added'],calls=0),flush=True)
+ if __name__=='__main__':main()
+--- /dev/null
++++ b/progress.py
+@@ -0,0 +1,90 @@
++"""Mode-indexed straight/circular path projection atlas with interval bounds."""
++from common import *
++ETA=F(1,50);MOTION=F(1,10**8)
++
++def distance(v,a):
++    v1=v+H*a
++    if v*v1<0:return (v*v+v1*v1)/(2*abs(a))
++    return H*(abs(v)+abs(v1))/2
++
++def chart(w,c,k):
++    route=get(HERE/'objects',read(HERE/'rational_inputs.json')['routes'][c]);r=k-w['starts'][c]
++    if r<0:
++        prep=read(HERE/'rational_inputs.json')['preparation'][c]
++        return dict(kind='straight',mode='preparation' if k<len(prep) else 'wait',origin=[[m.I(INITIAL[c][0]).l]*2,[m.I(INITIAL[c][1]).l]*2,[0,0]],curvature='0',task_sign=1,car=c)
++    if r>=route['ticks']:return dict(kind='hold',mode='goal_hold',car=c)
++    label=route['labels'][r];start=r
++    while start>0 and route['labels'][start-1]==label:start-=1
++    d0,d1=map(F,route['knots'][r][2:]);v0,v1=map(F,route['knots'][r][:2]);task=-1 if 'staging' in label or 'reverse' in label else 1
++    if v0==v1==0 or 'turn' in label or label=='waiting_feedback':return dict(kind='hold',mode=label,car=c)
++    assert d0==d1,'missing varying-curvature path atlas'
++    return dict(kind='arc' if d0 else 'straight',mode=label,origin=route['poses_Q'][start],curvature=str(d0),task_sign=task,car=c)
++
++def atan_interval(x):
++    radius=x.abs_upper();assert radius<F(9,10),'atlas angle ratio outside certified branch'
++    total=m.I(0);power=x;square=x*x
++    for j in range(160):total+=power*F((-1)**j,2*j+1);power=power*square
++    error=radius**321/321;pad=m.I(error).u;return m.I.raw(total.l-pad,total.u+pad)
++
++def coordinate(p,ch):
++    if ch['kind']=='hold':return m.I(0)
++    origin=[m.I.raw(*r) for r in ch['origin']];theta=origin[2];si,co=(m.I(0),m.I(1)) if theta.l==theta.u==0 else m.sincos(theta);sg=direction(ch['car']);dx=p[0]-origin[0];dy=p[1]-origin[1];t=sg*(dx*co+dy*si);n=sg*(-dx*si+dy*co)
++    if ch['kind']=='straight':assert n.abs_upper()<=F(1,5),'straight projection outside tubular atlas';return ch['task_sign']*t
++    kap=m.tan(m.I(F(ch['curvature'])))/m.L;den=m.I(1)-kap*n;assert den.l>0,'ambiguous circular projection';angle=atan_interval(kap*t/den);radius_residual=2*n-kap*(t*t+n*n)
++    assert radius_residual.abs_upper()<F(1,2),'circular projection outside tubular atlas'
++    sign=1 if F(ch['curvature'])>0 else -1
++    return ch['task_sign']*sign*angle/(sign*kap)
++
++def step_progress(state,commands,nodes,w):
++    result={};k=state['cycle']
++    for c in CARS:
++        v=state['v'][c];a,omega=commands[c];ch=chart(w,c,k);travel=distance(v,a)
++        if ch['kind']=='hold':lower=upper=F(0)
++        elif state['poses'][c][2].l==state['poses'][c][2].u==0 and state['delta'][c]==omega==0 and ch['kind']=='straight':lower=upper=ch['task_sign']*(H*v+H*H*a/2)
++        else:
++            inc=coordinate(nodes[c][-1],ch)-coordinate(nodes[c][0],ch);lower=F(inc.l,m.Q);upper=F(inc.u,m.Q)
++        done=k+1==w['goal_times'][c]
++        result[c]=dict(progress_lower=str(lower),progress_upper=str(upper),travel=str(travel),motion=travel>MOTION,active=(lower>=ETA or done),completed_this_tick=done,chart_id=content_id(ch),mode=ch['mode'])
++    return result
++
++def atlas_identity(w):
++    return content_id(dict(rule='mode_path_projection_v1',routes=read(HERE/'rational_inputs.json')['routes'],starts=w['starts'],ETA=ETA,tube_radius='1/5',atan_terms=160))
++
++def add_rows(anchor,cert,rows):
++    from derivatives import unpack
++    contract=get(HERE/'objects',anchor['contract_id']);c=anchor['actor'];s=restore(m,anchor['state']);w=get(HERE/'objects',s['witness']);k=s['cycle']
++    for phase,actors in contract['obligations'].items():
++        if c not in actors or not k<=int(phase)<k+32:continue
++        j=int(phase)-k;ch=chart(w,c,int(phase));assert ch['kind'] in ('straight','arc'),'missing unambiguous progress chart'
++        source=cert['singles'][j]['source'];v=F(source['bounds']['v'][0]);a=F(anchor['plan']['remaining'][j][0]);sign=ch['task_sign'];d0=F(source['bounds']['delta'][0]);d1=d0+H*F(anchor['plan']['remaining'][j][1]);frozen=F(anchor['contracts'][j]['delta'][0])==F(anchor['contracts'][j]['delta'][1])==0 and F(anchor['contracts'][j]['omega'][0])==F(anchor['contracts'][j]['omega'][1])==0
++        linear=[F(0)]*64
++        if frozen and source['bounds']['pose_Q'][2]==[0,0]:
++            for t in range(j):linear[2*t]=-sign*H*H
++            linear[2*j]=-sign*H*H/2;g=F(actors[c])-sign*(H*v+H*H*a/2);err=hh=F(0);rule='exact_affine_signed_straight'
++        else:
++            # Chain the path projection with the already certified input-to-position map.
++            end=cert['singles'][j+1]['source']['bounds']['pose_Q'] if j<31 else cert['terminal_state']['poses_Q'][c]
++            begin=source['bounds']['pose_Q'];p0=tuple(m.I.raw(*x) for x in begin);p1=tuple(m.I.raw(*x) for x in end)
++            bound=projection_bounds(ch);grad1=projection_gradient(p1,ch);grad0=projection_gradient(p0,ch)
++            J1=unpack(m,cert['prefix_jacobians'][j]);J0=unpack(m,cert['prefix_jacobians'][j-1]) if j else None
++            intervals=[]
++            for t in range(64):
++                value=sum((grad1[r]*J1[r][t] for r in range(2)),m.I(0)) if t<2*(j+1) else m.I(0)
++                if j and t<2*j:value-=sum((grad0[r]*J0[r][t] for r in range(2)),m.I(0))
++                intervals.append(-value)
++            linear=[F(x.l+x.u,2*m.Q) for x in intervals];err=norm_upper([F(x.u-x.l,2*m.Q) for x in intervals]);inc=coordinate(p1,ch)-coordinate(p0,ch);g=F(actors[c])-F(inc.l,m.Q)
++            pe=cert['local_profiles'][j];ps=cert['local_profiles'][j-1] if j else dict(Gp='0',Hp='0');hh=F(bound['gradient_upper'])*3*(F(pe['Hp'])+F(ps['Hp']))+F(bound['hessian_upper'])*9*(F(pe['Gp'])**2+F(ps['Gp'])**2);rule='certified_path_projection_Taylor'
++        rows.append(dict(name=f'progress_{phase}_{c}',g_upper=g,linear=linear,gradient_error=err,hessian=hh,kind='progress',rule=rule,atlas_id=contract['atlas_id']))
++    return rows
++
++
++def projection_bounds(ch):
++    if ch['kind']!='arc':return dict(gradient_upper='1',hessian_upper='0',tubular_radius='1/5')
++    k=m.tan(m.I(F(ch['curvature'])))/m.L;K=k.abs_upper();e=F(1,5);den=1-K*e;assert den>0
++    return normal(dict(gradient_upper=2/den,hessian_upper=8*K/(den*den),tubular_radius=e,curvature_abs=K,unique_projection_radius_lower=1/K))
++
++def projection_gradient(p,ch):
++    origin=[m.I.raw(*x) for x in ch['origin']];si,co=(m.I(0),m.I(1)) if origin[2].l==origin[2].u==0 else m.sincos(origin[2]);sg=direction(ch['car']);tangent=[sg*co,sg*si];normal=[-sg*si,sg*co]
++    if ch['kind']=='straight':return [ch['task_sign']*x for x in tangent]
++    dx=[p[r]-origin[r] for r in (0,1)];t=sum((x*y for x,y in zip(dx,tangent)),m.I(0));n=sum((x*y for x,y in zip(dx,normal)),m.I(0));k=m.tan(m.I(F(ch['curvature'])))/m.L;den=m.I(1)-k*n;D=den*den+(k*t)*(k*t);assert D.l>0
++    return [ch['task_sign']*(den*tangent[r]+k*t*normal[r])/D for r in (0,1)]
+--- /dev/null
++++ b/proposals.py
+@@ -0,0 +1,74 @@
++"""Finite waiting-advance pool with exact, no-optimizer launch repair."""
++from common import *
++from progress import ETA,distance
++DELTAS=(1,2,4,8);WIDTH=4;DEPTH=2;MAX_POOL=16
++_LAUNCH={};_NEXT={}
++
++def launch_controls(route,repair):
++    key=(id(route),repair)
++    if key in _LAUNCH:return _LAUNCH[key]
++    u=copy.deepcopy(route['controls']);indices=[j for j,label in enumerate(route['labels']) if label=='staging'];proof=None
++    if repair and indices:
++        first=indices[0];last=indices[-1];middle=indices[(len(indices)-1)//2];old=F(u[first][0]);sign=1 if old>0 else -1;target=sign*2*ETA/(H*H);d0=target-old;dmid=-F(last-first,last-middle)*d0;dlast=F(middle-first,last-middle)*d0
++        changes={first:d0,middle:dmid,last:dlast}
++        assert sum(changes.values())==0 and sum(j*d for j,d in changes.items())==0
++        for j,d in changes.items():u[j][0]=str(F(u[j][0])+d);assert abs(F(u[j][0]))<=1
++        proof=normal(dict(rule='three_point_impulse_first_moment_v1',indices=[first,middle,last],changes=changes,old_first_progress=H*H*abs(old)/2,new_first_progress=ETA,terminal_speed_change=sum(changes.values())*H,terminal_position_change=sum((H*H*(last-j+F(1,2))*d for j,d in changes.items()),F(0))))
++    _LAUNCH[key]=(u,proof)
++    return u,proof
++
++def candidate(old,state,shifts,repair=True):
++    w=copy.deepcopy(old);k=state['cycle'];repairs={}
++    for c,shift in shifts.items():
++        route=get(HERE/'objects',read(HERE/'rational_inputs.json')['routes'][c]);u,proof=launch_controls(route,repair);start=old['starts'][c]-shift;first=next(j for j,v in enumerate(u) if any(F(x) for x in v))
++        assert state['v'][c]==0 and state['delta'][c]==0,'advance source not stationary'
++        assert start+first>=k,'advance would rewrite an executed movement'
++        assert all(all(F(x)==0 for x in old['controls'][c][t]) for t in range(k,old['starts'][c]+first)),'not a constant waiting segment'
++        for t in range(k,w['ticks']):w['controls'][c][t]=u[t-start] if 0<=t-start<len(u) else ['0','0']
++        w['starts'][c]=start;w['goal_times'][c]=old['goal_times'][c]-shift
++        for t,entries in list(w['events'].items()):
++            if int(t)>k:
++                kept=[x for x in entries if x[0]!=c]
++                if kept:w['events'][t]=kept
++                else:del w['events'][t]
++        for offset,kind in ((0,'W_in'),(2,'W_hold'),(101,'G_in'),(663,'G_out'),(758,'target')):
++            t=max(k,start+offset);w['events'].setdefault(str(t),[]).append([c,kind])
++        for t in range(k,w['ticks']):
++            if w['owners'][t]==c:w['owners'][t]=None
++        for t in range(max(k,start),min(w['ticks'],start+663)):
++            assert w['owners'][t] in (None,c),'resource overlap: '+c+' at '+str(t)
++            w['owners'][t]=c
++        repairs[c]=proof
++    for t in w['events']:w['events'][t]=sorted({tuple(x) for x in w['events'][t]})
++    assert all(w['controls'][c][:k]==old['controls'][c][:k] for c in CARS) and w['owners'][:k]==old['owners'][:k]
++    w.update(parent_witness=state['witness'],optimization_origin=None,advance=dict(shifts=shifts,repairs=repairs,source=state_record(state),rule='bounded_wait_advance_v1'))
++    return normal(w)
++
++def pool_for(old,s):
++    k=s['cycle'];available=[]
++    key=id(old)
++    if key not in _NEXT:
++        table={}
++        for car in CARS:
++            next_value=None;values=[None]*(old['ticks']+1)
++            for t in range(old['ticks']-1,-1,-1):
++                if any(F(x) for x in old['controls'][car][t]):next_value=t
++                values[t]=next_value
++            table[car]=values
++        _NEXT[key]=table
++    for c in CARS:
++        if s['v'][c]!=0 or s['delta'][c]!=0 or k>=old['goal_times'][c]:continue
++        future=_NEXT[key][c][k]
++        if future is not None and future>k:available.append((future,c))
++    available.sort();beam=[{c:d} for _,c in available[:1] for d in reversed(DELTAS)];expanded=[]
++    for p in beam:
++        for _,c in available[:2]:
++            for d in reversed(DELTAS):
++                q=p.copy();q[c]=q.get(c,0)+d;expanded.append(q)
++    # The full emitted pool is bounded before any physical certification.
++    expanded.sort(key=lambda p:(-max(p.values()),len(p),sorted(p.items())))
++    out=[{}];seen={content_id({})}
++    for p in beam+expanded:
++        if content_id(p) not in seen:out.append(p);seen.add(content_id(p))
++        if len(out)==MAX_POOL:break
++    return out
+--- a/protocol.py
++++ b/protocol.py
+@@ -1,79 +1,75 @@
+-"""Local transactions: immutable external edges, per-car ownership, two fallbacks."""
+-import itertools
++"""Atomic physical-contract migration, then independent fixed-interface transactions."""
++import itertools,time
+ from common import *
+ 
+-def groups(edit_edges):
++def groups(edits):
+     todo=set(CARS);out=[]
+     while todo:
+         component={min(todo)};changed=True
+         while changed:
+             changed=False
+-            for edge in edit_edges:
++            for edge in edits:
+                 if component.intersection(edge) and not set(edge)<=component:component.update(edge);changed=True
+         todo-=component;out.append(sorted(component))
+     return out
+ 
+-def edge_cover(contract):
+-    assert contract['discovery_id']==content_id({k:contract[k] for k in ('cap','edge_ids','owner_calendar_id')}),'stale envelope discovery'
+-    assert set(contract['edge_ids'])=={a+':'+b for a,b in itertools.combinations(CARS,2)},'missing pair edge'
++def edge_cover(c):
++    assert c['discovery_id']==content_id({k:c[k] for k in ('cap','edge_ids','owner_calendar_id')}),'stale enlarged envelope discovery'
++    assert set(c['edge_ids'])=={a+':'+b for a,b in itertools.combinations(CARS,2)},'missing pair edge'
+ 
+-def local_source(state,c):
+-    w=get(HERE/'objects',state['witness']);k=state['cycle']
+-    return content_id(dict(car=c,cycle=k,pose=pose_rows(state['poses'][c]),v=state['v'][c],delta=state['delta'][c],tail=w['controls'][c][k:],receivers={t:[x for x in e if x[0]==c] for t,e in w['events'].items() if any(x[0]==c for x in e)},goal=w['goal_times'][c]))
++def reference_state(actual,cid):
++    c=get(HERE/'objects',cid);edge_cover(c);s=copy.deepcopy(actual);k=actual['cycle'];old=get(HERE/'objects',actual['witness']);new=get(HERE/'objects',c['reference']);expected=c.get('transition',{}).get('actual_source',c['source']);record=normal(state_record(actual));assert record==expected,'stale actual parent/source/phase'
++    assert c['phase']==k and new['controls'].keys()==old['controls'].keys()
++    for car in CARS:assert new['controls'][car][:k]==old['controls'][car][:k],'rewrites past actual inputs'
++    assert new['owners'][:k]==old['owners'][:k],'rewrites executed permissions'
++    assert max(new['goal_times'][x]-k for x in CARS)<=max(old['goal_times'][x]-k for x in CARS),'deadline max increased'
++    s.update(witness=c['reference'],contract_id=cid);return s
+ 
+-def prepare(state,candidates,participants,contract_id,versions,edits=()):
+-    contract=get(HERE/'objects',contract_id);edge_cover(contract);participants=sorted(participants)
+-    assert participants and set(participants)<=set(CARS)
+-    assert all(set(edge)<=set(participants) for edge in edits),'unclosed interface edit'
+-    old=get(HERE/'objects',state['witness']);k=state['cycle'];deps={e:v for e,v in contract['edge_ids'].items() if set(e.split(':')).intersection(participants)}
+-    plans={c:candidates[c] for c in participants}
+-    for c,p in plans.items():
++def local_source(s,c):
++    w=get(HERE/'objects',s['witness']);k=s['cycle'];return content_id(dict(car=c,cycle=k,pose=pose_rows(s['poses'][c]),v=s['v'][c],delta=s['delta'][c],tail=w['controls'][c][k:],receivers={t:[x for x in e if x[0]==c] for t,e in w['events'].items() if any(x[0]==c for x in e)},goal=w['goal_times'][c]))
++
++def anchor_candidate(s,c,gid):
++    w=get(HERE/'objects',s['witness']);g=get(HERE/'objects',gid);tail=w['controls'][c][s['cycle']:];contract=get(HERE/'objects',s['contract_id'])
++    return normal(dict(actor=c,phase=s['cycle'],contract_id=s['contract_id'],source=local_source(s,c),generation_id=gid,derivative_id=g['derivative_id'],receiver=g['receiver'],controls=tail,suffix_id=content_id(tail[33:]),deadline=max(w['goal_times'][c]-s['cycle'],0),selection='candidate_contract_anchor',raw_result_id=None,atlas_id=contract['atlas_id'],obligations_id=content_id(contract['obligations'])))
++
++def prepare(actual,candidates,people,cid,versions):
++    began=time.perf_counter();s=reference_state(actual,cid);c=get(HERE/'objects',cid);people=sorted(people);assert people and set(people)<=set(CARS)
++    assert set(c.get('transition',{}).get('closure',[]))<=set(people),'missing modified boundary/resource/receiver endpoint'
++    w=get(HERE/'objects',s['witness']);plans={car:candidates[car] for car in people}
++    for car,p in plans.items():
+         from strategy import validate_candidate
+-        validate_candidate(state,p)
+-        assert p['actor']==c and p['contract_id']==contract_id,'anchor outside candidate contract'
+-        assert p['source']==local_source(state,c) and p['phase']==k,'stale actual source or phase'
+-        assert p['deadline']==max(old['goal_times'][c]-k,0),'bad completion deadline'
+-        assert p['derivative_id']==get(HERE/'objects',p['generation_id'])['derivative_id'],'stale derivative'
+-        row=get(HERE/'objects',p['generation_id'])['receiver'];assert p['receiver']==row,'damaged receiver/K'
+-        assert len(p['controls'])==len(old['controls'][c])-k and p['suffix_id']==content_id(p['controls'][33:]),'damaged completion tail'
+-    return normal(dict(participants=participants,phase=k,contract_id=contract_id,dependencies=deps,sources={c:local_source(state,c) for c in participants},versions={c:versions[c] for c in participants},plans=plans,edit_edges=list(edits),resource_calendar_id=contract['owner_calendar_id'],exit_actions_id=contract['exit_actions_id']))
++        validate_candidate(s,p)
++        assert p['actor']==car and p['contract_id']==cid,'old anchor in new physical contract'
++        assert p['phase']==s['cycle'] and p['source']==local_source(s,car),'stale local source'
++        g=get(HERE/'objects',p['generation_id']);assert p['derivative_id']==g['derivative_id'] and p['receiver']==g['receiver'],'bad derivative/receiver/K'
++        assert p['atlas_id']==c['atlas_id'] and p['obligations_id']==content_id(c['obligations']),'old atlas or missing second-tick quota'
++        assert p['deadline']==max(w['goal_times'][car]-s['cycle'],0) and p['suffix_id']==content_id(p['controls'][33:]),'bad tail/deadline'
++    request=normal(dict(actual_source=state_record(actual),participants=people,phase=s['cycle'],contract_id=cid,dependencies={e:v for e,v in c['edge_ids'].items() if set(e.split(':')).intersection(people)},versions={car:versions[car] for car in people},plans=plans,atlas_id=c['atlas_id'],obligations_id=content_id(c['obligations']),resource_calendar_id=c['owner_calendar_id'],exit_actions_id=c['exit_actions_id'],closure=c.get('transition',{}).get('closure',[])))
++    return request
+ 
+-def validate_request(state,request,versions):
+-    expected=prepare(state,request['plans'],request['participants'],request['contract_id'],versions,request['edit_edges'])
+-    assert request==expected,'mixed dependency/version/source identity'
+-    w=get(HERE/'objects',state['witness']);contract=get(HERE/'objects',request['contract_id'])
+-    assert contract['phase']==state['cycle'] and contract['reference']==state['witness'],'stale contract reference'
+-    assert request['resource_calendar_id']==content_id(w['owners']),'conflicting resource grant'
+-    return True
++def validate_request(actual,q,versions):
++    expected=prepare(actual,q['plans'],q['participants'],q['contract_id'],versions);assert q==expected,'mixed dependency/version/atlas/quota';return True
+ 
+-def commit(state,request,versions,missing_ack=None):
+-    validate_request(state,request,versions);wire=[];people=request['participants']
++def commit(actual,q,versions,missing_ack=None):
++    began=time.perf_counter();validate_request(actual,q,versions);checked=time.perf_counter();wire=[];people=q['participants']
+     def send(sender,target,kind,payload):
+-        data=normal(dict(sender=sender,target=target,kind=kind,payload=payload));wire.append(dict(id=content_id(data),bytes=len(json.dumps(data,sort_keys=True,separators=(',',':')).encode()),sender=sender,target=target,kind=kind))
+-    for c in people:send(c,'group:'+','.join(people),'proposal',request['plans'][c])
+-    for c in people:
+-        if c==missing_ack:raise ValueError('missing_ACK: whole transaction keeps old plans')
+-        send(c,'group:'+','.join(people),'ack',content_id(request))
+-    for c in people:send('group:'+','.join(people),c,'commit',content_id(request))
+-    return dict(request=request,commit_id=content_id(request),wire=wire,messages=len(wire),bytes=sum(x['bytes'] for x in wire))
++        raw=json.dumps(normal(dict(sender=sender,target=target,kind=kind,payload=payload)),sort_keys=True,separators=(',',':')).encode();decoded=json.loads(raw);wire.append(dict(id=content_id(decoded),bytes=len(raw),sender=sender,target=target,kind=kind));return decoded
++    for car in people:send(car,'group:'+','.join(people),'proposal',q['plans'][car])
++    for car in people:
++        if car==missing_ack:raise ValueError('missing_ACK: whole physical transaction keeps old contract and all old plans')
++        send(car,'group:'+','.join(people),'ack',content_id(q))
++    for car in people:send('group:'+','.join(people),car,'commit',content_id(q))
++    return dict(request=q,commit_id=content_id(q),messages=len(wire),bytes=sum(r['bytes'] for r in wire),wire=wire,timing=dict(dependency_check_s=checked-began,commit_s=time.perf_counter()-checked))
+ 
+-def select_for_execution(state,tokens,versions,failed_blocks=()):
+-    old=get(HERE/'objects',state['witness']);new=copy.deepcopy(old);chosen={c:'old_contract_old_plan' for c in CARS};seen=set();resource_edits=set()
++def select_for_execution(actual,tokens,versions,cid,fail=False):
++    began=time.perf_counter();c=get(HERE/'objects',cid);reference=reference_state(actual,cid);old=get(HERE/'objects',actual['witness']);new=copy.deepcopy(get(HERE/'objects',reference['witness']));chosen={car:'candidate_contract_anchor' if c.get('transition') else 'old_contract_old_plan' for car in CARS};seen=set()
++    if fail:return actual['witness'],{car:'old_contract_old_plan' for car in CARS},dict(selection_s=time.perf_counter()-began)
+     for token in tokens:
+-        req=token['request'];validate_request(state,req,versions)
+-        assert token['commit_id']==content_id(req),'mixed commit'
+-        assert not seen.intersection(req['participants']),'overlapping transactions';seen.update(req['participants'])
+-        for edge in req['edit_edges']:
+-            name=tuple(sorted(edge));assert name not in resource_edits,'conflicting interface';resource_edits.add(name)
+-        if set(req['participants']).intersection(failed_blocks):continue
+-        for c,p in req['plans'].items():
+-            k=state['cycle'];new['controls'][c][k:]=p['controls'];from receivers import replacement_events
+-            new['events']=replacement_events(new['events'],c,p['receiver']);chosen[c]=p['selection']
+-    new.update(parent_witness=state['witness'],joint_update=dict(phase=state['cycle'],source=state_record(state),tokens=tokens),optimization_origin=None)
+-    wid=put(HERE/'objects',new)
+-    return wid,chosen
+-
+-def migrate(old_groups,new_groups,contract,plans,deadlines):
+-    edge_cover(contract)
+-    for partition in (old_groups,new_groups):assert sorted(c for g in partition for c in g)==sorted(CARS),'invalid partition'
+-    return normal(dict(kind='label_migration',old=old_groups,new=new_groups,edges=contract['edge_ids'],plans=plans,deadlines=deadlines,physical_contract_changed=False,passed=True))
++        q=token['request'];validate_request(actual,q,versions);assert q['contract_id']==cid and token['commit_id']==content_id(q)
++        assert not seen.intersection(q['participants']),'overlapping blocks';seen.update(q['participants'])
++        for car,p in q['plans'].items():
++            k=actual['cycle'];new['controls'][car][k:]=p['controls'];from receivers import replacement_events
++            new['events']=replacement_events(new['events'],car,p['receiver']);chosen[car]=p['selection']
++    assert not c.get('transition') or set(c['transition']['closure'])<=seen,'incomplete physical migration'
++    new.update(activity_contract_id=cid,parent_witness=actual['witness'],optimization_origin=None,joint_update=dict(source=state_record(actual),contract_id=cid,tokens=tokens));wid=put(HERE/'objects',new)
++    return wid,chosen,dict(selection_s=time.perf_counter()-began)
+--- a/receivers.py
++++ b/receivers.py
+@@ -1,7 +1,7 @@
+ """Margin allocation and exact feedback into a saved certified suffix."""
+ from common import *
+ from rules import contracts_for,assert_step
+-from physics import step,geometry,predicted_nodes,body
++from physics import step,geometry,predicted_nodes,body,propagate
+ from certify_domains import check_domain
+ 
+ 
+@@ -36,14 +36,16 @@
+             reference_center=[F(x.l+x.u,2*m.Q) for x in old_pose]
+             s['poses'][actor]=tuple(m.I(x) for x in reference_center)
+         if t>=n:
+-            nodes=predicted_nodes(s,u,4);g=geometry(nodes,w['owners'][t],4);road=min(road,g['road']);pair=min(pair,g['pair']-SAFE)
+-            theta_max=max(theta_max,max(p[2].abs_upper() for p in nodes[actor]))
+-            if w['owners'][t]!=actor:
+-                for pose in nodes[actor]:
+-                    corners=body(pose,actor);xs=[p[0] for p in corners];gap=max(F(-16)-F(max(x.u for x in xs),m.Q),F(min(x.l for x in xs),m.Q)-16)-TUBE-F(15)*(H/4)**2/8
+-                    resource=min(resource,gap)
+-            if t>n:Lrem+=H*(abs(s['v'][actor])+abs(s['v'][actor]+H*u[actor][0]))/2
+-        step(s,u,w['owners'][t],4)
++            # The sealed full-trajectory contract supplies a per-car Hausdorff budget.
++            # Reference propagation is private; peers range over their certified envelopes.
++            cap=F(get(HERE/'objects',state['contract_id'])['cap'][actor]);road=pair=resource=cap
++            aa,ww=u[actor];vv=s['v'][actor];dd=s['delta'][actor]
++            own_nodes=propagate(s['poses'][actor],vv,vv+H*aa,dd,dd+H*ww,direction(actor),4)
++            theta_max=max(theta_max,max(p[2].abs_upper() for p in own_nodes))
++            if t>n:Lrem+=H*(abs(vv)+abs(vv+H*aa))/2
++            s['poses'][actor]=own_nodes[-1];s['v'][actor]+=H*aa;s['delta'][actor]+=H*ww;s['cycle']+=1
++            s['history']=content_id(dict(actor_reference_parent=s['history'],actor=actor,input=u[actor]))
++        else:step(s,u,w['owners'][t],4)
+         if t==n:after=state_record(s)
+     check_generated(s,actor,target_domain)
+     p=[m.I.raw(*x) for x in nominal['poses_Q'][actor]];center=[F(x.l+x.u,2*m.Q) for x in p];ep=et=F(0)
+@@ -72,7 +74,7 @@
+     if r[0]<source_ep or r[1]<source_et:
+         key=put(HERE/'objects',dict(**diagnostics,failure='center_not_contained',radii=r,limiting_rows=limits));raise ValueError('center_not_contained: counterexample='+key)
+     domain=dict(center_pose_Q=[[x.numerator,x.denominator] for x in center],position_l1_radius=str(r[0]),yaw_radius=str(r[1]),center_v=str(v),speed_radius=str(r[2]),center_delta=str(d),steering_radius=str(r[3]))
+-    certificate=normal(dict(rule='contract_margin_allocation_v1',contract_id=state['contract_id'],source=state_record(state),actor=actor,phase=n,domain=domain,reference_K=w['controls'][actor][n],reset_v=str(v1),reset_delta=str(d1),retained_target_phase=target,retained_target_kind=kind,retained_target_domain=target_domain,retained_controls_id=content_id({c:w['controls'][c][n+1:] for c in CARS}),old_witness=state['witness'],budget_before=w['ticks']-k,prefix_ticks=33,suffix_ticks=w['ticks']-(n+1),dimension=2+int(rv>0)+int(rd>0),allocation=inequalities,limiting_rows=limits,baseline=baseline,constants=dict(ep=ep,et=et,V=V,D_abs=D,kappa=kap,kappa_delta=kd,L_rem=Lrem,road=road,pair_surplus=pair,resource=resource),nominal_at_receiver=nominal,nominal_after_K=after,nominal_at_retained=state_record(s)))
++    certificate=normal(dict(rule='contract_private_reference_v2',reference_scope='after N only actor reference fields propagate; peer fields are not actual future joint states; peer feasibility is the sealed full contract',contract_id=state['contract_id'],source=state_record(state),actor=actor,phase=n,domain=domain,reference_K=w['controls'][actor][n],reset_v=str(v1),reset_delta=str(d1),retained_target_phase=target,retained_target_kind=kind,retained_target_domain=target_domain,retained_controls_id=content_id({c:w['controls'][c][n+1:] for c in CARS}),old_witness=state['witness'],budget_before=w['ticks']-k,prefix_ticks=33,suffix_ticks=w['ticks']-(n+1),dimension=2+int(rv>0)+int(rd>0),allocation=inequalities,limiting_rows=limits,baseline=baseline,constants=dict(ep=ep,et=et,V=V,D_abs=D,kappa=kap,kappa_delta=kd,L_rem=Lrem,road=road,pair_surplus=pair,resource=resource),nominal_at_receiver=nominal,nominal_after_K=after,nominal_at_retained=state_record(s)))
+     check_generated(restore(m,nominal),actor,domain)
+     # Zero candidate's K is exactly the old actual next command.
+     assert feedback(restore(m,nominal),actor,certificate)==tuple(map(F,w['controls'][actor][n]))
+--- a/rules.py
++++ b/rules.py
+@@ -37,7 +37,14 @@
+             else:mode='forward'
+         elif t>=start+len(route['labels']):mode='hold'
+         else:mode='forward'  # preparation permits forward motion and a stopped hold
+-        out.append(contract(mode))
++        box=contract(mode)
++        if mode=='reverse' or t< len(read(HERE/'rational_inputs.json')['preparation'][actor]):box['delta']=[F(0),F(0)];box['omega']=[F(0),F(0)]
++        # A rest launch at the exact maximal quota requires its saturated first acceleration.
++        row=get(HERE/'objects',state['contract_id']) if state.get('contract_id') else {}
++        if str(t) in row.get('obligations',{}) and actor in row['obligations'][str(t)] and t==k and state['v'][actor]==0:
++            a=F(w['controls'][actor][t][0])
++            if abs(a)==1:box['a']=[a,a]
++        out.append(box)
+     # Boundary states must satisfy both adjacent contracts.
+     for j,row in enumerate(out[:-1]):
+         row['end_v']=intersect(row['v'],out[j+1]['v'])
+--- a/run_case.py
++++ b/run_case.py
+@@ -1,98 +1,85 @@
+-"""Bounded three-arm experiment; ledger registration precedes every solve release."""
++"""R-old replay and two numerical arms, with a single durable native-call ledger."""
+ import argparse,multiprocessing as mp,time
+ from common import *
+-from local_update import prepare_job,native,admit
+-from protocol import prepare,commit,select_for_execution,groups
+-from contracts import build,bind
++from worker_io import Channel
++from local_update import native,prepare_job,admit
++from protocol import reference_state,anchor_candidate,prepare,commit,select_for_execution,groups
++from contracts import build
++from generation import generate
+ from execution import advance
+ from strategy import certify_combination
+ 
+-def calls(jobs,arm,roundno,output):
+-    ctx=mp.get_context('spawn');workers=[];startup=time.time_ns()
+-    for job in jobs:
+-        parent,child=ctx.Pipe();p=ctx.Process(target=native,args=(child,));p.start();child.close();workers.append((p,parent,job))
+-    ready=[]
++def numerical_calls(jobs,arm,rn):
++    ctx=mp.get_context('spawn');workers=[];boot=time.time_ns();ready=[]
+     try:
+-        for p,pipe,job in workers:
+-            if not pipe.poll(60):raise TimeoutError('worker boot timeout, zero solver release')
+-            ready.append(pipe.recv());pipe.send(job)
+-        for p,pipe,job in workers:
+-            if not pipe.poll(60):raise TimeoutError('worker assembly timeout, zero solver release')
+-            assert pipe.recv()['assembled']
+-        online=time.time_ns();ledger=read(HERE/'solver_calls.json');assert len(ledger)+len(jobs)<=12
+-        ids=[]
+         for job in jobs:
+-            key=f'{arm}:r{roundno}:{job["actor"]}';assert key not in [c['event'] for c in ledger]
+-            ids.append(len(ledger));ledger.append(dict(event=key,arm=arm,round=roundno,actor=job['actor'],generation_id=job['generation_id'],anchor_id=job['anchor_id'],registered_ns=time.time_ns(),source_version=content_id(read(HERE/'executed_source_versions.json')),completed=False))
+-        write(HERE/'solver_calls.json',ledger);results=[]
+-        if arm=='F-S':
+-            for p,pipe,job in workers:
+-                release=time.time_ns();pipe.send(release)
+-                if pipe.poll(15):results.append(pipe.recv())
+-                else:results.append(dict(status='Timeout',release_ns=release));p.terminate()
+-        else:
+-            release=time.time_ns()
+-            for p,pipe,job in workers:pipe.send(release)
+-            for p,pipe,job in workers:
+-                if pipe.poll(15):results.append(pipe.recv())
+-                else:results.append(dict(status='Timeout',release_ns=release));p.terminate()
+-        for idx,raw,job in zip(ids,results,jobs):
+-            raw.update(event=ledger[idx]['event'],arm=arm,round=roundno,actor=job['actor'],source=job['source'],generation_id=job['generation_id'],anchor_id=job['anchor_id'],derivative_id=job['derivative_id'],assembly_id=job['assembly_id']);rid=put(HERE/'objects',raw);ledger[idx].update(completed=True,status=raw['status'],raw_result_id=rid)
++            parent,child=ctx.Pipe();p=ctx.Process(target=native,args=(child,));p.start();child.close();workers.append((p,Channel(parent),job))
++        for p,ch,job in workers:
++            if not ch.poll(60):raise TimeoutError('worker boot: no solve released')
++            ready.append(ch.recv());ch.send(job)
++        for p,ch,job in workers:
++            if not ch.poll(60):raise TimeoutError('worker assembly: no solve released')
++            assert ch.recv()['assembled']
++        ledger=read(HERE/'solver_calls.json');assert len(ledger)+len(jobs)<=16;indices=[]
++        for job in jobs:
++            event=f'{arm}:r{rn}:{job["actor"]}';assert event not in [x['event'] for x in ledger],'already registered native call'
++            indices.append(len(ledger));ledger.append(dict(event=event,arm=arm,round=rn,actor=job['actor'],generation_id=job['generation_id'],registered_ns=time.time_ns(),completed=False,source_version=content_id(read(HERE/'executed_source_versions.json'))))
++        write(HERE/'solver_calls.json',ledger);release=time.time_ns()
++        for p,ch,job in workers:ch.send(release)
++        results=[]
++        for p,ch,job in workers:
++            if ch.poll(15):results.append(ch.recv())
++            else:p.terminate();results.append(dict(status='Timeout',release_ns=release))
++        for idx,raw,job in zip(indices,results,jobs):
++            raw.update(event=ledger[idx]['event'],arm=arm,round=rn,actor=job['actor'],source=job['source'],generation_id=job['generation_id'],anchor_id=job['anchor_id'],derivative_id=job['derivative_id'],assembly_id=job['assembly_id']);rid=put(HERE/'objects',raw);ledger[idx].update(completed=True,status=raw['status'],raw_result_id=rid)
+         write(HERE/'solver_calls.json',ledger)
+-        overlap=max(0,min(r.get('ended_ns',0) for r in results)-max(r.get('started_ns',0) for r in results))
+-        timing=dict(worker_startup_s=(online-startup)/1e9,common_release_ns=online,results_received_ns=time.time_ns(),solve_intervals=[{k:r.get(k) for k in ('pid','started_ns','ended_ns','cpu_s','release_ns')} for r in results],overlap_ns=overlap,ready=ready)
+-        return results,timing
++        overlap=max(0,min(r.get('ended_ns',0) for r in results)-max(r.get('started_ns',0) for r in results));pipe=[dict(actor=j['actor'],parent_sent_bytes=ch.sent,parent_received_bytes=ch.received) for p,ch,j in workers]
++        return results,dict(release_ns=release,received_ns=time.time_ns(),startup_s=(release-boot)/1e9,overlap_ns=overlap,pipe=pipe,intervals=[{k:r.get(k) for k in ('pid','started_ns','ended_ns','cpu_s')} for r in results],ready=ready)
+     finally:
+-        for p,pipe,job in workers:
++        for p,ch,job in workers:
+             p.join(1)
+             if p.is_alive():p.terminate();p.join()
+-            pipe.close()
++            ch.close()
+ 
+ def run(arm):
+-    assert read(HERE/'results/protocol_checks.json')['passed'];assert read(HERE/'results/generation_regression.json')['passed'];assert read(HERE/'results/terminal_hold.json')['passed'];reg=read(HERE/'pre_registration.json');out=HERE/'results'/arm;assert not out.exists();out.mkdir();s=initial_state();s['witness']=reg['initial_witness'];versions={c:0 for c in CARS};events=[];began=time.perf_counter();initial=s['witness'];write(out/'config.json',dict(arm=arm,initial_witness=initial,registration_id=content_id(reg),versions=versions))
+-    with gzip.open(out/'execution.jsonl.gz','wt') as trace:
++    reg=read(HERE/'pre_registration.json');assert reg['passed'];out=HERE/'results'/arm;assert not out.exists();out.mkdir();s=initial_state();s['witness']=reg['initial_witness'];versions={c:0 for c in CARS};events=[];began=time.perf_counter();physical_base=None
++    if arm!='R-old':
++        assert read(HERE/'results/protocol_checks.json')['passed'] and read(HERE/'results/generation_regression.json')['passed'];assert read(HERE/'results/pool_certification.json')['passed'] and read(HERE/'results/atlas_certification.json')['passed']
++        if arm=='L-new':assert read(HERE/'results/repair_checks.json')['passed']
++    write(out/'config.json',dict(arm=arm,initial_witness=s['witness'],registration_id=content_id(reg),new_solver_limit=16,logical_h=str(H)))
++    with gzip.open(out/'execution.jsonl.gz','wt') as stream:
+         while s['cycle']<get(HERE/'objects',s['witness'])['ticks']:
+-            k=s['cycle'];event=None
+-            if k in (reg['cycle'],reg['next_cycle']):
+-                rn=1+int(k==reg['next_cycle']);cycle_start=time.time_ns()
+-                if rn==1:bind(s,reg['contract_id']);assert normal(state_record(s))==reg['state']
+-                else:s['contract_id']=None;bind(s,build(s))
+-                contract=get(HERE/'objects',s['contract_id']);actors=reg['actors'];jobs=[]
+-                for c in actors:
+-                    gid=next(x['generation_id'] for x in reg['scan'][-1]['checks'] if x['actor']==c and 'freedom' in x) if rn==1 else None
+-                    jobs.append(prepare_job(s,c,gid))
+-                # Both priors passed before this arm/round is allowed to use its allocation.
+-                from generation import generate
+-                extra_jobs={}
+-                if arm!='D-P':
+-                    for c in CARS:
+-                        if c not in actors:
+-                            g,gid=generate(s,c);assert g['passed'],g;extra_jobs[c]=dict(generation_id=gid)
+-                results,timing=calls(jobs,arm,rn,out);candidates={};admissions=[]
+-                for job,raw in zip(jobs,results):
+-                    p,a=admit(s,job,raw);candidates[p['actor']]=p;admissions.append(a)
+-                partition=[list(CARS)] if arm!='D-P' else groups([]);tokens=[];txn_start=time.time_ns()
++            k=s['cycle'];event=None;wid=s['witness']
++            if arm!='R-old' and k in (reg['cycle'],reg['next_cycle']):
++                rn=1+int(k==reg['next_cycle']);cycle_start=time.time_ns();old_groups=groups([]) if rn==1 else [list(CARS)]
++                if rn==1:
++                    assert normal(state_record(s))==reg['actual_source'];cid=reg['new_contract'];physical_base=cid
++                else:cid=build(s,reg['obligations'],base=physical_base)
++                reference=reference_state(s,cid);active=reg['active'];jobs=[];gids={}
++                for c in CARS:
++                    if rn==1:gid=next(x['generation_id'] for x in reg['zero_checks'] if x['actor']==c);g=get(HERE/'objects',gid)
++                    else:g,gid=generate(reference,c)
++                    assert g['passed'],g;gids[c]=gid
++                    if c in active:jobs.append(prepare_job(reference,c,gid))
++                # Both rounds' activity and all zero anchors are prior gates to their allocations.
++                raws,nt=numerical_calls(jobs,arm,rn);plans={};admissions=[]
++                for job,raw in zip(jobs,raws):
++                    p,a=admit(reference,job,raw);plans[p['actor']]=p;admissions.append(a)
++                for c in CARS:
++                    if c not in plans:plans[c]=anchor_candidate(reference,c,gids[c])
++                partition=[list(CARS)] if arm=='C-new' or rn==1 else groups([]);tokens=[];prepare_times=[]
+                 for people in partition:
+-                    relevant=[c for c in people if c in candidates]
+-                    if not relevant:continue
+-                    # Fixed groups carry all four participants, including unchanged anchors.
+-                    if arm!='D-P':
+-                        from check_protocol import anchor_candidate
+-                        for c in people:
+-                            if c not in candidates:
+-                                job=extra_jobs[c];candidates[c]=anchor_candidate(s,c,job['generation_id'])
+-                    req=prepare(s,candidates,people,s['contract_id'],versions);tokens.append(commit(s,req,versions))
+-                wid,choice=select_for_execution(s,tokens,versions);selection_ns=time.time_ns()
+-                proof=certify_combination(s,wid)
+-                event=normal(dict(arm=arm,round=rn,cycle=k,source=state_record(s),jobs=jobs,admissions=admissions,tokens=tokens,selected_witness=wid,choice=choice,combination_proof_id=put(HERE/'objects',proof),partition=partition,timing=dict(**timing,cycle_start_ns=cycle_start,selection_ns=selection_ns,cycle_wall_s=(selection_ns-timing['common_release_ns'])/1e9,source_to_selection_s=(selection_ns-cycle_start)/1e9,group_commit_s=(selection_ns-txn_start)/1e9,full_audit_s=proof['wall_s']),prior_receiver_replacement=[dict(actor=c,old=[x for x in get(HERE/'objects',s['witness'])['events'].items() if any(e[0]==c and e[1].startswith('generated:') for e in x[1])],new=candidates[c]['receiver']) for c in actors]))
++                    if arm=='L-new' and rn==2 and not set(people).intersection(active):continue
++                    start=time.perf_counter();request=prepare(s,plans,people,cid,versions);prepare_times.append(time.perf_counter()-start);tokens.append(commit(s,request,versions))
++                wid,choice,selection=select_for_execution(s,tokens,versions,cid);chosen_ns=time.time_ns();proof=certify_combination(s,wid)
++                event=normal(dict(arm=arm,round=rn,cycle=k,actual_source=state_record(s),anchor_source=state_record(reference),contract_id=cid,old_contract_id=reg['old_contract'] if rn==1 else physical_base,jobs=jobs,admissions=admissions,plans=plans,tokens=tokens,choice=choice,selected_witness=wid,full_proof_id=put(HERE/'objects',proof),groups_before=old_groups,groups_after=partition,physical_change=rn==1,group_event='merge_for_physical_boundary_and_calendar' if rn==1 else 'split_after_interfaces_frozen' if arm=='L-new' else 'fixed_all_four',timing=dict(**nt,cycle_start_ns=cycle_start,selection_ns=chosen_ns,source_to_selection_s=(chosen_ns-cycle_start)/1e9,release_to_selection_s=(chosen_ns-nt['release_ns'])/1e9,prepare_s=prepare_times,dependency_check_s=[t['timing']['dependency_check_s'] for t in tokens],commit_s=[t['timing']['commit_s'] for t in tokens],selection_s=selection['selection_s'],full_combination_audit_s=proof['wall_s'])))
+                 events.append(event);write(out/f'round_{rn}.json',event)
+-                for c in candidates:versions[c]+=1
+-                s['contract_id']=None
+-            else:wid=s['witness']
+-            row=advance(s,wid);row['event_round']=event['round'] if event else None;trace.write(json.dumps(row,separators=(',',':'))+'\n')
++                for people in partition:
++                    for c in people:versions[c]+=1
++            row=advance(s,wid);row['event_round']=event['round'] if event else None;row['O']=reg['active'] if event else [];stream.write(json.dumps(row,separators=(',',':'))+'\n')
+     from certify_domains import check_domain
+     for c in CARS:check_domain(s,c,'target',read(HERE/'domain_checks.json')['domains'])
+-    value=dict(passed=True,arm=arm,steps=s['cycle'],logical_time_s=str(H*s['cycle']),events=events,final=state_record(s),wall_s=time.perf_counter()-began,new_calls=4,all_goals=True)
+-    write(out/'summary.json',value);print(dict(arm=arm,passed=True,steps=s['cycle'],accepted=[sum(a['accepted'] for a in e['admissions']) for e in events]),flush=True)
++    summary=normal(dict(passed=True,arm=arm,steps=s['cycle'],logical_time_s=str(H*s['cycle']),events=events,final=state_record(s),wall_s=time.perf_counter()-began,new_calls=len(reg['active'])*len(events),all_goals=True))
++    write(out/'summary.json',summary);print(dict(passed=True,arm=arm,steps=s['cycle'],accepted=[sum(a['accepted'] for a in e['admissions']) for e in events]),flush=True)
+ if __name__=='__main__':
+-    parser=argparse.ArgumentParser();parser.add_argument('--arm',choices=('F-S','F-P','D-P'),required=True);run(parser.parse_args().arm)
++    p=argparse.ArgumentParser();p.add_argument('--arm',choices=('R-old','C-new','L-new'),required=True);run(p.parse_args().arm)
+--- a/socp_rows.py
++++ b/socp_rows.py
+@@ -39,7 +39,8 @@
+     for j,(profile,margin) in enumerate(zip(cert['local_profiles'],cert['geometry_margins'])):
+         add(f'geometry_{j+1}',-F(margin),error=F(profile['Gc']),hessian=F(profile['Hc']),kind='geometry')
+     add('hard_trust',-RHO,error=1,kind='trust')
+-    return rows
++    from progress import add_rows
++    return add_rows(anchor,cert,rows)
+ 
+ 
+ def evaluate(rows,delta):
+--- a/stage_driver.py
++++ b/stage_driver.py
+@@ -1,29 +1,28 @@
+-"""Bounded durable stages. Completed stages are reused only after content checks."""
+-import subprocess,sys,time,os
++"""Bounded durable phases; failures retained, completed outputs content-checked."""
++import subprocess,sys,time
+ from common import *
+ 
+ def stage(name,args,outputs):
+-    manifest=HERE/'results'/(name+'.stage.json');log=HERE/'results'/(name+'.stage.log')
+-    if manifest.exists():
+-        record=read(manifest);assert record['completed'] and record['exit_code']==0,'failed/incomplete stage retained: '+str(manifest)
+-        for rel,digest in record['outputs'].items():assert sha(HERE/rel)==digest,'stale completed output: '+rel
+-        for rel,digest in record['code'].items():assert sha(HERE/rel)==digest or sha(HERE/'source_archive'/digest/Path(rel).name)==digest,'missing original code for reused stage: '+rel
++    path=HERE/'results'/(name+'.stage.json');log=HERE/'results'/(name+'.stage.log')
++    if path.exists():
++        prior=read(path);assert prior['completed'] and prior['exit_code']==0,'prior failure retained: '+str(path)
++        for p,h in prior['outputs'].items():assert sha(HERE/p)==h,'changed result '+p
++        for p,h in prior['code'].items():assert sha(HERE/p)==h or sha(HERE/'source_archive'/h/Path(p).name)==h,'missing actual executed code '+p
+         print(json.dumps(dict(stage=name,reused=True,content_checked=True)),flush=True);return
+-    record=dict(layer=name,command=[sys.executable,*args],started=True,completed=False,evidence=str(log.relative_to(HERE)),code={str(p.relative_to(HERE)):sha(p) for p in HERE.glob('*.py')});write(manifest,record);began=time.perf_counter()
+-    with log.open('w') as stream:result=subprocess.run([sys.executable,*args],cwd=HERE,stdout=stream,stderr=subprocess.STDOUT)
+-    record.update(completed=True,exit_code=result.returncode,wall_s=time.perf_counter()-began,outputs={p:sha(HERE/p) for p in outputs if (HERE/p).exists()});write(manifest,record);print(json.dumps({k:v for k,v in record.items() if k not in ('code','outputs')}),flush=True)
+-    with (HERE/'results/commands.jsonl').open('a') as stream:stream.write(json.dumps({k:v for k,v in record.items() if k not in ('code','outputs')})+'\n')
+-    if result.returncode:raise RuntimeError(f'{name}: exit={result.returncode}; evidence={log}')
++    record=dict(layer=name,command=[sys.executable,*args],started=True,completed=False,evidence=str(log.relative_to(HERE)),code={p.name:sha(p) for p in HERE.glob('*.py')});write(path,record);start=time.perf_counter()
++    with log.open('w') as f:r=subprocess.run([sys.executable,*args],cwd=HERE,stdout=f,stderr=subprocess.STDOUT)
++    record.update(completed=True,exit_code=r.returncode,wall_s=time.perf_counter()-start,outputs={p:sha(HERE/p) for p in outputs if (HERE/p).exists()});write(path,record);small={k:v for k,v in record.items() if k not in ('code','outputs')};print(json.dumps(small),flush=True)
++    with (HERE/'results/commands.jsonl').open('a') as f:f.write(json.dumps(small)+'\n')
++    if r.returncode:raise RuntimeError(f'{name}: exit {r.returncode}; evidence {log}')
+ 
+ def main():
+-    assert read(HERE/'pre_registration.json')['passed'];assert read(HERE/'results/protocol_checks.json')['passed'];assert read(HERE/'results/generation_regression.json')['passed'];assert read(HERE/'results/terminal_hold.json')['passed']
+-    versions={str(p.relative_to(HERE)):sha(p) for p in HERE.rglob('*.py') if '__pycache__' not in str(p) and 'source_archive' not in p.parts}
+-    path=HERE/'executed_source_versions.json'
++    assert read(HERE/'results/protocol_checks.json')['passed'] and read(HERE/'results/generation_regression.json')['passed']
++    manifest={p.name:sha(p) for p in HERE.glob('*.py')};path=HERE/'executed_source_versions.json'
+     if path.exists():
+-        for rel,digest in read(path).items():
+-            assert sha(HERE/rel)==digest or sha(HERE/'source_archive'/digest/Path(rel).name)==digest,'missing executed source: '+rel
+-    else:write(path,versions)
+-    for arm in ('F-S','F-P','D-P'):
+-        stage(arm+'_execute',['run_case.py','--arm',arm],[f'results/{arm}/summary.json',f'results/{arm}/execution.jsonl.gz'])
+-        stage(arm+'_accept_v2',['accept_case.py','--arm',arm],[f'results/{arm}/independent_acceptance.json'])
++        for name,h in read(path).items():
++            assert sha(HERE/name)==h or sha(HERE/'source_archive'/h/Path(name).name)==h,'missing actual executed source '+name
++    else:write(path,manifest)
++    for arm in ('R-old','C-new','L-new'):
++        stage(arm+'_execute',['run_case.py','--arm',arm],[f'results/{arm}/execution.jsonl.gz',f'results/{arm}/summary.json'])
++        stage(arm+'_accept',['accept_case.py','--arm',arm],[f'results/{arm}/independent_acceptance.json'])
+ if __name__=='__main__':main()
+--- a/strategy.py
++++ b/strategy.py
+@@ -9,7 +9,7 @@
+ def certify_combination(state,wid,trace_path=None):
+     began=__import__('time').perf_counter();w=get(HERE/'objects',wid);old=get(HERE/'objects',state['witness']);s=copy.deepcopy(state);domains=read(HERE/'domain_checks.json')['domains'];minimum_road=minimum_pair=F(100);receivers=[]
+     trace=gzip.open(trace_path,'wt') if trace_path else None
+-    assert w['ticks']==old['ticks'] and w['goal_times']==old['goal_times'] and w['owners']==old['owners']
++    assert w['ticks']==old['ticks'] and max(w['goal_times'].values())<=max(old['goal_times'].values())
+     for c in CARS:assert w['controls'][c][:s['cycle']]==old['controls'][c][:s['cycle']]
+     for t in range(state['cycle'],w['ticks']):
+         for c,kind in w['events'].get(str(t),[]):
+@@ -35,5 +35,6 @@
+     old=get(HERE/'objects',state['witness']);k=state['cycle'];c=p['actor'];assert p['controls'][33:]==old['controls'][c][k+33:],'completion suffix changed'
+     if p['selection']=='candidate_contract_anchor':assert p['controls']==old['controls'][c][k:],'wrong contract anchor';return
+     raw=get(HERE/'objects',p['raw_result_id']);assert raw['status'] in ('Solved','AlmostSolved')
++    assert raw['source']==a['state'] and raw['anchor_id']==g['anchor_id'] and raw['generation_id']==p['generation_id'] and raw['derivative_id']==p['derivative_id'],'wrong numerical source/model; retained vectors are regression fixtures only'
+     rows=get(HERE/'objects',g['physical_rows_id']);d=[F(x)-F(y) for u,v in zip(p['controls'][:32],old['controls'][c][k:k+32]) for x,y in zip(u,v)]
+     assert evaluate(rows,d)['passed'];assert any((lambda q:q[1]['passed'] and q[0]==d)(quantize(raw['x'],alpha,a['contracts'])) for alpha in (F(1),F(1,2),F(1,4))),'raw/quantized mismatch'
+--- a/verify_delivery.py
++++ b/verify_delivery.py
+@@ -1,4 +1,4 @@
+ """Public zero-call verification entry."""
++import runpy
+ from pathlib import Path
+-import runpy
+ runpy.run_path(str(Path(__file__).resolve().parent/'delivery_tools/verify_delivery.py'),run_name='__main__')
+--- /dev/null
++++ b/worker_io.py
+@@ -0,0 +1,10 @@
++"""Count actual JSON bytes carried by multiprocessing Connection.send_bytes."""
++import json
++class Channel:
++    def __init__(self,connection):self.connection=connection;self.sent=0;self.received=0
++    def send(self,value):
++        raw=json.dumps(value,default=str,separators=(',',':')).encode();self.connection.send_bytes(raw);self.sent+=len(raw)
++    def recv(self):
++        raw=self.connection.recv_bytes();self.received+=len(raw);return json.loads(raw)
++    def poll(self,timeout):return self.connection.poll(timeout)
++    def close(self):self.connection.close()

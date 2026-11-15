@@ -1,0 +1,41 @@
+{
+  "executed": false,
+  "blocked_by": "C0 JL acceptance gate",
+  "source_reference_label": 10,
+  "receiver_reference_label": 42,
+  "suffix_including_K_ticks": 1237,
+  "remaining_template_including_K_ticks": 197,
+  "current_old_budget": 1269,
+  "branches": [
+    {
+      "m": 32,
+      "input_dimension": 64,
+      "prefix_plus_suffix": 1269,
+      "projected_first_connection_ticks": 239,
+      "projected_steps_including_next_owner_first": 240,
+      "constructed": false,
+      "certified": false,
+      "executed": false
+    },
+    {
+      "m": 31,
+      "input_dimension": 62,
+      "prefix_plus_suffix": 1268,
+      "projected_first_connection_ticks": 238,
+      "projected_steps_including_next_owner_first": 239,
+      "constructed": false,
+      "certified": false,
+      "executed": false
+    },
+    {
+      "m": 30,
+      "input_dimension": 60,
+      "prefix_plus_suffix": 1267,
+      "projected_first_connection_ticks": 237,
+      "projected_steps_including_next_owner_first": 238,
+      "constructed": false,
+      "certified": false,
+      "executed": false
+    }
+  ]
+}

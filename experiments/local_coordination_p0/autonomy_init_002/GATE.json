@@ -1,0 +1,80 @@
+{
+  "passed": true,
+  "status": "passed",
+  "task": "autonomy_init_002",
+  "criteria": {
+    "autonomous_initialization": {
+      "status": "passed",
+      "regenerated_from_static_inputs": true,
+      "two_initial_B0": 1955,
+      "new_anchor_B0": 1822
+    },
+    "joint_repairs": {
+      "status": "passed",
+      "repairs": [
+        "rational conversion",
+        "individual deadlines"
+      ],
+      "live_and_generator_deadline_checks": true
+    },
+    "actual_worker_transport": {
+      "status": "passed",
+      "forecast_models": 8,
+      "actual_round_models": 8,
+      "actual_matrix_and_model_fingerprints_match": true,
+      "zero_stage_native_calls": 0
+    },
+    "true_MPC_updates": {
+      "status": "passed",
+      "calls": 8,
+      "accepted": [
+        4,
+        4
+      ],
+      "new_prefix_by_round": [
+        4,
+        4
+      ],
+      "first_changed": [
+        0,
+        4
+      ]
+    },
+    "real_successor_and_receiving_K": {
+      "status": "passed",
+      "evidence": "independent exact row/grid reconstruction; actual-source bindings; phase32/33 exact v/delta and position inclusion; each committed complete strategy separately replayed"
+    },
+    "four_car_progress": {
+      "status": "passed",
+      "first_two": [
+        4,
+        4
+      ],
+      "initial_contiguous_ticks": 25
+    },
+    "rejection_continuation": {
+      "status": "passed",
+      "branches": 2,
+      "source": "real second-round numerical candidates and actual checkpoint"
+    },
+    "safety_and_completion": {
+      "status": "passed",
+      "steps": 1822,
+      "all_six_pairs": true,
+      "subdivisions": 8,
+      "all_four_goals": true,
+      "B_final": 0,
+      "individual_deadlines_nonincrease": true
+    }
+  },
+  "native_usage": {
+    "new_limit": 8,
+    "releases": 8,
+    "native_entered": 8,
+    "accepted": 8,
+    "automatic_repeats": 0
+  },
+  "scope": "nominal fixed four-car map, two initial straight/stopped-steering update rounds, synchronous in-process directory; no curved online or network/timing performance claim",
+  "old_task_preserved": true,
+  "DG002_CL_budget_untouched": true
+}

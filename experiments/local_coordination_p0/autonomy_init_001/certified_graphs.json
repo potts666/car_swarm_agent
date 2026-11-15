@@ -1,0 +1,166 @@
+{
+  "passed": true,
+  "construction": "INIT-DAG",
+  "vertices": {
+    "A1": {
+      "source": [
+        "-35",
+        "3",
+        "0",
+        "0",
+        "0"
+      ],
+      "target": [
+        "46",
+        "3",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    "A2": {
+      "source": [
+        "-39",
+        "-3",
+        "0",
+        "0",
+        "0"
+      ],
+      "target": [
+        "46",
+        "-3",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    "B1": {
+      "source": [
+        "37",
+        "3",
+        "0",
+        "0",
+        "0"
+      ],
+      "target": [
+        "-46",
+        "3",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    "B2": {
+      "source": [
+        "40",
+        "-3",
+        "0",
+        "0",
+        "0"
+      ],
+      "target": [
+        "-46",
+        "-3",
+        "0",
+        "0",
+        "0"
+      ]
+    }
+  },
+  "edges": {
+    "A1": {
+      "source": "H_A1",
+      "target": "G_A1",
+      "ticks": 475,
+      "certificate": {
+        "flow_proof": "same inputs, signed speed integral: rP_l=rP_0+L_prefix*rPsi; orientation offset constant; terminal exact v=delta=0",
+        "geometry_certificate": "results/map_radius_6.json",
+        "length": "5154444630071/62500000000",
+        "passed": true,
+        "rdelta": 0,
+        "receiver_rP": "67654444630071/6250000000000000000",
+        "receiver_rPsi": "1/100000000",
+        "reference_goal_error": "7723089/12500000000000000000",
+        "reference_yaw_error": "293/50000000000000000000",
+        "rv": 0,
+        "source_rP": "1/100000",
+        "source_rPsi": "1/100000000",
+        "sweep_body_error_budget": "1/20"
+      },
+      "controls_object": "results/init_0.json.gz#paths/A1"
+    },
+    "A2": {
+      "source": "H_A2",
+      "target": "G_A2",
+      "ticks": 495,
+      "certificate": {
+        "flow_proof": "same inputs, signed speed integral: rP_l=rP_0+L_prefix*rPsi; orientation offset constant; terminal exact v=delta=0",
+        "geometry_certificate": "results/map_radius_6.json",
+        "length": "5404444630071/62500000000",
+        "passed": true,
+        "rdelta": 0,
+        "receiver_rP": "67904444630071/6250000000000000000",
+        "receiver_rPsi": "1/100000000",
+        "reference_goal_error": "7723091/12500000000000000000",
+        "reference_yaw_error": "293/50000000000000000000",
+        "rv": 0,
+        "source_rP": "1/100000",
+        "source_rPsi": "1/100000000",
+        "sweep_body_error_budget": "1/20"
+      },
+      "controls_object": "results/init_0.json.gz#paths/A2"
+    },
+    "B1": {
+      "source": "H_B1",
+      "target": "G_B1",
+      "ticks": 485,
+      "certificate": {
+        "flow_proof": "same inputs, signed speed integral: rP_l=rP_0+L_prefix*rPsi; orientation offset constant; terminal exact v=delta=0",
+        "geometry_certificate": "results/map_radius_6.json",
+        "length": "5279444630071/62500000000",
+        "passed": true,
+        "rdelta": 0,
+        "receiver_rP": "67779444630071/6250000000000000000",
+        "receiver_rPsi": "1/100000000",
+        "reference_goal_error": "30892363/50000000000000000000",
+        "reference_yaw_error": "293/50000000000000000000",
+        "rv": 0,
+        "source_rP": "1/100000",
+        "source_rPsi": "1/100000000",
+        "sweep_body_error_budget": "1/20"
+      },
+      "controls_object": "results/init_0.json.gz#paths/B1"
+    },
+    "B2": {
+      "source": "H_B2",
+      "target": "G_B2",
+      "ticks": 500,
+      "certificate": {
+        "flow_proof": "same inputs, signed speed integral: rP_l=rP_0+L_prefix*rPsi; orientation offset constant; terminal exact v=delta=0",
+        "geometry_certificate": "results/map_radius_6.json",
+        "length": "5466944630071/62500000000",
+        "passed": true,
+        "rdelta": 0,
+        "receiver_rP": "67966944630071/6250000000000000000",
+        "receiver_rPsi": "1/100000000",
+        "reference_goal_error": "30892367/50000000000000000000",
+        "reference_yaw_error": "293/50000000000000000000",
+        "rv": 0,
+        "source_rP": "1/100000",
+        "source_rPsi": "1/100000000",
+        "sweep_body_error_budget": "1/20"
+      },
+      "controls_object": "results/init_0.json.gz#paths/B2"
+    }
+  },
+  "path_search": "one direct certified local edge per car; first passing declared radius-six family",
+  "dependencies": [
+    [
+      "B2",
+      "A2"
+    ]
+  ],
+  "initialization_B0": 1955,
+  "buffer_main": "not needed, DAG passed",
+  "buffer_cycle_fixture": "results/repair_v2/protocol_checks.json"
+}

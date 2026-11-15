@@ -1,0 +1,59 @@
+{
+  "archive": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/autonomy_init_001_evidence.tar.gz",
+  "sha256": "c6b8bd66166d29caf8fcc429864fa9dd8d2f74ea0feb1379291bbefcc3f13a07",
+  "bytes": 5438613,
+  "manifest_sha256": "f973d73013b1f8bf84a26db104f2c669b4a8190f3dac55d711855f64534497c2",
+  "default": {
+    "integrity_passed": true,
+    "files": 255,
+    "full_replay": false,
+    "new_solver_calls": 0,
+    "experiment_passed": false,
+    "experiment_status": "partial",
+    "numerical_budgeted_attempts": 8,
+    "accepted_numerical_candidates": 0
+  },
+  "portable": {
+    "integrity_passed": true,
+    "files": 255,
+    "full_replay": false,
+    "new_solver_calls": 0,
+    "experiment_passed": false,
+    "experiment_status": "partial",
+    "numerical_budgeted_attempts": 8,
+    "accepted_numerical_candidates": 0
+  },
+  "full_replay": {
+    "integrity_passed": true,
+    "files": 254,
+    "full_replay": true,
+    "new_solver_calls": 0,
+    "experiment_passed": false,
+    "experiment_status": "partial",
+    "numerical_budgeted_attempts": 8,
+    "accepted_numerical_candidates": 0
+  },
+  "full_replay_manifest_note": "Full physical replay started with254 entries; final manifest adds only unchanged instructions/SHA256SUMS.json. All executable and physical evidence bytes identical. Final255-entry default and portable checks passed.",
+  "experiment_status": "partial",
+  "budgeted_worker_attempts": 8,
+  "native_solve_calls_reached": 0,
+  "numerical_accepted": 0,
+  "history_preservation": {
+    "dynamic_groups_001": {
+      "passed": true,
+      "files": 741,
+      "path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/dynamic_groups_001"
+    },
+    "dynamic_groups_002": {
+      "passed": true,
+      "files": 1425,
+      "path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/dynamic_groups_002"
+    },
+    "region_reservation_003_reverse": {
+      "passed": true,
+      "files": 509,
+      "path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/region_reservation_003_reverse"
+    }
+  },
+  "git_commit_performed": false
+}

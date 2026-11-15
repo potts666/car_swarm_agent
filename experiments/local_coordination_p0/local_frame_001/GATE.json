@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "task": "local_frame_001",
+  "criteria": {
+    "outer_frame": {
+      "status": "pass",
+      "reason": "old/new union, .025 body neighborhoods, positive receiver/K, permanent goals, six edges/four cross edges, whole leases and guarded ends certified"
+    },
+    "local_commit": {
+      "status": "pass",
+      "reason": "first L round changes internal owner 475->406 and B1 finish924->855 inside same D lease26..924; D ACK only A1/B1"
+    },
+    "external_update": {
+      "status": "pass",
+      "reason": "A2 independently solved/accepted each round; actual first a changes; ACK survives D private version changes"
+    },
+    "successor_update": {
+      "status": "pass",
+      "reason": "12 Solved/accepted; each arm round2 rebuilt from actual cycle2 successor and tail"
+    },
+    "mixed_fallback": {
+      "status": "pass",
+      "reason": "16 recorded mixed choices (7 unique full physical plans), both real second-source rejection tails retain A2 new first command and complete"
+    },
+    "dependency_expansion": {
+      "status": "pass",
+      "reason": "old frame rejects B2 lease at855 and definite B2 corner leaves old occupancy at863; discovered4 endpoints, new-frame allACK and missingACK completions, new lease components split D/A2/B2"
+    },
+    "full_completion": {
+      "status": "pass",
+      "reason": "main1822, extension success1753; six-pair/road/resource, all goals and permanent hold, per-car deadlines and B decrease; independent full replay"
+    },
+    "fair_comparison": {
+      "status": "pass",
+      "reason": "identical C/L per-car model and matrices/actual final physical plan; common JE/receivers; setup/global reads and cache effects disclosed"
+    }
+  },
+  "native_attempts": 12,
+  "native_solved": 12,
+  "certificate_accepted": 12,
+  "actual_adopted": 12,
+  "physical_first_actions_changed": 12,
+  "actual_activity": [
+    4,
+    4,
+    4,
+    4
+  ],
+  "new_budget_remaining": 0,
+  "zero_call_post_repair": "proposal import context restore; original raw/model/controls frozen and unchanged",
+  "scope": "controlled nominal synchronous experiment; local application dispatch and sequential independent workers, no real-time/network/performance or disturbance guarantee"
+}

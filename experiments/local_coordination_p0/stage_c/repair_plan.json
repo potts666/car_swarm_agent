@@ -1,0 +1,45 @@
+{
+  "variants": [
+    {
+      "name": "R",
+      "representation": "per-row rotated SOC eliminating common s; equivalent projection",
+      "rounding_reserve": false
+    },
+    {
+      "name": "Q",
+      "representation": "same per-row SOC with proven nearest-rounding inner reserve",
+      "rounding_reserve": true
+    }
+  ],
+  "configs": [
+    {
+      "input_scale": "1/10000",
+      "t_scale": "1/10000"
+    },
+    {
+      "input_scale": "1/100000",
+      "t_scale": "1/100000"
+    },
+    {
+      "input_scale": "1/1000",
+      "t_scale": "1/1000"
+    }
+  ],
+  "max_configs_per_variant": 3,
+  "solver": {
+    "time_limit_s": 5,
+    "max_iter": 300,
+    "tolerance": "1e-10",
+    "status": "Solved only"
+  },
+  "rational_backoff": [
+    1,
+    "1/2",
+    "1/4"
+  ],
+  "q": "1e-12",
+  "rounding_error_L2": "4e-12",
+  "rho": "1/1000",
+  "stage_timeout_s": 180,
+  "C2_allowed_only_after_C0": true
+}

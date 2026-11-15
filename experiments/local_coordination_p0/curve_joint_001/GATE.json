@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "task": "curve_joint_001",
+  "actual_curve_certification": true,
+  "fair_four_arms": true,
+  "actual_control_update": true,
+  "two_real_successor_rounds": true,
+  "multi_car_combination": true,
+  "safe_all_four_complete": true,
+  "independent_acceptance": true,
+  "rejection_continuations": 2,
+  "native_attempts": 16,
+  "native_solved": 16,
+  "certificate_accepted": 16,
+  "first_actions_executed": 8,
+  "actual_activity_per_first_action": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "O-P_A1_first_omega_changed_rounds": [
+    1,
+    2
+  ],
+  "goals": {
+    "A1": 475,
+    "B1": 855,
+    "B2": 1304,
+    "A2": 1753
+  },
+  "block_max_deadline": 1753,
+  "individual_deadline_nonincrease": true,
+  "B_final": 0,
+  "all_six_pairs": true,
+  "partial_or_unchecked": [
+    "no real-time, disturbance or asynchronous guarantee",
+    "component timing included in round where no independent timer was installed"
+  ],
+  "new_optimizer_budget_remaining": 0
+}

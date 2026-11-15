@@ -1,0 +1,39 @@
+{
+  "phase": "declared before implementation",
+  "initialization_whitelist": [
+    "map_config.json",
+    "vehicle_configs.json",
+    "local_tasks.json",
+    "requests.json",
+    "certified_graphs generated from whitelist and geometric constructors"
+  ],
+  "physical_source": "../region_reservation_003_reverse/common.py; physics.py; inputs/interval_source.py",
+  "geometric_template_source": "../region_reservation_003_reverse/inputs/construct_certificate.py; ../region_reservation_002/construct_inputs.py",
+  "template_meaning": "radius-six tangent S and input-bounded stopped-steering trapezoids are geometry/control templates, not whole-task arrangement",
+  "new_template_candidates": {
+    "radii_m": [
+      6,
+      5
+    ],
+    "parking_endpoint_local_x": [
+      46
+    ],
+    "merge_endpoint_local_x": [
+      -23
+    ]
+  },
+  "forbidden_initialization_inputs": [
+    "historical controls",
+    "historical owners",
+    "historical order",
+    "historical goal_times",
+    "historical ticks",
+    "historical object stores"
+  ],
+  "historical_gate_reads": "inventory only, never passed into init_plan",
+  "historical_whole_witness_comparison": "only after successful generated-policy independent replay",
+  "runtime_reads_and_parameters": "to be content-addressed in generated source manifest",
+  "instrumented_read_audit": "results/initialization_read_audit.json",
+  "source_manifest_in_each_plan": true,
+  "both_outputs_bit_identical_on_read_isolated_rerun": true
+}

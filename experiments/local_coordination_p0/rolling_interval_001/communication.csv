@@ -1,0 +1,14 @@
+stream,run_segment,phase,scope,messages,JSON_bytes,cross_logical_endpoint_messages,cross_logical_endpoint_bytes,note
+E-anchor,1,extension,actual stream; logical in-process dispatch,18,8438,18,8438,separate original stopped branches and current suffix; not measured network
+E-anchor,1,internal,actual stream; logical in-process dispatch,6,2810,6,2810,separate original stopped branches and current suffix; not measured network
+R-rolling,1,steady,actual_main_prefix_stage_1,42,13916,21,6958,separate original stopped branches and current suffix; not measured network
+R-rolling,2,steady,actual_main_prefix_stage_2,132,43736,66,21868,separate original stopped branches and current suffix; not measured network
+R-rolling,3,steady,actual_main_prefix_stage_3,498,165004,249,82502,separate original stopped branches and current suffix; not measured network
+R-rolling,4,extension,actual_main_prefix_stage_4,12,5624,12,5624,separate original stopped branches and current suffix; not measured network
+R-rolling,4,steady,actual_main_prefix_stage_4,1800,595260,786,260428,separate original stopped branches and current suffix; not measured network
+R-rolling_suffix,1,extension,v1_stopped_completion,18,8438,18,8438,separate original stopped branches and current suffix; not measured network
+R-rolling_suffix,2,extension,v2_stopped_completion,18,8438,18,8438,separate original stopped branches and current suffix; not measured network
+R-rolling_suffix,3,extension,final_main_suffix,6,2814,6,2814,separate original stopped branches and current suffix; not measured network
+recovery_phase_K,1,fault,actual stream; logical in-process dispatch,7,3336,4,1802,separate original stopped branches and current suffix; not measured network
+recovery_phase_K,2,extension,actual stream; logical in-process dispatch,18,8438,18,8438,separate original stopped branches and current suffix; not measured network
+recovery_release_ACK,1,extension,actual stream; logical in-process dispatch,29,13551,29,13551,separate original stopped branches and current suffix; not measured network

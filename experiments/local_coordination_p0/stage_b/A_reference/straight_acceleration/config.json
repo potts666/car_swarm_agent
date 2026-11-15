@@ -1,0 +1,28 @@
+{
+  "interface": "straight_acceleration",
+  "endpoint": 42,
+  "prefix_start": 10,
+  "prefix_ticks": 32,
+  "inputs": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/stage_a/inputs_v2",
+  "source_rebuild": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/results/source_rebuild_005",
+  "manifest_sha256": "511a52b942e3428a67786e742f936543a3afd678514f5f5a0b196e8edb7d05ae",
+  "edge": {
+    "actor": "A2",
+    "kind": "M",
+    "motion": "A2-0-2",
+    "object": "b3a139077439f7dcf9a38e9265930828a49408100f4ae3509284a629a0e84d9f",
+    "source": "0000",
+    "target": "0200",
+    "ticks": 239
+  },
+  "witness": "d038db36d63515f7775265ffff5907dfe4a337a08d9672a4a43f7fb30377ca4e",
+  "source_budget": 1279,
+  "source_budget_kind": "current accepted W and same-version actual suffix; not C/R",
+  "duration_ticks": 239,
+  "solver_derivatives_connected": false,
+  "construction_only": true,
+  "objective": "same normalized prefix input energy",
+  "groups": "unchanged phase%64 rule",
+  "permission": "unchanged parked inter-car handoff",
+  "formal_batch": false
+}

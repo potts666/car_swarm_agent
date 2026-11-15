@@ -1,0 +1,288 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "kind": "stale_anchor",
+      "request": {
+        "kind": "stale_anchor",
+        "anchor_id": "37617f003608b3434a3b3d1d7dfb2d673a74342fc098448a02af524efa30c857",
+        "derivative_id": "89297aabe05f4f55358c4f353135b67bf411850bb9f64e6ab26074583fa32756",
+        "raw_result_id": "ca3231b2e00c48b023b9777d6dcd275bc4f81a01d7f373f5ac627da8a04ad57f",
+        "template_plan_id": "95ba409b09f672829e19ed3fb73f177e1a7310174abfd5ae6d93b0d992111512"
+      },
+      "rejection": "stale actual anchor",
+      "invalid_commits": 0,
+      "invalid_executions": 0,
+      "source_anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+      "old_plan_id": "c98a2dba8217f72c083030576f66c5ddd5ae646b6d909e20b15756c6fb3cca82",
+      "old_pending_reset": {
+        "phase": 42,
+        "next_phase": 43,
+        "row_sha256": "98c158f0f6297875805de7d327f80743107213b876b46d7319b75666102fcfcc",
+        "input": [
+          "172468659873/250000000000",
+          "73745669/250000000000"
+        ]
+      },
+      "first_actual_input": [
+        "2119591/250000000000",
+        "-1310424183/40000000000"
+      ],
+      "old_first": [
+        "2119591/250000000000",
+        "-1310424183/40000000000"
+      ],
+      "actual_steps": 32,
+      "actual_old_K_phase": 42,
+      "final_history": "5d513e3cf03397b55025dd10c36bf429a1a072f08c195183fedfeb993fcae74e",
+      "budget_before": 1268,
+      "budget_after": 1236,
+      "log_file": "stale_anchor.jsonl.gz",
+      "passed": true
+    },
+    {
+      "kind": "stale_derivative",
+      "request": {
+        "kind": "stale_derivative",
+        "anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+        "derivative_id": "7977280fba033be04e7f6a4c825832793b608ffaa1a913576ea9018690b02cd2",
+        "raw_result_id": "ca3231b2e00c48b023b9777d6dcd275bc4f81a01d7f373f5ac627da8a04ad57f",
+        "template_plan_id": "95ba409b09f672829e19ed3fb73f177e1a7310174abfd5ae6d93b0d992111512"
+      },
+      "rejection": "wrong trust center",
+      "invalid_commits": 0,
+      "invalid_executions": 0,
+      "source_anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+      "old_plan_id": "c98a2dba8217f72c083030576f66c5ddd5ae646b6d909e20b15756c6fb3cca82",
+      "old_pending_reset": {
+        "phase": 42,
+        "next_phase": 43,
+        "row_sha256": "98c158f0f6297875805de7d327f80743107213b876b46d7319b75666102fcfcc",
+        "input": [
+          "172468659873/250000000000",
+          "73745669/250000000000"
+        ]
+      },
+      "first_actual_input": [
+        "2119591/250000000000",
+        "-1310424183/40000000000"
+      ],
+      "old_first": [
+        "2119591/250000000000",
+        "-1310424183/40000000000"
+      ],
+      "actual_steps": 32,
+      "actual_old_K_phase": 42,
+      "final_history": "5d513e3cf03397b55025dd10c36bf429a1a072f08c195183fedfeb993fcae74e",
+      "budget_before": 1268,
+      "budget_after": 1236,
+      "log_file": "stale_derivative.jsonl.gz",
+      "passed": true
+    },
+    {
+      "kind": "old_phase",
+      "request": {
+        "kind": "old_phase",
+        "anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+        "derivative_id": "89297aabe05f4f55358c4f353135b67bf411850bb9f64e6ab26074583fa32756",
+        "raw_result_id": "ca3231b2e00c48b023b9777d6dcd275bc4f81a01d7f373f5ac627da8a04ad57f",
+        "template_plan_id": "95ba409b09f672829e19ed3fb73f177e1a7310174abfd5ae6d93b0d992111512",
+        "proposal_id": "3b6e5977923e685713d5aef99c1587b1b01d91fe1cd1fdbca355760088cde049"
+      },
+      "rejection": "stale source phase/history",
+      "invalid_commits": 0,
+      "invalid_executions": 0,
+      "source_anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+      "old_plan_id": "c98a2dba8217f72c083030576f66c5ddd5ae646b6d909e20b15756c6fb3cca82",
+      "old_pending_reset": {
+        "phase": 42,
+        "next_phase": 43,
+        "row_sha256": "98c158f0f6297875805de7d327f80743107213b876b46d7319b75666102fcfcc",
+        "input": [
+          "172468659873/250000000000",
+          "73745669/250000000000"
+        ]
+      },
+      "first_actual_input": [
+        "2119591/250000000000",
+        "-1310424183/40000000000"
+      ],
+      "old_first": [
+        "2119591/250000000000",
+        "-1310424183/40000000000"
+      ],
+      "actual_steps": 32,
+      "actual_old_K_phase": 42,
+      "final_history": "5d513e3cf03397b55025dd10c36bf429a1a072f08c195183fedfeb993fcae74e",
+      "budget_before": 1268,
+      "budget_after": 1236,
+      "log_file": "old_phase.jsonl.gz",
+      "passed": true
+    },
+    {
+      "kind": "damaged_K",
+      "request": {
+        "kind": "damaged_K",
+        "anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+        "derivative_id": "89297aabe05f4f55358c4f353135b67bf411850bb9f64e6ab26074583fa32756",
+        "raw_result_id": "ca3231b2e00c48b023b9777d6dcd275bc4f81a01d7f373f5ac627da8a04ad57f",
+        "template_plan_id": "95ba409b09f672829e19ed3fb73f177e1a7310174abfd5ae6d93b0d992111512",
+        "proposal_id": "6f37daa1cd8943a8877ecf919ee1854f0347780534c93280ec23fbb84eebcb22"
+      },
+      "rejection": "wrong state-dependent K",
+      "invalid_commits": 0,
+      "invalid_executions": 0,
+      "source_anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+      "old_plan_id": "c98a2dba8217f72c083030576f66c5ddd5ae646b6d909e20b15756c6fb3cca82",
+      "old_pending_reset": {
+        "phase": 42,
+        "next_phase": 43,
+        "row_sha256": "98c158f0f6297875805de7d327f80743107213b876b46d7319b75666102fcfcc",
+        "input": [
+          "172468659873/250000000000",
+          "73745669/250000000000"
+        ]
+      },
+      "first_actual_input": [
+        "2119591/250000000000",
+        "-1310424183/40000000000"
+      ],
+      "old_first": [
+        "2119591/250000000000",
+        "-1310424183/40000000000"
+      ],
+      "actual_steps": 32,
+      "actual_old_K_phase": 42,
+      "final_history": "5d513e3cf03397b55025dd10c36bf429a1a072f08c195183fedfeb993fcae74e",
+      "budget_before": 1268,
+      "budget_after": 1236,
+      "log_file": "damaged_K.jsonl.gz",
+      "passed": true
+    },
+    {
+      "kind": "mixed_commit_context",
+      "request": {
+        "kind": "mixed_commit_context",
+        "anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+        "derivative_id": "89297aabe05f4f55358c4f353135b67bf411850bb9f64e6ab26074583fa32756",
+        "raw_result_id": "ca3231b2e00c48b023b9777d6dcd275bc4f81a01d7f373f5ac627da8a04ad57f",
+        "template_plan_id": "95ba409b09f672829e19ed3fb73f177e1a7310174abfd5ae6d93b0d992111512",
+        "token": {
+          "context": {
+            "cycle": 11,
+            "history": "13d2492be3ee369f6460506b55cdf48bc1dd12d80c246aafa7182723c5ddae09",
+            "state_time_s": "11/5",
+            "owner": "A2",
+            "permission_version": 1,
+            "joint_source": "0000",
+            "joint_target": "0200",
+            "groups": [
+              [
+                "A2"
+              ],
+              [
+                "A1",
+                "B1"
+              ],
+              [
+                "B2"
+              ]
+            ],
+            "pair_contracts": {
+              "inside": [
+                [
+                  "A1",
+                  "B1"
+                ]
+              ],
+              "boundary": [
+                [
+                  "A1",
+                  "A2"
+                ],
+                [
+                  "A1",
+                  "B2"
+                ],
+                [
+                  "A2",
+                  "B1"
+                ],
+                [
+                  "A2",
+                  "B2"
+                ],
+                [
+                  "B1",
+                  "B2"
+                ]
+              ]
+            },
+            "receiver": {
+              "component": "flow",
+              "phase": 43,
+              "domain_object": "b3a139077439f7dcf9a38e9265930828a49408100f4ae3509284a629a0e84d9f",
+              "deadline": 32
+            },
+            "pending_reset": {
+              "phase": 42,
+              "next_phase": 43,
+              "row_sha256": "98c158f0f6297875805de7d327f80743107213b876b46d7319b75666102fcfcc",
+              "input": [
+                "172468659873/250000000000",
+                "73745669/250000000000"
+              ]
+            },
+            "witness": "d038db36d63515f7775265ffff5907dfe4a337a08d9672a4a43f7fb30377ca4e",
+            "witness_version": 1,
+            "budget": 1268,
+            "plan_id": "c98a2dba8217f72c083030576f66c5ddd5ae646b6d909e20b15756c6fb3cca82"
+          },
+          "plans": {
+            "A1": "40f27db610873668beba301e1bcefca4031c7eaf5d1880c35072bfb22c0a0e61",
+            "A2": "cef33932b7a3cc90a99143375807a5b21315c28749889d6ecd5e58a58c966c72",
+            "B1": "00dc5d8219997b0d20c7407e7c4e9cb1fbeb60ea1f7b2a35b483a93268c78206",
+            "B2": "58e01163524b8e2619ffeaf8c531f564c2728236fad3b7c342f439220db8a2a8"
+          },
+          "application_messages": 40,
+          "application_bytes": 60948,
+          "message_digest": "d2bde9fd94d378b2c4f31c73f56f8e789b0f36a593ab0045b69e8869e8234860",
+          "proof": {
+            "kind": "locked_inherited",
+            "zero_increment_feasible": true
+          }
+        }
+      },
+      "rejection": "mixed commit context",
+      "invalid_commits": 0,
+      "invalid_executions": 0,
+      "source_anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+      "old_plan_id": "c98a2dba8217f72c083030576f66c5ddd5ae646b6d909e20b15756c6fb3cca82",
+      "old_pending_reset": {
+        "phase": 42,
+        "next_phase": 43,
+        "row_sha256": "98c158f0f6297875805de7d327f80743107213b876b46d7319b75666102fcfcc",
+        "input": [
+          "172468659873/250000000000",
+          "73745669/250000000000"
+        ]
+      },
+      "first_actual_input": [
+        "2119591/250000000000",
+        "-1310424183/40000000000"
+      ],
+      "old_first": [
+        "2119591/250000000000",
+        "-1310424183/40000000000"
+      ],
+      "actual_steps": 32,
+      "actual_old_K_phase": 42,
+      "final_history": "5d513e3cf03397b55025dd10c36bf429a1a072f08c195183fedfeb993fcae74e",
+      "budget_before": 1268,
+      "budget_after": 1236,
+      "log_file": "mixed_commit_context.jsonl.gz",
+      "passed": true
+    }
+  ],
+  "scope": "copied controlled forks at actual second-round state; excluded from main performance and solver counts"
+}

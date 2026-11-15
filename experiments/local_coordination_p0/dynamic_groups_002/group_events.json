@@ -1,0 +1,232 @@
+{
+  "natural": [
+    {
+      "arm": "C-new",
+      "cycle": 41,
+      "round": 1,
+      "kind": "merge_for_physical_boundary_and_calendar",
+      "old": [
+        [
+          "A1"
+        ],
+        [
+          "A2"
+        ],
+        [
+          "B1"
+        ],
+        [
+          "B2"
+        ]
+      ],
+      "new": [
+        [
+          "A1",
+          "A2",
+          "B1",
+          "B2"
+        ]
+      ],
+      "physical_change": true,
+      "participants": [
+        [
+          "A1",
+          "A2",
+          "B1",
+          "B2"
+        ]
+      ],
+      "contract_id": "894d0eaa7a376f52e89cac4ac04a8e4c1f1036fd98c125c2bf8cf7423633a6bc",
+      "fork": false
+    },
+    {
+      "arm": "C-new",
+      "cycle": 42,
+      "round": 2,
+      "kind": "fixed_all_four",
+      "old": [
+        [
+          "A1",
+          "A2",
+          "B1",
+          "B2"
+        ]
+      ],
+      "new": [
+        [
+          "A1",
+          "A2",
+          "B1",
+          "B2"
+        ]
+      ],
+      "physical_change": false,
+      "participants": [
+        [
+          "A1",
+          "A2",
+          "B1",
+          "B2"
+        ]
+      ],
+      "contract_id": "56456fa933b69068eef3db418363f4ec6b0e5b0fa5bd0227028b4ef7fbf900cb",
+      "fork": false
+    },
+    {
+      "arm": "L-new",
+      "cycle": 41,
+      "round": 1,
+      "kind": "merge_for_physical_boundary_and_calendar",
+      "old": [
+        [
+          "A1"
+        ],
+        [
+          "A2"
+        ],
+        [
+          "B1"
+        ],
+        [
+          "B2"
+        ]
+      ],
+      "new": [
+        [
+          "A1",
+          "A2",
+          "B1",
+          "B2"
+        ]
+      ],
+      "physical_change": true,
+      "participants": [
+        [
+          "A1",
+          "A2",
+          "B1",
+          "B2"
+        ]
+      ],
+      "contract_id": "513162965c63f72b6765275a70e9589ced68f544b05aa980c14424fbf53d9f79",
+      "fork": false
+    },
+    {
+      "arm": "L-new",
+      "cycle": 42,
+      "round": 2,
+      "kind": "split_after_interfaces_frozen",
+      "old": [
+        [
+          "A1",
+          "A2",
+          "B1",
+          "B2"
+        ]
+      ],
+      "new": [
+        [
+          "A1"
+        ],
+        [
+          "A2"
+        ],
+        [
+          "B1"
+        ],
+        [
+          "B2"
+        ]
+      ],
+      "physical_change": false,
+      "participants": [
+        [
+          "A1"
+        ],
+        [
+          "A2"
+        ],
+        [
+          "B2"
+        ]
+      ],
+      "contract_id": "7dc46586ac0217b88643c34326c61e65dff45a00248e139242e7378994ec56c5",
+      "fork": false
+    }
+  ],
+  "fork": {
+    "passed": true,
+    "merge": {
+      "old": [
+        [
+          "A1"
+        ],
+        [
+          "A2"
+        ],
+        [
+          "B1"
+        ],
+        [
+          "B2"
+        ]
+      ],
+      "new": [
+        [
+          "A1",
+          "A2",
+          "B1",
+          "B2"
+        ]
+      ],
+      "reason": "actual changed physical face/resource endpoint closure"
+    },
+    "split": {
+      "old": [
+        [
+          "A1",
+          "A2",
+          "B1",
+          "B2"
+        ]
+      ],
+      "new": [
+        [
+          "A1"
+        ],
+        [
+          "A2"
+        ],
+        [
+          "B1"
+        ],
+        [
+          "B2"
+        ]
+      ],
+      "reason": "fixed faces preserve all six pair edges",
+      "edge_ids": {
+        "A1:A2": "06e770b7853316a83ccfec956fcb7ea6b8c832ec49cb6ceff621aba3bca45ef0",
+        "A1:B1": "7159581002272a16d49695a84b7ce50dc0097d93e3067e6ae8a9dbb46be6df17",
+        "A1:B2": "b788de9c2155bfd09be069595e708faaaadc2b98f549aff83b091391cca07daf",
+        "A2:B1": "aa913689e9de0f70294e7187c622169fa35ca697033ed73bf7995af2f13afccd",
+        "A2:B2": "63fdb6ac26ee52e56a6fdde3bb2d09db670d1749bdc153b30776fb79f75985b6",
+        "B1:B2": "815e4b2b3e361660252e19c26438be0d1f2f6c4aa5ef19a96a78f40a53e23a2f"
+      }
+    },
+    "fork": true
+  },
+  "four_car_diagnostic": {
+    "fork": true,
+    "phase": 39,
+    "participants": [
+      "A1",
+      "A2",
+      "B1",
+      "B2"
+    ],
+    "first_A": 4,
+    "second_A": 3,
+    "new_solver_calls": 0
+  }
+}

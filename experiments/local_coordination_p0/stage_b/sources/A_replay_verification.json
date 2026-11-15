@@ -1,0 +1,70 @@
+{
+  "curve": {
+    "replayed": true,
+    "agrees_with_archived_acceptance_except_wall_time": true,
+    "acceptance": {
+      "passed": true,
+      "actual_steps": 240,
+      "accepted_box_candidates": 1,
+      "actual_K_resets": 1,
+      "actual_saved_K_shifts": 1,
+      "damaged_proposals_independently_rejected": 6,
+      "same_old_first_input_replayed_after_every_rejection": true,
+      "parked_handoffs_executed": 1,
+      "current_same_version_completion_witness_rebuilt": true,
+      "remaining_budget": 1039,
+      "minimum_road_lower_m": 0.4987712610029631,
+      "minimum_pair_lower_m": 0.501727001758351,
+      "wall_s": 5.600765999988653,
+      "shared_primitives": [
+        "fixed-point interval arithmetic",
+        "trigonometry",
+        "propagation"
+      ],
+      "separate_checks": [
+        "box membership",
+        "live K",
+        "inverse flow containment",
+        "actual tail/shift",
+        "geometric bodies, roads, six pairs and permissions",
+        "witness/budget"
+      ],
+      "full_fourcar_task": false,
+      "derivative_bounds_connected": false
+    }
+  },
+  "straight_acceleration": {
+    "replayed": true,
+    "agrees_with_archived_acceptance_except_wall_time": true,
+    "acceptance": {
+      "passed": true,
+      "actual_steps": 240,
+      "accepted_box_candidates": 1,
+      "actual_K_resets": 1,
+      "actual_saved_K_shifts": 1,
+      "damaged_proposals_independently_rejected": 6,
+      "same_old_first_input_replayed_after_every_rejection": true,
+      "parked_handoffs_executed": 1,
+      "current_same_version_completion_witness_rebuilt": true,
+      "remaining_budget": 1039,
+      "minimum_road_lower_m": 0.4987614237410189,
+      "minimum_pair_lower_m": 0.501727001758351,
+      "wall_s": 5.593599899992114,
+      "shared_primitives": [
+        "fixed-point interval arithmetic",
+        "trigonometry",
+        "propagation"
+      ],
+      "separate_checks": [
+        "box membership",
+        "live K",
+        "inverse flow containment",
+        "actual tail/shift",
+        "geometric bodies, roads, six pairs and permissions",
+        "witness/budget"
+      ],
+      "full_fourcar_task": false,
+      "derivative_bounds_connected": false
+    }
+  }
+}

@@ -1,0 +1,10 @@
+﻿C0_fix_002：连续两轮真实重新优化（2026-11-13）
+
+先读report.md、GATE.json和comparison_windows.csv（UTF-8 BOM，便于Excel）。
+四次新求解，各接口两轮受理/首拍修改、240拍独立验收及损坏拒绝续行均通过；原始状态仍全为AlmostSolved。
+metrics.json按不重叠34拍实际区间计算收益；每轮32拍预测改善不可相加。
+event_index.json及solver_calls.json绑定四次求解及提交来源。
+curve/、straight_acceleration/含原始日志、完整设置、数值输出、控制执行与独立验收；execution.jsonl已解压。damage_forks是复制控制分支，与主性能分开。
+完整代码、对象、冻结依赖及任务书在DMPC_C0_fix_002_2026-11-13.zip，解压后运行verify_delivery.py可独立复核（需requirements.txt中的Python库）。
+DELIVERY_MANIFEST.json对应ZIP内stage_c_fix_002目录；SHARED_FILES_SHA256.json对应本分析目录。
+未开展区域预约、多活动车、C2或批量；车辆优先规则仍待设计。历史结果和论文未改。

@@ -1,0 +1,240 @@
+{
+  "passed": true,
+  "side": "A",
+  "source": {
+    "poses_Q": {
+      "A1": [
+        [
+          -3001874507866388000000,
+          -3001874507866388000000
+        ],
+        [
+          300000000000000000000,
+          300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "A2": [
+        [
+          -3000000000000000000000,
+          -3000000000000000000000
+        ],
+        [
+          -300000000000000000000,
+          -300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "B1": [
+        [
+          3000000000000000000000,
+          3000000000000000000000
+        ],
+        [
+          300000000000000000000,
+          300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "B2": [
+        [
+          3000000000000000000000,
+          3000000000000000000000
+        ],
+        [
+          -300000000000000000000,
+          -300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "v": {
+      "A1": "-468626966597/2500000000000",
+      "A2": "0",
+      "B1": "0",
+      "B2": "0"
+    },
+    "delta": {
+      "A1": "0",
+      "A2": "0",
+      "B1": "0",
+      "B2": "0"
+    },
+    "history": "daaa824add6759f180892a9c316d135673ec5132a59c960bb9f67b9ceaa9e5d3",
+    "cycle": 58,
+    "witness": "04cbd5586664055a8f3306cbefb0fadd78a1988ff2c24ed76ba85edbc9c51d8b",
+    "owner": "A1",
+    "permission_version": 1,
+    "served": [
+      "A1"
+    ]
+  },
+  "old_witness": "04cbd5586664055a8f3306cbefb0fadd78a1988ff2c24ed76ba85edbc9c51d8b",
+  "proposed_witness": "63791f3b2e40a76ed9d8eb4406194dd4c0521b67f91ff0a2ff687431d5b8a2c7",
+  "rejections": [
+    {
+      "kind": "stale_source",
+      "rejected": true,
+      "reason": "AssertionError()",
+      "evidence_id": "bbf6cefc6b35caa35f163ae8ca366cefca697381b082f187469cce1fe46dae86",
+      "state_unchanged": true
+    },
+    {
+      "kind": "wrong_frame",
+      "rejected": true,
+      "reason": "AssertionError()",
+      "evidence_id": "3bed9e264ddfc71709a4fcfc75a2eff0ace6802b6183d14de748e7c3c4f91528",
+      "state_unchanged": true
+    },
+    {
+      "kind": "wrong_signed_speed",
+      "rejected": true,
+      "reason": "ValueError('phase_or_permission: v=468626966597/2500000000000 outside (Fraction(-1, 1), Fraction(0, 1))')",
+      "evidence_id": "d35c2b8deb9a33f918e9ba41ba2570795463cc0a0a696034352d3b3a2cdeba16",
+      "state_unchanged": true
+    },
+    {
+      "kind": "missing_negative_bound",
+      "rejected": true,
+      "reason": "AssertionError()",
+      "evidence_id": "b0fcd53ccc9c7e03abcfce91461498281495d1d5a9a562ba3b9cf558bac39d6d",
+      "state_unchanged": true
+    },
+    {
+      "kind": "damaged_derivative",
+      "rejected": true,
+      "reason": "AssertionError('wrong direction')",
+      "evidence_id": "27753b5add9a602c65d46ec47d431235aebcfe3636b327b4307f79f5006c64f1",
+      "state_unchanged": true
+    },
+    {
+      "kind": "damaged_K",
+      "rejected": true,
+      "reason": "AssertionError('bad K')",
+      "evidence_id": "e9c9f12324be90cbcf3a58259cb0fceef123ebbea36fbcf400d1340aa4090bb9",
+      "state_unchanged": true
+    },
+    {
+      "kind": "stale_phase",
+      "rejected": true,
+      "reason": "ValueError('stale or damaged resource/plan version')",
+      "evidence_id": "cf2267099de112de08f2b4e6616e072810938baf8a55aedf83ffdd808e44f528",
+      "state_unchanged": true
+    },
+    {
+      "kind": "mixed_commit",
+      "rejected": true,
+      "reason": "ValueError('mixed four-car commit')",
+      "evidence_id": "51c41007feecc96c05cd8a6d47cbe6d1e68d2c1513d3db9341b4e641425548cf",
+      "state_unchanged": true
+    }
+  ],
+  "invalid_commits": 0,
+  "invalid_selections": 0,
+  "valid_token_built_for_mixed_token_test": 1,
+  "actual_fallback_branches": 1,
+  "actual_steps": 99,
+  "old_G_in_phase": 156,
+  "old_K_phase": 156,
+  "old_K_command": [
+    "0",
+    "0"
+  ],
+  "final": {
+    "poses_Q": {
+      "A1": [
+        [
+          -2189999999999969696719,
+          -2189999999999969443383
+        ],
+        [
+          -110461615,
+          -110209937
+        ],
+        [
+          -293,
+          293
+        ]
+      ],
+      "A2": [
+        [
+          -3000000000000000000000,
+          -3000000000000000000000
+        ],
+        [
+          -300000000000000000000,
+          -300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "B1": [
+        [
+          3000000000000000000000,
+          3000000000000000000000
+        ],
+        [
+          300000000000000000000,
+          300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "B2": [
+        [
+          3000000000000000000000,
+          3000000000000000000000
+        ],
+        [
+          -300000000000000000000,
+          -300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "v": {
+      "A1": "1/2",
+      "A2": "0",
+      "B1": "0",
+      "B2": "0"
+    },
+    "delta": {
+      "A1": "0",
+      "A2": "0",
+      "B1": "0",
+      "B2": "0"
+    },
+    "history": "145fa04bde723c0c92bac419f74dd5fdd8119bc51327a0be9d0ac67bbc139022",
+    "cycle": 157,
+    "witness": "04cbd5586664055a8f3306cbefb0fadd78a1988ff2c24ed76ba85edbc9c51d8b",
+    "owner": "A1",
+    "permission_version": 1,
+    "served": [
+      "A1"
+    ]
+  },
+  "budget_before": 2744,
+  "budget_after": 2645,
+  "independent_8_subsegments": true,
+  "minimum_road": "29534820977305906779/20000000000000000000",
+  "minimum_pair": "138880709585968094723/100000000000000000000"
+}

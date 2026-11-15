@@ -1,0 +1,170 @@
+{
+  "scope": "Read-only exact archive audit; no solver or controller run",
+  "counts": {
+    "primal_only": 4,
+    "gap_only": 4,
+    "both": 4
+  },
+  "cases": [
+    {
+      "case": "curve_R_1_10000",
+      "status": "AlmostSolved",
+      "failed": [
+        "primal_feasibility",
+        "optimality_gap"
+      ],
+      "strict_interior": true,
+      "t": "4831380208321742500/16206347579262943244599773",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.0845635426008594,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "straight_acceleration_R_1_10000",
+      "status": "AlmostSolved",
+      "failed": [
+        "primal_feasibility"
+      ],
+      "strict_interior": true,
+      "t": "1602864583328987500/5284039043754848835942833",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.08359352638125975,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "curve_R_1_100000",
+      "status": "AlmostSolved",
+      "failed": [
+        "optimality_gap"
+      ],
+      "strict_interior": true,
+      "t": "4831380208321742500/16206347579262943244599773",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.6125414054522222,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "straight_acceleration_R_1_100000",
+      "status": "AlmostSolved",
+      "failed": [
+        "primal_feasibility"
+      ],
+      "strict_interior": true,
+      "t": "1602864583328987500/5284039043754848835942833",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.6074356628350562,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "curve_R_1_1000",
+      "status": "AlmostSolved",
+      "failed": [
+        "primal_feasibility",
+        "optimality_gap"
+      ],
+      "strict_interior": true,
+      "t": "4831380208321742500/16206347579262943244599773",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.008790878794118379,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "straight_acceleration_R_1_1000",
+      "status": "AlmostSolved",
+      "failed": [
+        "primal_feasibility"
+      ],
+      "strict_interior": true,
+      "t": "1602864583328987500/5284039043754848835942833",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.00868609835450226,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "curve_Q_1_10000",
+      "status": "AlmostSolved",
+      "failed": [
+        "optimality_gap"
+      ],
+      "strict_interior": true,
+      "t": "2415682645143366282794549788187/8103173789631471622299886500000000000",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.08456329253097984,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "straight_acceleration_Q_1_10000",
+      "status": "AlmostSolved",
+      "failed": [
+        "primal_feasibility"
+      ],
+      "strict_interior": true,
+      "t": "801429843102143616924522542579/2642019521877424417971416500000000000",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.08359328165832879,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "curve_Q_1_100000",
+      "status": "AlmostSolved",
+      "failed": [
+        "primal_feasibility",
+        "optimality_gap"
+      ],
+      "strict_interior": true,
+      "t": "2415682645143366282794549788187/8103173789631471622299886500000000000",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.6125400933541321,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "straight_acceleration_Q_1_100000",
+      "status": "AlmostSolved",
+      "failed": [
+        "optimality_gap"
+      ],
+      "strict_interior": true,
+      "t": "801429843102143616924522542579/2642019521877424417971416500000000000",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.607434370633403,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "curve_Q_1_1000",
+      "status": "AlmostSolved",
+      "failed": [
+        "primal_feasibility",
+        "optimality_gap"
+      ],
+      "strict_interior": true,
+      "t": "2415682645143366282794549788187/8103173789631471622299886500000000000",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.008790851769499276,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    },
+    {
+      "case": "straight_acceleration_Q_1_1000",
+      "status": "AlmostSolved",
+      "failed": [
+        "optimality_gap"
+      ],
+      "strict_interior": true,
+      "t": "801429843102143616924522542579/2642019521877424417971416500000000000",
+      "quadratic_blocks": 38,
+      "minimum_old_axis_ratio": 0.008686071931704025,
+      "limiting_block": "yaw_-1",
+      "new_quadratic_anchor_axis_ratio": 1
+    }
+  ]
+}

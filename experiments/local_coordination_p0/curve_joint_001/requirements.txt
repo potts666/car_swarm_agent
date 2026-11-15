@@ -1,0 +1,5 @@
+# Default/full-replay verification uses Python standard library only.
+# Model-construction regression and a separately authorized future native run:
+numpy==1.26.4
+scipy==1.11.4
+clarabel==0.11.1

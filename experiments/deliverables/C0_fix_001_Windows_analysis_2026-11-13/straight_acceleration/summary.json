@@ -1,0 +1,2777 @@
+{
+  "passed": true,
+  "error": null,
+  "interface": "straight_acceleration",
+  "method": "B-JL",
+  "shift_recert": true,
+  "actual_steps": 240,
+  "remaining_budget": 1039,
+  "accepted_numeric_candidates": 1,
+  "numeric_proposals_rejected": 0,
+  "solver_events": [
+    {
+      "phase": 10,
+      "anchor_id": "37617f003608b3434a3b3d1d7dfb2d673a74342fc098448a02af524efa30c857",
+      "attempts": [
+        {
+          "result_id": "466a0b9c589a3888f663f0d8251321a7c08fbc3f18c8428db8c3d51269045a2f",
+          "derivative_id": "9da015e9086b87550324589415df0b34e8b63dd7502c48d39cfac2e5aeaf34ad",
+          "subdivisions": 32,
+          "status": "AlmostSolved",
+          "accepted": true
+        }
+      ],
+      "accepted": true,
+      "rejection_layer": null
+    },
+    {
+      "kind": "actual_shift_recertification",
+      "phase": 11,
+      "anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+      "derivative_id": "dda317c9837a851890ecd48c129a561c8242e042d32a95141dfd4d771b5b9a65",
+      "free_box_zero_check": {
+        "passed": true,
+        "norm_upper": "0",
+        "rows": [
+          {
+            "name": "input_0_0_-1",
+            "kind": "physical",
+            "constant": "-250002119591/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "250002119591/250000000000"
+          },
+          {
+            "name": "input_0_0_1",
+            "kind": "physical",
+            "constant": "-249997880409/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "249997880409/250000000000"
+          },
+          {
+            "name": "input_0_1_-1",
+            "kind": "physical",
+            "constant": "-38689575817/40000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "38689575817/40000000000"
+          },
+          {
+            "name": "input_0_1_1",
+            "kind": "physical",
+            "constant": "-41310424183/40000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "41310424183/40000000000"
+          },
+          {
+            "name": "state_0_0_1",
+            "kind": "physical",
+            "constant": "-2667895402401/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2667895402401/5000000000000"
+          },
+          {
+            "name": "state_0_0_-1",
+            "kind": "physical",
+            "constant": "-7332104597599/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7332104597599/5000000000000"
+          },
+          {
+            "name": "state_0_1_1",
+            "kind": "physical",
+            "constant": "-96008532947/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "96008532947/1000000000000"
+          },
+          {
+            "name": "state_0_1_-1",
+            "kind": "physical",
+            "constant": "-903991467053/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "903991467053/1000000000000"
+          },
+          {
+            "name": "input_1_0_-1",
+            "kind": "physical",
+            "constant": "-10000080627/10000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "10000080627/10000000000"
+          },
+          {
+            "name": "input_1_0_1",
+            "kind": "physical",
+            "constant": "-9999919373/10000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "9999919373/10000000000"
+          },
+          {
+            "name": "input_1_1_-1",
+            "kind": "physical",
+            "constant": "-906417700299/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "906417700299/1000000000000"
+          },
+          {
+            "name": "input_1_1_1",
+            "kind": "physical",
+            "constant": "-1093582299701/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1093582299701/1000000000000"
+          },
+          {
+            "name": "state_1_0_1",
+            "kind": "physical",
+            "constant": "-2667887339701/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2667887339701/5000000000000"
+          },
+          {
+            "name": "state_1_0_-1",
+            "kind": "physical",
+            "constant": "-7332112660299/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7332112660299/5000000000000"
+          },
+          {
+            "name": "state_1_1_1",
+            "kind": "physical",
+            "constant": "-143406241109/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "143406241109/1250000000000"
+          },
+          {
+            "name": "state_1_1_-1",
+            "kind": "physical",
+            "constant": "-1106593758891/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1106593758891/1250000000000"
+          },
+          {
+            "name": "input_2_0_-1",
+            "kind": "physical",
+            "constant": "-31250225513/31250000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "31250225513/31250000000"
+          },
+          {
+            "name": "input_2_0_1",
+            "kind": "physical",
+            "constant": "-31249774487/31250000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "31249774487/31250000000"
+          },
+          {
+            "name": "input_2_1_-1",
+            "kind": "physical",
+            "constant": "-215003749737/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "215003749737/250000000000"
+          },
+          {
+            "name": "input_2_1_1",
+            "kind": "physical",
+            "constant": "-284996250263/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "284996250263/250000000000"
+          },
+          {
+            "name": "state_2_0_1",
+            "kind": "physical",
+            "constant": "-533576024657/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "533576024657/1000000000000"
+          },
+          {
+            "name": "state_2_0_-1",
+            "kind": "physical",
+            "constant": "-1466423975343/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1466423975343/1000000000000"
+          },
+          {
+            "name": "state_2_1_1",
+            "kind": "physical",
+            "constant": "-44600622843/312500000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "44600622843/312500000000"
+          },
+          {
+            "name": "state_2_1_-1",
+            "kind": "physical",
+            "constant": "-267899377157/312500000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "267899377157/312500000000"
+          },
+          {
+            "name": "input_3_0_-1",
+            "kind": "physical",
+            "constant": "-10000062099/10000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "10000062099/10000000000"
+          },
+          {
+            "name": "input_3_0_1",
+            "kind": "physical",
+            "constant": "-9999937901/10000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "9999937901/10000000000"
+          },
+          {
+            "name": "input_3_1_-1",
+            "kind": "physical",
+            "constant": "-413528217169/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "413528217169/500000000000"
+          },
+          {
+            "name": "input_3_1_1",
+            "kind": "physical",
+            "constant": "-586471782831/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "586471782831/500000000000"
+          },
+          {
+            "name": "state_3_0_1",
+            "kind": "physical",
+            "constant": "-533574782677/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "533574782677/1000000000000"
+          },
+          {
+            "name": "state_3_0_-1",
+            "kind": "physical",
+            "constant": "-1466425217323/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1466425217323/1000000000000"
+          },
+          {
+            "name": "state_3_1_1",
+            "kind": "physical",
+            "constant": "-17731070623/100000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "17731070623/100000000000"
+          },
+          {
+            "name": "state_3_1_-1",
+            "kind": "physical",
+            "constant": "-82268929377/100000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "82268929377/100000000000"
+          },
+          {
+            "name": "input_4_0_-1",
+            "kind": "physical",
+            "constant": "-250001211417/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "250001211417/250000000000"
+          },
+          {
+            "name": "input_4_0_1",
+            "kind": "physical",
+            "constant": "-249998788583/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "249998788583/250000000000"
+          },
+          {
+            "name": "input_4_1_-1",
+            "kind": "physical",
+            "constant": "-402860894109/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "402860894109/500000000000"
+          },
+          {
+            "name": "input_4_1_1",
+            "kind": "physical",
+            "constant": "-597139105891/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "597139105891/500000000000"
+          },
+          {
+            "name": "state_4_0_1",
+            "kind": "physical",
+            "constant": "-2667869067717/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2667869067717/5000000000000"
+          },
+          {
+            "name": "state_4_0_-1",
+            "kind": "physical",
+            "constant": "-7332130932283/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7332130932283/5000000000000"
+          },
+          {
+            "name": "state_4_1_1",
+            "kind": "physical",
+            "constant": "-270207935733/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "270207935733/1250000000000"
+          },
+          {
+            "name": "state_4_1_-1",
+            "kind": "physical",
+            "constant": "-979792064267/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "979792064267/1250000000000"
+          },
+          {
+            "name": "input_5_0_-1",
+            "kind": "physical",
+            "constant": "-1000003313923/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1000003313923/1000000000000"
+          },
+          {
+            "name": "input_5_0_1",
+            "kind": "physical",
+            "constant": "-999996686077/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "999996686077/1000000000000"
+          },
+          {
+            "name": "input_5_1_-1",
+            "kind": "physical",
+            "constant": "-793637367771/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "793637367771/1000000000000"
+          },
+          {
+            "name": "input_5_1_1",
+            "kind": "physical",
+            "constant": "-1206362632229/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1206362632229/1000000000000"
+          },
+          {
+            "name": "state_5_0_1",
+            "kind": "physical",
+            "constant": "-1333932876897/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1333932876897/2500000000000"
+          },
+          {
+            "name": "state_5_0_-1",
+            "kind": "physical",
+            "constant": "-3666067123103/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3666067123103/2500000000000"
+          },
+          {
+            "name": "state_5_1_1",
+            "kind": "physical",
+            "constant": "-1287194375161/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1287194375161/5000000000000"
+          },
+          {
+            "name": "state_5_1_-1",
+            "kind": "physical",
+            "constant": "-3712805624839/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3712805624839/5000000000000"
+          },
+          {
+            "name": "input_6_0_-1",
+            "kind": "physical",
+            "constant": "-500000798969/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "500000798969/500000000000"
+          },
+          {
+            "name": "input_6_0_1",
+            "kind": "physical",
+            "constant": "-499999201031/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "499999201031/500000000000"
+          },
+          {
+            "name": "input_6_1_-1",
+            "kind": "physical",
+            "constant": "-49266259327/62500000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "49266259327/62500000000"
+          },
+          {
+            "name": "input_6_1_1",
+            "kind": "physical",
+            "constant": "-75733740673/62500000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "75733740673/62500000000"
+          },
+          {
+            "name": "state_6_0_1",
+            "kind": "physical",
+            "constant": "-166741509741/312500000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "166741509741/312500000000"
+          },
+          {
+            "name": "state_6_0_-1",
+            "kind": "physical",
+            "constant": "-458258490259/312500000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "458258490259/312500000000"
+          },
+          {
+            "name": "state_6_1_1",
+            "kind": "physical",
+            "constant": "-1498934225929/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1498934225929/5000000000000"
+          },
+          {
+            "name": "state_6_1_-1",
+            "kind": "physical",
+            "constant": "-3501065774071/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3501065774071/5000000000000"
+          },
+          {
+            "name": "input_7_0_-1",
+            "kind": "physical",
+            "constant": "-999999727699/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "999999727699/1000000000000"
+          },
+          {
+            "name": "input_7_0_1",
+            "kind": "physical",
+            "constant": "-1000000272301/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1000000272301/1000000000000"
+          },
+          {
+            "name": "input_7_1_-1",
+            "kind": "physical",
+            "constant": "-78721633727/100000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "78721633727/100000000000"
+          },
+          {
+            "name": "input_7_1_1",
+            "kind": "physical",
+            "constant": "-121278366273/100000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "121278366273/100000000000"
+          },
+          {
+            "name": "state_7_0_1",
+            "kind": "physical",
+            "constant": "-2667864428157/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2667864428157/5000000000000"
+          },
+          {
+            "name": "state_7_0_-1",
+            "kind": "physical",
+            "constant": "-7332135571843/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7332135571843/5000000000000"
+          },
+          {
+            "name": "state_7_1_1",
+            "kind": "physical",
+            "constant": "-1711717888659/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1711717888659/5000000000000"
+          },
+          {
+            "name": "state_7_1_-1",
+            "kind": "physical",
+            "constant": "-3288282111341/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3288282111341/5000000000000"
+          },
+          {
+            "name": "input_8_0_-1",
+            "kind": "physical",
+            "constant": "-999997782251/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "999997782251/1000000000000"
+          },
+          {
+            "name": "input_8_0_1",
+            "kind": "physical",
+            "constant": "-1000002217749/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1000002217749/1000000000000"
+          },
+          {
+            "name": "input_8_1_-1",
+            "kind": "physical",
+            "constant": "-788513176143/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "788513176143/1000000000000"
+          },
+          {
+            "name": "input_8_1_1",
+            "kind": "physical",
+            "constant": "-1211486823857/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1211486823857/1000000000000"
+          },
+          {
+            "name": "state_8_0_1",
+            "kind": "physical",
+            "constant": "-1333933322953/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1333933322953/2500000000000"
+          },
+          {
+            "name": "state_8_0_-1",
+            "kind": "physical",
+            "constant": "-3666066677047/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3666066677047/2500000000000"
+          },
+          {
+            "name": "state_8_1_1",
+            "kind": "physical",
+            "constant": "-480801178129/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "480801178129/1250000000000"
+          },
+          {
+            "name": "state_8_1_-1",
+            "kind": "physical",
+            "constant": "-769198821871/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "769198821871/1250000000000"
+          },
+          {
+            "name": "input_9_0_-1",
+            "kind": "physical",
+            "constant": "-499997870481/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "499997870481/500000000000"
+          },
+          {
+            "name": "input_9_0_1",
+            "kind": "physical",
+            "constant": "-500002129519/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "500002129519/500000000000"
+          },
+          {
+            "name": "input_9_1_-1",
+            "kind": "physical",
+            "constant": "-49414063337/62500000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "49414063337/62500000000"
+          },
+          {
+            "name": "input_9_1_1",
+            "kind": "physical",
+            "constant": "-75585936663/62500000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "75585936663/62500000000"
+          },
+          {
+            "name": "state_9_0_1",
+            "kind": "physical",
+            "constant": "-166741931559/312500000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "166741931559/312500000000"
+          },
+          {
+            "name": "state_9_0_-1",
+            "kind": "physical",
+            "constant": "-458258068441/312500000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "458258068441/312500000000"
+          },
+          {
+            "name": "state_9_1_1",
+            "kind": "physical",
+            "constant": "-533144924781/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "533144924781/1250000000000"
+          },
+          {
+            "name": "state_9_1_-1",
+            "kind": "physical",
+            "constant": "-716855075219/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "716855075219/1250000000000"
+          },
+          {
+            "name": "input_10_0_-1",
+            "kind": "physical",
+            "constant": "-124999210479/125000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "124999210479/125000000000"
+          },
+          {
+            "name": "input_10_0_1",
+            "kind": "physical",
+            "constant": "-125000789521/125000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "125000789521/125000000000"
+          },
+          {
+            "name": "input_10_1_-1",
+            "kind": "physical",
+            "constant": "-792488152139/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "792488152139/1000000000000"
+          },
+          {
+            "name": "input_10_1_1",
+            "kind": "physical",
+            "constant": "-1207511847861/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1207511847861/1000000000000"
+          },
+          {
+            "name": "state_10_0_1",
+            "kind": "physical",
+            "constant": "-333484652639/625000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "333484652639/625000000000"
+          },
+          {
+            "name": "state_10_0_-1",
+            "kind": "physical",
+            "constant": "-916515347361/625000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "916515347361/625000000000"
+          },
+          {
+            "name": "state_10_1_1",
+            "kind": "physical",
+            "constant": "-468018309397/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "468018309397/1000000000000"
+          },
+          {
+            "name": "state_10_1_-1",
+            "kind": "physical",
+            "constant": "-531981690603/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "531981690603/1000000000000"
+          },
+          {
+            "name": "input_11_0_-1",
+            "kind": "physical",
+            "constant": "-999991691397/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "999991691397/1000000000000"
+          },
+          {
+            "name": "input_11_0_1",
+            "kind": "physical",
+            "constant": "-1000008308603/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1000008308603/1000000000000"
+          },
+          {
+            "name": "input_11_1_-1",
+            "kind": "physical",
+            "constant": "-793456719987/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "793456719987/1000000000000"
+          },
+          {
+            "name": "input_11_1_1",
+            "kind": "physical",
+            "constant": "-1206543280013/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1206543280013/1000000000000"
+          },
+          {
+            "name": "state_11_0_1",
+            "kind": "physical",
+            "constant": "-533577105943/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "533577105943/1000000000000"
+          },
+          {
+            "name": "state_11_0_-1",
+            "kind": "physical",
+            "constant": "-1466422894057/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1466422894057/1000000000000"
+          },
+          {
+            "name": "state_11_1_1",
+            "kind": "physical",
+            "constant": "-1273317413499/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1273317413499/2500000000000"
+          },
+          {
+            "name": "state_11_1_-1",
+            "kind": "physical",
+            "constant": "-1226682586501/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1226682586501/2500000000000"
+          },
+          {
+            "name": "input_12_0_-1",
+            "kind": "physical",
+            "constant": "-3906209939/3906250000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3906209939/3906250000"
+          },
+          {
+            "name": "input_12_0_1",
+            "kind": "physical",
+            "constant": "-3906290061/3906250000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3906290061/3906250000"
+          },
+          {
+            "name": "input_12_1_-1",
+            "kind": "physical",
+            "constant": "-158651197819/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "158651197819/200000000000"
+          },
+          {
+            "name": "input_12_1_1",
+            "kind": "physical",
+            "constant": "-241348802181/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "241348802181/200000000000"
+          },
+          {
+            "name": "state_12_0_1",
+            "kind": "physical",
+            "constant": "-2667895785331/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2667895785331/5000000000000"
+          },
+          {
+            "name": "state_12_0_-1",
+            "kind": "physical",
+            "constant": "-7332104214669/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7332104214669/5000000000000"
+          },
+          {
+            "name": "state_12_1_1",
+            "kind": "physical",
+            "constant": "-2753378837903/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2753378837903/5000000000000"
+          },
+          {
+            "name": "state_12_1_-1",
+            "kind": "physical",
+            "constant": "-2246621162097/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2246621162097/5000000000000"
+          },
+          {
+            "name": "input_13_0_-1",
+            "kind": "physical",
+            "constant": "-7812405649/7812500000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7812405649/7812500000"
+          },
+          {
+            "name": "input_13_0_1",
+            "kind": "physical",
+            "constant": "-7812594351/7812500000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7812594351/7812500000"
+          },
+          {
+            "name": "input_13_1_-1",
+            "kind": "physical",
+            "constant": "-791957936827/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "791957936827/1000000000000"
+          },
+          {
+            "name": "input_13_1_1",
+            "kind": "physical",
+            "constant": "-1208042063173/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1208042063173/1000000000000"
+          },
+          {
+            "name": "state_13_0_1",
+            "kind": "physical",
+            "constant": "-2667907862259/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2667907862259/5000000000000"
+          },
+          {
+            "name": "state_13_0_-1",
+            "kind": "physical",
+            "constant": "-7332092137741/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7332092137741/5000000000000"
+          },
+          {
+            "name": "state_13_1_1",
+            "kind": "physical",
+            "constant": "-740355225269/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "740355225269/1250000000000"
+          },
+          {
+            "name": "state_13_1_-1",
+            "kind": "physical",
+            "constant": "-509644774731/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "509644774731/1250000000000"
+          },
+          {
+            "name": "input_14_0_-1",
+            "kind": "physical",
+            "constant": "-999986256917/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "999986256917/1000000000000"
+          },
+          {
+            "name": "input_14_0_1",
+            "kind": "physical",
+            "constant": "-1000013743083/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1000013743083/1000000000000"
+          },
+          {
+            "name": "input_14_1_-1",
+            "kind": "physical",
+            "constant": "-789987743231/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "789987743231/1000000000000"
+          },
+          {
+            "name": "input_14_1_1",
+            "kind": "physical",
+            "constant": "-1210012256769/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1210012256769/1000000000000"
+          },
+          {
+            "name": "state_14_0_1",
+            "kind": "physical",
+            "constant": "-1333960802671/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1333960802671/2500000000000"
+          },
+          {
+            "name": "state_14_0_-1",
+            "kind": "physical",
+            "constant": "-3666039197329/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3666039197329/2500000000000"
+          },
+          {
+            "name": "state_14_1_1",
+            "kind": "physical",
+            "constant": "-634286631569/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "634286631569/1000000000000"
+          },
+          {
+            "name": "state_14_1_-1",
+            "kind": "physical",
+            "constant": "-365713368431/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "365713368431/1000000000000"
+          },
+          {
+            "name": "input_15_0_-1",
+            "kind": "physical",
+            "constant": "-199996944857/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "199996944857/200000000000"
+          },
+          {
+            "name": "input_15_0_1",
+            "kind": "physical",
+            "constant": "-200003055143/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "200003055143/200000000000"
+          },
+          {
+            "name": "input_15_1_-1",
+            "kind": "physical",
+            "constant": "-78816052557/100000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "78816052557/100000000000"
+          },
+          {
+            "name": "input_15_1_1",
+            "kind": "physical",
+            "constant": "-121183947443/100000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "121183947443/100000000000"
+          },
+          {
+            "name": "state_15_0_1",
+            "kind": "physical",
+            "constant": "-2667936881057/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2667936881057/5000000000000"
+          },
+          {
+            "name": "state_15_0_-1",
+            "kind": "physical",
+            "constant": "-7332063118943/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7332063118943/5000000000000"
+          },
+          {
+            "name": "state_15_1_1",
+            "kind": "physical",
+            "constant": "-135330905291/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "135330905291/200000000000"
+          },
+          {
+            "name": "state_15_1_-1",
+            "kind": "physical",
+            "constant": "-64669094709/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "64669094709/200000000000"
+          },
+          {
+            "name": "input_16_0_-1",
+            "kind": "physical",
+            "constant": "-39999340099/40000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "39999340099/40000000000"
+          },
+          {
+            "name": "input_16_0_1",
+            "kind": "physical",
+            "constant": "-40000659901/40000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "40000659901/40000000000"
+          },
+          {
+            "name": "input_16_1_-1",
+            "kind": "physical",
+            "constant": "-157545933549/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "157545933549/200000000000"
+          },
+          {
+            "name": "input_16_1_1",
+            "kind": "physical",
+            "constant": "-242454066451/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "242454066451/200000000000"
+          },
+          {
+            "name": "state_16_0_1",
+            "kind": "physical",
+            "constant": "-1333976689291/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1333976689291/2500000000000"
+          },
+          {
+            "name": "state_16_0_-1",
+            "kind": "physical",
+            "constant": "-3666023310709/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3666023310709/2500000000000"
+          },
+          {
+            "name": "state_16_1_1",
+            "kind": "physical",
+            "constant": "-359554296453/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "359554296453/500000000000"
+          },
+          {
+            "name": "state_16_1_-1",
+            "kind": "physical",
+            "constant": "-140445703547/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "140445703547/500000000000"
+          },
+          {
+            "name": "input_17_0_-1",
+            "kind": "physical",
+            "constant": "-999982368767/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "999982368767/1000000000000"
+          },
+          {
+            "name": "input_17_0_1",
+            "kind": "physical",
+            "constant": "-1000017631233/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1000017631233/1000000000000"
+          },
+          {
+            "name": "input_17_1_-1",
+            "kind": "physical",
+            "constant": "-197605188861/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "197605188861/250000000000"
+          },
+          {
+            "name": "input_17_1_1",
+            "kind": "physical",
+            "constant": "-302394811139/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "302394811139/250000000000"
+          },
+          {
+            "name": "state_17_0_1",
+            "kind": "physical",
+            "constant": "-533594201963/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "533594201963/1000000000000"
+          },
+          {
+            "name": "state_17_0_-1",
+            "kind": "physical",
+            "constant": "-1466405798037/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1466405798037/1000000000000"
+          },
+          {
+            "name": "state_17_1_1",
+            "kind": "physical",
+            "constant": "-1902561104543/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1902561104543/2500000000000"
+          },
+          {
+            "name": "state_17_1_-1",
+            "kind": "physical",
+            "constant": "-597438895457/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "597438895457/2500000000000"
+          },
+          {
+            "name": "input_18_0_-1",
+            "kind": "physical",
+            "constant": "-19999631037/20000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "19999631037/20000000000"
+          },
+          {
+            "name": "input_18_0_1",
+            "kind": "physical",
+            "constant": "-20000368963/20000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "20000368963/20000000000"
+          },
+          {
+            "name": "input_18_1_-1",
+            "kind": "physical",
+            "constant": "-199600996667/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "199600996667/250000000000"
+          },
+          {
+            "name": "input_18_1_1",
+            "kind": "physical",
+            "constant": "-300399003333/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "300399003333/250000000000"
+          },
+          {
+            "name": "state_18_0_1",
+            "kind": "physical",
+            "constant": "-533597891593/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "533597891593/1000000000000"
+          },
+          {
+            "name": "state_18_0_-1",
+            "kind": "physical",
+            "constant": "-1466402108407/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1466402108407/1000000000000"
+          },
+          {
+            "name": "state_18_1_1",
+            "kind": "physical",
+            "constant": "-2003359111209/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2003359111209/2500000000000"
+          },
+          {
+            "name": "state_18_1_-1",
+            "kind": "physical",
+            "constant": "-496640888791/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "496640888791/2500000000000"
+          },
+          {
+            "name": "input_19_0_-1",
+            "kind": "physical",
+            "constant": "-999980885361/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "999980885361/1000000000000"
+          },
+          {
+            "name": "input_19_0_1",
+            "kind": "physical",
+            "constant": "-1000019114639/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1000019114639/1000000000000"
+          },
+          {
+            "name": "input_19_1_-1",
+            "kind": "physical",
+            "constant": "-814157677031/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "814157677031/1000000000000"
+          },
+          {
+            "name": "input_19_1_1",
+            "kind": "physical",
+            "constant": "-1185842322969/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1185842322969/1000000000000"
+          },
+          {
+            "name": "state_19_0_1",
+            "kind": "physical",
+            "constant": "-667002143151/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "667002143151/1250000000000"
+          },
+          {
+            "name": "state_19_0_-1",
+            "kind": "physical",
+            "constant": "-1832997856849/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1832997856849/1250000000000"
+          },
+          {
+            "name": "state_19_1_1",
+            "kind": "physical",
+            "constant": "-4192560545387/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "4192560545387/5000000000000"
+          },
+          {
+            "name": "state_19_1_-1",
+            "kind": "physical",
+            "constant": "-807439454613/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "807439454613/5000000000000"
+          },
+          {
+            "name": "input_20_0_-1",
+            "kind": "physical",
+            "constant": "-199996092497/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "199996092497/200000000000"
+          },
+          {
+            "name": "input_20_0_1",
+            "kind": "physical",
+            "constant": "-200003907503/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "200003907503/200000000000"
+          },
+          {
+            "name": "input_20_1_-1",
+            "kind": "physical",
+            "constant": "-105024821119/125000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "105024821119/125000000000"
+          },
+          {
+            "name": "input_20_1_1",
+            "kind": "physical",
+            "constant": "-144975178881/125000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "144975178881/125000000000"
+          },
+          {
+            "name": "state_20_0_1",
+            "kind": "physical",
+            "constant": "-2668028110119/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2668028110119/5000000000000"
+          },
+          {
+            "name": "state_20_0_-1",
+            "kind": "physical",
+            "constant": "-7331971889881/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7331971889881/5000000000000"
+          },
+          {
+            "name": "state_20_1_1",
+            "kind": "physical",
+            "constant": "-870472395287/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "870472395287/1000000000000"
+          },
+          {
+            "name": "state_20_1_-1",
+            "kind": "physical",
+            "constant": "-129527604713/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "129527604713/1000000000000"
+          },
+          {
+            "name": "input_21_0_-1",
+            "kind": "physical",
+            "constant": "-499990146343/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "499990146343/500000000000"
+          },
+          {
+            "name": "input_21_0_1",
+            "kind": "physical",
+            "constant": "-500009853657/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "500009853657/500000000000"
+          },
+          {
+            "name": "input_21_1_-1",
+            "kind": "physical",
+            "constant": "-175741966067/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "175741966067/200000000000"
+          },
+          {
+            "name": "input_21_1_1",
+            "kind": "physical",
+            "constant": "-224258033933/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "224258033933/200000000000"
+          },
+          {
+            "name": "state_21_0_1",
+            "kind": "physical",
+            "constant": "-2668047817433/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2668047817433/5000000000000"
+          },
+          {
+            "name": "state_21_0_-1",
+            "kind": "physical",
+            "constant": "-7331952182567/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7331952182567/5000000000000"
+          },
+          {
+            "name": "state_21_1_1",
+            "kind": "physical",
+            "constant": "-44736521461/50000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "44736521461/50000000000"
+          },
+          {
+            "name": "state_21_1_-1",
+            "kind": "physical",
+            "constant": "-5263478539/50000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "5263478539/50000000000"
+          },
+          {
+            "name": "input_22_0_-1",
+            "kind": "physical",
+            "constant": "-252234474383/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "252234474383/250000000000"
+          },
+          {
+            "name": "input_22_0_1",
+            "kind": "physical",
+            "constant": "-247765525617/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "247765525617/250000000000"
+          },
+          {
+            "name": "input_22_1_-1",
+            "kind": "physical",
+            "constant": "-116394300973/125000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "116394300973/125000000000"
+          },
+          {
+            "name": "input_22_1_1",
+            "kind": "physical",
+            "constant": "-133605699027/125000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "133605699027/125000000000"
+          },
+          {
+            "name": "state_22_0_1",
+            "kind": "physical",
+            "constant": "-2659109919901/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2659109919901/5000000000000"
+          },
+          {
+            "name": "state_22_0_-1",
+            "kind": "physical",
+            "constant": "-7340890080099/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7340890080099/5000000000000"
+          },
+          {
+            "name": "state_22_1_1",
+            "kind": "physical",
+            "constant": "-1135624434579/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1135624434579/1250000000000"
+          },
+          {
+            "name": "state_22_1_-1",
+            "kind": "physical",
+            "constant": "-114375565421/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "114375565421/1250000000000"
+          },
+          {
+            "name": "input_23_0_-1",
+            "kind": "physical",
+            "constant": "-203579150747/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "203579150747/200000000000"
+          },
+          {
+            "name": "input_23_0_1",
+            "kind": "physical",
+            "constant": "-196420849253/200000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "196420849253/200000000000"
+          },
+          {
+            "name": "input_23_1_-1",
+            "kind": "physical",
+            "constant": "-998318498061/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "998318498061/1000000000000"
+          },
+          {
+            "name": "input_23_1_1",
+            "kind": "physical",
+            "constant": "-1001681501939/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1001681501939/1000000000000"
+          },
+          {
+            "name": "state_23_0_1",
+            "kind": "physical",
+            "constant": "-1320607083083/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1320607083083/2500000000000"
+          },
+          {
+            "name": "state_23_0_-1",
+            "kind": "physical",
+            "constant": "-3679392916917/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3679392916917/2500000000000"
+          },
+          {
+            "name": "state_23_1_1",
+            "kind": "physical",
+            "constant": "-908835848051/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "908835848051/1000000000000"
+          },
+          {
+            "name": "state_23_1_-1",
+            "kind": "physical",
+            "constant": "-91164151949/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "91164151949/1000000000000"
+          },
+          {
+            "name": "input_24_0_-1",
+            "kind": "physical",
+            "constant": "-1017896524787/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1017896524787/1000000000000"
+          },
+          {
+            "name": "input_24_0_1",
+            "kind": "physical",
+            "constant": "-982103475213/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "982103475213/1000000000000"
+          },
+          {
+            "name": "input_24_1_-1",
+            "kind": "physical",
+            "constant": "-540183453551/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "540183453551/500000000000"
+          },
+          {
+            "name": "input_24_1_1",
+            "kind": "physical",
+            "constant": "-459816546449/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "459816546449/500000000000"
+          },
+          {
+            "name": "state_24_0_1",
+            "kind": "physical",
+            "constant": "-2623317641379/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2623317641379/5000000000000"
+          },
+          {
+            "name": "state_24_0_-1",
+            "kind": "physical",
+            "constant": "-7376682358621/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7376682358621/5000000000000"
+          },
+          {
+            "name": "state_24_1_1",
+            "kind": "physical",
+            "constant": "-4463812333153/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "4463812333153/5000000000000"
+          },
+          {
+            "name": "state_24_1_-1",
+            "kind": "physical",
+            "constant": "-536187666847/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "536187666847/5000000000000"
+          },
+          {
+            "name": "input_25_0_-1",
+            "kind": "physical",
+            "constant": "-254474409731/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "254474409731/250000000000"
+          },
+          {
+            "name": "input_25_0_1",
+            "kind": "physical",
+            "constant": "-245525590269/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "245525590269/250000000000"
+          },
+          {
+            "name": "input_25_1_-1",
+            "kind": "physical",
+            "constant": "-1176830901971/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1176830901971/1000000000000"
+          },
+          {
+            "name": "input_25_1_1",
+            "kind": "physical",
+            "constant": "-823169098029/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "823169098029/1000000000000"
+          },
+          {
+            "name": "state_25_0_1",
+            "kind": "physical",
+            "constant": "-521084000491/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "521084000491/1000000000000"
+          },
+          {
+            "name": "state_25_0_-1",
+            "kind": "physical",
+            "constant": "-1478915999509/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1478915999509/1000000000000"
+          },
+          {
+            "name": "state_25_1_1",
+            "kind": "physical",
+            "constant": "-2143490715591/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2143490715591/2500000000000"
+          },
+          {
+            "name": "state_25_1_-1",
+            "kind": "physical",
+            "constant": "-356509284409/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "356509284409/2500000000000"
+          },
+          {
+            "name": "input_26_0_-1",
+            "kind": "physical",
+            "constant": "-254474867763/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "254474867763/250000000000"
+          },
+          {
+            "name": "input_26_0_1",
+            "kind": "physical",
+            "constant": "-245525132237/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "245525132237/250000000000"
+          },
+          {
+            "name": "input_26_1_-1",
+            "kind": "physical",
+            "constant": "-1287102832331/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1287102832331/1000000000000"
+          },
+          {
+            "name": "input_26_1_1",
+            "kind": "physical",
+            "constant": "-712897167669/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "712897167669/1000000000000"
+          },
+          {
+            "name": "state_26_0_1",
+            "kind": "physical",
+            "constant": "-2587520531403/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2587520531403/5000000000000"
+          },
+          {
+            "name": "state_26_0_-1",
+            "kind": "physical",
+            "constant": "-7412479468597/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7412479468597/5000000000000"
+          },
+          {
+            "name": "state_26_1_1",
+            "kind": "physical",
+            "constant": "-3999878598851/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3999878598851/5000000000000"
+          },
+          {
+            "name": "state_26_1_-1",
+            "kind": "physical",
+            "constant": "-1000121401149/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1000121401149/5000000000000"
+          },
+          {
+            "name": "input_27_0_-1",
+            "kind": "physical",
+            "constant": "-508950962423/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "508950962423/500000000000"
+          },
+          {
+            "name": "input_27_0_1",
+            "kind": "physical",
+            "constant": "-491049037577/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "491049037577/500000000000"
+          },
+          {
+            "name": "input_27_1_-1",
+            "kind": "physical",
+            "constant": "-1410526647017/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1410526647017/1000000000000"
+          },
+          {
+            "name": "input_27_1_1",
+            "kind": "physical",
+            "constant": "-589473352983/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "589473352983/1000000000000"
+          },
+          {
+            "name": "state_27_0_1",
+            "kind": "physical",
+            "constant": "-2569618606557/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2569618606557/5000000000000"
+          },
+          {
+            "name": "state_27_0_-1",
+            "kind": "physical",
+            "constant": "-7430381393443/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7430381393443/5000000000000"
+          },
+          {
+            "name": "state_27_1_1",
+            "kind": "physical",
+            "constant": "-1794675975917/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1794675975917/2500000000000"
+          },
+          {
+            "name": "state_27_1_-1",
+            "kind": "physical",
+            "constant": "-705324024083/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "705324024083/2500000000000"
+          },
+          {
+            "name": "input_28_0_-1",
+            "kind": "physical",
+            "constant": "-333886587613/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "333886587613/1000000000000"
+          },
+          {
+            "name": "input_28_0_1",
+            "kind": "physical",
+            "constant": "-1666113412387/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1666113412387/1000000000000"
+          },
+          {
+            "name": "input_28_1_-1",
+            "kind": "physical",
+            "constant": "-1517092553229/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1517092553229/1000000000000"
+          },
+          {
+            "name": "input_28_1_1",
+            "kind": "physical",
+            "constant": "-482907446771/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "482907446771/1000000000000"
+          },
+          {
+            "name": "state_28_0_1",
+            "kind": "physical",
+            "constant": "-12639578199/19531250000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "12639578199/19531250000"
+          },
+          {
+            "name": "state_28_0_-1",
+            "kind": "physical",
+            "constant": "-26422921801/19531250000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "26422921801/19531250000"
+          },
+          {
+            "name": "state_28_1_1",
+            "kind": "physical",
+            "constant": "-614451879721/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "614451879721/1000000000000"
+          },
+          {
+            "name": "state_28_1_-1",
+            "kind": "physical",
+            "constant": "-385548120279/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "385548120279/1000000000000"
+          },
+          {
+            "name": "input_29_0_-1",
+            "kind": "physical",
+            "constant": "-118087041123/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "118087041123/500000000000"
+          },
+          {
+            "name": "input_29_0_1",
+            "kind": "physical",
+            "constant": "-881912958877/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "881912958877/500000000000"
+          },
+          {
+            "name": "input_29_1_-1",
+            "kind": "physical",
+            "constant": "-785937920033/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "785937920033/500000000000"
+          },
+          {
+            "name": "input_29_1_1",
+            "kind": "physical",
+            "constant": "-214062079967/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "214062079967/500000000000"
+          },
+          {
+            "name": "state_29_0_1",
+            "kind": "physical",
+            "constant": "-1999778968349/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1999778968349/2500000000000"
+          },
+          {
+            "name": "state_29_0_-1",
+            "kind": "physical",
+            "constant": "-3000221031651/2500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3000221031651/2500000000000"
+          },
+          {
+            "name": "state_29_1_1",
+            "kind": "physical",
+            "constant": "-2500383558539/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2500383558539/5000000000000"
+          },
+          {
+            "name": "state_29_1_-1",
+            "kind": "physical",
+            "constant": "-2499616441461/5000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2499616441461/5000000000000"
+          },
+          {
+            "name": "input_30_0_-1",
+            "kind": "physical",
+            "constant": "-894478148603/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "894478148603/500000000000"
+          },
+          {
+            "name": "input_30_0_1",
+            "kind": "physical",
+            "constant": "-105521851397/500000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "105521851397/500000000000"
+          },
+          {
+            "name": "input_30_1_-1",
+            "kind": "physical",
+            "constant": "-1000088575863/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1000088575863/1000000000000"
+          },
+          {
+            "name": "input_30_1_1",
+            "kind": "physical",
+            "constant": "-999911424137/1000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "999911424137/1000000000000"
+          },
+          {
+            "name": "state_30_0_1",
+            "kind": "physical",
+            "constant": "-802650409873/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "802650409873/1250000000000"
+          },
+          {
+            "name": "state_30_0_-1",
+            "kind": "physical",
+            "constant": "-1697349590127/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1697349590127/1250000000000"
+          },
+          {
+            "name": "state_30_1_1",
+            "kind": "physical",
+            "constant": "-625073745669/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "625073745669/1250000000000"
+          },
+          {
+            "name": "state_30_1_-1",
+            "kind": "physical",
+            "constant": "-624926254331/1250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "624926254331/1250000000000"
+          },
+          {
+            "name": "input_31_0_-1",
+            "kind": "physical",
+            "constant": "-422468659873/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "422468659873/250000000000"
+          },
+          {
+            "name": "input_31_0_1",
+            "kind": "physical",
+            "constant": "-77531340127/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "77531340127/250000000000"
+          },
+          {
+            "name": "input_31_1_-1",
+            "kind": "physical",
+            "constant": "-250073745669/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "250073745669/250000000000"
+          },
+          {
+            "name": "input_31_1_1",
+            "kind": "physical",
+            "constant": "-249926254331/250000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "249926254331/250000000000"
+          },
+          {
+            "name": "state_31_0_1",
+            "kind": "physical",
+            "constant": "-2520727/5000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2520727/5000000"
+          },
+          {
+            "name": "state_31_0_-1",
+            "kind": "physical",
+            "constant": "-7479273/5000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "7479273/5000000"
+          },
+          {
+            "name": "state_31_1_1",
+            "kind": "physical",
+            "constant": "-1/2",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1/2"
+          },
+          {
+            "name": "state_31_1_-1",
+            "kind": "physical",
+            "constant": "-1/2",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1/2"
+          },
+          {
+            "name": "position_-1_-1",
+            "kind": "terminal",
+            "constant": "-12030865130709607274128609964495970719/160000000000000000000000000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "12030865130709607274128609964495970719/160000000000000000000000000000000000000000"
+          },
+          {
+            "name": "position_-1_1",
+            "kind": "terminal",
+            "constant": "-64113081287168071274128609964495970719/160000000000000000000000000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "64113081287168071274128609964495970719/160000000000000000000000000000000000000000"
+          },
+          {
+            "name": "position_1_-1",
+            "kind": "terminal",
+            "constant": "-11416510265902132074128609964495970719/160000000000000000000000000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "11416510265902132074128609964495970719/160000000000000000000000000000000000000000"
+          },
+          {
+            "name": "position_1_1",
+            "kind": "terminal",
+            "constant": "-63498726422360596074128609964495970719/160000000000000000000000000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "63498726422360596074128609964495970719/160000000000000000000000000000000000000000"
+          },
+          {
+            "name": "yaw_-1",
+            "kind": "terminal",
+            "constant": "-80317663773899/600000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "80317663773899/600000000000000000000"
+          },
+          {
+            "name": "yaw_1",
+            "kind": "terminal",
+            "constant": "-3762911502882083/600000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3762911502882083/600000000000000000000"
+          },
+          {
+            "name": "terminal_v_-1",
+            "kind": "physical",
+            "constant": "-1980403645832009/2229668718000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1980403645832009/2229668718000000000"
+          },
+          {
+            "name": "terminal_v_1",
+            "kind": "physical",
+            "constant": "-1980403645832009/2229668718000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1980403645832009/2229668718000000000"
+          },
+          {
+            "name": "terminal_delta_-1",
+            "kind": "physical",
+            "constant": "-1980403645832009/33575856981894122400",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1980403645832009/33575856981894122400"
+          },
+          {
+            "name": "terminal_delta_1",
+            "kind": "physical",
+            "constant": "-1980403645832009/33575856981894122400",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1980403645832009/33575856981894122400"
+          },
+          {
+            "name": "geometry_1",
+            "kind": "geometry",
+            "constant": "-155373720582796591311/200000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "155373720582796591311/200000000000000000000"
+          },
+          {
+            "name": "geometry_2",
+            "kind": "geometry",
+            "constant": "-39561529850268964531/50000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "39561529850268964531/50000000000000000000"
+          },
+          {
+            "name": "geometry_3",
+            "kind": "geometry",
+            "constant": "-32557943414410616223/40000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "32557943414410616223/40000000000000000000"
+          },
+          {
+            "name": "geometry_4",
+            "kind": "geometry",
+            "constant": "-168991300795348310211/200000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "168991300795348310211/200000000000000000000"
+          },
+          {
+            "name": "geometry_5",
+            "kind": "geometry",
+            "constant": "-88378006268586324221/100000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "88378006268586324221/100000000000000000000"
+          },
+          {
+            "name": "geometry_6",
+            "kind": "geometry",
+            "constant": "-79648665891090510707/100000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "79648665891090510707/100000000000000000000"
+          },
+          {
+            "name": "geometry_7",
+            "kind": "geometry",
+            "constant": "-139811606682332715017/200000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "139811606682332715017/200000000000000000000"
+          },
+          {
+            "name": "geometry_8",
+            "kind": "geometry",
+            "constant": "-30293946149599952937/50000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "30293946149599952937/50000000000000000000"
+          },
+          {
+            "name": "geometry_9",
+            "kind": "geometry",
+            "constant": "-103434142698661292951/200000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "103434142698661292951/200000000000000000000"
+          },
+          {
+            "name": "geometry_10",
+            "kind": "geometry",
+            "constant": "-10829542771351533881/25000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "10829542771351533881/25000000000000000000"
+          },
+          {
+            "name": "geometry_11",
+            "kind": "geometry",
+            "constant": "-70846237519023369621/200000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "70846237519023369621/200000000000000000000"
+          },
+          {
+            "name": "geometry_12",
+            "kind": "geometry",
+            "constant": "-28073825390788532821/100000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "28073825390788532821/100000000000000000000"
+          },
+          {
+            "name": "geometry_13",
+            "kind": "geometry",
+            "constant": "-6311712064412552783/25000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "6311712064412552783/25000000000000000000"
+          },
+          {
+            "name": "geometry_14",
+            "kind": "geometry",
+            "constant": "-2058677257792382029/8000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "2058677257792382029/8000000000000000000"
+          },
+          {
+            "name": "geometry_15",
+            "kind": "geometry",
+            "constant": "-3375816557273004019/12500000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "3375816557273004019/12500000000000000000"
+          },
+          {
+            "name": "geometry_16",
+            "kind": "geometry",
+            "constant": "-28870255334499980777/100000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "28870255334499980777/100000000000000000000"
+          },
+          {
+            "name": "geometry_17",
+            "kind": "geometry",
+            "constant": "-62370587933126894037/200000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "62370587933126894037/200000000000000000000"
+          },
+          {
+            "name": "geometry_18",
+            "kind": "geometry",
+            "constant": "-1690043064031877121/5000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1690043064031877121/5000000000000000000"
+          },
+          {
+            "name": "geometry_19",
+            "kind": "geometry",
+            "constant": "-18275320493763597701/50000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "18275320493763597701/50000000000000000000"
+          },
+          {
+            "name": "geometry_20",
+            "kind": "geometry",
+            "constant": "-9812613335080492817/25000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "9812613335080492817/25000000000000000000"
+          },
+          {
+            "name": "geometry_21",
+            "kind": "geometry",
+            "constant": "-83397914217338781289/200000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "83397914217338781289/200000000000000000000"
+          },
+          {
+            "name": "geometry_22",
+            "kind": "geometry",
+            "constant": "-87373623122906586631/200000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "87373623122906586631/200000000000000000000"
+          },
+          {
+            "name": "geometry_23",
+            "kind": "geometry",
+            "constant": "-11253408257011615169/25000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "11253408257011615169/25000000000000000000"
+          },
+          {
+            "name": "geometry_24",
+            "kind": "geometry",
+            "constant": "-45294943732983705243/100000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "45294943732983705243/100000000000000000000"
+          },
+          {
+            "name": "geometry_25",
+            "kind": "geometry",
+            "constant": "-44203597322884359041/100000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "44203597322884359041/100000000000000000000"
+          },
+          {
+            "name": "geometry_26",
+            "kind": "geometry",
+            "constant": "-42324554419850147329/100000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "42324554419850147329/100000000000000000000"
+          },
+          {
+            "name": "geometry_27",
+            "kind": "geometry",
+            "constant": "-39938101594120129931/100000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "39938101594120129931/100000000000000000000"
+          },
+          {
+            "name": "geometry_28",
+            "kind": "geometry",
+            "constant": "-937003807952225591/2500000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "937003807952225591/2500000000000000000"
+          },
+          {
+            "name": "geometry_29",
+            "kind": "geometry",
+            "constant": "-17782911329230999311/50000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "17782911329230999311/50000000000000000000"
+          },
+          {
+            "name": "geometry_30",
+            "kind": "geometry",
+            "constant": "-18349886005735770079/50000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "18349886005735770079/50000000000000000000"
+          },
+          {
+            "name": "geometry_31",
+            "kind": "geometry",
+            "constant": "-99425453974167407341/200000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "99425453974167407341/200000000000000000000"
+          },
+          {
+            "name": "geometry_32",
+            "kind": "geometry",
+            "constant": "-5000227897458231301/8000000000000000000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "5000227897458231301/8000000000000000000"
+          },
+          {
+            "name": "hard_trust",
+            "kind": "trust",
+            "constant": "-1/1000",
+            "linear": "0",
+            "gradient_uncertainty": "0",
+            "second_order": "0",
+            "slack": "1/1000"
+          }
+        ],
+        "violations": []
+      },
+      "inherited_plan_id": "c98a2dba8217f72c083030576f66c5ddd5ae646b6d909e20b15756c6fb3cca82",
+      "remaining_budget": 1268,
+      "actual_tail_continuously_verified": true,
+      "new_solve": false,
+      "accepted": false
+    }
+  ],
+  "K_executions": [
+    {
+      "phase": 42,
+      "actual": {
+        "minimum_road_lower_Q": 159999999999999916328,
+        "minimum_pair_lower_Q": 175109311436455782525,
+        "executed_input": [
+          "172468659873/250000000000",
+          "73745669/250000000000"
+        ],
+        "actual_pose_Q": [
+          [
+            -2845884591319836198155,
+            -2845883515719541937320
+          ],
+          [
+            -16813346617901681,
+            -15737746323641752
+          ],
+          [
+            -316790299254555,
+            -297193945086550
+          ]
+        ],
+        "v": "7479273/5000000",
+        "delta": "0"
+      }
+    }
+  ],
+  "saved_K_shifts": 1,
+  "rejected_K_fixtures": [
+    {
+      "phase": 42,
+      "old_plan_id": "b7984faa4892620d8cd48eed754b0a0b2b404781af099326e40ef95b422b314b"
+    }
+  ],
+  "all_numeric_candidate_inputs_from_Clarabel": true,
+  "full_fourcar_task": false,
+  "formal_batch": false,
+  "wall_s": 6.170917320996523
+}

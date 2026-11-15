@@ -1,0 +1,76 @@
+{
+  "curve": {
+    "counts": {
+      "numerical_proposals": 1,
+      "full_certificate_passed": 1,
+      "joint_accepted": 1,
+      "actual_nonzero_prefix_changes": 32,
+      "actual_nonzero_all_changes": 33,
+      "first_divergence_phase": 5,
+      "shift_passed": 239,
+      "actual_source_derivative_recertifications": 1,
+      "K_executions": 1,
+      "parked_handoffs": 1,
+      "rejected_then_old_K_executed": 1,
+      "remaining_budget": 1039
+    },
+    "input_norm_upper": "664063510976380743347/1000000000000000000000000",
+    "first_delta": [
+      "-31698103/125000000000",
+      "-926507/62500000000"
+    ],
+    "old_prefix_energy": "1462257417487063/2000000000000000",
+    "actual_prefix_energy": "913453433802480823194437/1250000000000000000000000",
+    "energy_improvement": 0.00036596170154684144,
+    "energy_improvement_percent": 0.05005434708968802,
+    "controller_wall_s": 6.015846782000153,
+    "independent_wall_s": 8.701547370990738,
+    "minimum_road_m": 0.498572827104575,
+    "minimum_pair_m": 0.5019535912216039,
+    "new_anchor_id": "8f7c1733b49d894bebe7ccb2f9656d096d509ba46d6c0dff837161bbe308a544",
+    "new_derivative_id": "91ad6695d29024767a8608b42d31e5c7cf2541e850f04e43130911e23b5fa9f8",
+    "shift_free_box_passed": true,
+    "shift_new_optimization": false,
+    "duration_ticks": 240,
+    "duration_change_ticks": 0,
+    "initial_budget": 1279,
+    "final_budget": 1039
+  },
+  "straight_acceleration": {
+    "counts": {
+      "numerical_proposals": 1,
+      "full_certificate_passed": 1,
+      "joint_accepted": 1,
+      "actual_nonzero_prefix_changes": 32,
+      "actual_nonzero_all_changes": 33,
+      "first_divergence_phase": 10,
+      "shift_passed": 239,
+      "actual_source_derivative_recertifications": 1,
+      "K_executions": 1,
+      "parked_handoffs": 1,
+      "rejected_then_old_K_executed": 1,
+      "remaining_budget": 1039
+    },
+    "input_norm_upper": "323993155653996606151/500000000000000000000000",
+    "first_delta": [
+      "-1936153/200000000000",
+      "-862627/12500000000"
+    ],
+    "old_prefix_energy": "332653133403327/500000000000000",
+    "actual_prefix_energy": "831103914761895900709873/1250000000000000000000000",
+    "energy_improvement": 0.0004231349971372794,
+    "energy_improvement_percent": 0.06360003178209166,
+    "controller_wall_s": 6.170917320996523,
+    "independent_wall_s": 8.673436547993333,
+    "minimum_road_m": 0.49852990795272917,
+    "minimum_pair_m": 0.5019554092847529,
+    "new_anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+    "new_derivative_id": "dda317c9837a851890ecd48c129a561c8242e042d32a95141dfd4d771b5b9a65",
+    "shift_free_box_passed": true,
+    "shift_new_optimization": false,
+    "duration_ticks": 240,
+    "duration_change_ticks": 0,
+    "initial_budget": 1279,
+    "final_budget": 1039
+  }
+}

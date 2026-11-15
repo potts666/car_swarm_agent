@@ -1,0 +1,4 @@
+cycle,outgoing,incoming,scope,participants,accepted,source_history,kind,Phi_before,Phi_after,execution_scope
+406,A1,B1,2,"A1,B1",True,a3bc0d62a9f47d733302c4d002684fe3f83a5c0dfbb6fdcb2fae2c0ea11b5de5,internal,4594,4525,shared starting transaction before rolling fork
+786,B1,B2,4,"A1,A2,B1,B2",True,6664130ba26adca687294452793a8270bd67f3ce3e120a706b6d80de559bc9ac,external,4525,4249,during numerical interval
+1166,B2,A2,2,"A2,B2",True,4c2a2eeb2da8090fd9073b4016b97c4fa4493ac9920a6970405c236e84b7aeb9,external,4249,4180,approved post-interval continuation

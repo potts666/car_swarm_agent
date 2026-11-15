@@ -16,3 +16,19 @@ __pycache__/
 
 # Keep the large experiment archive locally; do not commit it.
 /examples/head_on_mpc/results/M2b_fourcar_001.tar.gz
+
+# Local experiment evidence is preserved in the GitHub Release linked by experiments/ARTIFACTS.md.
+# Keep sources/configuration/reports in Git; restore full raw evidence for replay.
+/experiments/**/results/
+/experiments/**/objects/
+/experiments/**/source_archive/
+/experiments/**/version_history/
+/experiments/**/base_a/
+/experiments/**/base_b/
+/experiments/**/base_c/
+/experiments/**/dependencies/
+/experiments/**/*.gz
+/experiments/**/*.tgz
+/experiments/**/*.zip
+/experiments/**/*.log
+/experiments/**/*.jsonl

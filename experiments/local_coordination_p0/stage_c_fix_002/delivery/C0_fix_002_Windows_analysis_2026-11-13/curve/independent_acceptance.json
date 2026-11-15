@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "actual_steps": 240,
+  "solver_events": 2,
+  "accepted_numeric_candidates": 2,
+  "continuous_two_updates_accepted": true,
+  "actual_K_executions": 1,
+  "damaged_K_due_rejections": 1,
+  "damage_forks": {
+    "passed": true,
+    "cases": [
+      {
+        "kind": "stale_anchor",
+        "passed": true,
+        "actual_steps": 32,
+        "actual_old_K": 1
+      },
+      {
+        "kind": "stale_derivative",
+        "passed": true,
+        "actual_steps": 32,
+        "actual_old_K": 1
+      },
+      {
+        "kind": "old_phase",
+        "passed": true,
+        "actual_steps": 32,
+        "actual_old_K": 1
+      },
+      {
+        "kind": "damaged_K",
+        "passed": true,
+        "actual_steps": 32,
+        "actual_old_K": 1
+      },
+      {
+        "kind": "mixed_commit_context",
+        "passed": true,
+        "actual_steps": 32,
+        "actual_old_K": 1
+      }
+    ]
+  },
+  "remaining_budget": 1039,
+  "reconstructed_completion_witness": "d038db36d63515f7775265ffff5907dfe4a337a08d9672a4a43f7fb30377ca4e",
+  "minimum_road_lower_m": 0.4984766135789171,
+  "minimum_pair_lower_m": 0.50199090749085,
+  "wall_s": 12.187793751014397,
+  "shared": [
+    "interval arithmetic/trigonometry/propagation",
+    "certified derivative generator",
+    "identity and window helpers"
+  ],
+  "independent": [
+    "actual anchors and per-event provenance",
+    "terminal rows and raw-to-rational commands",
+    "four public plans/atomic contexts",
+    "all continuous road/six-pair envelopes",
+    "K, inherited suffix shifts, budgets and controlled rejection forks"
+  ]
+}

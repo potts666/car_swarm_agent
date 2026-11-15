@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "actual_steps": 2802,
+  "logical_time_s": "2802/5",
+  "remaining_budget": 0,
+  "selection": [
+    "A1",
+    "B1",
+    "A2",
+    "B2"
+  ],
+  "actual_overlap_ticks": 189,
+  "accepted_numeric_candidates": 1,
+  "reverse_new_candidate_accepted": true,
+  "minimum_road_m": 0.44772316485036356,
+  "minimum_pair_m": 1.0988281049988953,
+  "local_socp": [
+    {
+      "actor": "B1",
+      "phase": 721,
+      "passed": true,
+      "accepted": true,
+      "status": "Solved"
+    }
+  ],
+  "version_rejection": null,
+  "all_four_goals": true,
+  "wall_s": 112.17321350600105,
+  "shared": [
+    "integer intervals/trigonometry and exact ZOH propagation",
+    "variational generator and cone compiler",
+    "immutable configuration/identity primitives"
+  ],
+  "independent": [
+    "bodies/road/six pairs, 8-subsegment continuous envelopes",
+    "source snapshots, four-public-plan IDs and authority versions",
+    "waiting/entry/exit/goal domain membership",
+    "completion table construction, raw-to-rational commands, terminal Taylor rows",
+    "actual resource clear, outside-tail actions, same-old-witness rejection replay, budgets"
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "scope": "Exact arithmetic consistency checks; proofs in complete derivation, no map certification",
+  "checks": [
+    {
+      "name": "signed_K_and_nonzero_reference",
+      "cases": 324,
+      "passed": true
+    },
+    {
+      "name": "feedback_integral_coefficients",
+      "cases": 3,
+      "passed": true
+    },
+    {
+      "name": "simultaneous_motion_budget",
+      "passed": true,
+      "individual_pass": true,
+      "unchecked_combination_fails": true,
+      "allocated_combination_pass": true
+    },
+    {
+      "name": "two_level_fallback_counterexample",
+      "passed": true,
+      "mixed_gap": "1/5",
+      "valid_gap": "1/2"
+    },
+    {
+      "name": "positive_radius_and_projected_descent",
+      "passed": true,
+      "cost_change": "-5997/1000000"
+    },
+    {
+      "name": "local_max_to_global_deadline",
+      "cases": 1296,
+      "local_transaction_check": true,
+      "passed": true
+    },
+    {
+      "name": "actual_tail_shift_with_nonzero_continuation",
+      "passed": true
+    },
+    {
+      "name": "continuous_chord_bound_identity",
+      "passed": true
+    }
+  ],
+  "optimization_calls": 0,
+  "controller_runs": 0
+}

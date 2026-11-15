@@ -1,0 +1,71 @@
+{
+  "passed": true,
+  "task": "encounter_coordination_001",
+  "event_id": "fcfb6d05040eeac50bb867cf6f27958d974e5c974021ff9086d3e78b32c3b626",
+  "source_cycle": 1,
+  "encounter_actors": [
+    "A1",
+    "B1"
+  ],
+  "limit": 8,
+  "rounds": [
+    1,
+    2
+  ],
+  "actors": [
+    [
+      "A1",
+      "A2",
+      "B1",
+      "B2"
+    ],
+    [
+      "A1",
+      "A2",
+      "B1",
+      "B2"
+    ]
+  ],
+  "selected": "e93f3f073609557cce194d74f058ba3ff1ad68e84abcb73f7e600b7a1d7a788a",
+  "initialization": "c7ca419e5590ce5a0975d512b4240db9ef4363b48bdf8c425dc5ee209f8d16f8",
+  "B0": 1753,
+  "variables_per_actor": 64,
+  "eta": "1/50",
+  "trust_l2": "1/1000",
+  "quantum": "1/1000000000000",
+  "first_input_note": "actual moving encounter source, retain all active quotas; report numeric first-input changes separately",
+  "repairs": [
+    "Fraction before float in shared actual assembly",
+    "first car service without max-prep wait",
+    "per-car deadlines checked in generator and live selector"
+  ],
+  "worker_gate": "actual JSON bytes and full construct for8 forecast models; exact actual-round models rechecked before solve",
+  "native_entry": "durable ready/parent release handshake before solve",
+  "executed_sources": {
+    "audit.py": "1897aa003b789550d60ac38224e1c3db35ad1b3d361d8e71ad84d0fc5660e002",
+    "audit_updates.py": "b0296edd02e2fc9e81ed83b8edc28b09c14c2b46c16241847bd8c0a7ef1e1af8",
+    "check_rejections.py": "869dc3cc652bd0aca99f4b428dc6de44b9b2c2ff014c3dee7af4fd80847af37d",
+    "check_zero.py": "47847172ae9105165985ee01a746ae0f64a5079f51a515d087017a3efc776553",
+    "common.py": "c5c4cd5fa1628768bec40d47493bf63df7825aee77b7f38e45105da76617ad12",
+    "discovery.py": "cd340637571521a97903642788b715e3e73163397de20869086102d2d2b88250",
+    "encounter.py": "c2b705c85f6e7a52086c8f032c2c8f27c76a085413d319c70d9314535f06c7b6",
+    "execution.py": "e8b888248c028c9e04ae4aff3e66d307a3587f45f3ef34eb3157902303b9e218",
+    "freeze_registration.py": "f2aa008d505ba770bd49f7e0c3ab7467376abf1bf4a18c7cb1a0116d99cc6e15",
+    "initialize.py": "0e11b61e8794ee8ad39ba73753036aaa0c17c9be7c31b72896bb334ba8673190",
+    "local_mpc.py": "775bc6c0945c8272f4d1e0205a08b239c3bf01ec3bdde1a349c733e57ec5ee58",
+    "map_domain.py": "bd3d944def207ec46e98750254e65e08a60d42fc4d76230b934639a0c9259ee8",
+    "physics.py": "e6edc61a707aab24f7cf530eba0c10a3bc3ba9104269da165a43a780929ccc39",
+    "plan_io.py": "795f2be3d558e836dab90edc79dbac77bda122236d963ff20f1ba78111a851b4",
+    "preflight.py": "f6e884386b98dc0f5bacbbbac312929af3b7693c447c290dc3d4f84f6349987c",
+    "run_case.py": "4a37ba08575b57c7d3277bd17b3098ca20f0748db2e05b5909a83bda001dedb5",
+    "scan_event.py": "fa6dbc7e8ac203162e9638ff4db5cf8dbd3dbb9f151f8bb682bbf68bbba31dca",
+    "stage_driver.py": "059bc75b52817fce88ed4adbd8767fbc8430e12012843552c9bd296a0bea5d33",
+    "summarize.py": "a85fb87221d31358ef4fc5246893505ce39226666f300cd6e49a7589d4fdc634",
+    "transaction.py": "25f23f2a616fcaaf0aa66cdac4e4ccf3ea5c49528d3fbe66edbee87653a1049c",
+    "transport.py": "818808380cef40f73857e85501d7cc4b63fa7db75cbbac8e5c7681b024d04d37",
+    "verify_delivery.py": "04f05d9762e05367f655b83d0140ac2d64f81b31d9f71f519ba6b9de2dd7d388"
+  },
+  "precheck_id": "4f7e6fd92c57dd0e2a6012b2ca5616c6d15d61de3bc9ef0dd59df7a5deff5128",
+  "failures_counted": true,
+  "automatic_repeats": false
+}

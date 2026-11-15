@@ -1,0 +1,94 @@
+{
+  "curve": {
+    "endpoint": 37,
+    "source_phase": 5,
+    "terminal_v": 1.4789324983213872,
+    "terminal_delta": -0.35744197167861286,
+    "terminal_v_error": -1.244167861287524e-05,
+    "terminal_delta_error": -1.244167861287524e-05,
+    "reset_v_exact": "74126383/50000000",
+    "reset_delta_exact": "-5999829/20000000",
+    "K_actual": [
+      "44769517980512538004019/2490542678335735102500000",
+      "715414880666188612052891/2490542678335735102500000"
+    ],
+    "prefix_energy_old": 0.7311287087435315,
+    "prefix_energy_new": 0.731123863142891,
+    "acceptance": {
+      "passed": true,
+      "actual_steps": 240,
+      "accepted_box_candidates": 1,
+      "actual_K_resets": 1,
+      "actual_saved_K_shifts": 1,
+      "damaged_proposals_independently_rejected": 6,
+      "same_old_first_input_replayed_after_every_rejection": true,
+      "parked_handoffs_executed": 1,
+      "current_same_version_completion_witness_rebuilt": true,
+      "remaining_budget": 1039,
+      "minimum_road_lower_m": 0.4987712610029631,
+      "minimum_pair_lower_m": 0.501727001758351,
+      "wall_s": 5.097175577000598,
+      "shared_primitives": [
+        "fixed-point interval arithmetic",
+        "trigonometry",
+        "propagation"
+      ],
+      "separate_checks": [
+        "box membership",
+        "live K",
+        "inverse flow containment",
+        "actual tail/shift",
+        "geometric bodies, roads, six pairs and permissions",
+        "witness/budget"
+      ],
+      "full_fourcar_task": false,
+      "derivative_bounds_connected": false
+    }
+  },
+  "straight_acceleration": {
+    "endpoint": 42,
+    "source_phase": 10,
+    "terminal_v": 1.3578456908651078,
+    "terminal_delta": 1.4749134892274538e-05,
+    "terminal_v_error": -1.4749134892274538e-05,
+    "terminal_delta_error": 1.4749134892274538e-05,
+    "reset_v_exact": "7479273/5000000",
+    "reset_delta_exact": "0",
+    "K_actual": [
+      "96536820736257589661983/139899404091225510000000",
+      "-660286458332899/8953561861838432640"
+    ],
+    "prefix_energy_old": 0.665306266806654,
+    "prefix_energy_new": 0.6652829859327867,
+    "acceptance": {
+      "passed": true,
+      "actual_steps": 240,
+      "accepted_box_candidates": 1,
+      "actual_K_resets": 1,
+      "actual_saved_K_shifts": 1,
+      "damaged_proposals_independently_rejected": 6,
+      "same_old_first_input_replayed_after_every_rejection": true,
+      "parked_handoffs_executed": 1,
+      "current_same_version_completion_witness_rebuilt": true,
+      "remaining_budget": 1039,
+      "minimum_road_lower_m": 0.4987614237410189,
+      "minimum_pair_lower_m": 0.501727001758351,
+      "wall_s": 5.136546081994311,
+      "shared_primitives": [
+        "fixed-point interval arithmetic",
+        "trigonometry",
+        "propagation"
+      ],
+      "separate_checks": [
+        "box membership",
+        "live K",
+        "inverse flow containment",
+        "actual tail/shift",
+        "geometric bodies, roads, six pairs and permissions",
+        "witness/budget"
+      ],
+      "full_fourcar_task": false,
+      "derivative_bounds_connected": false
+    }
+  }
+}

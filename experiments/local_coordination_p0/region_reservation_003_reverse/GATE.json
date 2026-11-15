@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "shared_generation_rules": {
+    "passed": true,
+    "entry": "generation.generate",
+    "method": "method_spec.md"
+  },
+  "receiver_synthesis": {
+    "passed": true,
+    "entry": "receivers.synthesize",
+    "rule": "margin_allocation_v2_1",
+    "same_entry_both_sides": true
+  },
+  "existing_forward_regression": {
+    "passed": true,
+    "cases": 4,
+    "new_solver_calls": 0
+  },
+  "reverse_source_checks": {
+    "passed": true,
+    "registered_sources": "pre_registered.json",
+    "initial_no_solve_checks": "results/rule_checks.json",
+    "additional_rectangular_ranges": "results/source_range_checks.json"
+  },
+  "reverse_actual_execution": {
+    "passed": true,
+    "cases": 2,
+    "total_steps": 5604
+  },
+  "rejection_continuation": {
+    "passed": true,
+    "rejected_proposals": 16,
+    "actual_fallback_branches": 2,
+    "actual_fallback_steps": 198,
+    "invalid_commits": 0
+  },
+  "native_solver_calls": 2,
+  "historical_preservation": true,
+  "formal_batch": false,
+  "theorem_scope": "nominal signed bicycle, exact measured speed/steering, fixed certified policy timing, synchronous in-process four-plan commit; conditional sufficient domain, not universal feasibility",
+  "unresolved": [
+    "A is AlmostSolved with res_primal above configured tolerance; exact certificate admission passed",
+    "uncertain-speed/steering robust policy, real processes/clock and other orderings not exercised"
+  ]
+}

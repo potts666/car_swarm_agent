@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "actual_steps": 2802,
+  "logical_time_s": "2802/5",
+  "remaining_budget": 0,
+  "selection": [
+    "A1",
+    "A2",
+    "B1",
+    "B2"
+  ],
+  "actual_overlap_ticks": 194,
+  "accepted_numeric_candidates": 2,
+  "continuous_two_updates_accepted": true,
+  "minimum_road_m": 0.4407078047375755,
+  "minimum_pair_m": 1.0872695557583234,
+  "local_socp": [
+    {
+      "actor": "A2",
+      "phase": 787,
+      "passed": true,
+      "accepted": true,
+      "status": "AlmostSolved",
+      "raw_result_id": "6f3ae21200fb0f03ed4b844196edec43b96daa35d24cb0eba1d61d646f196256"
+    },
+    {
+      "actor": "A2",
+      "phase": 788,
+      "passed": true,
+      "accepted": true,
+      "status": "AlmostSolved",
+      "raw_result_id": "ab1b1afa8c2f5585f8c81c38ffdde6831c769904c1c4d8a212c6d07bb7f6eb3a"
+    }
+  ],
+  "version_rejection": {
+    "passed": true,
+    "actual_steps": 32,
+    "old_tail_preserved": true
+  },
+  "all_four_goals": true,
+  "wall_s": 109.5092866299965,
+  "shared": [
+    "integer intervals/trigonometry and exact ZOH propagation",
+    "variational generator and cone compiler",
+    "immutable configuration/identity primitives"
+  ],
+  "independent": [
+    "bodies/road/six pairs, 8-subsegment continuous envelopes",
+    "source snapshots, four-public-plan IDs and authority versions",
+    "waiting/entry/exit/goal domain membership",
+    "completion table construction, raw-to-rational commands, terminal Taylor rows",
+    "actual resource clear, outside-tail actions, same-old-witness rejection replay, budgets"
+  ]
+}

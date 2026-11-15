@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "exact_identity_cases": 140,
+  "branch_tests": [
+    {
+      "h": "0",
+      "g": "-1",
+      "branch": "linear",
+      "zero_anchor_legal": true
+    },
+    {
+      "h": "0",
+      "g": "0",
+      "branch": "linear",
+      "zero_anchor_legal": true
+    },
+    {
+      "h": "0",
+      "g": "1",
+      "branch": "linear",
+      "zero_anchor_legal": false
+    },
+    {
+      "h": "2",
+      "g": "-1",
+      "branch": "centered",
+      "zero_anchor_legal": true
+    },
+    {
+      "h": "2",
+      "g": "0",
+      "branch": "old_valid_cone_nonpositive_margin",
+      "zero_anchor_legal": true
+    },
+    {
+      "h": "2",
+      "g": "1",
+      "branch": "old_valid_cone_nonpositive_margin",
+      "zero_anchor_legal": false
+    }
+  ],
+  "quantization_cases": 129,
+  "rejected_cases": [
+    "curve:NumericalError",
+    "curve:InsufficientProgress",
+    "curve:MaxTime",
+    "curve:PrimalInfeasible",
+    "curve:NaN",
+    "curve:raw_solution",
+    "curve:anchor_id",
+    "curve:derivative_id",
+    "curve:K:wrong state-dependent K",
+    "curve:phase:stale source phase/history",
+    "curve:object:wrong motion object",
+    "curve:domain:wrong or widened receiving domain",
+    "curve:deadline:wrong receiver deadline",
+    "curve:witness:changed completion witness",
+    "curve:budget:completion budget mismatch",
+    "straight_acceleration:NumericalError",
+    "straight_acceleration:InsufficientProgress",
+    "straight_acceleration:MaxTime",
+    "straight_acceleration:PrimalInfeasible",
+    "straight_acceleration:NaN",
+    "straight_acceleration:raw_solution",
+    "straight_acceleration:anchor_id",
+    "straight_acceleration:derivative_id",
+    "straight_acceleration:K:wrong state-dependent K",
+    "straight_acceleration:phase:stale source phase/history",
+    "straight_acceleration:object:wrong motion object",
+    "straight_acceleration:domain:wrong or widened receiving domain",
+    "straight_acceleration:deadline:wrong receiver deadline",
+    "straight_acceleration:witness:changed completion witness",
+    "straight_acceleration:budget:completion budget mismatch"
+  ],
+  "independent_numeric_certificates": [
+    "curve",
+    "straight_acceleration"
+  ],
+  "history_files_unchanged": 914,
+  "instructions_hashes_verified": {
+    "README_UBUNTU.md": true,
+    "theory.md": true,
+    "experiment_instructions.md": true,
+    "diagnostics.json": true,
+    "stop_conditions.csv": true,
+    "audit_archive.py": true,
+    "overview.html": true
+  },
+  "original_C_manifest_verified": 463
+}

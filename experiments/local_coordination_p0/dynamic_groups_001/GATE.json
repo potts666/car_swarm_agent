@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "criteria": {
+    "safety_composition": {
+      "passed": true,
+      "evidence": "all three independent_acceptance.json; complete six-edge Hausdorff product contracts"
+    },
+    "positive_multi_car_freedom": {
+      "passed": true,
+      "evidence": "per_event.csv, pre_registration.json and raw solver objects"
+    },
+    "shift_and_group_continuation": {
+      "passed": true,
+      "evidence": "group_events, rejection independent_acceptance and actual round-2 sources"
+    },
+    "local_socp_zero_anchors": {
+      "passed": true,
+      "evidence": "all actual generation objects and seven-source regression"
+    },
+    "finite_completion": {
+      "passed": true,
+      "evidence": "deadline_trace.jsonl.gz and actual target membership"
+    },
+    "local_communication_and_parallel": {
+      "passed": true,
+      "evidence": "communication_events.json and native worker timestamp intervals"
+    }
+  },
+  "native_solver_calls": 12,
+  "status_counts": {
+    "AlmostSolved": 12
+  },
+  "certificate_suboptimal_v1_accepted": 12,
+  "formal_batch": false,
+  "strict_Solved_all": false,
+  "first_source_identical": true,
+  "physical_outputs_equal_across_arms": {
+    "1": true,
+    "2": true
+  },
+  "natural_group_changes": 0,
+  "fork_group_changes": 2,
+  "physical_boundary_renegotiation": false,
+  "source_snapshot_repair": "F-S original retained; four served fields independently reconstructed",
+  "scope": "four-vehicle nominal synchronous logical-clock mechanism experiment; fixed historical completion strategy; label-only group migration"
+}

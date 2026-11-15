@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "exit_code": 0,
+  "solver_calls": 0,
+  "mode": "content checked full acceptance plus fresh two actual sources/prefixes per case; no full-task repeat",
+  "result": {
+    "passed": true,
+    "files_verified": 279,
+    "solver_calls": 0,
+    "cases": {
+      "opposite": {
+        "passed": true,
+        "fresh_actual_source_and_prefix_checks": 2,
+        "full_task_evidence_content_checked": true,
+        "full_task_replayed_this_call": false
+      },
+      "same_direction": {
+        "passed": true,
+        "fresh_actual_source_and_prefix_checks": 2,
+        "full_task_evidence_content_checked": true,
+        "full_task_replayed_this_call": false
+      }
+    }
+  }
+}

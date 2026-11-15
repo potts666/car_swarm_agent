@@ -1,0 +1,138 @@
+{
+  "version": "B-interface-v1",
+  "date": "2026-11-13",
+  "experiment_execution_completed": true,
+  "all_B_acceptance_requirements_passed": false,
+  "source_git": "ebc3d29",
+  "A_and_P0_preserved": true,
+  "formal_batch_allowed": false,
+  "new_duration_branches": false,
+  "B0_actual_anchor_derivatives_certified": true,
+  "B0_exact_calibration_and_coverage_rejections_passed": true,
+  "B1_real_free_terminal_SOCP_connected": true,
+  "B1_Solved_only_policy_preserved": true,
+  "solver_rational_candidates_actually_executed": true,
+  "numeric_nonzero_execution_cases": 4,
+  "total_paired_cases": 6,
+  "B_JL_solver_candidate_actually_executed": false,
+  "B_JL_shift_after_accepted_JL_candidate_passed": false,
+  "shift_after_actual_fallback_recertification_passed": true,
+  "modified_numerical_old_K_executed_after_rejection": true,
+  "independent_execution_acceptance_passed": true,
+  "numerical_certificate_corruption_rejections_passed": true,
+  "performance_observations_are_separate": true,
+  "unmet": [
+    "Both initial B-JL solves not accepted: curve AlmostSolved, straight NumericalError",
+    "B-JL after accepted numerical candidate then shift not demonstrated; only fallback-first-step recertification achieved"
+  ],
+  "paired_cases": {
+    "curve_B-ZG": {
+      "executed_safely": true,
+      "solver_candidate_accepted": true,
+      "numeric_nonzero_executed": true,
+      "status": "Solved"
+    },
+    "curve_B-ZL": {
+      "executed_safely": true,
+      "solver_candidate_accepted": true,
+      "numeric_nonzero_executed": true,
+      "status": "Solved"
+    },
+    "curve_B-JL": {
+      "executed_safely": true,
+      "solver_candidate_accepted": false,
+      "numeric_nonzero_executed": false,
+      "status": "AlmostSolved"
+    },
+    "straight_acceleration_B-ZG": {
+      "executed_safely": true,
+      "solver_candidate_accepted": true,
+      "numeric_nonzero_executed": true,
+      "status": "Solved"
+    },
+    "straight_acceleration_B-ZL": {
+      "executed_safely": true,
+      "solver_candidate_accepted": true,
+      "numeric_nonzero_executed": true,
+      "status": "Solved"
+    },
+    "straight_acceleration_B-JL": {
+      "executed_safely": true,
+      "solver_candidate_accepted": false,
+      "numeric_nonzero_executed": false,
+      "status": "NumericalError"
+    }
+  },
+  "shift": {
+    "curve": {
+      "recertified_after_actual_first_step": true,
+      "first_JL_candidate_accepted": false,
+      "second_JL_candidate_accepted": false,
+      "all_statuses": [
+        [
+          "AlmostSolved"
+        ],
+        [
+          "AlmostSolved",
+          "AlmostSolved",
+          "AlmostSolved"
+        ]
+      ],
+      "first_step_was_fallback": true
+    },
+    "straight_acceleration": {
+      "recertified_after_actual_first_step": true,
+      "first_JL_candidate_accepted": false,
+      "second_JL_candidate_accepted": false,
+      "all_statuses": [
+        [
+          "NumericalError"
+        ],
+        [
+          "AlmostSolved",
+          "AlmostSolved",
+          "AlmostSolved"
+        ]
+      ],
+      "first_step_was_fallback": true
+    }
+  },
+  "runtime_code_sha256": {
+    "execute_case.py": "bf444566bd3a5cc232ea8a8013daa3cbdd1febe07799e27e7485f820a1d3c4e9",
+    "test_interfaces.py": "5fceb91943e1686511b2860ca88861348356f5cea01f5018897ae125e4c8d509",
+    "prepare_anchors.py": "f6023cf60a3c794ab16a24cabe64a34fd6b0d54b9c191c4f0496ab1e9e86a65a",
+    "derivatives.py": "5d5a4499990af5d256562805f751ce45f289f8998db16647654d0d99258e4096",
+    "accept_case.py": "d3710af8423570141e89cf08a184e26cb0d5c05ec0360f3fc5dade2e0ff5edcc",
+    "validate_numeric.py": "ec4f8a678360b52a0098962c44301f87f67031da3bde2947f803df40f2a1e93e",
+    "socp.py": "27cd31d009f73beec9c14216fd21cc3460401715112be01cdee68b1ae96d1e80",
+    "run_b.py": "5d81ff73847a702c9421f6eaae857adac3796e8eda5e07ed25c5ae20045c122c",
+    "test_rejections.py": "ea1ddb952d296912c11875c7aba9d0845d32643ada8165fd6038fd18bfb05195",
+    "common.py": "0b6fc3dfd68784e99fd17239720eac9c08876c6d3d6274ed87dd3f9ac5b4f7bf"
+  },
+  "input_manifest_sha256": "c01b245be6550b26e3d0df70c49d69394bc52cbacdfe2a305235e52cab4071ce",
+  "A_GATE_sha256": "3ee3baa00a6d5e34b0f6484c1d59519c6e3402d130884f149ae31b0b08f419fe",
+  "P0_GATE_sha256": "033bd5ce6b1d1cd4106dbce98f397acf0d39a99a4031d45bba87477b275ab368",
+  "derivative_generator_sha256": "a7d5fd0a2d6dde7914f9954241a8602d9037618a5bf511143c75a55cb65e9f8b",
+  "final_runtime_status_sha256": "9236d2c9d2e7a7bd626edbf9c1054e3f01d096cdf35d9eab59bd76994820df5a",
+  "B0_checks_sha256": "091bd8738006e1a860933febbc2f5e4d98d164fe5262cc268b5978bcc02227a8",
+  "single_step_checks_sha256": "2158a25983980054818a059523ca68f7bb5592076117773292e673674855ec8c",
+  "damage_checks_sha256": "f36c2c692fe09648a2f600a179cd6921cffff4202c543cdd4fec8767c970bc25",
+  "comparison_sha256": "cbe6dc7baeac62da894d72643fdcbe7bee77d40a789148d12d5b3baa278edddf",
+  "source_interval_model_sha256": "bac15f5e841b511293ca4a220e48ccfda9a9a350795ab91102647ba906743df3",
+  "frozen": {
+    "h": ".2",
+    "m": 32,
+    "connection_ticks": 239,
+    "Mc": 15,
+    "rho": "1/1000",
+    "variable_scale": "1/10000",
+    "objective": "h sum(a^2+omega^2)",
+    "solver_tolerance": "1e-10",
+    "solver_max_iter": 300,
+    "solver_time_limit_s": 5,
+    "stage_limit_s": 180
+  },
+  "sharing": "verified map variational tool and interval propagation reused; terminal Taylor parameters independently derived; geometry/state/K/tail/budget independently replayed",
+  "portable_replay_check_passed": true,
+  "portable_replay_check_sha256": "f6582b69fe450d15ec8101a36bd06cd768053f29b6600871e365b8088328fdbe"
+}

@@ -1,0 +1,602 @@
+--- autonomy_init_002/audit_updates.py
++++ encounter_coordination_001/audit_updates.py
+@@ -3,7 +3,7 @@
+ import gzip
+ from common import *
+ from physics import propagate
+-from run_update import load,restore,record
++from plan_io import load,restore,record,source as rebuild_source
+ 
+ def end(state,c,commands):
+  p=state['poses'][c];v=state['v'][c];d=state['delta'][c]
+@@ -13,17 +13,18 @@
+  return p,v,d
+ 
+ def verify(write_output=True):
+- base=load('results/init_0.json.gz');anchor=load('results/parallel_anchor.json.gz');calls=read(HERE/'solver_calls.json');assert len(calls)==8 and all(c['native_entered'] for c in calls)
++ base=load('results/R_old.json.gz');anchor=load('results/E_anchor.json.gz');event=read(HERE/'event_registration.json');calls=read(HERE/'solver_calls.json');assert len(calls)==8 and all(c['native_entered'] for c in calls)
+  trace=[json.loads(s) for s in gzip.open(HERE/'results/actual.jsonl.gz','rt')];rows=[];first_changed=[];prefix_changed=[]
+- for k in (0,1):
+-  parent=load(f'results/round_{k}_plan.json.gz');committed=load(f'results/round_{k}_committed.json.gz');source=read(HERE/f'results/round_{k}_source.json');state=restore(source);pc=fc=0
++ for r in (0,1):
++  k=event['source_cycle']+r
++  parent=load(f'results/round_{r}_plan.json.gz');committed=load(f'results/round_{r}_committed.json.gz');source=read(HERE/f'results/round_{r}_source.json');state=restore(source);pc=fc=0
+   assert source['cycle']==k
+-  if k==0:assert record(initial_state())==record(state)
++  if r==0:assert content_id(record(rebuild_source(base,k)))==content_id(record(state))==event['source_id']
+   else:
+    prev=trace[k-1];assert source['poses_Q']==prev['poses_Q'] and source['v']==prev['v'] and source['delta']==prev['delta'] and source['history']==prev['history']
+-   assert content_id(parent)==content_id(load(f'results/round_{k-1}_committed.json.gz'))
++   assert content_id(parent)==content_id(load(f'results/round_{r-1}_committed.json.gz'))
+   for c in CARS:
+-   stem=f'results/round_{k}_{c}';job=read(HERE/(stem+'_model.json'));raw=read(HERE/(stem+'_raw.json'));a=read(HERE/(stem+'_admission.json'));meta=read(HERE/(stem+'_transport.json'));j=next(t for t in calls if t['round']==k and t['actor']==c)
++   stem=f'results/round_{r}_{c}';job=read(HERE/(stem+'_model.json'));raw=read(HERE/(stem+'_raw.json'));a=read(HERE/(stem+'_admission.json'));meta=read(HERE/(stem+'_transport.json'));j=next(t for t in calls if t['round']==r and t['actor']==c)
+    assert j['model_id']==raw['model_id']==job['model_id']==a['model_id'] and raw['status'] in ('Solved','AlmostSolved') and a['accepted']
+    assert job['model_id']==content_id({key:value for key,value in job.items() if key!='model_id'})
+    assert j['native_entering_durable_at']<=raw['native_entered_at']<=raw['native_finished_at']
+@@ -44,8 +45,8 @@
+    for t in range(64):
+     unit=[F(i==t) for i in range(64)];expected.extend([unit,[-x for x in unit]]);bounds.extend([1-ref[t],1+ref[t]]);labels.extend([f'input+:{t}',f'input-:{t}'])
+    for t in range(32):
+-    vv+=H*ref[2*t];r=[H if z%2==0 and z//2<=t else F(0) for z in range(64)];s=[H*H*(F(t-z//2)+F(1,2)) if z%2==0 and z//2<=t else F(0) for z in range(64)]
+-    expected.extend([r,[-x for x in r],s,[-x for x in s]]);bounds.extend([2-vv,vv+1,F(1,100),F(1,100)]);labels.extend([f'v+:{t}',f'v-:{t}',f'physical_x+:{t}',f'physical_x-:{t}'])
++    vv+=H*ref[2*t];velocity_row=[H if z%2==0 and z//2<=t else F(0) for z in range(64)];s=[H*H*(F(t-z//2)+F(1,2)) if z%2==0 and z//2<=t else F(0) for z in range(64)]
++    expected.extend([velocity_row,[-x for x in velocity_row],s,[-x for x in s]]);bounds.extend([2-vv,vv+1,F(1,100),F(1,100)]);labels.extend([f'v+:{t}',f'v-:{t}',f'physical_x+:{t}',f'physical_x-:{t}'])
+    assert expected==[[F(x) for x in row] for row in job['rows']] and bounds==list(map(F,job['bounds'])) and labels==job['labels']
+    n=min(32,parent['per_car_policies'][c]['approach_end']-k);first=1 if k==0 else 0
+    eq=[]
+@@ -69,7 +70,7 @@
+    assert ev==rv and ed==rd and sum((ep[t]-rp[t]).abs_upper() for t in (0,1))<F(1,1000000) and (ep[2]-rp[2]).abs_upper()<F(1,100000000)
+    changed=cmd!=[[ref[2*t],ref[2*t+1]] for t in range(32)];assert changed;pc+=changed;fc+=cmd[0]!=[ref[0],ref[1]]
+    progress=abs(H*(2*state['v'][c]+H*cmd[0][0])/2);assert progress>=F(1,50)
+-   rows.append({'round':k,'actor':c,'passed':True,'model_id':job['model_id'],'actual_source_bound':True,'native_status':raw['status'],'new_prefix':changed,'first_changed':cmd[0]!=[ref[0],ref[1]],'progress':progress,'phase':k+32,'K_id':cert['K_id'],'endpoint_v':ev,'endpoint_delta':ed,'quantization_error':quant_error,'input_cost_decrease':sum(x*x for x in ref)-sum(x*x for x in q)})
++   rows.append({'round':r,'cycle':k,'actor':c,'passed':True,'model_id':job['model_id'],'actual_source_bound':True,'native_status':raw['status'],'new_prefix':changed,'first_changed':cmd[0]!=[ref[0],ref[1]],'progress':progress,'phase':k+32,'K_id':cert['K_id'],'endpoint_v':ev,'endpoint_delta':ed,'quantization_error':quant_error,'input_cost_decrease':sum(x*x for x in ref)-sum(x*x for x in q)})
+   prefix_changed.append(pc);first_changed.append(fc)
+  out={'passed':True,'rows':rows,'accepted':[4,4],'new_prefix_by_round':prefix_changed,'first_input_changed_by_round':first_changed,'real_sources':True,'receivers_and_K':True,'exact_grid_equalities':True,'native_calls_checked':8,'new_native_calls':0}
+  if write_output:write(HERE/'results/independent_updates.json',out)
+--- autonomy_init_002/check_rejections.py
++++ encounter_coordination_001/check_rejections.py
+@@ -1,31 +1,34 @@
+ """Real-candidate damage and same-source full continuation without new solves."""
+ import copy,gzip
+ from common import *
+-from run_update import load,save,record
++from plan_io import load,save,record,source
+ from transaction import check_binding,select
+ from local_mpc import admit
+ from physics import step
++from execution import gate
+ from audit import audit
+-from check_protocol import expect_rejection
++from check_zero import rejects as expect_rejection
+ 
+ def run():
+- before=load('results/round_1_plan.json.gz');accepted=load('results/round_1_committed.json.gz');source=read(HERE/'results/round_1_source.json');job=read(HERE/'results/round_1_A1_model.json');raw=read(HERE/'results/round_1_A1_raw.json');results=read(HERE/'results/rounds.json')[1]['admissions'];assert results['A1']['accepted']
++ before=load('results/round_1_plan.json.gz');accepted=load('results/round_1_committed.json.gz');checkpoint=read(HERE/'results/round_1_source.json');k0=checkpoint['cycle'];job=read(HERE/'results/round_1_A1_model.json');raw=read(HERE/'results/round_1_A1_raw.json');results=read(HERE/'results/rounds.json')[1]['admissions'];assert results['A1']['accepted']
+  bad=copy.deepcopy(raw);bad['model_id']='old-source-model';expect_rejection(lambda:admit(job,bad))
+- state=initial_state();step(state,{c:before['controls'][c][0] for c in CARS},before['owners'][0],4);assert content_id(record(state))==content_id(source)
++ state=source(before,k0);assert content_id(record(state))==content_id(checkpoint)
+  tests=[]
+  for key in ('phase','parent','deadline','K_id'):
+   damaged=copy.deepcopy(job['receiving_certificate']);damaged[key]='damaged';expect_rejection(lambda:check_binding(job,before,state,'A1',damaged));tests.append(key+' rejected')
+  delayed=copy.deepcopy(accepted);delayed['per_car_policies']['A1']['goal']+=1;expect_rejection(lambda:select(before,delayed,CARS,CARS,results));tests.append('deadline increase rejected')
+- mixed=copy.deepcopy(accepted);mixed['controls']['A1'][1:33]=before['controls']['A1'][1:33];failed=copy.deepcopy(results);failed['A1']={'accepted':False,'reason':'fixture corrupted real model binding / worker_error'}
++ mixed=copy.deepcopy(accepted);mixed['controls']['A1'][k0:k0+32]=before['controls']['A1'][k0:k0+32];failed=copy.deepcopy(results);failed['A1']={'accepted':False,'reason':'fixture corrupted real model binding / worker_error'}
+  first,layer1=select(before,mixed,CARS,CARS,failed);assert first is mixed
+  second,layer2=select(before,accepted,CARS,['A1','A2','B1'],results);assert second is before
+  branches=[]
+- for name,plan,layer in [('worker_error',first,layer1),('missing_ACK',second,layer2)]:
++ unrelated=copy.deepcopy(before);unrelated['controls']['A2'][k0:k0+32]=accepted['controls']['A2'][k0:k0+32];private,private_layer=select(before,unrelated,['A2'],['A2'],{'A2':results['A2']});assert private is unrelated
++ for name,plan,layer in [('worker_error',first,layer1),('missing_ACK',second,layer2),('unrelated_group',private,private_layer)]:
+   save(f'results/rejection_{name}_plan.json.gz',plan);s=initial_state();path=HERE/f'results/rejection_{name}.jsonl.gz'
+   with gzip.open(path,'wt') as f:
+    for k in range(plan['B0']):
++    release=gate(plan,s)
+     row=step(s,{c:plan['controls'][c][k] for c in CARS},plan['owners'][k],4);row['cycle']=s['cycle'];f.write(json.dumps(row,default=str)+'\n')
+-    if k==0:assert content_id(record(s))==content_id(source)
+-  proof=audit(plan,path,HERE/f'results/rejection_{name}_acceptance.json');branches.append({'name':name,'scope':'copied real round1 candidate fixture','layer':layer,'source_id':content_id(source),'same_actual_checkpoint':True,'receiver_phase':33,'all_four_goals':proof['passed'],'steps':plan['B0'],'new_native_calls':0})
+- write(HERE/'results/rejection_checks.json',{'passed':True,'real_candidate_source':raw['model_id'],'tests':tests,'branches':branches,'new_native_calls':0});print(json.dumps({'passed':True,'branches':2,'native_calls':0}))
++    if k+1==k0:assert content_id(record(s))==content_id(checkpoint)
++  proof=audit(plan,path,HERE/f'results/rejection_{name}_acceptance.json');branches.append({'name':name,'scope':'copied real round1 candidate fixture','layer':layer,'source_id':content_id(checkpoint),'same_actual_checkpoint':True,'receiver_phase':k0+32,'all_four_goals':proof['passed'],'steps':plan['B0'],'new_native_calls':0})
++ write(HERE/'results/rejection_checks.json',{'passed':True,'real_candidate_source':raw['model_id'],'tests':tests,'branches':branches,'new_native_calls':0});print(json.dumps({'passed':True,'branches':3,'native_calls':0}))
+ if __name__=='__main__':run()
+--- /dev/null
++++ encounter_coordination_001/check_zero.py
+@@ -0,0 +1,54 @@
++"""Zero-call encounter damage, closed occupancy, release and receiving checks."""
++import copy
++from common import *
++from plan_io import load,save,source,record
++from encounter import deadline_check,approve_joint_requests,active_pairs
++from discovery import certify
++from transaction import check_binding,select,closure_required
++from local_mpc import prepare,admit
++from physics import step
++from execution import gate
++
++def rejects(fn):
++ try:fn()
++ except (AssertionError,ValueError):return True
++ raise AssertionError('damaged proposal accepted')
++
++def run():
++ event=read(HERE/'event_registration.json');k=event['source_cycle'];old=load('results/R_old.json.gz');new=load('results/E_anchor.json.gz');state=source(old,k);checks=[]
++ assert content_id(record(state))==event['source_id']
++ a,b=event['actors'];intervals=[list(map(F,i['resource_interval'])) for i in event['event']['intents']];assert max(x[0] for x in intervals)<=min(x[1] for x in intervals)
++ # Individually valid requests overlap the exclusive key; combining approvals
++ # without a common owner cannot be admitted.
++ rejects(lambda:approve_joint_requests(event['event']['intents']))
++ discovered,_=active_pairs(old,state);assert content_id(discovered[0])==content_id(event['event'])
++ checks.append({'name':'two independent approvals conflict','overlap':event['event']['overlap'],'joint_admitted':False})
++ rejects(lambda:select(old,new,[a,b],[a,b],{}));checks.append({'name':'resource endpoints omitted','required':sorted(closure_required(old,new))})
++ oldjob=prepare(old,state,b);rejects(lambda:check_binding(oldjob,new,state,b));checks.append({'name':'old physical calendar / new anchor mixed rejected'})
++ for c in CARS:
++  j=prepare(new,state,c);check_binding(j,new,state,c,j['receiving_certificate'])
++  for field in ('parent','phase','K_id','deadline'):
++   bad=copy.deepcopy(j['receiving_certificate']);bad[field]='damaged';rejects(lambda:check_binding(j,new,state,c,bad))
++ checks.append({'name':'receiving/K and exact equalities retained'})
++ # Missing brake/recovery changes actual endpoint velocity or target identity,
++ # not just a label. Reject broken copies through physical execution checks.
++ broken=copy.deepcopy(new);end=broken['per_car_policies'][b]['approach_end'];broken['controls'][b][end-1]=['0','0']
++ def check_stop():
++  s=source(broken,end);assert s['v'][b]==s['delta'][b]==0,'waiting domain not reached'
++ rejects(check_stop)
++ missing=copy.deepcopy(new);start=missing['per_car_policies'][b]['service_start'];finish=missing['per_car_policies'][b]['goal'];missing['controls'][b][start:finish]=[['0','0']]*(finish-start)
++ def check_goal():
++  s=source(missing,finish);assert sum((s['poses'][b][j]-F(TASKS[b]['goal'][j])).abs_upper() for j in (0,1))<F(2,25),'resume connection missing'
++ rejects(check_goal);checks.append({'name':'brake endpoint / recovery missing rejected','stop_phase':end,'service_start':start})
++ reverse=load(f'results/proposals/{b}_passes_{a}_existing_stop.json.gz');limits=deadline_check(old,reverse,k);assert limits['block_passed'] and not limits['per_car_passed'];rejects(lambda:select(old,reverse,CARS,CARS,{}));checks.append({'name':'individual deadline violation rejected','limits':limits})
++ assert select(old,new,CARS,[c for c in CARS if c!=b],{})[0] is old;checks.append({'name':'missing ACK returns complete old strategy'})
++ idx=certify(old,new,participants=CARS,cycle=k);save('results/event_occupancy.json.gz',idx)
++ # Actual physical outside-core gate, not an unconditional cycle flag.
++ out=new['encounter']['first_out'];at=source(new,out);assert gate(new,at)['body_resource_clear'];bad=copy.deepcopy(at);bad['poses'][a]=(m.I(0),m.I(0),m.I(0));rejects(lambda:gate(new,bad));checks.append({'name':'actual exit-domain release required','release_phase':out})
++ # The two other cars retain their complete compatible early movement.
++ others=[c for c in CARS if c not in event['actors']]
++ assert all(new['controls'][c][:new['per_car_policies'][c]['approach_end']]==old['controls'][c][:old['per_car_policies'][c]['approach_end']] for c in others)
++ checks.append({'name':'other cars compatible movement preserved','actors':others})
++ write(HERE/'results/protocol_precheck.json',{'passed':True,'checks':checks,'native_calls':0,'initial_block':list(CARS),'discovered_encounter_group':event['actors'],'edit_closure':sorted(closure_required(old,new)),'natural_commit_size_changed':False})
++ print(json.dumps({'passed':True,'checks':len(checks),'native_calls':0}))
++if __name__=='__main__':run()
+--- /dev/null
++++ encounter_coordination_001/encounter.py
+@@ -0,0 +1,90 @@
++"""State-derived independent requests and finite physically executable schedules."""
++import copy,itertools
++from common import *
++from physics import propagate,body
++from initialize import trapezoid
++
++def advance(v,commands):
++ distance=F(0)
++ for a,w in commands:
++  a=F(a);distance+=H*(2*v+H*a)/2;v+=H*a
++ return distance,v
++
++def resource_intent(plan,state,c):
++ k=state['cycle'];p=state['poses'][c];v=state['v'][c];d=state['delta'][c];policy=plan['per_car_policies'][c];end=policy['approach_end']
++ assert k<end and d==0
++ commands=plan['controls'][c][k:end]+plan['paths'][c]['controls'][end:];intervals=[];minimum=F(100)
++ for j,u in enumerate(commands):
++  a,w=map(F,u);nv,nd=v+H*a,d+H*w;assert -1<=nv<=2 and abs(nd)<=F(1,2) and max(abs(a),abs(w))<=1
++  nodes=propagate(p,v,nv,d,nd,direction(c),4)
++  for t in range(4):
++   box=m.axis_box(body(nodes[t],c)+body(nodes[t+1],c));err=TUBE+F(15)*(H/4)**2/8
++   margin=F(m.road(box,[[m.I(q).l for q in r] for r in ROADS]),m.Q)-err;assert margin>=0;minimum=min(minimum,margin)
++   if F(box[0],m.Q)-err<=16 and F(box[1],m.Q)+err>=-16:intervals.append([F(k+j)+F(t,4),F(k+j)+F(t+1,4)])
++  p=nodes[-1];v,d=nv,nd
++ assert intervals and v==d==0
++ return {'car':c,'source_cycle':k,'source_pose':pose_rows(state['poses'][c]),'source_v':state['v'][c],'source_delta':state['delta'][c],'commands':commands,'resource_interval':[intervals[0][0],intervals[-1][1]],'shared_key':'core_x_closed_-16_16','road_margin':minimum,'private_physics_passed':True,'construction':'remaining actual approach + own certified service, future identity wait removed','earliest_scope':'fixed certified connection family, no whole-map time-optimality claim'}
++
++def request_conflicts(intents):
++ conflicts=[]
++ for a,b in itertools.combinations(intents,2):
++  x,y=a['resource_interval'],b['resource_interval'];overlap=[max(F(x[0]),F(y[0])),min(F(x[1]),F(y[1]))]
++  if a['shared_key']==b['shared_key'] and overlap[0]<=overlap[1]:conflicts.append({'actors':[a['car'],b['car']],'overlap':overlap})
++ return conflicts
++
++def approve_joint_requests(intents):
++ assert not request_conflicts(intents),'independent approvals overlap one exclusive resource'
++ return True
++
++def active_pairs(plan,state):
++ k=state['cycle'];active=[]
++ for c in CARS:
++  a=F(plan['controls'][c][k][0]);progress=abs(H*(2*state['v'][c]+H*a)/2)
++  if state['v'][c]!=0 and progress>=F(1,50) and k<plan['per_car_policies'][c]['approach_end'] and state['delta'][c]==0:active.append(c)
++ pairs=[p for p in itertools.combinations(active,2) if direction(p[0])!=direction(p[1])]
++ intents={c:resource_intent(plan,state,c) for c in active} if pairs else {}
++ events=[]
++ for conflict in request_conflicts(list(intents.values())):
++  a,b=conflict['actors']
++  if (a,b) not in pairs:continue
++  events.append({'actors':[a,b],'overlap':conflict['overlap'],'intents':[intents[a],intents[b]],'sort':[conflict['overlap'][0],a,b]})
++ return sorted(events,key=lambda e:e['sort']),active
++
++def propose(old,state,passing,yielding,brake=False):
++ k=state['cycle'];w=copy.deepcopy(old);paths=w['paths'];order=[passing,yielding]+[c for c in old['order'] if c not in (passing,yielding)]
++ prep={c:[tuple(map(F,u)) for u in old['controls'][c][:old['per_car_policies'][c]['approach_end']]] for c in CARS}
++ starts={passing:len(prep[passing])};first_out=starts[passing]+paths[passing]['ranges']['crossing'][1]-len(prep[passing]);braking=None
++ if brake:
++  v=state['v'][yielding];mstop=math.ceil(abs(v)/H);a=-v/(mstop*H);stop=[(a,F(0))]*mstop
++  prefix=prep[yielding][:k];remaining_distance,_=advance(v,prep[yielding][k:]);stop_distance,_=advance(v,stop);resume=trapezoid(remaining_distance-stop_distance)
++  wait=first_out-k-mstop;assert wait>=1
++  prep[yielding]=prefix+stop+[(F(0),F(0))]*wait+resume
++  braking={'from_actual_v':v,'m':mstop,'a':a,'signed_distance':stop_distance,'stop_phase':k+mstop,'release_phase':first_out,'resume_start':first_out,'resume_end':len(prep[yielding])}
++ starts[yielding]=max(first_out,len(prep[yielding]))
++ previous=yielding
++ for c in order[2:]:starts[c]=starts[previous]+paths[previous]['ticks']-old['per_car_policies'][previous]['approach_end'];previous=c
++ goals={c:starts[c]+paths[c]['ticks']-old['per_car_policies'][c]['approach_end'] for c in CARS};B=max(goals.values());controls={}
++ for c in CARS:
++  oldend=old['per_car_policies'][c]['approach_end'];assert starts[c]>=len(prep[c]);controls[c]=prep[c]+[(F(0),F(0))]*(starts[c]-len(prep[c]))+[tuple(map(F,u)) for u in paths[c]['controls'][oldend:]]+[(F(0),F(0))]*(B-goals[c])
++  assert controls[c][:k]==[tuple(map(F,u)) for u in old['controls'][c][:k]]
++ owners=[None]*B
++ # First passing car releases at its outside-core straight endpoint. The next
++ # grant can include its safe preparation/resume before actual core entry.
++ boundaries=[starts[passing],first_out]+[goals[c] for c in order[1:]]
++ for i,c in enumerate(order):
++  for t in range(boundaries[i],boundaries[i+1]):owners[t]=c
++ assert owners[:k]==old['owners'][:k]
++ w.update(controls=controls,owners=owners,order=order,B0=B,b_i=goals,parent=content_id(old),goal_permanent={c:[goals[c],'infinity'] for c in CARS},encounter={'source_cycle':k,'passing':passing,'yielding':yielding,'first_out':first_out,'first_service_start':starts[passing],'yield_service_start':starts[yielding],'gate_path_phase':paths[passing]['ranges']['crossing'][1],'braking':braking})
++ w['per_car_policies']={c:{'start':0,'approach_end':len(prep[c]),'service_start':starts[c],'goal':goals[c],'edge_id':content_id(controls[c])} for c in CARS}
++ return w
++
++def deadline_check(old,new,k):
++ oldb={c:max(0,old['per_car_policies'][c]['goal']-k) for c in CARS};newb={c:max(0,new['per_car_policies'][c]['goal']-k) for c in CARS}
++ return {'old_b':oldb,'new_b':newb,'block_max_old':max(oldb.values()),'block_max_new':max(newb.values()),'block_passed':max(newb.values())<=max(oldb.values()),'per_car_passed':all(newb[c]<=oldb[c] for c in CARS),'delays':{c:newb[c]-oldb[c] for c in CARS if newb[c]>oldb[c]}}
++
++def score(plan,k):
++ v={c:F(0) for c in CARS}
++ for t in range(k):
++  for c in CARS:v[c]+=H*F(plan['controls'][c][t][0])
++ progress={c:abs(H*(2*v[c]+H*F(plan['controls'][c][k][0]))/2) for c in CARS};active=[c for c,p in progress.items() if p>=F(1,50)];P=sum(progress[c] for c in active);J=sum(F(a)**2+F(w)**2 for c in CARS for a,w in plan['controls'][c][k:])
++ return {'A':len(active),'active':active,'P':P,'B':plan['B0']-k,'J':J}
+--- /dev/null
++++ encounter_coordination_001/execution.py
+@@ -0,0 +1,28 @@
++"""Runtime source-domain release guard and full branch execution."""
++import gzip
++from common import *
++from physics import step,body
++from plan_io import load,record
++
++def gate(plan,state):
++ event=plan.get('encounter');k=state['cycle']
++ if not event or k!=event['first_out']:return None
++ c,d=event['passing'],event['yielding'];phase=event['gate_path_phase'];ref=plan['paths'][c]['poses_Q'][phase];p=state['poses'][c]
++ assert sum((p[j]-m.I.raw(*ref[j])).abs_upper() for j in (0,1))<F(1,1000000)
++ assert (p[2]-m.I.raw(*ref[2])).abs_upper()<F(1,100000000) and state['v'][c]==state['delta'][c]==0
++ box=m.axis_box(body(p,c));clear=F(box[0],m.Q)-TUBE>16 if direction(c)>0 else F(box[1],m.Q)+TUBE<-16
++ assert clear and state['v'][d]==state['delta'][d]==0
++ assert plan['owners'][k-1]==c and plan['owners'][k]==d
++ return {'cycle':k,'event':'actual_exit_domain_and_body_clear_release','passing':c,'yielding':d,'actual_source':record(state),'body_resource_clear':clear,'gate_phase':phase,'new_owner':d}
++
++def run_branch(name,plan):
++ state=initial_state();events=[]
++ with gzip.open(HERE/f'results/{name}.jsonl.gz','wt') as f:
++  for k in range(plan['B0']):
++   event=gate(plan,state)
++   if event:events.append(event)
++   row=step(state,{c:plan['controls'][c][k] for c in CARS},plan['owners'][k],4);row['cycle']=state['cycle'];f.write(json.dumps(row,default=str)+'\n')
++ write(HERE/f'results/{name}_events.json',events)
++ return state
++if __name__=='__main__':
++ for n,p in [('R_old','results/R_old.json.gz'),('E_anchor','results/E_anchor.json.gz')]:run_branch(n,load(p))
+--- autonomy_init_002/freeze_registration.py
++++ encounter_coordination_001/freeze_registration.py
+@@ -1,16 +1,21 @@
+ """Freeze joint rational/deadline repaired source and8-call preregistration."""
+ import shutil
+ from common import *
+-from run_update import load
++from plan_io import load
+ from transaction import select
+ 
+ def run():
+  assert read(HERE/'solver_calls.json')==[]
+- assert all(read(HERE/f'results/{name}.json')['passed'] for name in ('preparation','worker_precheck','protocol_precheck'))
+- base=load('results/init_0.json.gz');plan=load('results/parallel_anchor.json.gz');assert select(base,plan,CARS,CARS,{})[0] is plan
++ assert all(read(HERE/f'results/{name}.json')['passed'] for name in ('event_scan','worker_precheck','protocol_precheck'))
++ base=load('results/R_old.json.gz');plan=load('results/E_anchor.json.gz');event=read(HERE/'event_registration.json');assert content_id(base)==event['old_id'] and content_id(plan)==event['new_id']
++ assert any(r['id']==event['selected'] and r['eligible'] for r in read(HERE/'results/proposal_table.json'))
++ assert read(HERE/'results/R_old_acceptance.json')['passed'] and read(HERE/'results/E_anchor_acceptance.json')['passed']
++ acks={c:{'actor':c,'old_contract':content_id(base),'new_contract':content_id(plan),'own_inputs':content_id(plan['controls'][c]),'deadline':plan['per_car_policies'][c]['goal'],'accepted':plan['per_car_policies'][c]['goal']<=base['per_car_policies'][c]['goal']} for c in CARS}
++ assert all(m['accepted'] for m in acks.values());write(HERE/'results/anchor_acks.json',acks)
++ assert select(base,plan,CARS,list(acks),{})[0] is plan
+  sources={p.name:sha(p) for p in sorted(HERE.glob('*.py'))};archive=HERE/'source_archive/numerical_v1';archive.mkdir(parents=True,exist_ok=False)
+  for name in sources:shutil.copyfile(HERE/name,archive/name)
+- reg={'passed':True,'task':'autonomy_init_002','limit':8,'rounds':[0,1],'actors':[list(CARS),list(CARS)],'selected':content_id(plan),'initialization':content_id(base),'B0':plan['B0'],'variables_per_actor':64,'eta':'1/50','trust_l2':'1/1000','quantum':'1/1000000000000','first_input_note':'round0 a0=1 fixed by eta=.02 at zero speed; accept changed numerical tails and report first-input changes separately','repairs':['Fraction before float in shared actual assembly','first car service without max-prep wait','per-car deadlines checked in generator and live selector'],'worker_gate':'actual JSON bytes and full construct for8 forecast models; exact actual-round models rechecked before solve','native_entry':'durable ready/parent release handshake before solve','executed_sources':sources,'precheck_id':content_id(read(HERE/'results/worker_precheck.json')),'failures_counted':True,'automatic_repeats':False}
++ reg={'passed':True,'task':'encounter_coordination_001','event_id':content_id(event),'source_cycle':event['source_cycle'],'encounter_actors':event['actors'],'limit':8,'rounds':[event['source_cycle'],event['source_cycle']+1],'actors':[list(CARS),list(CARS)],'selected':content_id(plan),'initialization':content_id(base),'B0':plan['B0'],'variables_per_actor':64,'eta':'1/50','trust_l2':'1/1000','quantum':'1/1000000000000','first_input_note':'actual moving encounter source, retain all active quotas; report numeric first-input changes separately','repairs':['Fraction before float in shared actual assembly','first car service without max-prep wait','per-car deadlines checked in generator and live selector'],'worker_gate':'actual JSON bytes and full construct for8 forecast models; exact actual-round models rechecked before solve','native_entry':'durable ready/parent release handshake before solve','executed_sources':sources,'precheck_id':content_id(read(HERE/'results/worker_precheck.json')),'failures_counted':True,'automatic_repeats':False}
+  write(HERE/'pre_registration.json',reg);write(HERE/'executed_source_versions.json',sources);write(HERE/'frozen_config.json',{'physical':CFG,'map':read(HERE/'map_config.json'),'eta':'1/50','rho':'1/1000','quantum':'1/1000000000000','N':32,'numerical_scope':'initial straight / stopped steering with exact affine ZOH and fixed steering perturbations'})
+  print(json.dumps({'ready':True,'budget':8,'calls':0,'source_count':len(sources)}))
+ if __name__=='__main__':run()
+--- /dev/null
++++ encounter_coordination_001/plan_io.py
+@@ -0,0 +1,13 @@
++import gzip
++from common import *
++from physics import step
++
++def load(n):return json.loads(gzip.decompress((HERE/n).read_bytes()))
++def save(n,v):
++ p=HERE/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(gzip.compress(json.dumps(v,sort_keys=True,default=str).encode(),mtime=0))
++def record(s):return {'poses_Q':{c:pose_rows(s['poses'][c]) for c in CARS},'v':s['v'].copy(),'delta':s['delta'].copy(),'history':s['history'],'cycle':s['cycle']}
++def restore(r):return {'poses':{c:tuple(m.I.raw(*q) for q in r['poses_Q'][c]) for c in CARS},'v':{c:F(q) for c,q in r['v'].items()},'delta':{c:F(q) for c,q in r['delta'].items()},'history':r['history'],'cycle':r['cycle']}
++def source(plan,k):
++ s=initial_state()
++ for t in range(k):step(s,{c:plan['controls'][c][t] for c in CARS},plan['owners'][t],4)
++ return s
+--- /dev/null
++++ encounter_coordination_001/run_case.py
+@@ -0,0 +1,89 @@
++"""Two real successor rounds,8 durable releases, identical worker precheck path."""
++import copy,gzip,time,sys
++from common import *
++from physics import step
++from local_mpc import prepare,admit
++from transaction import check_binding,select
++from discovery import certify
++from transport import exchange
++from plan_io import load,save,record,restore,source
++from execution import gate
++
++def check_models(plan,state,prefix):
++ jobs={c:prepare(plan,state,c) for c in CARS};checks={}
++ for c,j in jobs.items():
++  check_binding(j,plan,state,c,j['receiving_certificate']);write(HERE/f'{prefix}_{c}_model.json',j)
++  result,meta=exchange(j,'assemble',HERE/f'{prefix}_{c}_zero');checks[c]={'assembly':result['assembly'],'transport':meta}
++  assert result['assembly']['variables']==64
++ return jobs,checks
++
++def precheck():
++ assert read(HERE/'solver_calls.json')==[] and read(HERE/'results/event_scan.json')['passed']
++ plan=load('results/E_anchor.json.gz');event=read(HERE/'event_registration.json');state=source(load('results/R_old.json.gz'),event['source_cycle']);rounds=[]
++ for r in range(2):
++  k=event['source_cycle']+r
++  jobs,checks=check_models(plan,state,f'results/precheck_round_{r}')
++  # Exercise the actual increment quantizer on explicitly synthetic nullspace
++  # inputs; these are fixtures, never counted as numerical solve results.
++  fixtures={}
++  for c,j in jobs.items():
++   ref=list(map(F,j['reference']));T=j['T_columns'];score=[sum(ref[t]*col[t] for t in range(64)) for col in T];idx=max(range(len(T)),key=lambda t:abs(score[t]));assert score[idx]!=0
++   eps=F('0.00000314159265358979')*(-1 if score[idx]>0 else 1);raw={'status':'Solved','model_id':j['model_id'],'x':[float(eps*t) for t in T[idx]],'fixture':True};a=admit(j,raw);assert a['accepted'];fixtures[c]={'passed':True,'native_calls':0,'scope':'synthetic quantizer fixture'}
++  rounds.append({'cycle':k,'round':r,'source':record(state),'models':{c:j['model_id'] for c,j in jobs.items()},'checks':checks,'fixtures':fixtures,'round1_scope':'forecast anchor source only; actual models rechecked after first executed input' if r else 'actual initial event source'})
++  step(state,{c:plan['controls'][c][k] for c in CARS},plan['owners'][k],4)
++ write(HERE/'results/worker_precheck.json',{'passed':True,'models':8,'native_calls':0,'rounds':rounds})
++
++def run():
++ reg=read(HERE/'pre_registration.json');ledger=read(HERE/'solver_calls.json');assert ledger==[] and reg['limit']==8 and reg['passed']
++ assert reg['executed_sources']=={p.name:sha(p) for p in sorted(HERE.glob('*.py'))}
++ assert read(HERE/'results/worker_precheck.json')['passed'] and read(HERE/'results/event_scan.json')['passed'] and read(HERE/'results/protocol_precheck.json')['passed']
++ plan=load('results/E_anchor.json.gz');base=load('results/R_old.json.gz');event=read(HERE/'event_registration.json');state=initial_state();rounds=[];release_events=[]
++ assert content_id(plan)==reg['selected']
++ # Initial contract admission is checked against the autonomous baseline,
++ # including all individual deadlines, before any updated control executes.
++ acks=read(HERE/'results/anchor_acks.json');assert all(m['new_contract']==content_id(plan) and m['old_contract']==content_id(base) and m['accepted'] for m in acks.values())
++ assert select(base,plan,CARS,list(acks),{})[0] is plan
++ with gzip.open(HERE/'results/actual.jsonl.gz','wt') as trace:
++  for t in range(event['source_cycle']):
++   row=step(state,{c:base['controls'][c][t] for c in CARS},base['owners'][t],4);row['cycle']=state['cycle'];trace.write(json.dumps(row,default=str)+'\n')
++  assert content_id(record(state))==event['source_id']
++  for r in range(2):
++   k=event['source_cycle']+r
++   save(f'results/round_{r}_plan.json.gz',plan);write(HERE/f'results/round_{r}_source.json',record(state))
++   jobs,checks=check_models(plan,state,f'results/round_{r}')
++   index=certify(base if r==0 else plan,plan,participants=CARS,cycle=k);save(f'results/round_{r}_index.json.gz',index);results={}
++   for c,j in jobs.items():
++    stem=f'results/round_{r}_{c}';call={'id':len(ledger)+1,'round':r,'actual_cycle':k,'actor':c,'model_id':j['model_id'],'source_id':content_id(record(state)),'released_at':time.time(),'status':'released','native_entered':False}
++    assert len(ledger)<8;ledger.append(call);write(HERE/'solver_calls.json',ledger)
++    def ready(info):
++     assert info==checks[c]['assembly'];call.update(native_entering_durable_at=time.time(),status='native_entering');write(HERE/'solver_calls.json',ledger)
++    raw,meta=exchange(j,'solve',HERE/stem,ready)
++    call.update(status=raw['status'],finished_at=time.time(),native_entered='native_entered_at' in raw,transport=meta,native_entered_at=raw.get('native_entered_at'));write(HERE/'solver_calls.json',ledger);write(HERE/(stem+'_raw.json'),raw)
++    # Infrastructure errors stop remaining releases; retained native outcomes
++    # are never relabeled or automatically repeated.
++    assert raw['status']!='worker_error',('worker failure',stem)
++    assert raw['assembly']==checks[c]['assembly']
++    try:result=admit(j,raw)
++    except (AssertionError,KeyError) as e:result={'accepted':False,'reason':repr(e),'model_id':j['model_id']}
++    results[c]=result;write(HERE/(stem+'_admission.json'),result)
++   proposed=copy.deepcopy(plan)
++   for c,result in results.items():
++    if result['accepted']:proposed['controls'][c][k:k+32]=result['commands']
++   selected,selection=select(plan,proposed,CARS,CARS,results)
++   assert all(selected['per_car_policies'][c]['goal']<=base['per_car_policies'][c]['goal'] for c in CARS)
++   # All numerical proposals are registered before checking the commit.
++   final_index=certify(plan,selected,participants=CARS,cycle=k);save(f'results/round_{r}_commit_index.json.gz',final_index)
++   plan=selected;save(f'results/round_{r}_committed.json.gz',plan)
++   actual=step(state,{c:plan['controls'][c][k] for c in CARS},plan['owners'][k],4);actual['cycle']=state['cycle'];trace.write(json.dumps(actual,default=str)+'\n');trace.flush()
++   row={'cycle':k,'round':r,'source':read(HERE/f'results/round_{r}_source.json'),'parent':content_id(load(f'results/round_{r}_plan.json.gz')),'models':{c:j['model_id'] for c,j in jobs.items()},'admissions':results,'actual_successor':record(state),'selection':selection,'ACK':list(CARS),'closure':list(CARS),'pre_index_id':content_id(index),'commit_index_id':content_id(final_index),'B_before':plan['B0']-k,'B_after':plan['B0']-k-1}
++   rounds.append(row);write(HERE/'results/rounds.json',rounds)
++  for k in range(event['source_cycle']+2,plan['B0']):
++   release=gate(plan,state)
++   if release:release_events.append(release)
++   row=step(state,{c:plan['controls'][c][k] for c in CARS},plan['owners'][k],4);row['cycle']=state['cycle'];trace.write(json.dumps(row,default=str)+'\n')
++ save('results/updated.json.gz',plan);write(HERE/'results/actual_events.json',release_events)
++ summary={'passed':all(r['accepted'] for row in rounds for r in row['admissions'].values()),'native_calls':sum(c['native_entered'] for c in ledger),'releases':len(ledger),'accepted':[sum(r['accepted'] for r in row['admissions'].values()) for row in rounds],'first_changed':[sum(r.get('first_changed',False) for r in row['admissions'].values()) for row in rounds],'steps':state['cycle']}
++ write(HERE/'results/numerical_summary.json',summary);print(json.dumps(summary))
++if __name__=='__main__':
++ if '--precheck' in sys.argv:precheck()
++ else:run()
+--- /dev/null
++++ encounter_coordination_001/scan_event.py
+@@ -0,0 +1,42 @@
++"""Zero-solve ascending state scan and full finite encounter-pool certification."""
++import itertools
++from common import *
++from initialize import run as initialize
++from preflight import simultaneous
++from plan_io import load,save,record,source
++from encounter import active_pairs,propose,deadline_check,score
++from local_mpc import prepare
++from audit import audit
++
++def run():
++ initialize();old=simultaneous(load('results/init_0.json.gz'),True);save('results/R_old.json.gz',old)
++ prior=HERE.parent/'autonomy_init_002';previous=__import__('json').loads(__import__('gzip').decompress((prior/'results/parallel_anchor.json.gz').read_bytes()));assert content_id(old)==content_id(previous)
++ scan=[];chosen=None
++ for k in range(old['B0']):
++  state=source(old,k);events,active=active_pairs(old,state);scan.append({'cycle':k,'source_id':content_id(record(state)),'actual_v':state['v'],'active':active,'event_pairs':[e['actors'] for e in events],'reason':None if events else 'no two nonzero-speed opposite active requests in available straight mode'})
++  if not events:continue
++  for event in events:
++   a,b=event['actors'];save('results/independent_intents.json.gz',event);proposals=[('R_old',old)]
++   for passing,yielding in ((a,b),(b,a)):
++    proposals.append((passing+'_passes_'+yielding+'_existing_stop',propose(old,state,passing,yielding)))
++    proposals.append((passing+'_passes_'+yielding+'_analytic_brake',propose(old,state,passing,yielding,True)))
++   table=[]
++   for name,plan in proposals:
++    save(f'results/proposals/{name}.json.gz',plan);limits=deadline_check(old,plan,k);entry={'id':name,'plan_id':content_id(plan),'deadlines':limits,'score':score(plan,k),'physical_passed':False,'numerical_window':False,'existing_stop_compatible_parallel':'existing_stop' in name}
++    try:
++     proof=audit(plan,output=HERE/f'results/proposals/{name}_acceptance.json');entry['physical_passed']=proof['passed'];entry['complete_suffix']=True
++    except (AssertionError,ValueError) as e:entry['physical_error']=repr(e)
++    if entry['physical_passed']:
++     try:
++      jobs=[prepare(plan,state,c) for c in CARS];entry['numerical_window']=all(len(j['T_columns'])>0 for j in jobs) and not (plan.get('encounter',{}).get('braking'))
++      if plan.get('encounter',{}).get('braking'):entry['numerical_limitation']='analytic brake/long hold has unique own input in first32; keep as zero-call yielding diagnostic'
++     except (AssertionError,KeyError) as e:entry['numerical_limitation']=repr(e)
++    entry['eligible']=entry['physical_passed'] and limits['per_car_passed'] and entry['numerical_window'];table.append(entry);write(HERE/'results/proposal_table.json',table);print(json.dumps({key:entry[key] for key in ('id','physical_passed','eligible','deadlines')},default=str),flush=True)
++   eligible=[r for r in table if r['eligible']];ranked=sorted(eligible,key=lambda r:(-r['score']['A'],-r['score']['P'],r['score']['B'],r['score']['J'],r['id']))
++   if ranked and ranked[0]['id']!='R_old':
++    selected=ranked[0];plan=load(f"results/proposals/{selected['id']}.json.gz");save('results/E_anchor.json.gz',plan);chosen={'passed':True,'source_cycle':k,'source':record(state),'source_id':content_id(record(state)),'old_id':content_id(old),'new_id':content_id(plan),'actors':[a,b],'selected':selected['id'],'event':event,'ranked':[r['id'] for r in ranked],'predicate':'nonzero actual speed + effective next signed straight progress; closed intervals of state-derived independent resource requests overlap','request_variant':'original set0, no disturbance','fallback_limit':{'request_sets':2,'offsets':[0,1,4,8],'used':0}};write(HERE/'event_registration.json',chosen);break
++  if chosen:break
++ write(HERE/'results/event_scan.json',{'passed':chosen is not None,'rows':scan,'optimizer_calls':0})
++ assert chosen is not None,'No complete event candidate; numerical gate remains closed'
++ print(json.dumps({'passed':True,'source_cycle':chosen['source_cycle'],'actors':chosen['actors'],'selected':chosen['selected'],'B':load('results/E_anchor.json.gz')['B0'],'native_calls':0}))
++if __name__=='__main__':run()
+--- autonomy_init_002/stage_driver.py
++++ encounter_coordination_001/stage_driver.py
+@@ -1,7 +1,7 @@
+ """Bounded durable stages; native releases never auto-repeated."""
+ import os,subprocess,sys,time
+ from common import *
+-STAGES={'worker_precheck':['run_update.py','--precheck'],'protocol_precheck':['protocol_precheck.py'],'numerical':['run_update.py'],'updates':['audit_updates.py'],'physical':['audit.py','results/updated.json.gz','--trace','results/actual.jsonl.gz','--output','results/independent_physical.json'],'round0_policy':['audit.py','results/round_0_committed.json.gz','--output','results/round0_policy_acceptance.json'],'rejections':['check_rejections.py']}
++STAGES={'reference_branches':['execution.py'],'R_accept':['audit.py','results/R_old.json.gz','--trace','results/R_old.jsonl.gz','--output','results/R_old_acceptance.json'],'E_accept':['audit.py','results/E_anchor.json.gz','--trace','results/E_anchor.jsonl.gz','--output','results/E_anchor_acceptance.json'],'worker_precheck':['run_case.py','--precheck'],'protocol_precheck':['check_zero.py'],'numerical':['run_case.py'],'updates':['audit_updates.py'],'physical':['audit.py','results/updated.json.gz','--trace','results/actual.jsonl.gz','--output','results/independent_physical.json'],'round0_policy':['audit.py','results/round_0_committed.json.gz','--output','results/round0_policy_acceptance.json'],'rejections':['check_rejections.py']}
+ def run(name):
+  sources={p.name:sha(p) for p in sorted(HERE.glob('*.py'))};stamp=HERE/f'results/{name}.stage.json'
+  if stamp.exists():
+--- autonomy_init_002/summarize.py
++++ encounter_coordination_001/summarize.py
+@@ -1,35 +1,61 @@
+-"""Evidence-derived gates and metrics; never enters an optimizer."""
+-import gzip
++"""Same-source outcomes, actual braking/recovery, contracts and separate deadlines."""
++import gzip,collections
+ from common import *
+-from run_update import load
++from plan_io import load
++from encounter import deadline_check
++from physics import body
+ 
+-def metrics(plan):
+- v={c:F(0) for c in CARS};J=F(0);hist={};first=[];initial4=0;live=True
+- for k in range(plan['B0']):
+-  aa=[]
++def trace(n):return [json.loads(s) for s in gzip.open(HERE/f'results/{n}.jsonl.gz','rt')]
++def metrics(plan,rows,yielder,event_cycle):
++ v={c:F(0) for c in CARS};cost=F(0);act=[];travel={};brake=[];stop=None;restart=None;steer=None;stop_x=None;first_source=[]
++ for k,row in enumerate(rows):
++  active=[]
+   for c in CARS:
+-   a,w=map(F,plan['controls'][c][k]);travel=abs(H*(2*v[c]+H*a)/2);v[c]+=H*a;J+=a*a+w*w
+-   if travel>=F(1,50):aa.append(c)
+-  hist[len(aa)]=hist.get(len(aa),0)+1
+-  if k<2:first.append(aa)
+-  if live and len(aa)==4:initial4+=1
+-  else:live=False
+- return {'B0':plan['B0'],'seconds':H*plan['B0'],'goal_ticks':{c:plan['per_car_policies'][c]['goal'] for c in CARS},'input_cost':J,'activity_histogram':hist,'first_two':first,'initial_four_active_ticks':initial4}
++   a,w=map(F,row['commands'][c]);s=H*(2*v[c]+H*a)/2;cost+=a*a+w*w
++   if abs(s)>=F(1,50):active.append(c)
++   if c==yielder:
++    travel[k]=s
++    if k>=event_cycle and stop is None and v[c]>0 and a<0:brake.append(k)
++    if k>=event_cycle and stop is None and v[c]>0 and F(row['v'][c])==0:stop=k+1;stop_x=row['poses_Q'][c][0]
++    if stop is not None and k>=stop:
++     if steer is None and w!=0:steer=k
++     if restart is None and (v[c]!=0 or F(row['v'][c])!=0):restart=k
++   v[c]+=H*a
++  act.append(active)
++ assert stop is not None and restart is not None
++ # Last contiguous negative-acceleration interval immediately before stopping.
++ start=stop-1
++ while start>event_cycle and F(rows[start-1]['commands'][yielder][0])<0:start-=1
++ first_effective=next(k for k in range(restart,len(rows)) if yielder in act[k]);prefix_id=content_id(rows[:event_cycle])
++ return {'steps':plan['B0'],'seconds':H*plan['B0'],'goals':{c:plan['per_car_policies'][c]['goal'] for c in CARS},'cost':cost,'event_activity':act[event_cycle:event_cycle+2],'activity_histogram':dict(collections.Counter(map(len,act))),'brake_interval':[start,stop],'braking_distance':sum(travel[k] for k in range(start,stop)),'stop_phase':stop,'stop_x_Q':stop_x,'zero_speed_body_wait_ticks':restart-stop,'steering_resume_interval':steer,'motion_resume_interval':restart,'effective_resume_interval':first_effective,'common_prefix_id':prefix_id,'other_event_activity':{c:[c in a for a in act[event_cycle:event_cycle+2]] for c in CARS if c!=yielder}}
+ 
+ def run():
+- num=read(HERE/'results/numerical_summary.json');updates=read(HERE/'results/independent_updates.json');physical=read(HERE/'results/independent_physical.json');round0=read(HERE/'results/round0_policy_acceptance.json');rejections=read(HERE/'results/rejection_checks.json')
+- assert all(x['passed'] for x in (num,updates,physical,round0,rejections))
+- plans={'initial':load('results/init_0.json.gz'),'anchor':load('results/parallel_anchor.json.gz'),'round0':load('results/round_0_committed.json.gz'),'updated':load('results/updated.json.gz')};mm={n:metrics(p) for n,p in plans.items()};mm['MPC_gain_vs_anchor']=F(mm['anchor']['input_cost'])-F(mm['updated']['input_cost']);mm['MPC_percent_vs_anchor']=100*mm['MPC_gain_vs_anchor']/F(mm['anchor']['input_cost']);assert mm['MPC_gain_vs_anchor']>0;write(HERE/'results/comparison.json',mm)
+- old=read(HERE/'prior_manifest.json');changed=[n for n,h in old['files'].items() if sha(Path(old['path'])/n)!=h];assert changed==[]
+- preserved={'autonomy_init_001':{'passed':True,'files':len(old['files'])}}
+- for name,info in read(Path(old['path'])/'source_inventory.json').items():
+-  assert all(sha(Path(info['path'])/n)==h for n,h in info['files'].items());preserved[name]={'passed':True,'files':len(info['files'])}
+- write(HERE/'results/preservation_check.json',preserved)
+- final=plans['updated']
++ event=read(HERE/'event_registration.json');k=event['source_cycle'];a,b=event['actors'];old=load('results/R_old.json.gz');anchor=load('results/E_anchor.json.gz');final=load('results/updated.json.gz')
++ datasets={'R_old':(old,trace('R_old')),'E_anchor':(anchor,trace('E_anchor')),'E_MPC':(final,trace('actual'))};mm={n:metrics(p,rows,b,k) for n,(p,rows) in datasets.items()};assert len({m0['common_prefix_id'] for m0 in mm.values()})==1
++ assert mm['E_MPC']['goals']==mm['E_anchor']['goals'];mm['contract_ticks_saved']=old['B0']-anchor['B0'];mm['MPC_cost_decrease']=mm['E_anchor']['cost']-mm['E_MPC']['cost'];assert mm['MPC_cost_decrease']>0;mm['MPC_percent_vs_anchor']=100*mm['MPC_cost_decrease']/mm['E_anchor']['cost'];write(HERE/'results/comparison.json',mm)
++ oldrows=datasets['R_old'][1];newrows=datasets['E_anchor'][1];planes=[];first=None
++ for t in range(k,min(len(oldrows),len(newrows))):
++  for c in CARS:
++   oldx=F(sum(oldrows[t]['poses_Q'][c][0]),2*m.Q);newx=F(sum(newrows[t]['poses_Q'][c][0]),2*m.Q)
++   if oldx!=newx:
++    planes.append({'phase':t+1,'actor':c,'n':[1,0],'old_beta':oldx+F(1,100),'new_beta':newx+F(1,100)})
++    slack=F(1,100)-abs(newx-oldx)
++    if first is None and slack<0:first={'phase':t+1,'actor':c,'old_own_position_plane_slack':slack}
++ resources=[{'cycle':t,'old':old['owners'][t],'new':anchor['owners'][t] if t<anchor['B0'] else None} for t in range(old['B0']) if old['owners'][t]!=(anchor['owners'][t] if t<anchor['B0'] else None)]
++ assert first and resources;write(HERE/'results/physical_contract_diff.json',{'passed':True,'old_id':content_id(old),'new_id':content_id(anchor),'face_changes':planes,'resource_changes':resources,'first_old_face_exclusion':first,'actual_state_release':read(HERE/'results/actual_events.json'),'contract_scope':'per-phase physical position/yaw/input envelope and exclusive calendar; full rectangular tube certificates'})
+  with gzip.open(HERE/'results/deadlines.jsonl.gz','wt') as f:
+-  for line in gzip.open(HERE/'results/actual.jsonl.gz','rt'):
+-   row=json.loads(line);k=row['cycle'];before={c:max(0,final['per_car_policies'][c]['goal']-k+1) for c in CARS};after={c:max(0,final['per_car_policies'][c]['goal']-k) for c in CARS};assert max(after.values())==max(before.values())-1
+-   f.write(json.dumps({'cycle':k,'actual_row_id':content_id(row),'b_before':before,'b_after':after,'B_before':max(before.values()),'B_after':max(after.values())})+'\n')
+- gate={'passed':True,'status':'passed','task':'autonomy_init_002','criteria':{'autonomous_initialization':{'status':'passed','regenerated_from_static_inputs':True,'two_initial_B0':1955,'new_anchor_B0':1822},'joint_repairs':{'status':'passed','repairs':['rational conversion','individual deadlines'],'live_and_generator_deadline_checks':True},'actual_worker_transport':{'status':'passed','forecast_models':8,'actual_round_models':8,'actual_matrix_and_model_fingerprints_match':True,'zero_stage_native_calls':0},'true_MPC_updates':{'status':'passed','calls':8,'accepted':updates['accepted'],'new_prefix_by_round':updates['new_prefix_by_round'],'first_changed':updates['first_input_changed_by_round']},'real_successor_and_receiving_K':{'status':'passed','evidence':'independent exact row/grid reconstruction; actual-source bindings; phase32/33 exact v/delta and position inclusion; each committed complete strategy separately replayed'},'four_car_progress':{'status':'passed','first_two':list(map(len,mm['updated']['first_two'])),'initial_contiguous_ticks':mm['updated']['initial_four_active_ticks']},'rejection_continuation':{'status':'passed','branches':2,'source':'real second-round numerical candidates and actual checkpoint'},'safety_and_completion':{'status':'passed','steps':physical['steps'],'all_six_pairs':True,'subdivisions':8,'all_four_goals':True,'B_final':0,'individual_deadlines_nonincrease':True}},'native_usage':{'new_limit':8,'releases':8,'native_entered':8,'accepted':8,'automatic_repeats':0},'scope':'nominal fixed four-car map, two initial straight/stopped-steering update rounds, synchronous in-process directory; no curved online or network/timing performance claim','old_task_preserved':True,'DG002_CL_budget_untouched':True}
+- write(HERE/'GATE.json',gate);print(json.dumps({'passed':True,'accepted':[4,4],'first_changed':updates['first_input_changed_by_round'],'steps':1822,'native_calls':8,'MPC_percent_vs_anchor':float(mm['MPC_percent_vs_anchor'])}))
++  for t,row in enumerate(datasets['E_MPC'][1]):
++   plan=old if t<k else final;before={c:max(0,plan['per_car_policies'][c]['goal']-t) for c in CARS};after={c:max(0,plan['per_car_policies'][c]['goal']-t-1) for c in CARS};assert max(after.values())==max(before.values())-1
++   f.write(json.dumps({'cycle':t,'contract':'old' if t<k else 'encounter','b_before':before,'b_after':after,'B_before':max(before.values()),'B_after':max(after.values()),'actual_row_id':content_id(row)})+'\n')
++ transition=deadline_check(old,final,k);assert transition['per_car_passed'] and transition['block_passed'];write(HERE/'results/deadline_transition.json',transition)
++ num=read(HERE/'results/numerical_summary.json');updates=read(HERE/'results/independent_updates.json');physical=read(HERE/'results/independent_physical.json');rejections=read(HERE/'results/rejection_checks.json');assert all(x['passed'] for x in (num,updates,physical,rejections))
++ info=read(HERE/'source_inventory.json');assert all(sha(Path(info['source_path'])/n)==h for n,h in info['files'].items());write(HERE/'results/preservation_check.json',{'passed':True,'source_files':len(info['files']),'source_path':info['source_path'],'old_Gate':info['GATE']['status'],'old_native_calls':info['numerical']['native_calls']})
++ worker=[]
++ for r in (0,1):
++  for c in CARS:
++   for tag in ('','_zero'):
++    worker.append(read(HERE/f'results/round_{r}_{c}{tag}_transport.json'))
++ write(HERE/'results/communication.json',{'worker_actual_requests':16,'distinct_actual_models':8,'native_worker_requests':8,'actual_request_bytes':sum(w['sent_bytes'] for w in worker),'actual_final_reply_bytes':sum(w['received_bytes'] for w in worker),'native_handshake_frames':16,'application':{'independent_intents':2,'initial_contract_approval_records':4,'candidate_results':8,'round_ACK_records':8,'transport':'same-process logical objects/versions, no real network bytes claimed'},'forecast_assembly_checks':8})
++ gate={'passed':True,'status':'passed','task':'encounter_coordination_001','criteria':{'event_source':{'status':'passed','cycle':k,'actors':event['actors'],'independent_overlap':event['event']['overlap'],'source_id':event['source_id']},'feasible_yield':{'status':'passed','construction':'existing physically certified brake-to-wait tail; actual exit-domain release and resume','actual_stop':mm['E_MPC']['stop_phase'],'actual_motion_resume':mm['E_MPC']['motion_resume_interval']},'physical_negotiation':{'status':'passed','state_guarded_release':anchor['encounter']['first_out'],'old_face_exclusion':first,'ticks_saved':mm['contract_ticks_saved']},'local_transaction':{'status':'passed','detected_group':event['actors'],'closure':list(CARS),'old_commit_size':4,'new_commit_size':4,'natural_size_change':0,'reason':'all future calendar endpoints affected; no artificial group-size success'},'numerical_chain':{'status':'passed','native_calls':num['native_calls'],'accepted':num['accepted'],'first_changed':num['first_changed'],'actual_cycles':[k,k+1]},'safety_completion':{'status':'passed','steps':final['B0'],'B_final':0,'six_pairs_every_interval':True,'individual_and_block_deadlines':transition},'rejection_continuation':{'status':'passed','branches':len(rejections['branches']),'independent_full_replay':True}},'native_usage':{'limit':8,'attempts':8,'native_entered':8,'accepted':8,'repeats':0},'scope':'nominal fixed map; entry-before-core predictive event; exact initial straight/stopped-steering numerical window; inherited brake tail and new early state-conditioned release; no head-on core recovery or free curved steering/network claims'}
++ write(HERE/'GATE.json',gate);print(json.dumps({'passed':True,'source':k,'actors':event['actors'],'old_B':old['B0'],'new_B':final['B0'],'accepted':num['accepted'],'MPC_percent':float(mm['MPC_percent_vs_anchor'])}))
+ if __name__=='__main__':run()
+--- autonomy_init_002/verify_delivery.py
++++ encounter_coordination_001/verify_delivery.py
+@@ -1,19 +1,22 @@
+-"""Portable integrity/default exact audits and optional full physical replay."""
+-import argparse,gzip
++"""Portable identity/exact-update verification and zero-solve full replays."""
++import argparse
+ from common import *
++from plan_io import load
+ from audit import audit
+-from run_update import load
+ 
+ def run(full=False):
+- hashes=read(HERE/'SHA256SUMS.json')
+- for name,h in hashes.items():assert sha(HERE/name)==h,('changed',name)
+- for name,h in read(HERE/'executed_source_versions.json').items():assert sha(HERE/name)==h and sha(HERE/'source_archive/numerical_v1'/name)==h
+- calls=read(HERE/'solver_calls.json');assert len(calls)==8 and [c['id'] for c in calls]==list(range(1,9)) and all(c['native_entered'] and c['status'] in ('Solved','AlmostSolved') for c in calls)
++ files=read(HERE/'SHA256SUMS.json')
++ for name,h in files.items():assert sha(HERE/name)==h,('changed',name)
++ for name,h in read(HERE/'executed_source_versions.json').items():
++  assert sha(HERE/'source_archive/numerical_v1'/name)==h
++  if name not in ('audit_updates.py','verify_delivery.py'):assert sha(HERE/name)==h
++ for name,h in read(HERE/'verification_source_versions.json').items():assert sha(HERE/name)==h
++ calls=read(HERE/'solver_calls.json');assert len(calls)==8 and all(c['native_entered'] and c['status'] in ('Solved','AlmostSolved') for c in calls)
+  from audit_updates import verify
+  verify(write_output=False)
+  if full:
+-  for name,trace in [('parallel_anchor',None),('round_0_committed',None),('updated','results/actual.jsonl.gz'),('rejection_worker_error_plan','results/rejection_worker_error.jsonl.gz'),('rejection_missing_ACK_plan','results/rejection_missing_ACK.jsonl.gz')]:assert audit(load(f'results/{name}.json.gz'),HERE/trace if trace else None)['passed']
+- assert read(HERE/'GATE.json')['passed']
+- print(json.dumps({'integrity_passed':True,'experiment_passed':True,'files':len(hashes),'full_replay':full,'new_native_calls':0,'recorded_native_calls':8}))
++  for name,plan,trace in [('R','R_old','R_old'),('E','E_anchor','E_anchor'),('round0','round_0_committed',None),('actual','updated','actual')]+[(n,'rejection_'+n+'_plan','rejection_'+n) for n in ('worker_error','missing_ACK','unrelated_group')]:
++   assert audit(load(f'results/{plan}.json.gz'),HERE/f'results/{trace}.jsonl.gz' if trace else None)['passed']
++ assert read(HERE/'GATE.json')['passed'];print(json.dumps({'integrity_passed':True,'experiment_passed':True,'full_replay':full,'files':len(files),'native_calls_recorded':8,'new_native_calls':0}))
+ if __name__=='__main__':
+  p=argparse.ArgumentParser();p.add_argument('--full-replay',action='store_true');run(p.parse_args().full_replay)

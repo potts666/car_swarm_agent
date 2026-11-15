@@ -1,0 +1,95 @@
+{
+  "baseline_witness": "2b5c52a0f55fd22744a2d6697da489b0d3e67e4b67307b695fdb468529c92f52",
+  "historical_witness": "9dcd62803b677cdf5bd0adff57a033c9d28c082ca3208da9c3b918c188b5d51b",
+  "historical_source": {
+    "poses_Q": {
+      "A1": [
+        [
+          3417411768857770284213,
+          3417411768857770575685
+        ],
+        [
+          -110480682,
+          -110190870
+        ],
+        [
+          -293,
+          293
+        ]
+      ],
+      "A2": [
+        [
+          -3000000000000000000000,
+          -3000000000000000000000
+        ],
+        [
+          -300000000000000000000,
+          -300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "B1": [
+        [
+          3001874507866388000000,
+          3001874507866388000000
+        ],
+        [
+          300000000000000000000,
+          300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "B2": [
+        [
+          3000000000000000000000,
+          3000000000000000000000
+        ],
+        [
+          -300000000000000000000,
+          -300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "v": {
+      "A1": "290196147629/500000000000",
+      "A2": "0",
+      "B1": "-468626966597/2500000000000",
+      "B2": "0"
+    },
+    "delta": {
+      "A1": "0",
+      "A2": "0",
+      "B1": "0",
+      "B2": "0"
+    },
+    "history": "bd2659d4eabcda54f45180b81bcfef7b42de15438ea50be0945d47bf84c1a360",
+    "cycle": 721,
+    "witness": "9dcd62803b677cdf5bd0adff57a033c9d28c082ca3208da9c3b918c188b5d51b",
+    "owner": "B1",
+    "permission_version": 2,
+    "served": [
+      "A1",
+      "B1"
+    ]
+  },
+  "same_physical_tables": {
+    "controls": true,
+    "owners": true,
+    "events": true,
+    "goal_times": true,
+    "ticks": true,
+    "order": true
+  },
+  "identity_difference": "canonical initial witness reconstructed from the exact saved historical tables; parent/adoption metadata differ",
+  "new_solver_calls": 0
+}

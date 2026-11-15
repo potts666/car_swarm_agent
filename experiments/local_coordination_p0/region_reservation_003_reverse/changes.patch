@@ -1,0 +1,1387 @@
+--- region_reservation_002/accept_case.py
++++ region_reservation_003_reverse/accept_case.py
+@@ -16,10 +16,16 @@
+     def clone(self):
+         result=copy.copy(self);result.state=copy.deepcopy(self.state);result.p8=copy.deepcopy(self.p8);result.valid=self.valid.copy();result.numeric=self.numeric.copy();return result
+     def rect(self,p,c):
+-        sn,cs=m.sincos(p[2]);s=1 if c.startswith('A') else -1
++        sn,cs=m.sincos(p[2]);s=direction(c)
+         return [(p[0]+s*(cs*x-sn*y),p[1]+s*(sn*x+cs*y)) for x in (F(-1),F(7,2)) for y in (-F(9,10),F(9,10))]
+     def domain(self,c,kind):
+-        sign=1 if c.startswith('A') else -1;world_wait={'A1':(-30,3),'A2':(-30,-3),'B1':(30,3),'B2':(30,-3)}
++        if kind.startswith('generated:'):
++            r=get(HERE/'objects',kind.split(':')[1])['domain'];center=[F(*x) for x in r['center_pose_Q']]
++            for poses in (self.state['poses'],self.p8):
++                assert sum((poses[c][j]-center[j]).abs_upper() for j in (0,1))<=F(r['position_l1_radius'])
++                assert (poses[c][2]-center[2]).abs_upper()<=F(r['yaw_radius'])
++            assert abs(self.state['v'][c]-F(r['center_v']))<=F(r['speed_radius']) and abs(self.state['delta'][c]-F(r['center_delta']))<=F(r['steering_radius']);return
++        sign=direction(c);world_wait={'A1':(-30,3),'A2':(-30,-3),'B1':(30,3),'B2':(30,-3)}
+         r=self.domains[kind];local=F(r.get('center_local_x',-22 if kind=='G_in' else 34 if kind=='G_out' else 46));xy=world_wait[c] if kind in ('W_in','W_hold') else (local*sign,0 if kind in ('G_in','G_in_shifted','G_out') else world_wait[c][1])
+         for poses in (self.state['poses'],self.p8):
+             assert sum((poses[c][j]-xy[j]).abs_upper() for j in (0,1))<=F(r['position_l1']),('independent domain position',c,kind)
+@@ -46,7 +52,7 @@
+         for c in CARS:
+             a,w=commands[c];v,d=s['v'][c],s['delta'][c];nv,nd=v+H*a,d+H*w
+             assert max(abs(a),abs(w))<=1 and -1<=v<=2 and -1<=nv<=2 and max(abs(d),abs(nd))<=F(1,2)
+-            sign=1 if c.startswith('A') else -1;p4[c]=propagate(s['poses'][c],v,nv,d,nd,sign,4)[-1];n8[c]=propagate(self.p8[c],v,nv,d,nd,sign,8);vv[c]=nv;dd[c]=nd
++            sign=direction(c);p4[c]=propagate(s['poses'][c],v,nv,d,nd,sign,4)[-1];n8[c]=propagate(self.p8[c],v,nv,d,nd,sign,8);vv[c]=nv;dd[c]=nd
+         self.geometry(n8,owner);self.p8={c:ns[-1] for c,ns in n8.items()};s.update(poses=p4,v=vv,delta=dd,cycle=s['cycle']+1,history=content_id(dict(parent=s['history'],commands=commands,owner=owner)))
+         if record:
+             assert record['commands']=={c:list(map(str,u)) for c,u in commands.items()} and record['poses_Q']=={c:pose_rows(p) for c,p in p4.items()}
+@@ -78,59 +84,66 @@
+         if parent:self.validate_witness(w['parent_witness'])
+         self.expected_tables(w,parent);self.valid.add(wid)
+     def numeric_update(self,event):
+-        old=get(HERE/'objects',self.state['witness']);raw=get(HERE/'objects',event['raw_result_id']);pol=get(HERE/'objects',event['policy_result_id']);anchor=get(HERE/'objects',event['anchor_id']);cert=get(HERE/'objects',event['derivative_id']);actor=event['actor'];k=self.state['cycle'];sign=1 if actor.startswith('A') else -1
++        from generation import anchor_for,data_for
++        from receivers import synthesize,replacement_events
++        from rules import quantize
++        old=get(HERE/'objects',self.state['witness']);raw=get(HERE/'objects',event['raw_result_id']);pol=get(HERE/'objects',event['policy_result_id']);anchor=get(HERE/'objects',event['anchor_id']);cert=get(HERE/'objects',event['derivative_id']);actor=event['actor'];k=self.state['cycle']
+         assert raw['history']==self.state['history']==event['source_history'] and raw['source_witness']==self.state['witness']==event['parent_witness']
+-        assert anchor['state']==normal(state_record(self.state)) and anchor['plan']['remaining']==old['controls'][actor][k:] and anchor['phase']==k and anchor['receiver_phase']==k+32
+-        assert anchor['peer_horizon_id']==content_id({c:old['controls'][c][k:k+33] for c in CARS if c!=actor}) and anchor['direction_sign']==sign
+-        assert raw['anchor_id']==event['anchor_id']==content_id(anchor) and raw['derivative_id']==event['derivative_id'] and raw['assembly_id']==event['assembly_id']
++        assert anchor['state']==normal(state_record(self.state)) and anchor_for(self.state,actor)==anchor
++        assert raw['anchor_id']==event['anchor_id'] and raw['derivative_id']==event['derivative_id'] and raw['assembly_id']==event['assembly_id']
++        assert raw['generation_id']==event['generation_id'] and get(HERE/'objects',raw['generation_id'])['anchor_id']==event['anchor_id']
+         assert pol['raw_result_id']==event['raw_result_id'] and pol['admission_policy']=='certificate_suboptimal_v1' and pol['accepted']==event['accepted']
+-        settings=raw['settings'];assert raw['solver_version']=='0.11.1' and settings['tol_feas']==settings['tol_gap_abs']==settings['tol_gap_rel']==1e-10 and settings['time_limit']==5 and settings['max_iter']==300
+-        assert k in (787,788) and raw['phase']==k and raw['round']==k-786 and event['round']==raw['round']
+-        kind='G_in' if k==787 else 'G_in_shifted';r=self.domains[kind];cx=F(-22) if k==787 else F(-219,10);wx=cx*sign
+-        row=dict(phase=k+32,kind=kind,domain=dict(center_pose_Q=[[wx.numerator,wx.denominator],[0,1],[0,1]],position_l1_radius=r['position_l1'],yaw_radius=r['yaw'],center_v='1/2',speed_radius=str((F(r['v'][1])-F(r['v'][0]))/2),center_delta='0',steering_radius=r['delta'][1],feedback_a_ref='0',feedback_omega_ref='0'),certificate_id=read(HERE/'domain_checks.json')['certificate_id'])
+-        cfg=dict(roads=ROADS,h=H,L=F(27,10),body=[[-1,F(7,2)],[-F(9,10),F(9,10)]],v_bounds=[-1,2],delta_abs=F(1,2),a_abs=1,omega_abs=1)
+-        data=SimpleNamespace(cfg=cfg,cert={'car':actor,'source':0},row=lambda phase:row if phase==k+32 else None);verify(data,m,cert,anchor,recompute=True);rows=rows_for(data,m,anchor,cert,'B-JL');model=get(HERE/'objects',raw['assembly_id'])
+-        assert content_id(model['physical_rows'])==content_id(rows)
+-        # Derive terminal Taylor faces independently from the interval Jacobian.
+-        J=unpack(m,cert['prefix_jacobians'][-1]);p=[m.I.raw(*x) for x in cert['terminal_state']['poses_Q'][actor]];prof=cert['local_profiles'][-1];expected={}
+-        for sx,sy in itertools.product((-1,1),repeat=2):expected[f'position_{sx}_{sy}']=(F((sx*(p[0]-wx)+sy*p[1]).u,m.Q)-F(r['position_l1']),[sx*J[0][j]+sy*J[1][j] for j in range(64)],F(3,2)*F(prof['Hp']))
+-        for sx in (-1,1):expected[f'yaw_{sx}']=(F((sx*p[2]).u,m.Q)-F(r['yaw']),[sx*x for x in J[2]],F(prof['P2']))
+-        for r in rows:
+-            if r['kind']=='terminal':
+-                g,jac,hess=expected[r['name']];assert F(r['g_upper'])==g and list(map(F,r['linear']))==[F(t.l+t.u,2*m.Q) for t in jac]
+-                assert F(r['gradient_error'])==norm_upper([F(t.u-t.l,2*m.Q) for t in jac]) and F(r['hessian'])==hess
+-        if not pol['accepted']:
+-            self.numeric.append(dict(actor=actor,phase=k,passed=True,accepted=False,status=raw['status'],raw_result_id=event['raw_result_id']));return
+-        assert raw['status'] in ('Solved','AlmostSolved') and all(math.isfinite(x) for name in ('x','s','z') for x in raw[name])
+-        attempt=pol['attempts'][-1];alpha=F(attempt['alpha']);assert alpha in (1,F(1,2),F(1,4));delta=[F(round(alpha*F(1,10000)*F.from_float(float(x))*10**12),10**12) for x in raw['x'][:64]];assert delta==list(map(F,attempt['delta']));t=norm_upper(delta);assert t<=F(1,1000)
+-        for r in rows:assert F(r['g_upper'])+sum(F(a)*b for a,b in zip(r['linear'],delta))+F(r['gradient_error'])*t+F(r['hessian'])*t*t/2<=0
+-        # Independently reproduce the exact Q margin, then the exported floating model.
+-        e=F(4,10**12);inner=[]
+-        for r in rows:
+-            eta=(norm_upper(r['linear'])+F(r['gradient_error'])+F(r['hessian'])*F(1,1000))*e+F(r['hessian'])*e*e/2;rr=copy.deepcopy(r);rr['g_upper']=F(rr['g_upper'])+(eta if F(rr['g_upper'])+eta<=0 else 0);inner.append(rr)
++        cfg=raw['settings'];assert raw['solver_version']=='0.11.1' and cfg['tol_feas']==cfg['tol_gap_abs']==cfg['tol_gap_rel']==1e-10 and cfg['time_limit']==5 and cfg['max_iter']==300
++        assert raw['phase']==k and raw['round']==event['round']==1
++        verify(data_for(anchor),m,cert,anchor,recompute=True);rows=rows_for(data_for(anchor),m,anchor,cert,'B-JL');model=get(HERE/'objects',raw['assembly_id']);assert content_id(model['physical_rows'])==content_id(rows)
++        # Independent terminal Taylor faces, including nonzero yaw and signed speed.
++        domain=anchor['receiver']['domain'];center=[F(*x) for x in domain['center_pose_Q']];J=unpack(m,cert['prefix_jacobians'][-1]);p=[m.I.raw(*x) for x in cert['terminal_state']['poses_Q'][actor]];prof=cert['local_profiles'][-1];expected={}
++        for sx,sy in itertools.product((-1,1),repeat=2):expected[f'position_{sx}_{sy}']=(F((sx*(p[0]-center[0])+sy*(p[1]-center[1])).u,m.Q)-F(domain['position_l1_radius']),[sx*J[0][j]+sy*J[1][j] for j in range(64)],F(3,2)*F(prof['Hp']))
++        for sx in (-1,1):expected[f'yaw_{sx}']=(F((sx*(p[2]-center[2])).u,m.Q)-F(domain['yaw_radius']),[sx*x for x in J[2]],F(prof['P2']))
++        for row in rows:
++            if row['kind']=='terminal':
++                g,jac,hess=expected[row['name']];assert F(row['g_upper'])==g and list(map(F,row['linear']))==[F(t.l+t.u,2*m.Q) for t in jac]
++                assert F(row['gradient_error'])==norm_upper([F(t.u-t.l,2*m.Q) for t in jac]) and F(row['hessian'])==hess
++        inner=[];e=F(4,10**12)
++        for row in rows:
++            eta=(norm_upper(row['linear'])+F(row['gradient_error'])+F(row['hessian'])*RHO)*e+F(row['hessian'])*e*e/2;rr=copy.deepcopy(row);rr['g_upper']=F(rr['g_upper'])+(eta if F(rr['g_upper'])+eta<=0 else 0);inner.append(rr)
+         ref=np.asarray([[float(F(x)) for x in u] for u in old['controls'][actor][k:k+32]]).ravel();rebuilt=assembly(inner,ref,F(1,10000))[-1]
+         for key in ('P','q','A','b','cone_dimensions'):assert model[key]==rebuilt[key]
+-        wid=event['accepted_witness'];new=get(HERE/'objects',wid);assert pol['accepted_witness']==wid and new['optimization_origin']==event['raw_result_id'] and new['parent_witness']==self.state['witness']
++        receiver=get(HERE/'objects',anchor['receiver']['certificate_id']);assert receiver['old_witness']==self.state['witness'] and receiver['source']==normal(state_record(self.state))
++        self.inclusion(receiver)
++        for attempt in pol['attempts']:
++            delta,proof=quantize(raw['x'],F(attempt['alpha']),anchor['contracts']);assert list(map(F,attempt['delta']))==delta and attempt['quantization']==proof
++            norm=norm_upper(delta)
++            violations=[row['name'] for row in rows if F(row['g_upper'])+sum(F(a)*b for a,b in zip(row['linear'],delta))+F(row['gradient_error'])*norm+F(row['hessian'])*norm*norm/2>0]
++            assert attempt['cone']['violations']==violations
++        if not pol['accepted']:
++            assert event['accepted_witness']==self.state['witness'];self.numeric.append(dict(actor=actor,phase=k,passed=True,accepted=False,status=raw['status']));return
++        assert raw['status'] in ('Solved','AlmostSolved') and all(math.isfinite(x) for name in ('x','s','z') for x in raw[name]);attempt=pol['attempts'][-1];assert attempt['passed'] and attempt['quantization']['passed'] and not attempt['cone']['violations']
++        delta=list(map(F,attempt['delta']));wid=event['accepted_witness'];new=get(HERE/'objects',wid);assert pol['accepted_witness']==wid and new['optimization_origin']==event['raw_result_id'] and new['parent_witness']==self.state['witness']
+         for c in CARS:
+             if c==actor:
+                 assert new['controls'][c][:k]==old['controls'][c][:k] and new['controls'][c][k+33:]==old['controls'][c][k+33:]
+                 assert [F(a)-F(b) for u,v in zip(new['controls'][c][k:k+32],old['controls'][c][k:k+32]) for a,b in zip(u,v)]==delta
+             else:assert new['controls'][c]==old['controls'][c]
+         for name in ('order','owners','starts','goal_times','ticks','domain_certificate'):assert new[name]==old[name]
+-        expected_events=copy.deepcopy(old['events'])
+-        if k==788:
+-            assert [actor,'G_in'] in expected_events['819'];expected_events['819'].remove([actor,'G_in'])
+-            if not expected_events['819']:del expected_events['819']
+-            expected_events.setdefault('820',[]).append([actor,'G_in_shifted'])
+-        assert new['events']==expected_events and new['receiver_contract']==row
++        assert new['events']==replacement_events(old['events'],actor,anchor['receiver']) and new['receiver_contract']==anchor['receiver']
+         assert H*sum(F(x)**2 for u in new['controls'][actor][k:k+32] for x in u)<=H*sum(F(x)**2 for u in old['controls'][actor][k:k+32] for x in u)
+         trial=self.clone()
+-        for j in range(33):
++        for j in range(receiver['retained_target_phase']-k):
+             if j==32:
+-                trial.domain(actor,kind);K=((F(1,2)-trial.state['v'][actor])/H,-trial.state['delta'][actor]/H);assert tuple(map(F,new['controls'][actor][k+32]))==K
++                trial.domain(actor,anchor['receiver']['kind']);u=tuple(map(F,receiver['reference_K']));K=(u[0]-(trial.state['v'][actor]-F(domain['center_v']))/H,u[1]-(trial.state['delta'][actor]-F(domain['center_delta']))/H);assert tuple(map(F,new['controls'][actor][k+32]))==K
+             trial.step({c:tuple(map(F,new['controls'][c][k+j])) for c in CARS},new['owners'][k+j])
+-        assert trial.state['v'][actor]==F(1,2) and trial.state['delta'][actor]==0
+-        self.valid.add(wid);self.numeric.append(dict(actor=actor,phase=k,passed=True,accepted=True,status=raw['status'],raw_result_id=event['raw_result_id']))
++            if j==32:assert trial.state['v'][actor]==F(receiver['reset_v']) and trial.state['delta'][actor]==F(receiver['reset_delta'])
++        trial.domain(actor,receiver['retained_target_kind']);self.valid.add(wid);self.numeric.append(dict(actor=actor,phase=k,passed=True,accepted=True,status=raw['status']))
++    def inclusion(self,receiver):
++        # Rebuild the positive error coefficients and allocation, without controller flags.
++        C=F(3,2);c=receiver['constants'];V=F(c['V']);L=F(c['L_rem']);kap=F(c['kappa']);kd=F(c['kappa_delta']);r=receiver['domain'];radii=[F(r[k]) for k in ('position_l1_radius','yaw_radius','speed_radius','steering_radius')];baseline=list(map(F,receiver['baseline']))
++        def coeff(d):return [F(1),C*V*H+d,C*H/2+C*V*H**2*kap/3+d*H*kap/2,C*V*H**2*V*kd/3+d*H*V*kd/2]
++        expected=[coeff(C*L),[F(0),F(1),H*kap/2,H*V*kd/2],coeff(C*L+RB),[F(0),F(1),H*kap/2,H*V*kd/2]]
++        for row,a in zip(receiver['allocation'],expected):
++            assert list(map(F,row['a']))==a and sum(x*y for x,y in zip(a,radii))<=F(row['b']) and F(row['remaining'])==F(row['b'])-sum(x*y for x,y in zip(a,baseline))
++        assert all(a>=b for a,b in zip(radii,baseline))
++        assert receiver['prefix_ticks']+receiver['suffix_ticks']==receiver['budget_before']==2802-receiver['source']['cycle']
+     def frame(self,row):
+         s=self.state;k=s['cycle'];assert row['cycle']==k and row['parent_plan_id']==content_id(dict(witness=s['witness'],cycle=k,history=s['history'],remaining=2802-k))
+         wid=row['witness_id'];self.validate_witness(wid);w=get(HERE/'objects',wid);ctx=row['token']['context'];owner=w['owners'][k];version=s['permission_version']+int(owner!=s['owner'])
+@@ -162,25 +175,18 @@
+             if event and event['kind']=='local_socp':audit.numeric_update(event)
+             if event and event['kind']=='resource_choice':
+                 eligible=[c for c in CARS if c not in audit.state['served']];assert event['choice']['eligible']==eligible
+-                previous=choices[-1] if choices else None;preferred=[c for c in eligible if previous and (direction(c)!=direction(previous))==(cfg['case']=='opposite')];chosen=min(preferred or eligible);assert event['choice']['chosen']==chosen;choices.append(chosen)
++                previous=choices[-1] if choices else None;preferred=[c for c in eligible if previous and (direction(c)!=direction(previous))==(cfg['selection_case']=='opposite')];chosen=min(preferred or eligible);assert event['choice']['chosen']==chosen;choices.append(chosen)
+                 for c in eligible:audit.domain(c,'W_in')
+-            if row['cycle']==718:
+-                damage=read(run/'version_rejection/summary.json');assert damage['source']==normal(state_record(audit.state)) and damage['old_witness']==audit.state['witness'] and damage['invalid_commits']==0
+-                req=damage['damaged_request'];w=get(HERE/'objects',damage['proposed_witness']);assert req['permission_version']!=audit.state['permission_version']+int(w['owners'][718]!=audit.state['owner'])
+-                branch=audit.clone()
+-                with gzip.open(run/'version_rejection/execution.jsonl.gz','rt') as fs:
+-                    for rr in map(json.loads,fs):assert rr['witness_id']==damage['old_witness'];branch.frame(rr)
+-                assert branch.state['cycle']==750 and branch.state['history']==damage['final']['history'] and damage['actual_steps']==32;fork=dict(passed=True,actual_steps=32,old_tail_preserved=True)
+             audit.frame(row)
+             if event:assert event['commit_id']==row['token']['commit_id'];events.append(event)
+     for c in CARS:audit.domain(c,'target')
+     assert summary['passed'] and audit.state['cycle']==summary['actual_steps']==2802 and summary['remaining_budget']==0 and audit.overlap==summary['overlap_ticks']>0
+-    assert audit.state['history']==summary['final']['history'] and choices==[c['chosen'] for c in summary['selection']] and len(audit.numeric)==2 and fork
+-    return dict(passed=True,actual_steps=2802,logical_time_s='2802/5',remaining_budget=0,selection=choices,actual_overlap_ticks=audit.overlap,accepted_numeric_candidates=sum(e['accepted'] for e in audit.numeric),continuous_two_updates_accepted=all(e['accepted'] for e in audit.numeric),minimum_road_m=float(audit.road),minimum_pair_m=float(audit.pair),local_socp=audit.numeric,version_rejection=fork,all_four_goals=True,wall_s=time.perf_counter()-began,shared=['integer intervals/trigonometry and exact ZOH propagation','variational generator and cone compiler','immutable configuration/identity primitives'],independent=['bodies/road/six pairs, 8-subsegment continuous envelopes','source snapshots, four-public-plan IDs and authority versions','waiting/entry/exit/goal domain membership','completion table construction, raw-to-rational commands, terminal Taylor rows','actual resource clear, outside-tail actions, same-old-witness rejection replay, budgets'])
++    assert audit.state['history']==summary['final']['history'] and choices==[c['chosen'] for c in summary['selection']] and len(audit.numeric)==1
++    return dict(passed=True,actual_steps=2802,logical_time_s='2802/5',remaining_budget=0,selection=choices,actual_overlap_ticks=audit.overlap,accepted_numeric_candidates=sum(e['accepted'] for e in audit.numeric),reverse_new_candidate_accepted=all(e['accepted'] for e in audit.numeric),minimum_road_m=float(audit.road),minimum_pair_m=float(audit.pair),local_socp=audit.numeric,version_rejection=fork,all_four_goals=True,wall_s=time.perf_counter()-began,shared=['integer intervals/trigonometry and exact ZOH propagation','variational generator and cone compiler','immutable configuration/identity primitives'],independent=['bodies/road/six pairs, 8-subsegment continuous envelopes','source snapshots, four-public-plan IDs and authority versions','waiting/entry/exit/goal domain membership','completion table construction, raw-to-rational commands, terminal Taylor rows','actual resource clear, outside-tail actions, same-old-witness rejection replay, budgets'])
+ 
+ 
+ def main():
+-    parser=argparse.ArgumentParser();parser.add_argument('--case',choices=('opposite','same_direction'),required=True);args=parser.parse_args();run=HERE/'results'/args.case;dest=run/'independent_acceptance.json';assert not dest.exists()
++    parser=argparse.ArgumentParser();parser.add_argument('--case',choices=('A','B'),required=True);args=parser.parse_args();run=HERE/'results'/args.case;dest=run/'independent_acceptance.json';assert not dest.exists()
+     try:result=accept(run)
+     except Exception as error:write(dest,dict(passed=False,error=repr(error)));raise
+     write(dest,result);print(json.dumps(result,indent=2))
+--- /dev/null
++++ region_reservation_003_reverse/bounds_proof.md
+@@ -0,0 +1,33 @@
++# 有符号ZOH与接收包含：适用域与计算证据
++
++本文件是本轮方法的条件性推导，数值检查列在results/；不以两个实验推导普遍可行性。
++
++## 模型、源范围和导数
++
++固定参考方向s来自MODEL_FRAMES数据。p_dot=s*v*e(theta)，theta_dot=v*tan(delta)/L。v可为负；通过v=0时所有表达连续。a、omega为一拍常值。v和delta在拍内仿射，故拍内物理及方向矩形由两个端点和输入条件覆盖。静止合同v=a=0给出整拍p/theta保持，不强行冻结合法轮角变化。
++
++输入增量坐标采用64维Euclidean范数。任一步的速度和轮角输入灵敏度≤beta=h*sqrt(32)，向上有理取整；据此扩张名义端点并与原物理/阶段合同相交，形成每步V_abs和D_abs。实际Jacobian使用有符号v：
++
++`d(theta_dot)=tan(delta)/L*dv+v*sec(delta)^2/L*d(delta)`。
++
++令k=tan(D_abs)/L、kd=sec(D_abs)^2/L、kdd=2*tan(D_abs)*sec(D_abs)^2/L（有理向上界）。一阶航向的增量导数≤beta*(k+V_abs*kd)，二阶航向≤beta²*(2*kd+V_abs*kdd)。位置一阶积分由beta+V_abs*P1控制，二阶由2*beta*P1+V_abs*(P2+P1²)控制。derivatives.local_profiles在每拍解析积分这些正系数多项式，生成Gp/P1/Hp/P2；车角系数再加入RB。负速度只通过V_abs进入这些界，不改变真实变分符号。阶段等式限制了可行扰动子空间，正系数界在该子空间上仍成立。
++
++每步5×7区间变分由sources/certify_interfaces.interval_jacobian生成，使用显式direction_sign；32拍复合链式区间矩阵，原行保留区间半宽范数和二阶Taylor项。区间Jacobian覆盖信赖中心的一阶导数，邻域变化由局部Hessian余项覆盖，不能把中心Jacobian当作整个邻域的常数导数。
++
++有符号全物理域|v|≤2、|a|,|omega|≤1、|delta|≤.5、|theta|≤1下，既有integration_bounds.json的航向/位置四阶界84/256及车角二阶界15保留：均由绝对值不等式取得。连续包络使用15*(h/sub)^2/8，控制器sub=4、独立几何sub=8；另扣既有TUBE=.05000001。变化轮角按有理区间Simpson传播，恒定轮角使用精确圆弧ZOH。公式保留符号；过零时也不能用绝对行程代替真实位移。
++
++精确核对：delta=omega=theta=0，S=h*v0+h²*a/2，x=s*S、y=theta_end=0；Jacobian中y_theta=s*S、theta_delta=S/L、theta_omega=(v0*h²/2+a*h³/3)/L。后两式在负速、零速、跨零速整矩形上都是v0/a的仿射函数；source_range_checks.json以矩形顶点的精确极值核对区间包含，证明这些有符号条目在整个矩形覆盖。完整其它条目由区间变分算法给出，未以有限差分代替认证。适用源nu/delta精确测得；源范围数学检查不是具有速度传感噪声的闭环鲁棒性证明。
++
++## 接收盒、K与后继
++
++统一入口从已认可完整策略取得N拍末端区间，确定有理中点参考状态，从该点重新传播K及保留后续至首个目标域H>N+1。参考流数值误差由区间包含；不能直接将历史整区间的不确定性再当作独立误差相加。K让v/delta在N+1精确回到旧控制的合法后继值，通常不等于零。
++
++对接收半径(rP,rT,rV,rD)，q=k*rV+V*kd*rD。控制误差在K拍按(1-t/h)衰减，航向误差≤rT+q*(t-t²/(2h))；位置L1误差由C=3/2控制，得到method_spec.md的Ep/Et。其后相同控制与相同v/delta给出SE(2)等变性：位置误差≤Ep+C*L_rem*Et，车角误差≤Ep+(C*L_rem+RB)*Et。L_rem用h*(|v0|+|v1|)/2逐拍累加，是跨零速时保守的实际行程上界。
++
++目标位置/航向限制、参考全段连续道路/六对净空/权限余量、三角适用范围共同构成A*r≤b；速度轮角及K输入给出额外帽。先以r0覆盖旧名义末端区间，再将b-A*r0以固定均分规则分配；不能覆盖则拒绝。零物理帽保留为等式，域维数据实记录。results/zero_successor_checks.json对7个源实际传播零增量32拍、K和保留后续，不只读取synthesized字段。
++
++## 受理和一拍继承
++
++所有命令用Fraction保存，输入增量采用固定1e-12网格。静止等式块采用精确投影和保和最近网格舍入，且检查相对原始物理尺度提案的总误差≤4e-12；原行、真实连续ZOH、接收/K、后继域、同版真实后续、固定时长预算、32拍代价非增全部受理后才可四车共同提交。AlmostSolved不表示配置精度达标，仍必须经过这些精确检查。
++
++共同提交包含同一source snapshot/history、权限版本、完整接收事件链及4份计划ID。执行一拍使预算B_next=B_old-1；拒绝时原见证和原事件链不变。这个归纳依赖已保存可执行策略，不能宣称未来任意SOCP必有可行内点。历史证明、当前地图证书和此次执行观察分别陈述。
+--- region_reservation_002/certify_domains.py
++++ region_reservation_003_reverse/certify_domains.py
+@@ -32,6 +32,9 @@
+     key=put(HERE/'objects',value);write(HERE/'domain_checks.json',dict(certificate_id=key,**value));print(json.dumps(dict(passed=True,certificate_id=key,minimum_road=float(value['minimum_road']),minimum_pair=float(value['minimum_pair']),exit_position=float(pout),Mc_signed=float(Mc))))
+ 
+ def check_domain(state,car,kind,domains):
++    if kind.startswith('generated:'):
++        from receivers import check_generated
++        return check_generated(state,car,get(HERE/'objects',kind.split(':')[1])['domain'])
+     sign=direction(car)
+     domain=domains[kind];local=F(domain.get('center_local_x',-22 if kind=='G_in' else 34 if kind=='G_out' else 46))
+     center=WAIT[car] if kind in ('W_in','W_hold') else (sign*local,0 if kind in ('G_in','G_in_shifted','G_out') else WAIT[car][1])
+--- /dev/null
++++ region_reservation_003_reverse/check_rejection.py
+@@ -0,0 +1,56 @@
++"""Corrupted copied proposals cannot commit; execute the same actual old tail to old K."""
++from common import *
++from protocol import prepare,commit,select_for_execution
++from witness import plan_id
++from run_case import advance
++from accept_case import Audit
++
++
++def corrupted_witness(proposed,kind):
++    new=copy.deepcopy(get(HERE/'objects',proposed));raw=copy.deepcopy(get(HERE/'objects',new['optimization_origin']));anchor=copy.deepcopy(get(HERE/'objects',raw['anchor_id']));actor=anchor['actor'];k=anchor['phase']
++    if kind=='stale_source':anchor['state']['history']='stale:'+anchor['state']['history'];raw['anchor_id']=put(HERE/'objects',anchor)
++    elif kind=='wrong_frame':anchor['direction_sign']*=-1;raw['anchor_id']=put(HERE/'objects',anchor)
++    elif kind=='wrong_signed_speed':anchor['state']['v'][actor]=str(-F(anchor['state']['v'][actor]));raw['anchor_id']=put(HERE/'objects',anchor)
++    elif kind=='missing_negative_bound':
++        model=copy.deepcopy(get(HERE/'objects',raw['assembly_id']));index=next(i for i,r in enumerate(model['physical_rows']) if r['name']=='state_0_0_-1');model['physical_rows'][index]['g_upper']=str(F(model['physical_rows'][index]['g_upper'])+1);raw['assembly_id']=put(HERE/'objects',model)
++    elif kind=='damaged_derivative':
++        cert=copy.deepcopy(get(HERE/'objects',raw['derivative_id']));cert['direction_sign']*=-1;raw['derivative_id']=put(HERE/'objects',cert)
++    elif kind=='damaged_K':new['controls'][actor][k+32][0]=str(F(new['controls'][actor][k+32][0])+F(1,10**12))
++    else:raise ValueError(kind)
++    new['optimization_origin']=put(HERE/'objects',raw);return put(HERE/'objects',new)
++
++
++def check(side):
++    run=HERE/'results'/side;events=read(run/'events.json');event=next(e for e in events if e['kind']=='local_socp');assert event['accepted'],'fault copying needs an admitted numerical proposal'
++    anchor=get(HERE/'objects',event['anchor_id']);source=restore(m,anchor['state']);state=copy.deepcopy(source);old=state['witness'];proposed=event['accepted_witness'];parent=plan_id(state,old);out=run/'rejection';assert not out.exists();out.mkdir();records=[]
++    req=prepare(state,proposed,parent)
++    for kind in ('stale_source','wrong_frame','wrong_signed_speed','missing_negative_bound','damaged_derivative','damaged_K','stale_phase','mixed_commit'):
++        before=normal(state_record(state));evidence=None
++        try:
++            if kind=='stale_phase':
++                bad=copy.deepcopy(req);bad['cycle']-=1;evidence=put(HERE/'objects',bad);commit(state,bad)
++            elif kind=='mixed_commit':
++                token=commit(state,req);token['plans']['A1']='damaged';evidence=put(HERE/'objects',token);select_for_execution(state,token)
++            else:
++                bad_wid=corrupted_witness(proposed,kind);evidence=bad_wid;bad=prepare(state,bad_wid,parent);commit(state,bad)
++        except (AssertionError,ValueError) as error:records.append(dict(kind=kind,rejected=True,reason=repr(error),evidence_id=evidence,state_unchanged=before==normal(state_record(state))))
++        else:raise AssertionError('invalid proposal admitted: '+kind)
++        assert before==normal(state_record(state))
++    # All corruptions refer to the same immutable checkpoint. One real old-tail fork
++    # proves continuation after the rejected proposals, without duplicate identical runs.
++    w=get(HERE/'objects',old);actor=anchor['actor'];k=source['cycle'];target=min(int(t) for t,ev in w['events'].items() if int(t)>k and [actor,'G_in'] in ev);steps=target+1-k
++    audit=Audit(read(run/'config.json')['initial_witness'])
++    with gzip.open(run/'execution.jsonl.gz','rt') as stream:
++        for row in map(json.loads,stream):
++            if row['cycle']==k:break
++            audit.frame(row)
++    assert normal(state_record(audit.state))==normal(state_record(source))
++    with gzip.open(out/'execution.jsonl.gz','wt') as stream:
++        for j in range(steps):
++            row=advance(state,old);audit.frame(normal(row));stream.write(json.dumps(row,default=str,separators=(',',':'))+'\n')
++    assert audit.state['history']==state['history'] and state['v'][actor]==F(1,2) and state['delta'][actor]==0
++    assert source['v'][actor]<0 and all(r['state_unchanged'] for r in records)
++    result=dict(passed=True,side=side,source=state_record(source),old_witness=old,proposed_witness=proposed,rejections=records,invalid_commits=0,invalid_selections=0,valid_token_built_for_mixed_token_test=1,actual_fallback_branches=1,actual_steps=steps,old_G_in_phase=target,old_K_phase=target,old_K_command=w['controls'][actor][target],final=state_record(state),budget_before=2802-k,budget_after=2802-state['cycle'],independent_8_subsegments=True,minimum_road=str(audit.road),minimum_pair=str(audit.pair))
++    write(out/'summary.json',result);return dict(side=side,passed=True,rejections=len(records),actual_steps=steps)
++if __name__=='__main__':
++    result=[check(side) for side in ('A','B')];write(HERE/'results/rejection_checks.json',result);print(json.dumps(result))
+--- /dev/null
++++ region_reservation_003_reverse/check_rules.py
+@@ -0,0 +1,26 @@
++"""Bounded, solver-free prerequisites. Native solving is a separate stage."""
++from common import *
++from generation import generate
++from rules import envelope,contract
++from derivatives import builder
++from witness import make
++
++def analytic_checks():
++    out=[]
++    for name,v,a,sign in [('negative',F(-1,5),F(0),1),('zero',F(0),F(0),1),('cross_zero',F(-1,20),F(1,2),1),('negative_opposite_frame',F(-1,5),F(0),-1)]:
++        cert=dict(scale=m.Q,car='locator_only',direction_sign=sign,knots=[[str(v),str(v+H*a),'0','0']],pose_nodes_Q=[[[0,0],[0,0],[0,0]]]);J=builder.interval_jacobian(m,cert,0,{},32)
++        entries={(r,c):(F(lo,J['scale']),F(hi,J['scale'])) for r,c,lo,hi in J['nonzero_intervals']}
++        S=H*v+a*H*H/2;exact={(0,3):sign*H,(0,5):sign*H*H/2,(1,2):sign*S,(2,4):S/m.L,(2,6):(v*H*H/2+a*H**3/3)/m.L,(3,3):F(1),(3,5):H,(4,4):F(1),(4,6):H}
++        for key,x in exact.items():lo,hi=entries.get(key,(F(0),F(0)));assert lo<=x<=hi,(name,key,x,lo,hi)
++        bound=envelope((v,v+H*a,0,0),contract('signed'));assert bound['V_abs']>=max(abs(v),abs(v+H*a))
++        out.append(dict(name=name,passed=True,exact_zoh_displacement=S,expected_signed_J=exact.__str__(),envelope=bound,jacobian_id=put(HERE/'objects',J)))
++    return out
++
++def main():
++    cases=[]
++    for entry in read(HERE/'regression_sources.json'):
++        assert content_id(entry['source'])==entry['source_id'] and entry['old_witness']==entry['source']['witness']
++        v,key=generate(restore(m,entry['source']),entry['actor']);cases.append(dict(kind=entry['kind'],case=entry.get('case'),side=entry.get('side'),generation_id=key,passed=v['passed'],failure=v.get('failure')))
++    mathchecks=analytic_checks();result=dict(passed=all(v['passed'] for v in cases),cases=cases,math=mathchecks,native_solver_calls=0)
++    write(HERE/'results/rule_checks_rebuilt.json',result);print(json.dumps(normal(result),ensure_ascii=False,indent=2));return 0 if result['passed'] else 1
++if __name__=='__main__':raise SystemExit(main())
+--- /dev/null
++++ region_reservation_003_reverse/check_source_ranges.py
+@@ -0,0 +1,22 @@
++"""Exact affine extrema of signed variational rows over whole source rectangles."""
++from common import *
++from derivatives import builder
++from rules import quantize,equality_blocks
++
++def main():
++    results=[]
++    for name,lo,hi,sign in [('negative',F(-3,10),F(-1,10),1),('zero',F(0),F(0),1),('cross_zero',F(-1,20),F(1,20),1),('cross_zero_opposite_frame',F(-1,20),F(1,20),-1)]:
++        v=(lo+hi)/2;r=(hi-lo)/2;ar=r/H
++        cert=dict(scale=m.Q,car='a_location_without_direction_semantics',direction_sign=sign,knots=[[str(v),str(v),'0','0']],pose_nodes_Q=[[[0,0],[0,0],[0,0]]]);J=builder.interval_jacobian(m,cert,0,dict(speed_radius=str(r)),32)
++        rows={(i,j):(F(a,J['scale']),F(b,J['scale'])) for i,j,a,b in J['nonzero_intervals']};extrema=[]
++        # These exact entries are affine in source v and a; corner extrema prove
++        # coverage of the entire rectangular source, including v=0 in its interior.
++        for key,formula in [((1,2),lambda v,a:sign*(H*v+H*H*a/2)),((2,4),lambda v,a:(H*v+H*H*a/2)/m.L),((2,6),lambda v,a:(H*H*v/2+H**3*a/3)/m.L)]:
++            vals=[formula(x,y) for x in (lo,hi) for y in (-ar,ar)];low,high=rows.get(key,(F(0),F(0)));assert low<=min(vals)<=max(vals)<=high,(name,key)
++            extrema.append(dict(entry=key,exact_range=[min(vals),max(vals)],interval=[low,high]))
++        results.append(dict(name=name,passed=True,source_v=[lo,hi],source_a=[-ar,ar],fixed_delta=0,frame_sign=sign,jacobian_id=put(HERE/'objects',J),exact_affine_extrema=extrema))
++    # A projection plus balanced grid rounding preserves every stationary equality.
++    event=next(e for e in read(HERE/'results/A/events.json') if e['kind']=='local_socp');anchor=get(HERE/'objects',event['anchor_id']);raw=get(HERE/'objects',event['raw_result_id']);delta,q=quantize(raw['x'],F(1),anchor['contracts']);frozen,blocks=equality_blocks(anchor['contracts']);assert q['passed'] and all(delta[i]==0 for i in frozen) and all(sum(delta[i] for i in b)==0 for b in blocks)
++    result=dict(passed=True,ranges=results,stationary_equalities=dict(passed=True,frozen=len(frozen),zero_sum_blocks=len(blocks),quantization_error=q['error'],budget=q['budget']),new_solver_calls=0,scope='range/variational checks; future policy synthesis uses exact measured v/delta, not an uncertain-speed robust deployment')
++    write(HERE/'results/source_range_checks.json',result);print(json.dumps(normal(result),indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ region_reservation_003_reverse/check_zero_successor.py
+@@ -0,0 +1,13 @@
++"""Execute every rule-regression zero prefix, its K and the retained old suffix."""
++from common import *
++from local_update import certify_prefix
++from receivers import replacement_events
++
++
++def main():
++    records=[]
++    for case in read(HERE/'results/rule_checks.json')['cases']:
++        generated=get(HERE/'objects',case['generation_id']);assert generated['passed'];anchor=get(HERE/'objects',generated['anchor_id']);source=restore(m,anchor['state']);old=get(HERE/'objects',source['witness']);candidate=copy.deepcopy(old);candidate['events']=replacement_events(old['events'],anchor['actor'],anchor['receiver']);proof=certify_prefix(source,candidate,anchor);pid=put(HERE/'objects',proof)
++        records.append(dict(kind=case['kind'],case=case.get('case'),side=case.get('side'),generation_id=case['generation_id'],proof_id=pid,passed=True,source_phase=source['cycle'],K_phase=anchor['receiver_phase'],retained_phase=proof['retained_target']['cycle']))
++    write(HERE/'results/zero_successor_checks.json',dict(passed=True,new_solver_calls=0,records=records));print(json.dumps(records))
++if __name__=='__main__':main()
+--- /dev/null
++++ region_reservation_003_reverse/checkpoint.py
+@@ -0,0 +1,9 @@
++"""Bind already completed independent checks to exact files and source versions."""
++from common import *
++
++def main():
++    for side in ('A','B'):assert read(HERE/'results'/side/'independent_acceptance.json')['passed'] and read(HERE/'results'/side/'rejection/summary.json')['passed']
++    code={str(f.relative_to(HERE)):sha(f) for f in HERE.rglob('*.py') if 'delivery' not in f.relative_to(HERE).parts and '__pycache__' not in f.parts}
++    files={str(f.relative_to(HERE)):sha(f) for section in ('results','objects') for f in (HERE/section).rglob('*') if f.is_file() and f!=HERE/'results/independent_checkpoints.json'}
++    write(HERE/'results/independent_checkpoints.json',dict(full_replay_completed=True,native_calls=2,code=code,files=files,mode='post-execution binding; default relocation reuses content-checked full replay and freshly checks source/prefix'))
++if __name__=='__main__':main()
+--- region_reservation_002/common.py
++++ region_reservation_003_reverse/common.py
+@@ -32,7 +32,8 @@
+     if F(n,grid)**2<z:n+=1
+     return F(n,grid)
+ def pose_rows(p):return [[q.l,q.u] for q in p]
+-def direction(c):return 1 if c[0]=='A' else -1
++MODEL_FRAMES={'A1':1,'A2':1,'B1':-1,'B2':-1}
++def direction(c):return MODEL_FRAMES[c]
+ 
+ def initial_state():
+     return dict(poses={c:(m.I(INITIAL[c][0]),m.I(INITIAL[c][1]),m.I(0)) for c in CARS},v={c:F(0) for c in CARS},delta={c:F(0) for c in CARS},cycle=0,history=content_id(dict(initial=INITIAL,model=sha(MODEL_PATH),h=H)),witness=None,owner=None,permission_version=0,served=[])
+--- region_reservation_002/derivatives.py
++++ region_reservation_003_reverse/derivatives.py
+@@ -7,6 +7,7 @@
+ import time
+ 
+ from common import *
++from rules import envelope,assert_step
+ spec=importlib.util.spec_from_file_location('region_variational_builder',HERE/'sources/certify_interfaces.py')
+ builder=importlib.util.module_from_spec(spec);spec.loader.exec_module(builder)
+ ORDER=['px','py','psi','v','delta','a','omega']
+@@ -23,10 +24,10 @@
+     return result
+ 
+ 
+-def local_profiles(knots):
+-    beta=F(6,5);g=z=gp=hp=F(0);result=[]
+-    for row in knots:
+-        v=min(F(2),builder.up(max(row[:2])+beta*RHO,1000));d=min(F(1,2),builder.up(max(map(abs,row[2:]))+beta*RHO,1000))
++def local_profiles(knots,contracts):
++    beta=norm_upper([H]*32);g=z=gp=hp=F(0);result=[]
++    for row,box in zip(knots,contracts):
++        bounds=envelope(row,box,beta);v=bounds["V_abs"];d=bounds["D_abs"]
+         kap,kd,kdd=builder.trig_bounds(d);c=kap+v*kd;t=2*kd+v*kdd
+         increment=g*H+beta*c*H*H/2
+         hp=builder.up(hp+2*beta*increment+v*(z*H+beta*beta*t*H*H/2+g*g*H+g*beta*c*H*H+beta*beta*c*c*H**3/3))
+@@ -59,13 +60,14 @@
+ def build(data,m,anchor,subdivisions=8):
+     start=time.perf_counter();state=restore(m,anchor['state']);actor=anchor['actor'];u=[tuple(map(F,x)) for x in anchor['plan']['remaining'][:32]]
+     assert anchor['m']==32 and anchor['rho']==str(RHO) and anchor['model_sha256']==sha(MODEL_PATH)
+-    assert anchor['direction_sign']==(1 if actor[0]=='A' else -1) and anchor['physics_sha256']==content_id(data.cfg)
++    assert anchor['direction_sign']==direction(actor) and anchor['physics_sha256']==content_id(data.cfg)
+     states=[];singles=[];prefix=[];knots=[];geometry=[];S=[[] for _ in range(5)]
+     for j,(a,w) in enumerate(u):
+         pose=state['poses'][actor];v,d=state['v'][actor],state['delta'][actor];v1,d1=v+H*a,d+H*w
++        assert_step(v,d,(a,w),anchor['contracts'][j])
+         bounds=dict(pose_Q=pose_rows(pose),v=[str(v),str(v)],delta=[str(d),str(d)],a=[str(a),str(a)],omega=[str(w),str(w)])
+         source=dict(anchor_id=content_id(anchor),step=j,state_order=ORDER[:5],input_order=ORDER[5:],direction_sign=anchor['direction_sign'],bounds=bounds,model_sha256=anchor['model_sha256'])
+-        tiny=dict(scale=m.Q,car=actor,knots=[[str(x) for x in (v,v1,d,d1)]],pose_nodes_Q=[pose_rows(pose)])
++        tiny=dict(scale=m.Q,car=actor,direction_sign=anchor["direction_sign"],knots=[[str(x) for x in (v,v1,d,d1)]],pose_nodes_Q=[pose_rows(pose)])
+         raw=builder.interval_jacobian(m,tiny,0,{},subdivisions)
+         J=[[m.I(0) for _ in range(7)] for _ in range(5)]
+         for r,c,lo,hi in raw['nonzero_intervals']:J[r][c]=m.I.raw(m.I(F(lo,raw['scale'])).l,m.I(F(hi,raw['scale'])).u)
+@@ -75,14 +77,14 @@
+         nodes=joint_nodes(state,actor,(a,w))
+         geometry.append(geometry_margin(m,data,state,actor,nodes));knots.append((v,v1,d,d1))
+         legacy.execute(m,state,actor,(a,w),data.cfg,data.cert['source']>0)
+-    profiles=local_profiles(knots)
++    profiles=local_profiles(knots,anchor["contracts"][:32])
+     return dict(anchor_id=content_id(anchor),anchor=anchor,source_kind='fresh actual joint state and time-aligned fixed peer trajectories',columns=ORDER,coordinate_branch=anchor['coordinate_branch'],direction_sign=anchor['direction_sign'],rho=str(RHO),trust_center=content_id(anchor),input_dimension=64,single_step_dimension=7,subdivisions=subdivisions,singles=singles,prefix_jacobians=prefix,local_profiles=profiles,geometry_margins=geometry,terminal_state=state_record(state),all_32_source_ranges_covered=True,physical_affine_rows_required=True,build_wall_s=time.perf_counter()-start)
+ 
+ 
+ def verify(data,m,cert,anchor,recompute=True):
+     assert cert['anchor_id']==cert['trust_center']==content_id(anchor),'wrong trust center'
+     assert cert['anchor']==anchor and cert['rho']==str(RHO) and cert['columns']==ORDER,'wrong order/rho'
+-    assert cert['direction_sign']==anchor['direction_sign']==(1 if anchor['actor'][0]=='A' else -1),'wrong direction'
++    assert cert['direction_sign']==anchor['direction_sign']==direction(anchor['actor']),'wrong direction'
+     assert len(cert['singles'])==len(cert['prefix_jacobians'])==len(cert['local_profiles'])==32
+     for j,step in enumerate(cert['singles']):
+         assert step['source_id']==content_id(step['source']) and step['source']['anchor_id']==content_id(anchor) and step['source']['step']==j
+--- /dev/null
++++ region_reservation_003_reverse/generation.py
+@@ -0,0 +1,26 @@
++"""One actual source/contract -> rows, derivatives and receiving continuation."""
++import time
++from common import *
++from rules import contracts_for
++from receivers import synthesize
++from derivatives import build,verify
++from socp_rows import rows_for,evaluate
++CFG=dict(roads=ROADS,h=H,L=F(27,10),body=[[-1,F(7,2)],[-F(9,10),F(9,10)]],v_bounds=[-1,2],delta_abs=F(1,2),a_abs=1,omega_abs=1)
++
++def anchor_for(state,actor,row=None):
++    row=synthesize(state,actor) if row is None else row
++    w=get(HERE/'objects',state['witness']);k=state['cycle']
++    return normal(dict(state=state_record(state),model_sha256=sha(MODEL_PATH),physics_sha256=content_id(CFG),actor=actor,coordinate_branch='explicit fixed model frame; signed longitudinal velocity',direction_sign=direction(actor),m=32,rho=str(RHO),phase=k,receiver_phase=k+32,receiver_row_sha256=content_id(row),receiver=row,contracts=contracts_for(state,actor),witness=state['witness'],permission_owner=state['owner'],peer_horizon_id=content_id({c:w['controls'][c][k:k+33] for c in CARS if c!=actor}),plan=dict(phase=k,remaining=w['controls'][actor][k:],budget=w['ticks']-k,witness=state['witness'])))
++
++def data_for(anchor):
++    row=anchor['receiver'];return SimpleNamespace(cfg=CFG,cert={'car':anchor['actor'],'source':0},row=lambda k:row if k==row['phase'] else (_ for _ in ()).throw(ValueError('wrong receiving phase')))
++
++def generate(state,actor,subdivisions=32):
++    began=time.perf_counter()
++    try:
++        row=synthesize(state,actor);anchor=anchor_for(state,actor,row);aid=put(HERE/'objects',anchor);data=data_for(anchor);cert=build(data,m,anchor,subdivisions);verify(data,m,cert,anchor,False);did=put(HERE/'objects',cert);rows=rows_for(data,m,anchor,cert,'B-JL');zero=evaluate(rows,[F(0)]*64);rows_id=put(HERE/'objects',rows)
++        if not zero['passed']:raise ValueError('zero_anchor: '+','.join(zero['violations']))
++        value=dict(passed=True,actor=actor,phase=state['cycle'],source_history=state['history'],old_witness=state['witness'],anchor_id=aid,derivative_id=did,physical_rows_id=rows_id,receiver=row,zero_anchor=zero,budget=anchor['plan']['budget'],wall_s=time.perf_counter()-began)
++    except (AssertionError,ValueError,KeyError) as error:
++        value=dict(passed=False,actor=actor,phase=state['cycle'],source=state_record(state),old_witness=state['witness'],failure=repr(error),wall_s=time.perf_counter()-began)
++    key=put(HERE/'objects',value);return value,key
+--- /dev/null
++++ region_reservation_003_reverse/historical_receivers.py
+@@ -0,0 +1,19 @@
++"""Two fixed, proved receiving phases; no extension to unverified future windows."""
++from common import *
++
++
++def receiver(actor,phase):
++    assert phase in (819,820),'unregistered receiving phase'
++    name='G_in' if phase==819 else 'G_in_shifted';d=read(HERE/'domain_checks.json')['domains'][name];x=F(d.get('center_local_x',-22))*direction(actor)
++    domain=dict(center_pose_Q=[[x.numerator,x.denominator],[0,1],[0,1]],position_l1_radius=d['position_l1'],yaw_radius=d['yaw'],center_v='1/2',speed_radius=str((F(d['v'][1])-F(d['v'][0]))/2),center_delta='0',steering_radius=d['delta'][1],feedback_a_ref='0',feedback_omega_ref='0')
++    return dict(phase=phase,kind=name,domain=domain,certificate_id=read(HERE/'domain_checks.json')['certificate_id'])
++
++
++def replacement_events(old,actor,cycle):
++    events=copy.deepcopy(old)
++    if cycle==788:
++        previous=[actor,'G_in'];assert previous in events['819'];events['819'].remove(previous)
++        if not events['819']:del events['819']
++        events.setdefault('820',[]).append([actor,'G_in_shifted'])
++    else:assert cycle==787
++    return events
+--- region_reservation_002/local_update.py
++++ region_reservation_003_reverse/local_update.py
+@@ -1,25 +1,17 @@
+-"""One 65-variable candidate per case on a genuine two-mover anchor."""
++"""One fresh call per registered source; all adoption is exact certificate admission."""
+ import time,math
+ import numpy as np
+ import clarabel
+ from common import *
+-from derivatives import build,verify
++from generation import generate,anchor_for,data_for,CFG
++from derivatives import verify
+ from socp_rows import rows_for,evaluate
+ from conic import assembly
+ from physics import step
+ from certify_domains import check_domain
+-from receivers import receiver,replacement_events
++from receivers import feedback,replacement_events,check_generated,synthesize
++from rules import quantize,assert_step
+ 
+-CFG=dict(roads=ROADS,h=H,L=F(27,10),body=[[-1,F(7,2)],[-F(9,10),F(9,10)]],v_bounds=[-1,2],delta_abs=F(1,2),a_abs=1,omega_abs=1)
+-
+-def data_for(actor,phase):
+-    row=receiver(actor,phase)
+-    return SimpleNamespace(cfg=CFG,cert={'car':actor,'source':0},row=lambda k:row if k==phase else (_ for _ in ()).throw(ValueError('wrong receiving phase')))
+-
+-def anchor_for(state,actor):
+-    w=get(HERE/'objects',state['witness']);k=state['cycle'];data=data_for(actor,k+32)
+-    value=dict(state=state_record(state),model_sha256=sha(MODEL_PATH),physics_sha256=content_id(CFG),actor=actor,coordinate_branch='A:psi=theta; B:psi=pi+theta',direction_sign=direction(actor),m=32,rho=str(RHO),phase=k,receiver_phase=k+32,receiver_row_sha256=content_id(data.row(k+32)),witness=state['witness'],permission_owner=state['owner'],peer_horizon_id=content_id({c:w['controls'][c][k:k+33] for c in CARS if c!=actor}),plan=dict(phase=k,remaining=w['controls'][actor][k:],budget=2802-k,witness=state['witness']))
+-    return normal(value)
+ 
+ def reserved_rows(rows):
+     out=[];res=[];e=F(4,10**12)
+@@ -28,71 +20,73 @@
+         rr=copy.deepcopy(r);rr['g_upper']=F(rr['g_upper'])+(eta if applied else 0);out.append(rr);res.append(dict(name=r['name'],eta=eta,applied=applied))
+     return out,res
+ 
+-def certify_prefix(state,new,actor):
+-    k=state['cycle'];trial=copy.deepcopy(state);trial['witness']=content_id(new);dom=read(HERE/'domain_checks.json')['domains'];road=pair=F(100)
+-    for j in range(33):
+-        if j==32:terminal=check_domain(trial,actor,receiver(actor,k+32)['kind'],dom)
+-        cmds={c:tuple(map(F,new['controls'][c][k+j])) for c in CARS};result=step(trial,cmds,new['owners'][k+j],4)
+-        road=min(road,result['bounds']['road']);pair=min(pair,result['bounds']['pair'])
+-        for c,kind in new['events'].get(str(k+j+1),[]):check_domain(trial,c,kind,dom)
+-    assert trial['v'][actor]==F(1,2) and trial['delta'][actor]==0
+-    return dict(passed=True,terminal=terminal,after_K=state_record(trial),minimum_road=road,minimum_pair=pair,suffix_certificate=new['domain_certificate'],completion_ticks=2802-k)
+ 
+-def fields(obj):
+-    return {key:getattr(obj,key) if isinstance(getattr(obj,key),(int,float,bool,str,list)) else str(getattr(obj,key)) for key in dir(obj) if not key.startswith('_') and not callable(getattr(obj,key))}
++def certify_prefix(state,new,anchor):
++    actor=anchor['actor'];k=state['cycle'];row=anchor['receiver'];certificate=get(HERE/'objects',row['certificate_id']);trial=copy.deepcopy(state);road=pair=F(100);dom=read(HERE/'domain_checks.json')['domains']
++    for t in range(k,certificate['retained_target_phase']):
++        if t==k+32:
++            terminal=check_generated(trial,actor,row['domain']);assert tuple(map(F,new['controls'][actor][t]))==feedback(trial,actor,certificate),'bad K'
++        u={c:tuple(map(F,new['controls'][c][t])) for c in CARS}
++        if t<=k+32:assert_step(trial['v'][actor],trial['delta'][actor],u[actor],anchor['contracts'][t-k])
++        actual=step(trial,u,new['owners'][t],4);road=min(road,actual['bounds']['road']);pair=min(pair,actual['bounds']['pair'])
++        if t==k+32:
++            after=state_record(trial);assert trial['v'][actor]==F(certificate['reset_v']) and trial['delta'][actor]==F(certificate['reset_delta'])
++        for c,kind in new['events'].get(str(t+1),[]):check_domain(trial,c,kind,dom)
++    check_domain(trial,actor,certificate['retained_target_kind'],dom)
++    assert 33+certificate['suffix_ticks']==certificate['budget_before']==new['ticks']-k
++    return dict(passed=True,terminal=terminal,after_K=after,retained_target=state_record(trial),minimum_road=road,minimum_pair=pair,remaining_budget=new['ticks']-k,receiver_id=row['certificate_id'])
++
++
++def fields(obj):return {key:getattr(obj,key) if isinstance(getattr(obj,key),(int,float,bool,str,list)) else str(getattr(obj,key)) for key in dir(obj) if not key.startswith('_') and not callable(getattr(obj,key))}
+ 
+ 
+ def solve(state,actor,case,output):
+-    began=time.perf_counter();anchor=anchor_for(state,actor);aid=put(HERE/'objects',anchor);data=data_for(actor,anchor['receiver_phase']);cert=build(data,m,anchor,32);verify(data,m,cert,anchor,recompute=False);did=put(HERE/'objects',cert)
+-    rows=rows_for(data,m,anchor,cert,'B-JL');inner,reserves=reserved_rows(rows);reference=np.array([[float(F(x)) for x in u] for u in anchor['plan']['remaining'][:32]]).ravel()
+-    P,q,A,b,cones,model=assembly(inner,reference,F(1,10000));model.update(physical_rows=rows,assembled_rows=inner,rounding_reserves=reserves);mid=put(HERE/'objects',model)
++    assert read(HERE/'results/rule_checks.json')['passed'],'common rule gate blocked'
++    began=time.perf_counter();generation,gid=generate(state,actor);assert generation['passed'],generation
++    anchor=get(HERE/'objects',generation['anchor_id']);cert=get(HERE/'objects',generation['derivative_id']);rows=get(HERE/'objects',generation['physical_rows_id']);aid=generation['anchor_id'];did=generation['derivative_id'];inner,reserves=reserved_rows(rows)
++    reference=np.array([[float(F(x)) for x in u] for u in anchor['plan']['remaining'][:32]]).ravel();P,q,A,b,cones,model=assembly(inner,reference,F(1,10000));model.update(physical_rows=rows,assembled_rows=inner,rounding_reserves=reserves,generation_id=gid);mid=put(HERE/'objects',model)
+     cfg=clarabel.DefaultSettings();cfg.verbose=True;cfg.max_iter=300;cfg.time_limit=5.;cfg.tol_feas=cfg.tol_gap_abs=cfg.tol_gap_rel=1e-10
+     solver=clarabel.DefaultSolver(P,q,A,b,cones,cfg);solver.print_to_buffer();trace=[]
+     def callback(info):trace.append(fields(info));return False
+-    solver.set_termination_callback(callback);calls=read(HERE/'results/solver_calls.json') if (HERE/'results/solver_calls.json').exists() else [];assert len(calls)<4 and (case,state['cycle']) not in [(c['case'],c['phase']) for c in calls]
+-    calls.append(dict(case=case,phase=state['cycle'],anchor_id=aid,started=True,completed=False));write(HERE/'results/solver_calls.json',calls)
+-    result=solver.solve();info=fields(solver.get_info());output.mkdir();(output/'solver.log').write_text(solver.get_print_buffer());write(output/'settings.json',fields(solver.get_settings()));write(output/'trace.json',trace)
+-    raw=dict(case=case,round=state['cycle']-786,phase=state['cycle'],history=state['history'],source_witness=state['witness'],anchor_id=aid,derivative_id=did,assembly_id=mid,solver_version=clarabel.__version__,status=str(result.status),x=result.x,s=result.s,z=result.z,info=info,settings=fields(solver.get_settings()),scale='1/10000',rho=str(RHO),quantization='1/1000000000000',policy='certificate_suboptimal_v1');rid=put(HERE/'objects',raw);accepted=False;attempts=[];old=get(HERE/'objects',state['witness']);oldE=H*sum(F(x)**2 for u in old['controls'][actor][state['cycle']:state['cycle']+32] for x in u);wid=state['witness'];proposal=None
++    solver.set_termination_callback(callback);ledger=HERE/'results/solver_calls.json';calls=read(ledger) if ledger.exists() else [];assert len(calls)<2 and case not in [c['case'] for c in calls]
++    calls.append(dict(case=case,phase=state['cycle'],anchor_id=aid,started=True,completed=False));write(ledger,calls)
++    result=solver.solve();output.mkdir();(output/'solver.log').write_text(solver.get_print_buffer());write(output/'settings.json',fields(solver.get_settings()));write(output/'trace.json',trace)
++    raw=dict(case=case,round=1,phase=state['cycle'],history=state['history'],source_witness=state['witness'],anchor_id=aid,derivative_id=did,assembly_id=mid,generation_id=gid,solver_version=clarabel.__version__,status=str(result.status),x=result.x,s=result.s,z=result.z,info=fields(solver.get_info()),settings=fields(solver.get_settings()),scale='1/10000',rho=str(RHO),quantization='1/1000000000000',policy='certificate_suboptimal_v1');rid=put(HERE/'objects',raw);old=get(HERE/'objects',state['witness']);k=state['cycle'];oldE=H*sum(F(x)**2 for u in old['controls'][actor][k:k+32] for x in u);wid=state['witness'];accepted=False;attempts=[]
+     if raw['status'] in ('Solved','AlmostSolved') and all(math.isfinite(x) for key in ('x','s','z') for x in raw[key]):
+         for alpha in (F(1),F(1,2),F(1,4)):
+-            delta=[F(round(alpha*F(1,10000)*F.from_float(float(x))*10**12),10**12) for x in raw['x'][:64]];cone=evaluate(rows,delta);attempt=dict(alpha=str(alpha),cone=cone,delta=list(map(str,delta)),passed=False)
+-            if cone['passed']:
+-                proposal=copy.deepcopy(old);k=state['cycle'];trial=copy.deepcopy(state)
+-                for j in range(32):
+-                    proposal['controls'][actor][k+j]=[str(F(u)+delta[2*j+i]) for i,u in enumerate(old['controls'][actor][k+j])]
+-                    commands={c:tuple(map(F,proposal['controls'][c][k+j])) for c in CARS};step(trial,commands,proposal['owners'][k+j],4)
+-                K=((F(1,2)-trial['v'][actor])/H,-trial['delta'][actor]/H);proposal['controls'][actor][k+32]=list(map(str,K));proposal.update(parent_witness=state['witness'],optimization_origin=rid,optimization_actor=actor,optimization_phase=k,events=replacement_events(old['events'],actor,k),receiver_contract=receiver(actor,k+32))
+-                E=H*sum(F(x)**2 for u in proposal['controls'][actor][k:k+32] for x in u)
++            delta,quant=quantize(raw['x'],alpha,anchor['contracts']);cone=evaluate(rows,delta);attempt=dict(alpha=str(alpha),quantization=quant,cone=cone,delta=list(map(str,delta)),passed=False)
++            if quant['passed'] and cone['passed']:
++                proposal=copy.deepcopy(old);trial=copy.deepcopy(state)
+                 try:
+-                    if E>oldE:raise ValueError('prefix energy increased')
+-                    proof=certify_prefix(state,proposal,actor)
++                    for j in range(32):
++                        proposal['controls'][actor][k+j]=[str(F(u)+delta[2*j+i]) for i,u in enumerate(old['controls'][actor][k+j])];step(trial,{c:tuple(map(F,proposal['controls'][c][k+j])) for c in CARS},proposal['owners'][k+j],4)
++                    proposal['controls'][actor][k+32]=list(map(str,feedback(trial,actor,get(HERE/'objects',anchor['receiver']['certificate_id']))));proposal.update(parent_witness=state['witness'],optimization_origin=rid,optimization_actor=actor,optimization_phase=k,events=replacement_events(old['events'],actor,anchor['receiver']),receiver_contract=anchor['receiver'],generation_id=gid)
++                    E=H*sum(F(x)**2 for u in proposal['controls'][actor][k:k+32] for x in u)
++                    assert E<=oldE,'prefix energy increased';proof=certify_prefix(state,proposal,anchor)
+                 except (ValueError,AssertionError) as error:attempt['failure']=repr(error)
+                 else:
+-                    attempt.update(passed=True,proof=proof,energy=str(E));attempts.append(attempt);accepted=True;wid=put(HERE/'objects',proposal);break
++                    attempt.update(passed=True,proof=proof,energy=str(E));accepted=True;wid=put(HERE/'objects',proposal)
+             attempts.append(attempt)
+-    policy=dict(accepted=accepted,changed=accepted and any(delta),raw_result_id=rid,anchor_id=aid,derivative_id=did,assembly_id=mid,admission_policy='certificate_suboptimal_v1',accepted_witness=wid,attempts=attempts,old_energy=str(oldE),wall_s=time.perf_counter()-began)
+-    pid=put(HERE/'objects',policy);calls[-1].update(completed=True,raw_result_id=rid,policy_result_id=pid,status=raw['status'],accepted=accepted);write(HERE/'results/solver_calls.json',calls)
+-    return wid,dict(kind='local_socp',case=case,round=state['cycle']-786,cycle=state['cycle'],actor=actor,source_history=state['history'],parent_witness=state['witness'],anchor_id=aid,derivative_id=did,assembly_id=mid,raw_result_id=rid,policy_result_id=pid,accepted=accepted,accepted_witness=wid)
++            if accepted:break
++    policy=dict(accepted=accepted,changed=accepted and any(delta),raw_result_id=rid,anchor_id=aid,derivative_id=did,assembly_id=mid,generation_id=gid,admission_policy='certificate_suboptimal_v1',accepted_witness=wid,attempts=attempts,old_energy=str(oldE),wall_s=time.perf_counter()-began)
++    pid=put(HERE/'objects',policy);calls[-1].update(completed=True,raw_result_id=rid,policy_result_id=pid,status=raw['status'],accepted=accepted);write(ledger,calls)
++    return wid,dict(kind='local_socp',case=case,round=1,cycle=k,actor=actor,source_history=state['history'],parent_witness=state['witness'],generation_id=gid,anchor_id=aid,derivative_id=did,assembly_id=mid,raw_result_id=rid,policy_result_id=pid,accepted=accepted,accepted_witness=wid)
+ 
+ 
+ def verify_update(wid,recompute=True):
+-    """Recompute binding and exact rows; no numerical solver called."""
+     new=get(HERE/'objects',wid);raw=get(HERE/'objects',new['optimization_origin']);old=get(HERE/'objects',raw['source_witness']);anchor=get(HERE/'objects',raw['anchor_id']);cert=get(HERE/'objects',raw['derivative_id']);state=restore(m,anchor['state']);actor=anchor['actor'];k=state['cycle']
+-    assert raw['phase']==k and raw['round']==k-786
+-    assert raw['source_witness']==state['witness']==new['parent_witness'] and new['optimization_actor']==actor and new['optimization_phase']==k and raw['history']==state['history']
++    assert raw['phase']==k and raw['round']==1 and raw['history']==state['history'] and raw['source_witness']==state['witness']==new['parent_witness']
+     assert anchor_for(state,actor)==anchor and raw['status'] in ('Solved','AlmostSolved') and raw['solver_version']=='0.11.1' and all(math.isfinite(x) for key in ('x','s','z') for x in raw[key])
++    assert new['generation_id']==raw['generation_id'] and get(HERE/'objects',new['generation_id'])['anchor_id']==raw['anchor_id']
+     settings=raw['settings'];assert settings['tol_feas']==settings['tol_gap_abs']==settings['tol_gap_rel']==1e-10 and settings['time_limit']==5 and settings['max_iter']==300
+-    data=data_for(actor,k+32);verify(data,m,cert,anchor,recompute);rows=rows_for(data,m,anchor,cert,'B-JL');inner,reserves=reserved_rows(rows);model=get(HERE/'objects',raw['assembly_id']);reference=np.asarray([[float(F(x)) for x in u] for u in old['controls'][actor][k:k+32]]).ravel();rebuilt=assembly(inner,reference,F(1,10000))[-1]
++    verify(data_for(anchor),m,cert,anchor,recompute);rows=rows_for(data_for(anchor),m,anchor,cert,'B-JL');inner,reserves=reserved_rows(rows);model=get(HERE/'objects',raw['assembly_id']);reference=np.asarray([[float(F(x)) for x in u] for u in old['controls'][actor][k:k+32]]).ravel();rebuilt=assembly(inner,reference,F(1,10000))[-1]
+     for key in ('P','q','A','b','cone_dimensions'):assert model[key]==rebuilt[key],key
++    assert content_id(model['physical_rows'])==content_id(rows)
+     delta=[F(x)-F(y) for u,v in zip(new['controls'][actor][k:k+32],old['controls'][actor][k:k+32]) for x,y in zip(u,v)]
+-    matches=[alpha for alpha in (F(1),F(1,2),F(1,4)) if delta==[F(round(alpha*F(1,10000)*F.from_float(float(x))*10**12),10**12) for x in raw['x'][:64]]];assert matches and evaluate(rows,delta)['passed']
++    matches=[alpha for alpha in (F(1),F(1,2),F(1,4)) if (lambda dq:dq[0]==delta and dq[1]['passed'])(quantize(raw['x'],alpha,anchor['contracts']))];assert matches and evaluate(rows,delta)['passed']
+     for c in CARS:
+         if c==actor:assert new['controls'][c][:k]==old['controls'][c][:k] and new['controls'][c][k+33:]==old['controls'][c][k+33:]
+         else:assert new['controls'][c]==old['controls'][c]
+-    assert new['owners']==old['owners'] and new['events']==replacement_events(old['events'],actor,k) and new['ticks']-k<=old['ticks']-k
+-    assert new['receiver_contract']==normal(receiver(actor,k+32))
+-    trial=copy.deepcopy(state)
+-    for j in range(32):step(trial,{c:tuple(map(F,new['controls'][c][k+j])) for c in CARS},new['owners'][k+j],4)
+-    K=((F(1,2)-trial['v'][actor])/H,-trial['delta'][actor]/H);assert tuple(map(F,new['controls'][actor][k+32]))==K
+-    assert H*sum(F(x)**2 for u in new['controls'][actor][k:k+32] for x in u)<=H*sum(F(x)**2 for u in old['controls'][actor][k:k+32] for x in u)
+-    certify_prefix(state,new,actor);return True
++    assert new['owners']==old['owners'] and new['events']==replacement_events(old['events'],actor,anchor['receiver']) and new['ticks']==old['ticks']
++    assert new['receiver_contract']==anchor['receiver'];assert H*sum(F(x)**2 for u in new['controls'][actor][k:k+32] for x in u)<=H*sum(F(x)**2 for u in old['controls'][actor][k:k+32] for x in u)
++    certify_prefix(state,new,anchor);return True
+--- /dev/null
++++ region_reservation_003_reverse/method_spec.md
+@@ -0,0 +1,65 @@
++# v2 统一候选生成方法（先于实现冻结）
++
++适用模型：名义自行车ZOH，h=.2，N=32；世界坐标p，局部航向theta=psi-psi_ref。固定车体方向s∈{+1,-1}属于模型配置，不由速度符号改变。真实传播为p_dot=s*v(cos theta,sin theta)、theta_dot=v*tan(delta)/L；v保留符号。模型三角区间要求整个适用范围|theta|≤1，|delta|≤.5。
++
++## 输入、输出和不变量
++
++输入为实际四车五状态/区间位姿、history、已认可完整见证和偏移、模型物理界[-1,2]×[-.5,.5]、输入[-1,1]^2、阶段/权限合同、同一时间轴邻车输入、N与rho、接收之后保留的合法后续。模型方向显式配置；车辆名仅索引数据，cycle仅定位输入/合同和记录。已有819/820只作冻结历史回归，不参与新域分支。
++
++共享入口返回有符号物理行、32拍变分Jacobian与余项/几何界、由裕量生成的接收证书/K/后继包含、零增量检查、完成预算和全内容绑定。失败返回条件名、反例及原见证；任何失败均不修改当前合法策略。
++
++## 1 有符号矩形与阶段
++
++每步v(t)=v_j+t*a_j、delta(t)=delta_j+t*omega_j；端点和输入矩形加线性阶段条件即可覆盖整拍。物理速度[-1,2]与显式前进、倒车、静止合同相交；相邻阶段的公共速度端点取两侧交集。静止转轮保留v=0、a=0，故整拍位姿/航向保持，轮角仍按合法omega变化；保持阶段还保留delta=omega=0。
++
++已有自由前缀合同按其原允许方向继承，不能从备份的“名义停顿”反推未被共同承诺的停顿。历史已认证自由前缀与未修改的备份阶段通过证书来源区分，所有样本使用同一相交/生成规则。不能满足阶段或权限即拒绝。
++
++## 2 源范围、Jacobian和余项
++
++beta=h*sqrt(N)取向上有理界。对整拍名义速度端点扩张±beta*rho，再与物理/阶段矩形相交，V_abs=max(|v_lo|,|v_hi|)；轮角相同扩张后取D_abs。绝对值只用于界，真实传播和Jacobian仍用有符号v。
++
++kappa=tan(D_abs)/L，kappa_delta=(1+tan(D_abs)^2)/L，kappa_dd=2*tan(D_abs)*(1+tan(D_abs)^2)/L取有理上界。变分方程中例如d(theta_dot)=kappa_signed*dv+v*sec(delta)^2/L*d(delta)，保留v符号。复合32拍Jacobian通过链式区间相乘；原正系数一/二阶递推以V_abs代入，得到Gp/P1/Hp/P2和Gc=Gp+rB*P1、Hc=Hp+rB*(P2+P1^2)。Taylor行使用a_mid*d+epsilon*||d||+H*||d||²/2，epsilon为Jacobian区间半宽向量范数上界。
++
++已证明的绝对导数上界84/256和车角加速度15适用于|v|≤2、|a|,|omega|≤1、|delta|≤.5；Simpson误差M*dt^5/2880和弦包络15*dt²/8不因倒车失效。源范围、每步物理行和阶段等式是使用裁剪界的共同前提。负速/零速/跨零速用精确ZOH及变分关系检查，不以有限差分作证明。
++
++## 3 从后续裕量合成接收域
++
++从实际源和旧控制得到名义末端z_N、旧下一拍u_ref及z_(N+1)。选择其后的第一个可保留、已有认证的目标域H；保存N+1到H及H后的真实控制，预算不变。删去/替换前缀内的软接收义务需要完整新合同；资源权限/硬阶段条件不能删除。
++
++中心是z_N位姿区间的有理中点和精确v_N/delta_N。半径为(rP,rT,rV,rD)，反馈
++
++`a=a_ref-(v-v_N)/h, omega=omega_ref-(delta-delta_N)/h`。
++
++因此下一拍v/delta精确等于旧z_(N+1)。令ep/et为名义中心区间半径，V为旧K拍max|v_ref|，C=3/2，k/kd覆盖物理可用轮角矩形，q=k*rV+V*kd*rD，则
++
++`Et=rT+et+h*q/2`
++
++`Ep=rP+ep+C*h*rV/2+C*V*(h*(rT+et)+h²*q/3)`。
++
++以后控制相同，速度轮角相同，SE(2)等变性给出到目标的误差界`Ep+C*L_rem*Et`，车身界`Ep+(C*L_rem+rB)*Et`，L_rem由保存控制的整拍|v|积分上界求和。目标裕量为其半径减名义末端相对目标中心的误差。连续道路、六对净空及未持权资源距离的实际余量另形成几何不等式；K拍和余段均要覆盖。航向还须留在模型三角范围。
++
++将上述正系数不等式写成A_r*r≤b_r。rV/rD还受源状态物理距离和K输入余量限制，例如rV≤h*min(a_ref-a_min,a_max-a_ref)。零余量轴保留为等式、记录维数。对其余轴，每轴取所有对应`b/(2*n_active*A_i)`及物理帽的最小值；这是固定的逐约束分配规则，不是按样本调参。保存每个限制行、余量、系数和最终slack。中心区间必须被该域包含，且旧零增量前缀、K及后继实际验证通过，否则生成失败。该规则只输出已证可接续子集，不保证任意窗口存在正维接收域。
++
++## 4 量化和受理
++
++仍使用Q预留、网格q=1e-12、量化误差预算4q，alpha依次1、1/2、1/4。阶段等式可能要求加速度/轮角增量块和为零：对这些互不重叠块作精确有理正交投影，再采用保和的最近整数网格舍入，冻结坐标保持零；其余坐标最近舍入。接受前用Fraction精确检查相对alpha原始点的总误差≤4q，超出则本次量化失败，不能擅自放宽Q预算。独立入口复算块、量化及全部原行。
++
++仅有限Solved/AlmostSolved可进入certificate_suboptimal_v1完整检查。原有理行、阶段等式、全部真实ZOH车身/权限、生成接收域、实际K、保留后续、固定32拍输入代价非增、预算和四车同版提交全部通过才受理。
++
++## 5 一拍接续与失败
++
++已认可完整策略W有有限预算B。生成/求解/认证/协商任一失败选旧W；通过时新前缀+K+已认证后续长度≤B。共同提交之后只执行所选首拍，从真实后继保留其真实尾段，B_next≤B-1。连续安全、可执行后续和有限完成由此归纳；不要求每个未来SOCP都有内点，也不证明最优性或扰动稳定性。
++
++失败分类：stale_source、bad_frame、phase_or_permission、source_range、trig_range、missing_continuation、nonpositive_margin、center_not_contained、zero_anchor、derivative_binding、numeric_status、quantization_budget、rational_rows、physical_prefix、K_or_successor、energy、budget、mixed_commit。保留原因/对象及旧策略；不按失败扩大样本或追加求解。
++
++## 本轮验证安排
++
++v1未启动，倒车调用0。固定旧opposite轨迹，预登记最早A、B合法负速度源点（pre_registered.json）；已有前进/后移源用旧内容对象回归，不新求解。再做负/零/跨零源范围与静止低维检查。全部门禁通过后A、B各一次新求解，共2次，分别执行完整2802拍及独立8子段验收。更多顺序和组合仍排队。
++
++## 无求解反例后的构造修正（v2.1，仍在数值调用之前）
++
++首次共同规则回归保存在`rule_checks_initial.json`：后移源的区间位姿已因历史变量转角传播扩张到8.6—14.3mm。初稿把这个整区间继续传播所得的末端误差，再加一次接收中心区间误差，并从零均分半径，导致两次保守构造失败；不代表历史策略失效。
++
++修正规则仍适用于所有窗口：在N拍取已有名义区间的有理中点作为**确定参考初态**，从该中点用同一有符号ZOH和已保存的后续重新计算连续几何与目标误差。上述Ep/Et公式的参考初态ep=et=0，参考流积分误差已由区间末端误差计入。旧实际N拍区间必须被新域包含：设置半径基底r0=(原区间位置L1半宽、航向半宽、0、0)。先检查A*r0≤b及物理帽；再将剩余b-A*r0用相同固定均分公式分配到r-r0。这消除重复区间扩张，同时保留整个旧零增量区间。若基底不满足余量，仍返回明确反例，绝不缩小实际源区间或扩大物理域。
++
++参考中点流的连续道路、六对净空、未持权资源间距、目标域及模型三角范围都需重新检查；不能直接借用历史passed字段。所有旧失败对象保留。
+--- /dev/null
++++ region_reservation_003_reverse/method_spec_initial.md
+@@ -0,0 +1,57 @@
++# v2 统一候选生成方法（先于实现冻结）
++
++适用模型：名义自行车ZOH，h=.2，N=32；世界坐标p，局部航向theta=psi-psi_ref。固定车体方向s∈{+1,-1}属于模型配置，不由速度符号改变。真实传播为p_dot=s*v(cos theta,sin theta)、theta_dot=v*tan(delta)/L；v保留符号。模型三角区间要求整个适用范围|theta|≤1，|delta|≤.5。
++
++## 输入、输出和不变量
++
++输入为实际四车五状态/区间位姿、history、已认可完整见证和偏移、模型物理界[-1,2]×[-.5,.5]、输入[-1,1]^2、阶段/权限合同、同一时间轴邻车输入、N与rho、接收之后保留的合法后续。模型方向显式配置；车辆名仅索引数据，cycle仅定位输入/合同和记录。已有819/820只作冻结历史回归，不参与新域分支。
++
++共享入口返回有符号物理行、32拍变分Jacobian与余项/几何界、由裕量生成的接收证书/K/后继包含、零增量检查、完成预算和全内容绑定。失败返回条件名、反例及原见证；任何失败均不修改当前合法策略。
++
++## 1 有符号矩形与阶段
++
++每步v(t)=v_j+t*a_j、delta(t)=delta_j+t*omega_j；端点和输入矩形加线性阶段条件即可覆盖整拍。物理速度[-1,2]与显式前进、倒车、静止合同相交；相邻阶段的公共速度端点取两侧交集。静止转轮保留v=0、a=0，故整拍位姿/航向保持，轮角仍按合法omega变化；保持阶段还保留delta=omega=0。
++
++已有自由前缀合同按其原允许方向继承，不能从备份的“名义停顿”反推未被共同承诺的停顿。历史已认证自由前缀与未修改的备份阶段通过证书来源区分，所有样本使用同一相交/生成规则。不能满足阶段或权限即拒绝。
++
++## 2 源范围、Jacobian和余项
++
++beta=h*sqrt(N)取向上有理界。对整拍名义速度端点扩张±beta*rho，再与物理/阶段矩形相交，V_abs=max(|v_lo|,|v_hi|)；轮角相同扩张后取D_abs。绝对值只用于界，真实传播和Jacobian仍用有符号v。
++
++kappa=tan(D_abs)/L，kappa_delta=(1+tan(D_abs)^2)/L，kappa_dd=2*tan(D_abs)*(1+tan(D_abs)^2)/L取有理上界。变分方程中例如d(theta_dot)=kappa_signed*dv+v*sec(delta)^2/L*d(delta)，保留v符号。复合32拍Jacobian通过链式区间相乘；原正系数一/二阶递推以V_abs代入，得到Gp/P1/Hp/P2和Gc=Gp+rB*P1、Hc=Hp+rB*(P2+P1^2)。Taylor行使用a_mid*d+epsilon*||d||+H*||d||²/2，epsilon为Jacobian区间半宽向量范数上界。
++
++已证明的绝对导数上界84/256和车角加速度15适用于|v|≤2、|a|,|omega|≤1、|delta|≤.5；Simpson误差M*dt^5/2880和弦包络15*dt²/8不因倒车失效。源范围、每步物理行和阶段等式是使用裁剪界的共同前提。负速/零速/跨零速用精确ZOH及变分关系检查，不以有限差分作证明。
++
++## 3 从后续裕量合成接收域
++
++从实际源和旧控制得到名义末端z_N、旧下一拍u_ref及z_(N+1)。选择其后的第一个可保留、已有认证的目标域H；保存N+1到H及H后的真实控制，预算不变。删去/替换前缀内的软接收义务需要完整新合同；资源权限/硬阶段条件不能删除。
++
++中心是z_N位姿区间的有理中点和精确v_N/delta_N。半径为(rP,rT,rV,rD)，反馈
++
++`a=a_ref-(v-v_N)/h, omega=omega_ref-(delta-delta_N)/h`。
++
++因此下一拍v/delta精确等于旧z_(N+1)。令ep/et为名义中心区间半径，V为旧K拍max|v_ref|，C=3/2，k/kd覆盖物理可用轮角矩形，q=k*rV+V*kd*rD，则
++
++`Et=rT+et+h*q/2`
++
++`Ep=rP+ep+C*h*rV/2+C*V*(h*(rT+et)+h²*q/3)`。
++
++以后控制相同，速度轮角相同，SE(2)等变性给出到目标的误差界`Ep+C*L_rem*Et`，车身界`Ep+(C*L_rem+rB)*Et`，L_rem由保存控制的整拍|v|积分上界求和。目标裕量为其半径减名义末端相对目标中心的误差。连续道路、六对净空及未持权资源距离的实际余量另形成几何不等式；K拍和余段均要覆盖。航向还须留在模型三角范围。
++
++将上述正系数不等式写成A_r*r≤b_r。rV/rD还受源状态物理距离和K输入余量限制，例如rV≤h*min(a_ref-a_min,a_max-a_ref)。零余量轴保留为等式、记录维数。对其余轴，每轴取所有对应`b/(2*n_active*A_i)`及物理帽的最小值；这是固定的逐约束分配规则，不是按样本调参。保存每个限制行、余量、系数和最终slack。中心区间必须被该域包含，且旧零增量前缀、K及后继实际验证通过，否则生成失败。该规则只输出已证可接续子集，不保证任意窗口存在正维接收域。
++
++## 4 量化和受理
++
++仍使用Q预留、网格q=1e-12、量化误差预算4q，alpha依次1、1/2、1/4。阶段等式可能要求加速度/轮角增量块和为零：对这些互不重叠块作精确有理正交投影，再采用保和的最近整数网格舍入，冻结坐标保持零；其余坐标最近舍入。接受前用Fraction精确检查相对alpha原始点的总误差≤4q，超出则本次量化失败，不能擅自放宽Q预算。独立入口复算块、量化及全部原行。
++
++仅有限Solved/AlmostSolved可进入certificate_suboptimal_v1完整检查。原有理行、阶段等式、全部真实ZOH车身/权限、生成接收域、实际K、保留后续、固定32拍输入代价非增、预算和四车同版提交全部通过才受理。
++
++## 5 一拍接续与失败
++
++已认可完整策略W有有限预算B。生成/求解/认证/协商任一失败选旧W；通过时新前缀+K+已认证后续长度≤B。共同提交之后只执行所选首拍，从真实后继保留其真实尾段，B_next≤B-1。连续安全、可执行后续和有限完成由此归纳；不要求每个未来SOCP都有内点，也不证明最优性或扰动稳定性。
++
++失败分类：stale_source、bad_frame、phase_or_permission、source_range、trig_range、missing_continuation、nonpositive_margin、center_not_contained、zero_anchor、derivative_binding、numeric_status、quantization_budget、rational_rows、physical_prefix、K_or_successor、energy、budget、mixed_commit。保留原因/对象及旧策略；不按失败扩大样本或追加求解。
++
++## 本轮验证安排
++
++v1未启动，倒车调用0。固定旧opposite轨迹，预登记最早A、B合法负速度源点（pre_registered.json）；已有前进/后移源用旧内容对象回归，不新求解。再做负/零/跨零源范围与静止低维检查。全部门禁通过后A、B各一次新求解，共2次，分别执行完整2802拍及独立8子段验收。更多顺序和组合仍排队。
+--- region_reservation_002/package_delivery.py
++++ region_reservation_003_reverse/package_delivery.py
+@@ -17,27 +17,29 @@
+ 
+ def main():
+     out=HERE/'delivery';assert not out.exists();out.mkdir();manifest()
+-    with tempfile.TemporaryDirectory(prefix='region-two-round-relocation-') as tmp:
++    with tempfile.TemporaryDirectory(prefix='region-reverse-v2-relocation-') as tmp:
+         packed=Path(tmp)/'candidate.tar.gz';archive(packed)
+         with tarfile.open(packed) as tar:tar.extractall(tmp,filter='data')
+         env={**os.environ,'PYTHONPATH':'/tmp/dmpc-p0-deps','OPENBLAS_NUM_THREADS':'1','PYTHONDONTWRITEBYTECODE':'1'}
+         run=subprocess.run([sys.executable,str(Path(tmp)/HERE.name/'verify_delivery.py')],cwd=tmp,env=env,capture_output=True,text=True,timeout=180)
+         (out/'relocation_stdout.log').write_text(run.stdout);(out/'relocation_stderr.log').write_text(run.stderr);assert run.returncode==0,(run.returncode,run.stderr)
+-        write(HERE/'relocation_check.json',dict(passed=True,exit_code=0,solver_calls=0,mode='content checked full acceptance plus fresh two actual sources/prefixes per case; no full-task repeat',result=json.loads(run.stdout)))
+-    manifest();tarpath=out/'DMPC_region_reservation_002_2026-11-13.tar.gz';archive(tarpath);zippath=out/'DMPC_region_reservation_002_2026-11-13.zip'
++        write(HERE/'relocation_check.json',dict(passed=True,exit_code=0,solver_calls=0,mode='content checked full acceptance plus fresh one actual source/prefix per side; no full-task repeat',result=json.loads(run.stdout)))
++    manifest();tarpath=out/'DMPC_region_reservation_003_reverse_2026-11-13.tar.gz';archive(tarpath);zippath=out/'DMPC_region_reservation_003_reverse_2026-11-13.zip'
+     with zipfile.ZipFile(zippath,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+         for f in files():z.write(f,str(Path(HERE.name)/f.relative_to(HERE)))
+     with zipfile.ZipFile(zippath) as z:assert z.testzip() is None
+-    analysis=out/'region_reservation_002_Windows_analysis_2026-11-13';analysis.mkdir()
+-    for name in ('report.md','GATE.json','comparison.csv','comparison_windows.csv','metrics.json','event_index.json','shifted_receiver_certificate.json','domain_checks.json','shifted_fixture_checks.json','self_checks.json','second_round_rejection_checks.json','preservation_check.json','executed_source_versions.json','versions.json','requirements.txt','plan.json','work_queue.json','changes.patch','HANDOFF.md','relocation_check.json','DELIVERY_MANIFEST.json'):shutil.copy2(HERE/name,analysis/name)
+-    for case in ('opposite','same_direction'):
+-        src=HERE/'results'/case;dest=analysis/case;dest.mkdir()
+-        for name in ('config.json','summary.json','events.json','execution.jsonl.gz','independent_acceptance.json'):shutil.copy2(src/name,dest/name)
++    analysis=out/'region_reservation_003_reverse_Windows_analysis_2026-11-13';analysis.mkdir()
++    for name in ('report.md','method_spec.md','method_spec_initial.md','bounds_proof.md','GATE.json','comparison.csv','energy_windows.csv','metrics.json','event_index.json','domain_checks.json','preservation_check.json','materials_check.json','executed_source_versions.json','environment.json','versions.json','requirements.txt','plan.json','pre_registered.json','regression_sources.json','v1_audit.json','work_queue.json','changes.patch','HANDOFF.md','relocation_check.json','DELIVERY_MANIFEST.json'):
++        shutil.copy2(HERE/name,analysis/name)
++    for side in ('A','B'):
++        src=HERE/'results'/side;dest=analysis/side;shutil.copytree(src,dest)
+         (dest/'execution.jsonl').write_bytes(gzip.decompress((src/'execution.jsonl.gz').read_bytes()))
+-        for name in ('local_socp_round_1','local_socp_round_2','second_round_rejections','version_rejection'):shutil.copytree(src/name,dest/name)
++        (dest/'rejection/execution.jsonl').write_bytes(gzip.decompress((src/'rejection/execution.jsonl.gz').read_bytes()))
++    for name in ('rule_checks_initial.json','rule_checks.json','rule_checks_rebuilt.json','source_range_checks.json','zero_successor_checks.json','rejection_checks.json','solver_calls.json'):
++        shutil.copy2(HERE/'results'/name,analysis/name)
+     for f in (tarpath,zippath):
+         f.with_suffix(f.suffix+'.sha256').write_text(sha(f)+'  '+f.name+'\n');shutil.copy2(f,analysis/f.name);shutil.copy2(f.with_suffix(f.suffix+'.sha256'),analysis/(f.name+'.sha256'))
+-    (analysis/'先读我_Windows.txt').write_text('区域预约002：两车重叠时连续两拍真实重新优化\n\n先读report.md、GATE.json、comparison_windows.csv。四次新求解，两个用例均连续两次受理，并完成2802拍和独立验收。状态为Solved一次、AlmostSolved三次，按完整证书规则受理。\n第一轮787、第二轮788。新域中心后移0.1m，接收/K从819变为820；若第二轮损坏则保留第一轮实际尾段和K819。12个复制拒绝分支均实际执行33拍旧尾段并独立通过。\nmetrics.json的34拍实际收益不重复累计两个32拍预测窗。event_index和内容对象绑定实际联合状态/邻车预测/原始数值及共同提交。\nJSONL已解压；B车实际航向=pi+theta，Q=1e20，速度有符号。精确证据以JSON分数/区间为准，Excel分数列请作为文本导入。\nZIP包含完整独立复核源码/原始对象/冻结依赖。默认verify_delivery校验已通过的完整轨迹证据并新复算两轮source/前缀；--full-replay才重算完整2802拍轨迹。\n优先队列1已完成；2倒车SOCP、3更多顺序组合仍待推进。历史和论文保留，未做正式批量或Git提交。\n',encoding='utf-8-sig')
++    (analysis/'先读我_Windows.txt').write_text('区域预约003：v2统一生成与倒车SOCP\n\n先读report.md、GATE.json、method_spec.md、comparison.csv。新数值调用2次：A AlmostSolved、B Solved，均经完整证书受理；A/B源首拍实际改变，负速段各9拍变化；各完成2802拍与独立8子段验收。\n33拍统一实际区间输入平方积分下降约0.0525714%，固定时长不变；32/33拍指标是嵌套窗口，不能累加。\n首次后移域生成失败保留在rule_checks_initial及完整内容对象；修正为中点参考后续与先覆盖旧区间的固定裕量分配后7/7通过。16损坏提案拒绝，每侧真实执行1条99拍旧尾段通过原接收/K。\n完整ZIP含代码、最小补丁、全部去重引用对象、原始x/s/z和日志。默认verify_delivery内容核对已完成的完整验收并新复算两处源/前缀；--full-replay才重算整条物理轨迹，无新求解。\n执行JSONL已解压；Q=1e20，B车世界航向=pi+theta，速度保留符号；CSV分数列按文本导入Excel。源码级环境配置见environment.json/requirements.txt。\n历史3042文件未变，论文无修改、Git无提交、正式批量未启动；更多顺序和组合仍排队。\n',encoding='utf-8-sig')
+     hashes={str(f.relative_to(analysis)):dict(bytes=f.stat().st_size,sha256=sha(f)) for f in sorted(analysis.rglob('*')) if f.is_file()};write(analysis/'SHARED_FILES_SHA256.json',hashes)
+     shared=Path('/media/sf_DMPC_Theory')/analysis.name;assert not shared.exists();shutil.copytree(analysis,shared)
+     for name,item in hashes.items():assert sha(shared/name)==item['sha256'],name
+--- region_reservation_002/receivers.py
++++ region_reservation_003_reverse/receivers.py
+@@ -1,19 +1,91 @@
+-"""Two fixed, proved receiving phases; no extension to unverified future windows."""
++"""Margin allocation and exact feedback into a saved certified suffix."""
+ from common import *
++from rules import contracts_for,assert_step
++from physics import step,geometry,predicted_nodes,body
++from certify_domains import check_domain
+ 
+ 
+-def receiver(actor,phase):
+-    assert phase in (819,820),'unregistered receiving phase'
+-    name='G_in' if phase==819 else 'G_in_shifted';d=read(HERE/'domain_checks.json')['domains'][name];x=F(d.get('center_local_x',-22))*direction(actor)
+-    domain=dict(center_pose_Q=[[x.numerator,x.denominator],[0,1],[0,1]],position_l1_radius=d['position_l1'],yaw_radius=d['yaw'],center_v='1/2',speed_radius=str((F(d['v'][1])-F(d['v'][0]))/2),center_delta='0',steering_radius=d['delta'][1],feedback_a_ref='0',feedback_omega_ref='0')
+-    return dict(phase=phase,kind=name,domain=domain,certificate_id=read(HERE/'domain_checks.json')['certificate_id'])
++def domain_description(car,kind):
++    if kind.startswith('generated:'):return get(HERE/'objects',kind.split(':')[1])['domain']
++    d=read(HERE/'domain_checks.json')['domains'][kind]
++    xy=WAIT[car] if kind in ('W_in','W_hold') else (direction(car)*F(d.get('center_local_x',-22 if kind=='G_in' else 34 if kind=='G_out' else 46)),0 if kind in ('G_in','G_in_shifted','G_out') else WAIT[car][1])
++    return dict(center_pose_Q=[[F(x).numerator,F(x).denominator] for x in (*xy,0)],position_l1_radius=d['position_l1'],yaw_radius=d['yaw'],center_v=str((F(d['v'][0])+F(d['v'][1]))/2),speed_radius=str((F(d['v'][1])-F(d['v'][0]))/2),center_delta=str((F(d['delta'][0])+F(d['delta'][1]))/2),steering_radius=str((F(d['delta'][1])-F(d['delta'][0]))/2))
+ 
++def check_generated(state,car,domain):
++    center=list(map(lambda x:F(*x),domain['center_pose_Q']));p=state['poses'][car]
++    ep=sum((p[j]-center[j]).abs_upper() for j in (0,1));et=(p[2]-center[2]).abs_upper()
++    assert ep<=F(domain['position_l1_radius']) and et<=F(domain['yaw_radius']),'generated receiver pose/yaw'
++    for key,radius,ref in [('v','speed_radius','center_v'),('delta','steering_radius','center_delta')]:assert abs(state[key][car]-F(domain[ref]))<=F(domain[radius]),'generated receiver '+key
++    return dict(car=car,position_l1=str(ep),yaw=str(et),v=str(state['v'][car]),delta=str(state['delta'][car]))
+ 
+-def replacement_events(old,actor,cycle):
+-    events=copy.deepcopy(old)
+-    if cycle==788:
+-        previous=[actor,'G_in'];assert previous in events['819'];events['819'].remove(previous)
+-        if not events['819']:del events['819']
+-        events.setdefault('820',[]).append([actor,'G_in_shifted'])
+-    else:assert cycle==787
+-    return events
++def feedback(state,actor,certificate):
++    d=certificate['domain'];u=tuple(map(F,certificate['reference_K']))
++    return (u[0]-(state['v'][actor]-F(d['center_v']))/H,u[1]-(state['delta'][actor]-F(d['center_delta']))/H)
++
++def synthesize(state,actor):
++    from derivatives import builder
++    w=get(HERE/'objects',state['witness']);k=state['cycle'];n=k+32
++    later=sorted((int(t),kind) for t,ev in w['events'].items() for c,kind in ev if c==actor and int(t)>n+1)
++    if not later:raise ValueError('missing_continuation: no retained receiver')
++    target,kind=later[0];target_domain=domain_description(actor,kind);boxes=contracts_for(state,actor,target-k+1);s=copy.deepcopy(state);road=pair=F(100);resource=F(100);Lrem=F(0);theta_max=F(0)
++    for t in range(k,target):
++        u={c:tuple(map(F,w['controls'][c][t])) for c in CARS};assert_step(s['v'][actor],s['delta'][actor],u[actor],boxes[t-k])
++        if t==n:
++            nominal=state_record(s)
++            old_pose=s['poses'][actor];source_ep=sum(F(x.u-x.l,2*m.Q) for x in old_pose[:2]);source_et=F(old_pose[2].u-old_pose[2].l,2*m.Q)
++            reference_center=[F(x.l+x.u,2*m.Q) for x in old_pose]
++            s['poses'][actor]=tuple(m.I(x) for x in reference_center)
++        if t>=n:
++            nodes=predicted_nodes(s,u,4);g=geometry(nodes,w['owners'][t],4);road=min(road,g['road']);pair=min(pair,g['pair']-SAFE)
++            theta_max=max(theta_max,max(p[2].abs_upper() for p in nodes[actor]))
++            if w['owners'][t]!=actor:
++                for pose in nodes[actor]:
++                    corners=body(pose,actor);xs=[p[0] for p in corners];gap=max(F(-16)-F(max(x.u for x in xs),m.Q),F(min(x.l for x in xs),m.Q)-16)-TUBE-F(15)*(H/4)**2/8
++                    resource=min(resource,gap)
++            if t>n:Lrem+=H*(abs(s['v'][actor])+abs(s['v'][actor]+H*u[actor][0]))/2
++        step(s,u,w['owners'][t],4)
++        if t==n:after=state_record(s)
++    check_generated(s,actor,target_domain)
++    p=[m.I.raw(*x) for x in nominal['poses_Q'][actor]];center=[F(x.l+x.u,2*m.Q) for x in p];ep=et=F(0)
++    v,d=F(nominal['v'][actor]),F(nominal['delta'][actor]);v1,d1=F(after['v'][actor]),F(after['delta'][actor]);a,omega=map(F,w['controls'][actor][n]);box=boxes[32]
++    rv=min(v-F(box['v'][0]),F(box['v'][1])-v,H*(a-F(box['a'][0])),H*(F(box['a'][1])-a));rd=min(d-F(box['delta'][0]),F(box['delta'][1])-d,H*(omega-F(box['omega'][0])),H*(F(box['omega'][1])-omega))
++    assert rv>=0 and rd>=0,'nonpositive physical cap'
++    D=max(abs(d)+rd,abs(d1));assert D<=F(1,2)
++    kap,kd,_=builder.trig_bounds(D);V=max(abs(v),abs(v1));C=F(3,2)
++    tc=[F(*x) for x in target_domain['center_pose_Q']];pe=sum((s['poses'][actor][j]-tc[j]).abs_upper() for j in (0,1));te=(s['poses'][actor][2]-tc[2]).abs_upper()
++    def coeff(length):return [F(1),C*V*H+length,C*H/2+C*V*H*H*kap/3+length*H*kap/2,C*V*H*H*V*kd/3+length*H*V*kd/2]
++    ap=coeff(C*Lrem);ag=coeff(C*Lrem+RB);at=[F(0),F(1),H*kap/2,H*V*kd/2]
++    inequalities=[dict(name='retained_position',a=ap,b=F(target_domain['position_l1_radius'])-pe-ep-ap[1]*et),dict(name='retained_yaw',a=at,b=F(target_domain['yaw_radius'])-te-et),dict(name='continuous_geometry',a=ag,b=min(road,pair,resource)-ep-ag[1]*et),dict(name='trig_range',a=at,b=F(1)-theta_max-et)]
++    baseline=[source_ep,source_et,F(0),F(0)]
++    for row in inequalities:row['baseline_cost']=sum(a*x for a,x in zip(row['a'],baseline));row['remaining']=row['b']-row['baseline_cost']
++    active=[0,1]+([2] if rv else [])+([3] if rd else []);r=[None,None,rv,rd];limits=[]
++    diagnostics=normal(dict(source=state_record(state),actor=actor,receiver_phase=n,target_phase=target,target_kind=kind,nominal_at_receiver=nominal,nominal_at_target=state_record(s),target_domain=target_domain,inequalities=inequalities,baseline=baseline,ep=ep,et=et,nominal_target_position_error=pe,nominal_target_yaw_error=te))
++    for i in active:
++        candidates=[(F(row['remaining'])/(2*len(active)*row['a'][i]),row['name']) for row in inequalities if row['a'][i]>0]
++        if i>=2:candidates.append((r[i]-baseline[i],'physical_K_cap'))
++        radius,lim=min(candidates)
++        if radius<=0:
++            key=put(HERE/'objects',dict(**diagnostics,failure='nonpositive_margin',axis=i,candidates=candidates));raise ValueError('nonpositive_margin: '+lim+' counterexample='+key)
++        r[i]=baseline[i]+radius;limits.append(dict(axis=i,limiting_row=lim,baseline=baseline[i],increment=radius,radius=r[i]))
++    for row in inequalities:
++        row['slack']=row['b']-sum(a*x for a,x in zip(row['a'],r));assert row['slack']>=0
++    if r[0]<source_ep or r[1]<source_et:
++        key=put(HERE/'objects',dict(**diagnostics,failure='center_not_contained',radii=r,limiting_rows=limits));raise ValueError('center_not_contained: counterexample='+key)
++    domain=dict(center_pose_Q=[[x.numerator,x.denominator] for x in center],position_l1_radius=str(r[0]),yaw_radius=str(r[1]),center_v=str(v),speed_radius=str(r[2]),center_delta=str(d),steering_radius=str(r[3]))
++    certificate=normal(dict(rule='margin_allocation_v2_1',source=state_record(state),actor=actor,phase=n,domain=domain,reference_K=w['controls'][actor][n],reset_v=str(v1),reset_delta=str(d1),retained_target_phase=target,retained_target_kind=kind,retained_target_domain=target_domain,retained_controls_id=content_id({c:w['controls'][c][n+1:] for c in CARS}),old_witness=state['witness'],budget_before=w['ticks']-k,prefix_ticks=33,suffix_ticks=w['ticks']-(n+1),dimension=2+int(rv>0)+int(rd>0),allocation=inequalities,limiting_rows=limits,baseline=baseline,constants=dict(ep=ep,et=et,V=V,D_abs=D,kappa=kap,kappa_delta=kd,L_rem=Lrem,road=road,pair_surplus=pair,resource=resource),nominal_at_receiver=nominal,nominal_after_K=after,nominal_at_retained=state_record(s)))
++    check_generated(restore(m,nominal),actor,domain)
++    # Zero candidate's K is exactly the old actual next command.
++    assert feedback(restore(m,nominal),actor,certificate)==tuple(map(F,w['controls'][actor][n]))
++    key=put(HERE/'objects',certificate)
++    return dict(phase=n,kind='generated:'+key,domain=domain,certificate_id=key)
++
++def replacement_events(old,actor,row):
++    events=copy.deepcopy(old);n=row['phase'];source=get(HERE/'objects',row['certificate_id'])['source']['cycle']
++    for t,items in list(events.items()):
++        if source<int(t)<=n+1:
++            for c,kind in list(items):
++                if c==actor:
++                    assert kind in ('G_in','G_in_shifted') or kind.startswith('generated:'),'cannot replace hard receiver'
++                    items.remove([c,kind])
++            if not items:del events[t]
++    events.setdefault(str(n),[]).append([actor,row['kind']]);return events
+--- region_reservation_002/report.md
++++ region_reservation_003_reverse/report.md
+@@ -1,66 +1,79 @@
+-# 两车重叠期间连续两拍实际重新优化
++# 区域预约003：v2统一生成与倒车局部SOCP
+ 
+-用户当前最关键的问题已在两个用例通过：两车同时运动时，cycle787求解并执行首拍后，cycle788从实际联合状态再求解，第二份新候选共同受理并继续合法执行。两条完整任务均2802拍、四车到达目标、预算归零。后移接收域已先做数学与非零状态认证，未把原Gin中心直接复用到下一拍。
++日期：2026-11-13。本轮五项门禁通过，限定于所列名义模型/固定时长合同及两个受控倒车分支。**新数值调用严格2次，两个分支各2802拍、独立8子段验收通过。** 每侧倒车段9拍实际采用改变后的命令。保留历史、论文，无Git提交、无正式批量；更多顺序和组合继续排队。
+ 
+-这是优先级1的隔离验证，保存于region_reservation_002。用户指定队列为1→2→3；倒车SOCP与更多通行/重叠组合在本轮仍排队，不作已完成声明。历史与论文保留，未启动正式批量或Git提交。
++## 材料与来源
+ 
+-## 理论条件和新增接收域
++- 指令原包：`/media/sf_DMPC_Theory/DMPC_reverse_SOCP_instructions_v2_2026-11-13.zip`。
++- 全新解压目录：`/home/sunflower/Downloads/DMPC_reverse_SOCP_instructions_v2_2026-11-13/`；README_UBUNTU.md、review.md、experiment_instructions.md已按序完整读取，本地副本在instructions_v2/。
++- 复用工程：同级region_reservation_002；新代码和结果仅在本目录。method_spec_initial.md先于实现；method_spec.md保留无求解反例后的公式修正。Ponytail最小改动原则：复用区间、变分、锥组装、四车屏障与独立Audit，不新增依赖。
++- v1未启动：v1_audit.json，0次调用。001/002原有2/4次调用不计为本轮新求解，也未重做。
++- A1 cycle58、B1 cycle721在求解前登记，速度均−468626966597/2500000000000≈−.187450787；规则是固定旧opposite轨迹各侧最早持有合法32+1后续的实际负速度源。两份独立完整任务的通行顺序均A1→B1→A2→B2，各分支仅一次新增优化，不将A分支优化带入B分支。
+ 
+-依据原region_reservation_001的安全组合、可执行后续与预算归纳，以及certificate_suboptimal_v1。本轮新增Gin_shifted中心为局部(-21.9,0)、航向中心0：位置L1半径0.021m，航向半径0.000238rad，速度[0.495,0.505]m/s，轮角±1e-5rad。K为a=(0.5-v)/h、omega=-delta/h，分别满足|a|≤0.025、|omega|≤5e-5。
++## 方法与实现
+ 
+-K后航向界0.000238374074rad，保存的直行/四拍制动后位置L1界0.034850896773m，小于原Gout的0.035m；位置余量约0.000149103227m，航向小于0.00024rad。561拍剩余控制按真实对象核对，K后的v=0.5、delta=0精确复位。A/B两个非零边界状态的辅助561拍8子段回放也通过。
++`method_spec.md`和`bounds_proof.md`给出适用域、公式及条件性一拍继承，不能把计算或两次观察当作一般定理。
+ 
+-新域并不宣称覆盖原Gin所有最坏误差经过K后的全部流像。本次两个实际第二轮源点的继承32拍前缀都通过新原行的零增量检查；连续SOCP可行性的结论限于已验证锚点。一般情况下即使新域问题不可行，仍保留已认可真实尾段，递归控制可行性不以任意未来SOCP必可解为前提。
++|文件|本轮作用|
++|---|---|
++|rules.py|有符号物理/阶段矩形与交界交集；静止等式；整段绝对界；保和量化|
++|receivers.py|从实际尾段和参考后续的几何/目标裕量合成接收盒、状态相关K及后继包含；内容登记|
++|generation.py|唯一共享入口：实际四车状态/合同→anchor、导数、原行、接收证书、零候选与预算|
++|derivatives.py、sources/certify_interfaces.py|V_abs进入余项；实际Jacobian保留速度符号，固定方向显式传入|
++|socp_rows.py|按同一合同生成有符号输入/状态行、终端Taylor面及几何/信赖行|
++|local_update.py|从共享输出组装一次65变量SOCP，量化、完整受理、K与实际后续检查；最多2次调用|
++|certify_domains.py、protocol.py、strategy.py|内容ID域查询；四车同版接收事件/权限/真实尾段原子提交与移位|
++|run_case.py、accept_case.py|只在预登记实际源求解；外部重算来源、原行、量化、K与完整四车8子段几何/预算|
++|check_rules.py、check_source_ranges.py、check_zero_successor.py、check_rejection.py|共同规则、全源矩形、零候选接续、损坏后真实旧尾段|
+ 
+-数学对象见shifted_receiver_certificate.json、domain_checks.json、shifted_fixture_checks.json；原地图、|x|≤16资源、0.05m+量化余量车身管和既有量化/积分证明不变。
++车辆名只索引固定模型配置，绝对cycle仅定位已存合同/输入；接收公式不对A/B或819/820分支。旧819/820证书保留于历史文件。生成半径由正系数不等式余量和K物理帽计算；停止等式产生低维域。当前两倒车域的四个半径同为约(.0025m, 2.5e−5rad, .001231939m/s, .000526759rad)，由同一入口得到；零速样本保留rV=0，维数据证书而定。
+ 
+-## 实现与共同提交
++### 已保留的构造反例
+ 
+-两用例都保留原初态、55/101/562/95拍备份时序、选择函数、目标权重、h=.2、N=32、64输入/65变量、rho=.001、Q预留、scale=1e-4、Clarabel0.11.1、三个1e-10容差、300迭代、5秒预算。
++首次7项检查中，后移源两例分别出现nonpositive_margin和center_not_contained，未调用求解器。原构造将历史末端整区间继续传播的误差又加一次中心半宽，并从零均分新半径。opposite的位置剩余约−.003000869m；same_direction原中心半宽约.008605183m，分配半径约.001055112m，不能覆盖。不是历史控制器碰撞或历史验收失败。
+ 
+-每个用例的新调用链为实际源状态/history→fresh32拍导数和同步邻车预测→原行和组装对象→一次新求解→量化/完整前缀/K/后续认证→四份计划ACK→首拍实际输出→从该后继再次走同一链。第一轮也重新求解，未复用旧probe数值结果；两用例共4次新调用。
++在method_spec.md先补v2.1推导：从末端有理中点重算参考后续，先为已有区间保留基底半径，再分配剩余裕量。原失败JSON、内容对象和日志保存在results/rule_checks_initial.json等。所有样本用同一规则；未缩小实际区间、扩大物理界或追加优化调用。修正后7/7共同规则和7/7零前缀/K/真实后续检查通过。便携复算输入在regression_sources.json，不依赖外部002目录。
+ 
+-receivers.py登记两处接收相位：第一轮819，第二轮820。第二轮32拍包含旧K819，受理时整体替换旧Gin819及其K，把接收/K一起更新到820，保留821之后的真实尾段。拒绝时保留第一轮Gin819、旧K及全部旧控制。witness.py同时保留后续换权时已发生的接收链，防止未来选择重新写回旧Gin义务。
++## 分项验收
+ 
+-source绑定包括全四车实际位姿/v/delta、history、当前见证、实际移位父ID、邻车预测hash、anchor/derivative/assembly/raw/policy与提交编号。第二轮旧车A1和优化车的实际位姿均已推进，邻车预测也按下一时间片重建。资源权限仍同版更新，旧车出口动作继续执行。
++|门禁|结果与证据|
++|---|---|
++|shared_generation_rules|通过：generation.generate；7类实际样本及精确负速/零速/跨零速ZOH关系，results/rule_checks.json|
++|receiver_synthesis|通过：同一裕量分配函数，两倒车域及低维零速域；7份零前缀、实际K、保留目标域复算，results/zero_successor_checks.json|
++|existing_forward_regression|通过：opposite、same_direction各一前进及一后移源，共4项；无新求解|
++|reverse_source_checks|通过：预登记A/B负速度实际源；32拍同时覆盖倒车、停止转轮和前进；额外整源矩形的精确仿射极值核对在results/source_range_checks.json|
++|reverse_actual_execution|通过：2/2新候选受理，各2802拍，预算2802→0，四车到达、权限、道路、六对连续净空及接收/K独立通过|
++|拒绝后接续|通过：每侧8种损坏，共16次拒绝，0非法提交/选取；每侧从同一源实际执行一次99拍旧尾段，经旧G_in和旧K，独立8子段核查|
+ 
+-## 逐轮数值和实际输出
++## 两次求解与真实输出
+ 
+-|用例|轮 / cycle|状态|原始残差|绝对gap|alpha|本轮32拍预测输入代价改善|实际首拍改变|
+-|---|---|---|---:|---:|---:|---:|---|
+-|opposite|1 / 787|Solved|2.88e-11|1.23e-11|1|0.081208%|False|
+-|opposite|2 / 788|AlmostSolved|9.36e-10|6.31e-11|1|0.080404%|True|
+-|same_direction|1 / 787|AlmostSolved|2.12e-12|1.22e-09|1|0.081208%|True|
+-|same_direction|2 / 788|AlmostSolved|3.77e-11|1.45e-09|1|0.080404%|True|
++|侧/车辆|源cycle|状态|原始残差|对偶残差|gap绝对值|负速时改变输入拍数|新K cycle|道路下界m|车对下界m|
++|---|---:|---|---:|---:|---:|---:|---:|---:|---:|
++|A / A1|58|AlmostSolved|5.1e-09|1.46e-16|1.42e-11|9|90|0.447723|1.097410|
++|B / B1|721|Solved|7.55e-11|1.24e-16|2.17e-11|9|753|0.447723|1.098828|
+ 
+-相反方向第一轮Solved，其余三次AlmostSolved；未放宽严格收敛标准。所有采用均由独立版本的完整证书规则决定。精确输入、范数、对偶残差/相对gap、完整设置与原始x/s/z、日志、source/模型对象都已保存。实际首拍相同的情况照实列出，方案后续修改仍按实际命令核对。
++设置保持h=.2、N=32、64输入/65变量、rho=.001、scale=1e−4、Q=1e−12网格/4e−12预留、Clarabel.11.1、三个容差1e−10、max_iter300、5s。Alpha均1，输入增量范数均约.001；求解用时约5.1/5.2ms，生成加完整受理分别约2.59/2.86s。设置、原始x/s/z、迭代轨迹、原行、组装、量化与受理对象均保存。
+ 
+-第一轮只执行首拍，其余预测窗被第二轮替换。因此逐轮32拍收益不相加；实际输入代价按同一[787,821)的34拍（首轮首拍+次轮32拍+新K）对原备份重算：
++A的res_primal约5.10e−9，高于配置1e−10，因此明确为AlmostSolved；按certificate_suboptimal_v1经精确原行和完整物理/后续检查通过。不能报告为数值精度全部达标。B为Solved。量化偏差范数约2.33e−12/2.24e−12，未放宽4e−12预算；静止输入冻结及累计等式精确保留。
+ 
+-|用例|实际拍数|剩余预算|独立道路下界m|独立六对净空下界m|34拍实际输入代价改善|
+-|---|---:|---:|---:|---:|---:|
+-|opposite|2802|0|0.440708|1.098828|0.161502%|
+-|same_direction|2802|0|0.440708|1.087270|0.161502%|
++首个实际改变即各自源首拍，并非只优化后半段前进。相对旧命令：A首拍Δa=.000291076736、Δomega=−.000037740481；B首拍Δa=.000291076734、Δomega=.000037740482。每侧9个负速拍的旧/新/实际命令及速度在metrics.json。A在67—72的停稳状态、B在730—735的停稳状态，速度均精确为0；随后按原阶段前进。
+ 
+-固定任务时长仍560.4s，无缩时结论。各用例194拍存在释放后的两车实际位姿运动重叠。数值求解时间、构造/认证流水线和完整控制/独立重放墙钟分别见comparison.csv和metrics.json；逻辑h=.2不是硬实时保证。
++新接收/K在90和753，随后分别保留G_in156/819及完整后续。K精确回到旧下一拍的合法速度4336405486881/4400000000000及轮角∓422853926133/1e12，**不把非零合法圆弧轮角错误置零**。实际K输入、复位值及位姿区间均保存。
+ 
+-## 独立验收和拒绝续行
++33拍同一实际时间区间（32新前缀+K）的输入平方积分下降约**.0525714%**；32拍预测窗口下降约.0525839%。energy_windows.csv分开列出，两行是嵌套区间，不能累计。此为h∑(a²+omega²)指标，不代表真实电池能耗。两个完整分支各560.4s逻辑任务时间，时长未改变。每分支189拍存在至少两车同时运动。
+ 
+-两个完整2802拍8子段独立验收均通过。入口逐事件读取内容ID、重建实际第二轮源状态和导数，独立复算终端Taylor行、raw→有理量化、四份公开计划/权限、连续道路和全部六对净空、域/K、预算与停车目标；可共享区间算术、传播与变分生成器，未把控制器提交标志作为安全证据。
++## 拒绝证据及独立性
+ 
+-第二轮复制分支每用例6类：陈旧anchor、陈旧derivative、旧phase、陈旧邻车位姿、损坏K、混合权限版本。12份非法提案均零错误提交；随后从同一实际源状态执行第一轮旧见证33拍，包含旧Gin819与旧K819，v/delta精确复位并由独立8子段核对。分支不计入主任务时长/求解数。
++每侧损坏：陈旧实际源、错误固定方向、源速度符号错误、丢失负速度下界（变成v≥0）、损坏导数、损坏K、旧phase、混合四车token。每个损坏对象按内容ID保存，状态未被改变。混合token测试先为**合法**提案建立一次token再损坏它，非法token未被选取；这次合法测试token和实际主线提交分开计数。
+ 
+-self_checks.json还核对第二轮源状态等于首拍实际后继、两车实际运动、零增量继承前缀、新K820、821后旧尾段、后续选择保留后移接收链和每拍预算下降。首次启动缺source_commit元数据在0次求解前修正，原失败日志保留于results/development_failures；没有追加数值求解。
++8项损坏都引用同一检查点，随后实际执行一次原分支99拍，非8次重复执行：A到旧G_in156/K156，B到819/K819。旧接收和反馈输入均保持，预算下降99。复制分支与两条主实验分开计数（主线5604拍，拒绝续行198拍）。每侧rejection/含逐拍日志和独立结果。
+ 
+-## 交付与复核
++独立验收复用整数区间、三角/ZOH与变分生成器、锥编译器；单独构造车身、道路/六对净空、8子段连续包络，逐事件重建实际来源、终端Taylor面、量化到实际命令、接收/K、权限版本、四车计划ID、同版后续和预算。不是全栈第二个独立实现，也不是从controller passed字段直接得结论。全任务独立验收A约111s、B约112s；复制拒绝分支另独立重放。搬移复核默认验证完整验收检查点内容并新复算两处源/前缀；可选--full-replay才再跑完整物理重放，不额外调用求解器。
+ 
+-报告、GATE.json、comparison.csv、event_index.json、metrics.json、完整最小补丁、版本与对象及每个case的原始控制和独立报告都保存在本目录。冻结源码身份见executed_source_versions.json，历史哈希见preservation_check.json。默认verify_delivery复用内容核对的完整独立验收checkpoint，并新复算两轮source/导数/33拍前缀；--full-replay才重跑两条完整独立轨迹。
++## 历史、环境及未解决项
+ 
+-```bash
+-OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 run_stage.py
+-OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 verify_delivery.py
+-# 完整独立重算（不调用优化器）：
+-OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 verify_delivery.py --full-replay
+-```
++preservation_check.json核对3042份历史文件SHA256未变，包含既有A/P0及001/002相关对象和结果。环境首次两个导入失败（系统缺osqp、旧venv缺clarabel）发生在求解前，日志保留；最终复用`PYTHONPATH=/tmp/dmpc-p0-deps`中原有固定版本，无安装依赖。
+ 
+-尚未完成队列2/3；也未声明任意未来拍持续SOCP可行、两车同时独立求解、持续物理时钟、扰动或异步进程保证。一般优先/公平规则保持待设计。本轮明确回答的是两个实际重叠用例的“执行首拍以后，能否再次优化并合法接续”。
++本轮数学推导是适用域内的充分条件，接收半径保守，不保证任意实际源有正维域；未给出所有SOCP内点存在性、输入最优性、传感噪声下递归可行性或一般扰动稳定性。整源矩形数学核对不等于速度/轮角不确定性鲁棒部署。权限仍固定时长的同步进程内共同协议；持续物理时钟、真实进程、更多顺序/组合、可变时长均未扩展。论文未修改，Git未提交。
++
++运行：`OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 stage_driver.py`（已有阶段只内容校验后复用，不重求解）；交付检查见verify_delivery.py。精确分数/区间以JSON和内容对象为准，CSV分数列在Excel按文本导入。完整最小补丁changes.patch针对002，新增文件均在本目录。
+--- /dev/null
++++ region_reservation_003_reverse/rules.py
+@@ -0,0 +1,86 @@
++"""Pure signed boxes and stage intersections; identifiers do not select formulas."""
++from common import *
++
++PHYSICAL=dict(v=[F(-1),F(2)],delta=[F(-1,2),F(1,2)],a=[F(-1),F(1)],omega=[F(-1),F(1)])
++
++def intersect(a,b):
++    lo,hi=max(map(F,(a[0],b[0]))),min(map(F,(a[1],b[1])))
++    if lo>hi:raise ValueError('phase_or_permission: empty intersection')
++    return [lo,hi]
++
++def contract(mode):
++    b=copy.deepcopy(PHYSICAL)
++    if mode=='reverse':b['v']=intersect(b['v'],[-1,0])
++    elif mode=='forward':b['v']=intersect(b['v'],[0,2])
++    elif mode in ('stationary','hold'):
++        b['v']=[F(0),F(0)];b['a']=[F(0),F(0)]
++        if mode=='hold':b['delta']=[F(0),F(0)];b['omega']=[F(0),F(0)]
++    elif mode!='signed':raise ValueError('unknown stage contract')
++    return dict(mode=mode,**b)
++
++def contracts_for(state,actor,length=34):
++    """Decode saved witness contracts, not car-name or absolute-time branches."""
++    w=get(HERE/'objects',state['witness']);k=state['cycle'];route=get(HERE/'objects',read(HERE/'rational_inputs.json')['routes'][actor]);start=w['starts'][actor];out=[]
++    for t in range(k,k+length):
++        # A certified free prefix inherited its original nonnegative rectangle.
++        free=False;ancestor=w
++        while ancestor.get('optimization_origin'):
++            if ancestor['optimization_actor']==actor and ancestor['optimization_phase']<=t<ancestor['optimization_phase']+33:
++                free=True;break
++            ancestor=get(HERE/'objects',ancestor['parent_witness'])
++        if free:mode='forward'
++        elif 0<=t-start<len(route['labels']):
++            label=route['labels'][t-start]
++            if 'reverse' in label or label=='staging':mode='reverse'
++            elif 'turn' in label:mode='stationary'
++            elif label=='waiting_feedback':mode='stationary' if all(F(v)==0 for v in route['knots'][t-start][:2]) else 'forward'
++            else:mode='forward'
++        elif t>=start+len(route['labels']):mode='hold'
++        else:mode='forward'  # preparation permits forward motion and a stopped hold
++        out.append(contract(mode))
++    # Boundary states must satisfy both adjacent contracts.
++    for j,row in enumerate(out[:-1]):
++        row['end_v']=intersect(row['v'],out[j+1]['v'])
++        row['end_delta']=intersect(row['delta'],out[j+1]['delta'])
++    out[-1]['end_v']=out[-1]['v'];out[-1]['end_delta']=out[-1]['delta']
++    return normal(out)
++
++def envelope(knots,box,beta=None):
++    beta=norm_upper([H]*32) if beta is None else F(beta)
++    v0,v1,d0,d1=map(F,knots)
++    vv=intersect([min(v0,v1)-beta*RHO,max(v0,v1)+beta*RHO],box['v'])
++    dd=intersect([min(d0,d1)-beta*RHO,max(d0,d1)+beta*RHO],box['delta'])
++    return dict(v=vv,delta=dd,V_abs=max(map(abs,vv)),D_abs=max(map(abs,dd)))
++
++def assert_step(v,d,u,box):
++    a,w=map(F,u)
++    for key,value in [('v',v),('delta',d),('a',a),('omega',w),('end_v',v+H*a),('end_delta',d+H*w)]:
++        lo,hi=map(F,box.get(key,box.get(key.replace('end_',''))))
++        if not lo<=value<=hi:raise ValueError('phase_or_permission: '+key+'='+str(value)+' outside '+str((lo,hi)))
++
++def equality_blocks(boxes):
++    frozen=set();blocks=[]
++    for c,(key,ikey) in enumerate((('end_v','a'),('end_delta','omega'))):
++        last=0
++        for j,b in enumerate(boxes[:32]):
++            if F(b[ikey][0])==F(b[ikey][1]):frozen.add(2*j+c)
++            if F(b[key][0])==F(b[key][1]):
++                blocks.append(list(range(2*last+c,2*(j+1)+c,2)));last=j+1
++    return frozen,blocks
++
++def quantize(raw,alpha,boxes):
++    raw=[F(alpha)*F(1,10000)*F.from_float(float(x)) for x in raw[:64]];projected=raw.copy();frozen,blocks=equality_blocks(boxes);q=F(1,10**12)
++    for i in frozen:projected[i]=0
++    for block in blocks:
++        active=[i for i in block if i not in frozen]
++        if active:
++            mean=sum((projected[i] for i in active),F(0))/len(active)
++            for i in active:projected[i]-=mean
++    delta=[q*round(x/q) for x in projected]
++    for block in blocks:
++        active=[i for i in block if i not in frozen]
++        floors={i:projected[i]//q for i in active};needed=-sum(floors.values());assert 0<=needed<=len(active)
++        upper=set(sorted(active,key=lambda i:(-(projected[i]/q-floors[i]),i))[:needed])
++        for i in active:delta[i]=q*(floors[i]+int(i in upper))
++    error=norm_upper([a-b for a,b in zip(delta,raw)])
++    return delta,dict(error=str(error),budget=str(4*q),passed=error<=4*q,frozen=sorted(frozen),zero_sum_blocks=blocks)
+--- region_reservation_002/run_case.py
++++ region_reservation_003_reverse/run_case.py
+@@ -29,18 +29,18 @@
+ 
+ 
+ def main():
+-    parser=argparse.ArgumentParser();parser.add_argument('--case',choices=('opposite','same_direction'),required=True);args=parser.parse_args();output=HERE/'results'/args.case;assert not output.exists();output.mkdir();began=time.perf_counter()
+-    state=initial_state();wid=put(HERE/'objects',make(list(CARS)));state['witness']=wid;write(output/'config.json',dict(case=args.case,initial_witness=wid,logical_h=str(H),source_commit=read(HERE/'plan.json')['source_commit'],formal_batch=False));events=[];overlap=[];minimum_road=minimum_pair=F(100);failure=None;selection=[]
++    parser=argparse.ArgumentParser();parser.add_argument('--case',choices=('A','B'),required=True);args=parser.parse_args();assert read(HERE/'results/rule_checks.json')['passed'],'common rule gate blocked';output=HERE/'results'/args.case;assert not output.exists();output.mkdir();began=time.perf_counter()
++    state=initial_state();wid=put(HERE/'objects',make(list(CARS)));state['witness']=wid;write(output/'config.json',dict(case=args.case,selection_case='opposite',initial_witness=wid,logical_h=str(H),source_commit=read(HERE/'plan.json')['source_commit'],formal_batch=False));events=[];overlap=[];minimum_road=minimum_pair=F(100);failure=None;selection=[]
+     with gzip.open(output/'execution.jsonl.gz','wt') as stream:
+         try:
+             for cycle in range(2802):
+                 assert state['cycle']==cycle;event=None;w=get(HERE/'objects',state['witness']);wid=state['witness']
+                 if cycle>=55 and (cycle-55)%663==0 and (cycle-55)//663<4:
+-                    new,choice=propose_choice(state,w,args.case);wid=put(HERE/'objects',new);event=dict(kind='resource_choice',cycle=cycle,old_witness=state['witness'],new_witness=wid,choice=choice)
+-                    if cycle==718:damage_fork(state,wid,output/'version_rejection')
++                    new,choice=propose_choice(state,w,'opposite');wid=put(HERE/'objects',new);event=dict(kind='resource_choice',cycle=cycle,old_witness=state['witness'],new_witness=wid,choice=choice)
+                     selection.append(choice)
+-                if cycle in (787,788):
+-                    actor=w['owners'][cycle];wid,event=solve(state,actor,args.case,output/('local_socp_round_'+str(cycle-786)))
++                if cycle==read(HERE/'pre_registered.json')[args.case]['cycle']:
++                    registered=read(HERE/'pre_registered.json')[args.case];assert normal(state_record(state))==registered['state'],'registered actual source mismatch'
++                    actor=registered['actor'];wid,event=solve(state,actor,args.case,output/'local_socp_round_1')
+                 row=advance(state,wid);row['event']=event
+                 if event:event['commit_id']=row['token']['commit_id'];events.append(event)
+                 if cycle>=55 and len(row['actual']['bounds']['active'])>=2:overlap.append(dict(cycle=cycle,cars=row['actual']['bounds']['active']))
+--- region_reservation_002/socp_rows.py
++++ region_reservation_003_reverse/socp_rows.py
+@@ -9,11 +9,11 @@
+         rows.append(dict(name=name,g_upper=F(g),linear=[F(0)]*64 if linear is None else list(map(F,linear)),gradient_error=F(error),hessian=F(hessian),kind=kind))
+     for j,(a,w) in enumerate(u):
+         for component,value in enumerate((a,w)):
+-            for sign in (-1,1):
++            for sign,bound in ((1,F(anchor['contracts'][j][('a','omega')[component]][1])),(-1,-F(anchor['contracts'][j][('a','omega')[component]][0]))):
+                 gradient=[F(0)]*64;gradient[2*j+component]=F(sign)
+-                add(f'input_{j}_{component}_{sign}',sign*value-1,gradient)
++                add(f'input_{j}_{component}_{sign}',sign*value-bound,gradient)
+         v+=H*a;d+=H*w
+-        for component,value,lower,upper in ((0,v,F(0),F(2)),(1,d,F(-1,2),F(1,2))):
++        for component,value,lower,upper in ((0,v,*map(F,anchor['contracts'][j]['end_v'])),(1,d,*map(F,anchor['contracts'][j]['end_delta']))):
+             for sign,bound in ((1,upper),(-1,-lower)):
+                 gradient=[F(0)]*64
+                 for k in range(j+1):gradient[2*k+component]=sign*H
+--- region_reservation_002/sources/certify_interfaces.py
++++ region_reservation_003_reverse/sources/certify_interfaces.py
+@@ -155,7 +155,7 @@
+     yaw = [zero for _ in range(7)];yaw[2] = one
+     px = [zero for _ in range(7)]; px[0] = one
+     py = [zero for _ in range(7)]; py[1] = one
+-    sign = 1 if cert['car'][0] == 'A' else -1
++    sign = cert['direction_sign']
+     dt = H/subdivisions; short = I.raw(0, I(dt).u)
+     for j in range(subdivisions):
+         ti = I.raw(I(j*dt).l, I((j+1)*dt).u)
+--- /dev/null
++++ region_reservation_003_reverse/stage_driver.py
+@@ -0,0 +1,25 @@
++"""Bounded stages, durable completion/failure events, never silently resubmit solves."""
++import subprocess,sys,time,json
++from common import *
++
++def stage(name,args):
++    path=HERE/'results'/(name+'.stage.json');log=HERE/'results'/(name+'.stage.log')
++    if path.exists():
++        prior=read(path)
++        if prior.get('exit_code')==0 and prior.get('completed'):
++            checkpoint=read(HERE/'results/independent_checkpoints.json')
++            for section in ('code','files'):
++                for relative,digest in checkpoint[section].items():assert sha(HERE/relative)==digest,'stale completed stage: '+relative
++            print(json.dumps(dict(stage=name,reused=True,content_checked=True)),flush=True);return
++        raise RuntimeError('prior failed/incomplete stage retained: '+str(path))
++    entry=dict(stage=name,command=args,started=True,completed=False);write(path,entry);started=time.perf_counter()
++    with log.open('w') as out:result=subprocess.run([sys.executable,*args],cwd=HERE,stdout=out,stderr=subprocess.STDOUT)
++    entry.update(completed=True,exit_code=result.returncode,wall_s=time.perf_counter()-started,evidence=str(log.relative_to(HERE)));write(path,entry);print(json.dumps(entry),flush=True)
++    if result.returncode:raise RuntimeError(name+' failed; inspect '+str(log))
++
++def main():
++    assert read(HERE/'results/rule_checks.json')['passed']
++    for side in ('A','B'):
++        stage(side+'_execute',['run_case.py','--case',side])
++        stage(side+'_accept',['accept_case.py','--case',side])
++if __name__=='__main__':main()
+--- region_reservation_002/summarize.py
++++ region_reservation_003_reverse/summarize.py
+@@ -1,109 +1,41 @@
+-"""Report two real reoptimizations without double-counting overlapping predictions."""
++"""Measured events and common-time energy; no numerical optimization."""
++import csv,platform,subprocess
+ from common import *
+-import csv,difflib,sys,platform
+-import numpy,scipy,clarabel,osqp
+ 
+ 
+ def main():
+-    assert read(HERE/'self_checks.json')['passed'] and read(HERE/'second_round_rejection_checks.json')['passed'] and read(HERE/'shifted_fixture_checks.json')['passed']
+-    table=[];metrics={};index=[];checkpoints={}
+-    for case in ('opposite','same_direction'):
+-        folder=HERE/'results'/case;s=read(folder/'summary.json');a=read(folder/'independent_acceptance.json');assert s['passed'] and a['passed'] and a['continuous_two_updates_accepted']
+-        with gzip.open(folder/'execution.jsonl.gz','rt') as stream:logs=list(map(json.loads,stream))
+-        events=[e for e in read(folder/'events.json') if e['kind']=='local_socp'];assert len(events)==2
+-        case_rows=[]
+-        for e in events:
+-            raw=get(HERE/'objects',e['raw_result_id']);p=get(HERE/'objects',e['policy_result_id']);old=get(HERE/'objects',e['parent_witness']);new=get(HERE/'objects',e['accepted_witness']);actor=e['actor'];k=e['cycle'];info=raw['info'];attempt=p['attempts'][-1]
+-            Eold=F(p['old_energy']);Enew=F(attempt['energy']);delta=list(map(F,attempt['delta']));first_changed=logs[k]['actual']['commands'][actor]!=old['controls'][actor][k]
+-            row=dict(case=case,round=e['round'],cycle=k,actor=actor,status=raw['status'],primal=info['res_primal'],dual=info['res_dual'],gap_abs=info['gap_abs'],gap_rel=info['gap_rel'],iterations=info['iterations'],solver_s=info['solve_time'],pipeline_s=p['wall_s'],accepted=p['accepted'],actual_first_changed=first_changed,old_first=';'.join(old['controls'][actor][k]),actual_first=';'.join(logs[k]['actual']['commands'][actor]),delta_norm_upper=str(norm_upper(delta)),alpha=attempt['alpha'],old_prefix_energy=str(Eold),new_prefix_energy=str(Enew),predicted_improvement_percent=float(100*(Eold-Enew)/Eold),source_history=raw['history'],source_witness=raw['source_witness'],anchor_id=e['anchor_id'],derivative_id=e['derivative_id'],assembly_id=e['assembly_id'],raw_result_id=e['raw_result_id'],policy_result_id=e['policy_result_id'],commit_id=e['commit_id'],receiver_phase=k+32,K_phase=k+32,receiver_kind=new['receiver_contract']['kind'],budget=2802-k,budget_after=2801-k,selected_prefix_ticks=1 if e['round']==1 else 32)
+-            assert e['commit_id']==logs[k]['token']['commit_id'];table.append(row);case_rows.append(row);index.append(e)
+-        actor=events[0]['actor'];baseline=get(HERE/'objects',events[0]['parent_witness']);E0=H*sum(F(x)**2 for u in baseline['controls'][actor][787:821] for x in u);Ea=H*sum(F(x)**2 for r in logs[787:821] for x in r['actual']['commands'][actor]);changed=[r['cycle'] for r in logs[787:821] if r['actual']['commands'][actor]!=baseline['controls'][actor][r['cycle']]]
+-        metrics[case]=dict(passed=True,actual_steps=s['actual_steps'],logical_task_time_s=float(F(s['actual_task_time_s'])),initial_budget=2802,remaining_budget=s['remaining_budget'],numerical_proposals=2,accepted_numerical_proposals=2,rounds=case_rows,actual_union_energy=dict(start=787,stop_exclusive=821,ticks=34,old_energy=str(E0),actual_energy=str(Ea),improvement_percent=float(100*(E0-Ea)/E0),changed_cycles=changed),actual_K_phase=820,old_K_superseded_phase=819,independent_road_lower_m=a['minimum_road_m'],independent_pair_lower_m=a['minimum_pair_m'],overlap_ticks=a['actual_overlap_ticks'],controller_wall_s=s['wall_s'],independent_wall_s=a['wall_s'],damaged_second_proposals_rejected=6,actual_old_tail_steps_per_rejection=33,independent_passed=True)
+-        names=('config.json','events.json','summary.json','execution.jsonl.gz','independent_acceptance.json','second_round_rejections/summary.json')
+-        checkpoints[case]=dict(passed=True,full_replay_completed=True,files={str((folder/name).relative_to(HERE)):sha(folder/name) for name in names},code={name:sha(HERE/name) for name in ('common.py','physics.py','accept_case.py','derivatives.py','conic.py','socp_rows.py','receivers.py','inputs/interval_source.py','sources/certify_interfaces.py')})
+-    write(HERE/'event_index.json',index);write(HERE/'metrics.json',metrics);write(HERE/'results/independent_checkpoints.json',checkpoints)
+-    with (HERE/'comparison.csv').open('w',newline='') as f:
+-        writer=csv.DictWriter(f,fieldnames=list(table[0]));writer.writeheader();writer.writerows(table)
+-    (HERE/'comparison_windows.csv').write_bytes(b'\xef\xbb\xbf'+(HERE/'comparison.csv').read_bytes())
+-    proof=read(HERE/'shifted_receiver_certificate.json');preserved=read(HERE/'historical_hashes.json');assert all(sha(HERE.parent/name)==digest for name,digest in preserved.items());write(HERE/'preservation_check.json',dict(passed=True,historical_files_unchanged=len(preserved)))
+-    calls=read(HERE/'results/solver_calls.json');assert len(calls)==4 and all(c['completed'] for c in calls)
+-    write(HERE/'versions.json',dict(python=sys.version,platform=platform.platform(),clarabel=clarabel.__version__,numpy=numpy.__version__,scipy=scipy.__version__,osqp_legacy_import=osqp.__version__))
+-    (HERE/'requirements.txt').write_text(f'clarabel=={clarabel.__version__}\nnumpy=={numpy.__version__}\nscipy=={scipy.__version__}\nosqp=={osqp.__version__}\n')
+-    gate=dict(version='region_reservation_002',passed=True,actual_source_update=True,continuous_two_round_acceptance=True,continuous_safety_and_completion=True,rejection_and_same_old_tail=True,solver_calls=4,extra_solver_calls=0,solver_statuses=[r['status'] for r in table],strict_Solved_all=False,policy='certificate_suboptimal_v1',cases=metrics,shifted_receiver_proof=proof['certificate_id'],initial_budget=2802,final_budget=0,history_preserved=True,papers_changed=False,formal_batch=False,priority_queue=dict(item1='completed: two actual overlapping-car reoptimizations',item2='pending: reverse SOCP',item3='pending: more order/overlap combinations'),limits=['Two actual anchors per case; not a guarantee that every future SOCP is feasible','One local 64-input vehicle, other moving plans frozen and time aligned','Nominal synchronous ZOH model, not hard real-time/async/disturbance validation','Three AlmostSolved proposals admitted by complete certificate; no strict numerical optimality claim'])
+-    write(HERE/'GATE.json',gate)
+-    rt='\n'.join(f"|{r['case']}|{r['round']} / {r['cycle']}|{r['status']}|{r['primal']:.3g}|{r['gap_abs']:.3g}|{r['alpha']}|{r['predicted_improvement_percent']:.6f}%|{r['actual_first_changed']}|" for r in table)
+-    mt='\n'.join(f"|{case}|{v['actual_steps']}|{v['remaining_budget']}|{v['independent_road_lower_m']:.6f}|{v['independent_pair_lower_m']:.6f}|{v['actual_union_energy']['improvement_percent']:.6f}%|" for case,v in metrics.items())
+-    report=f'''# 两车重叠期间连续两拍实际重新优化
+-
+-用户当前最关键的问题已在两个用例通过：两车同时运动时，cycle787求解并执行首拍后，cycle788从实际联合状态再求解，第二份新候选共同受理并继续合法执行。两条完整任务均2802拍、四车到达目标、预算归零。后移接收域已先做数学与非零状态认证，未把原Gin中心直接复用到下一拍。
+-
+-这是优先级1的隔离验证，保存于region_reservation_002。用户指定队列为1→2→3；倒车SOCP与更多通行/重叠组合在本轮仍排队，不作已完成声明。历史与论文保留，未启动正式批量或Git提交。
+-
+-## 理论条件和新增接收域
+-
+-依据原region_reservation_001的安全组合、可执行后续与预算归纳，以及certificate_suboptimal_v1。本轮新增Gin_shifted中心为局部(-21.9,0)、航向中心0：位置L1半径0.021m，航向半径0.000238rad，速度[0.495,0.505]m/s，轮角±1e-5rad。K为a=(0.5-v)/h、omega=-delta/h，分别满足|a|≤0.025、|omega|≤5e-5。
+-
+-K后航向界{float(F(proof['after_K_yaw'])):.12f}rad，保存的直行/四拍制动后位置L1界{float(F(proof['G_out_position_l1_upper'])):.12f}m，小于原Gout的0.035m；位置余量约{float(F(7,200)-F(proof['G_out_position_l1_upper'])):.12f}m，航向小于0.00024rad。561拍剩余控制按真实对象核对，K后的v=0.5、delta=0精确复位。A/B两个非零边界状态的辅助561拍8子段回放也通过。
+-
+-新域并不宣称覆盖原Gin所有最坏误差经过K后的全部流像。本次两个实际第二轮源点的继承32拍前缀都通过新原行的零增量检查；连续SOCP可行性的结论限于已验证锚点。一般情况下即使新域问题不可行，仍保留已认可真实尾段，递归控制可行性不以任意未来SOCP必可解为前提。
+-
+-数学对象见shifted_receiver_certificate.json、domain_checks.json、shifted_fixture_checks.json；原地图、|x|≤16资源、0.05m+量化余量车身管和既有量化/积分证明不变。
+-
+-## 实现与共同提交
+-
+-两用例都保留原初态、55/101/562/95拍备份时序、选择函数、目标权重、h=.2、N=32、64输入/65变量、rho=.001、Q预留、scale=1e-4、Clarabel0.11.1、三个1e-10容差、300迭代、5秒预算。
+-
+-每个用例的新调用链为实际源状态/history→fresh32拍导数和同步邻车预测→原行和组装对象→一次新求解→量化/完整前缀/K/后续认证→四份计划ACK→首拍实际输出→从该后继再次走同一链。第一轮也重新求解，未复用旧probe数值结果；两用例共4次新调用。
+-
+-receivers.py登记两处接收相位：第一轮819，第二轮820。第二轮32拍包含旧K819，受理时整体替换旧Gin819及其K，把接收/K一起更新到820，保留821之后的真实尾段。拒绝时保留第一轮Gin819、旧K及全部旧控制。witness.py同时保留后续换权时已发生的接收链，防止未来选择重新写回旧Gin义务。
+-
+-source绑定包括全四车实际位姿/v/delta、history、当前见证、实际移位父ID、邻车预测hash、anchor/derivative/assembly/raw/policy与提交编号。第二轮旧车A1和优化车的实际位姿均已推进，邻车预测也按下一时间片重建。资源权限仍同版更新，旧车出口动作继续执行。
+-
+-## 逐轮数值和实际输出
+-
+-|用例|轮 / cycle|状态|原始残差|绝对gap|alpha|本轮32拍预测输入代价改善|实际首拍改变|
+-|---|---|---|---:|---:|---:|---:|---|
+-{rt}
+-
+-相反方向第一轮Solved，其余三次AlmostSolved；未放宽严格收敛标准。所有采用均由独立版本的完整证书规则决定。精确输入、范数、对偶残差/相对gap、完整设置与原始x/s/z、日志、source/模型对象都已保存。实际首拍相同的情况照实列出，方案后续修改仍按实际命令核对。
+-
+-第一轮只执行首拍，其余预测窗被第二轮替换。因此逐轮32拍收益不相加；实际输入代价按同一[787,821)的34拍（首轮首拍+次轮32拍+新K）对原备份重算：
+-
+-|用例|实际拍数|剩余预算|独立道路下界m|独立六对净空下界m|34拍实际输入代价改善|
+-|---|---:|---:|---:|---:|---:|
+-{mt}
+-
+-固定任务时长仍560.4s，无缩时结论。各用例194拍存在释放后的两车实际位姿运动重叠。数值求解时间、构造/认证流水线和完整控制/独立重放墙钟分别见comparison.csv和metrics.json；逻辑h=.2不是硬实时保证。
+-
+-## 独立验收和拒绝续行
+-
+-两个完整2802拍8子段独立验收均通过。入口逐事件读取内容ID、重建实际第二轮源状态和导数，独立复算终端Taylor行、raw→有理量化、四份公开计划/权限、连续道路和全部六对净空、域/K、预算与停车目标；可共享区间算术、传播与变分生成器，未把控制器提交标志作为安全证据。
+-
+-第二轮复制分支每用例6类：陈旧anchor、陈旧derivative、旧phase、陈旧邻车位姿、损坏K、混合权限版本。12份非法提案均零错误提交；随后从同一实际源状态执行第一轮旧见证33拍，包含旧Gin819与旧K819，v/delta精确复位并由独立8子段核对。分支不计入主任务时长/求解数。
+-
+-self_checks.json还核对第二轮源状态等于首拍实际后继、两车实际运动、零增量继承前缀、新K820、821后旧尾段、后续选择保留后移接收链和每拍预算下降。首次启动缺source_commit元数据在0次求解前修正，原失败日志保留于results/development_failures；没有追加数值求解。
+-
+-## 交付与复核
+-
+-报告、GATE.json、comparison.csv、event_index.json、metrics.json、完整最小补丁、版本与对象及每个case的原始控制和独立报告都保存在本目录。冻结源码身份见executed_source_versions.json，历史哈希见preservation_check.json。默认verify_delivery复用内容核对的完整独立验收checkpoint，并新复算两轮source/导数/33拍前缀；--full-replay才重跑两条完整独立轨迹。
+-
+-```bash
+-OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 run_stage.py
+-OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 verify_delivery.py
+-# 完整独立重算（不调用优化器）：
+-OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 verify_delivery.py --full-replay
+-```
+-
+-尚未完成队列2/3；也未声明任意未来拍持续SOCP可行、两车同时独立求解、持续物理时钟、扰动或异步进程保证。一般优先/公平规则保持待设计。本轮明确回答的是两个实际重叠用例的“执行首拍以后，能否再次优化并合法接续”。
+-'''
+-    (HERE/'report.md').write_text(report)
+-    write(HERE/'work_queue.json',dict(order=[1,2,3],item1=dict(status='complete',gate='GATE.json'),item2=dict(status='pending',task='certify signed-speed derivative/physical rows and reverse SOCP actual window'),item3=dict(status='pending',task='bounded additional certified order/overlap cases'),formal_batch=False))
+-    previous=HERE.parent/'region_reservation_001';patch=[]
+-    for f in sorted(HERE.glob('*.py')):
+-        old=previous/f.name;before=old.read_text().splitlines(True) if old.exists() else []
+-        if before==f.read_text().splitlines(True):continue
+-        patch+=list(difflib.unified_diff(before,f.read_text().splitlines(True),fromfile='region_reservation_001/'+f.name if before else '/dev/null',tofile='region_reservation_002/'+f.name))
+-    (HERE/'changes.patch').write_text(''.join(patch))
+-    (HERE/'HANDOFF.md').write_text('目标：用户队列1→2→3，本轮先完成最关键的两车重叠连续两拍优化。\n状态：2用例×2新求解全部采用；新接收820/K820，两个2802拍独立验收、12个拒绝旧尾续行通过。\n限制：名义同步模型；历史和论文保留；不做批量。\n源码与证据：executed_source_versions.json、shifted_receiver_certificate.json、GATE.json、results/*/independent_acceptance.json。\n恢复：OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 run_stage.py\n复核：OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 verify_delivery.py\n后续：work_queue.json，优先2倒车SOCP，再3更多组合。\n')
+-    print(json.dumps(dict(passed=True,metrics=metrics),indent=2))
++    metrics=[];index={}
++    for side in ('A','B'):
++        run=HERE/'results'/side;e=next(e for e in read(run/'events.json') if e['kind']=='local_socp');raw=get(HERE/'objects',e['raw_result_id']);pol=get(HERE/'objects',e['policy_result_id']);anchor=get(HERE/'objects',e['anchor_id']);receiver=get(HERE/'objects',anchor['receiver']['certificate_id']);old=get(HERE/'objects',e['parent_witness']);new=get(HERE/'objects',e['accepted_witness']);actor=e['actor'];k=e['cycle'];actual={}
++        with gzip.open(run/'execution.jsonl.gz','rt') as stream:
++            for row in map(json.loads,stream):
++                if k<=row['cycle']<=k+32:actual[row['cycle']]=row
++        delta=[F(x)-F(y) for u,v in zip(new['controls'][actor][k:k+32],old['controls'][actor][k:k+32]) for x,y in zip(u,v)];v=F(anchor['state']['v'][actor]);reverse_changes=[];changes=[];stops=[]
++        for t in range(k,k+33):
++            command=list(map(F,actual[t]['actual']['commands'][actor]));expected=list(map(F,new['controls'][actor][t]));assert command==expected
++            changed=command!=list(map(F,old['controls'][actor][t]));
++            if changed:changes.append(t)
++            if v<0 and changed:reverse_changes.append(dict(cycle=t,v_before=str(v),actual_command=list(map(str,command)),old_command=old['controls'][actor][t]))
++            v+=H*command[0]
++            if v==0:stops.append(t+1)
++        def energy(w,n):return H*sum(F(x)**2 for u in w['controls'][actor][k:k+n] for x in u)
++        energies={str(n):dict(old=str(energy(old,n)),actual=str(energy(new,n)),gain=str(energy(old,n)-energy(new,n)),gain_percent=float((energy(old,n)-energy(new,n))/energy(old,n)*100)) for n in (32,33)}
++        audit=read(run/'independent_acceptance.json');rej=read(run/'rejection/summary.json');info=raw['info'];row=dict(side=side,actor=actor,source_cycle=k,source_v=anchor['state']['v'][actor],status=raw['status'],res_primal=info['res_primal'],res_dual=info['res_dual'],gap_abs=info['gap_abs'],gap_rel=info['gap_rel'],iterations=info['iterations'],solve_time_s=info['solve_time'],generation_and_admission_s=pol['wall_s'],alpha=pol['attempts'][-1]['alpha'] if pol['accepted'] else '',accepted=pol['accepted'],quantization_error=pol['attempts'][-1]['quantization']['error'],input_delta_norm=str(norm_upper(delta)),first_changed_cycle=changes[0] if changes else None,reverse_changed_ticks=len(reverse_changes),reverse_changes=reverse_changes,first_actual_command=actual[k]['actual']['commands'][actor],first_old_command=old['controls'][actor][k],crosses_stop=bool(stops),exact_stop_cycles=stops,K_phase=k+32,K_command=actual[k+32]['actual']['commands'][actor],K_reset_v=actual[k+32]['actual']['v'][actor],K_reset_delta=actual[k+32]['actual']['delta'][actor],retained_phase=receiver['retained_target_phase'],receiver_domain=receiver['domain'],domain_dimension=receiver['dimension'],energy=energies,actual_steps=audit['actual_steps'],remaining_budget=audit['remaining_budget'],minimum_road_m=audit['minimum_road_m'],minimum_pair_m=audit['minimum_pair_m'],independent_passed=audit['passed'],rejections=len(rej['rejections']),old_tail_steps=rej['actual_steps'])
++        metrics.append(row);index[side]=e
++    write(HERE/'metrics.json',dict(cases=metrics,new_native_solver_calls=len(read(HERE/'results/solver_calls.json')),formal_batch=False,more_orderings_queued=True));write(HERE/'event_index.json',index)
++    fields=['side','actor','source_cycle','source_v','status','res_primal','res_dual','gap_abs','gap_rel','iterations','solve_time_s','generation_and_admission_s','alpha','accepted','quantization_error','input_delta_norm','first_changed_cycle','reverse_changed_ticks','first_actual_command','first_old_command','crosses_stop','K_phase','K_command','K_reset_v','K_reset_delta','retained_phase','domain_dimension','actual_steps','remaining_budget','minimum_road_m','minimum_pair_m','independent_passed','rejections','old_tail_steps']
++    with (HERE/'comparison.csv').open('w',newline='',encoding='utf-8-sig') as out:
++        writer=csv.DictWriter(out,fieldnames=fields,extrasaction='ignore');writer.writeheader();writer.writerows(metrics)
++    with (HERE/'energy_windows.csv').open('w',newline='',encoding='utf-8-sig') as out:
++        writer=csv.DictWriter(out,fieldnames=['side','start_cycle','ticks','old','actual','gain','gain_percent']);writer.writeheader()
++        for row in metrics:
++            for n,values in row['energy'].items():writer.writerow(dict(side=row['side'],start_cycle=row['source_cycle'],ticks=n,**values))
++    hashes=read(HERE/'historical_hashes.json');mismatches=[name for name,digest in hashes.items() if not (HERE.parent/name).exists() or sha(HERE.parent/name)!=digest];assert not mismatches,mismatches;write(HERE/'preservation_check.json',dict(passed=True,files_checked=len(hashes),mismatches=mismatches,git_commits=0,papers_modified=False))
++    import clarabel,numpy,scipy,osqp
++    write(HERE/'environment.json',dict(python=sys.version,executable=sys.executable,platform=platform.platform(),clarabel=clarabel.__version__,numpy=numpy.__version__,scipy=scipy.__version__,osqp= osqp.__version__,dependency_path='/tmp/dmpc-p0-deps',OPENBLAS_NUM_THREADS='1',v1_native_calls=0,v2_native_calls=2))
++    write(HERE/'executed_source_versions.json',dict(source_commit=read(HERE/'plan.json')['source_commit'],captured_after_execution=True,code={str(f.relative_to(HERE)):sha(f) for f in sorted(HERE.rglob('*.py')) if 'delivery' not in f.parts and '__pycache__' not in f.parts}))
++    rules=read(HERE/'results/rule_checks.json');ranges=read(HERE/'results/source_range_checks.json');zero=read(HERE/'results/zero_successor_checks.json');rejections=read(HERE/'results/rejection_checks.json')
++    gate=dict(passed=rules['passed'] and ranges['passed'] and zero['passed'] and all(x['independent_passed'] and x['accepted'] and x['reverse_changed_ticks']>0 for x in metrics),shared_generation_rules=dict(passed=rules['passed'] and ranges['passed'],entry='generation.generate',method='method_spec.md'),receiver_synthesis=dict(passed=zero['passed'],entry='receivers.synthesize',rule='margin_allocation_v2_1',same_entry_both_sides=True),existing_forward_regression=dict(passed=all(x['passed'] for x in rules['cases'] if x['kind'].startswith('existing')),cases=4,new_solver_calls=0),reverse_source_checks=dict(passed=ranges['passed'] and all(x['passed'] for x in rules['cases'] if x['kind']=='reverse'),registered_sources='pre_registered.json',initial_no_solve_checks='results/rule_checks.json',additional_rectangular_ranges='results/source_range_checks.json'),reverse_actual_execution=dict(passed=all(x['independent_passed'] and x['accepted'] and x['reverse_changed_ticks']>0 for x in metrics),cases=2,total_steps=5604),rejection_continuation=dict(passed=all(x['passed'] for x in rejections),rejected_proposals=16,actual_fallback_branches=2,actual_fallback_steps=198,invalid_commits=0),native_solver_calls=2,historical_preservation=True,formal_batch=False,theorem_scope='nominal signed bicycle, exact measured speed/steering, fixed certified policy timing, synchronous in-process four-plan commit; conditional sufficient domain, not universal feasibility',unresolved=['A is AlmostSolved with res_primal above configured tolerance; exact certificate admission passed','uncertain-speed/steering robust policy, real processes/clock and other orderings not exercised'])
++    assert gate['passed'];write(HERE/'GATE.json',gate);write(HERE/'work_queue.json',dict(completed='priority 2 v2 controlled reverse windows',queued=['priority 3: more orders and overlap combinations','real independent processes and sustained physical clock'],requires_separate_task=True))
++    print(json.dumps(dict(passed=gate['passed'],native_calls=2,historical_files_checked=len(hashes),energy=[(x['side'],x['energy']['33']['gain_percent']) for x in metrics]),indent=2))
+ if __name__=='__main__':main()
+--- region_reservation_002/verify_delivery.py
++++ region_reservation_003_reverse/verify_delivery.py
+@@ -1,23 +1,22 @@
+-"""Check saved full acceptance and freshly replay the two actual optimization sources."""
++"""Content-check full replay checkpoints; freshly verify actual numeric sources, no solve."""
+ import argparse
+ from common import *
+ from accept_case import Audit,accept
+ 
+-
+ def main():
+-    p=argparse.ArgumentParser();p.add_argument('--full-replay',action='store_true');args=p.parse_args();manifest=read(HERE/'DELIVERY_MANIFEST.json')['files']
++    parser=argparse.ArgumentParser();parser.add_argument('--full-replay',action='store_true');args=parser.parse_args();manifest=read(HERE/'DELIVERY_MANIFEST.json')['files']
+     for name,item in manifest.items():assert sha(HERE/name)==item['sha256'],name
+     for f in (HERE/'objects').glob('*.json.gz'):get(HERE/'objects',f.name[:-8])
++    checkpoint=read(HERE/'results/independent_checkpoints.json');assert checkpoint['full_replay_completed']
++    for section in ('code','files'):
++        for name,digest in checkpoint[section].items():assert sha(HERE/name)==digest,name
+     outcomes={}
+-    for case,checkpoint in read(HERE/'results/independent_checkpoints.json').items():
+-        assert checkpoint['passed'] and checkpoint['full_replay_completed']
+-        for section in ('files','code'):
+-            for name,digest in checkpoint[section].items():assert sha(HERE/name)==digest,name
+-        folder=HERE/'results'/case;events=[e for e in read(folder/'events.json') if e['kind']=='local_socp'];first_anchor=get(HERE/'objects',events[0]['anchor_id']);audit=Audit(read(folder/'config.json')['initial_witness']);audit.state=restore(m,first_anchor['state']);audit.p8=copy.deepcopy(audit.state['poses']);audit.validate_witness(audit.state['witness'])
+-        with gzip.open(folder/'execution.jsonl.gz','rt') as stream:rows={r['cycle']:r for r in map(json.loads,stream) if r['cycle'] in (787,788)}
+-        for event in events:audit.numeric_update(event);audit.frame(rows[event['cycle']])
+-        outcomes[case]=dict(passed=True,fresh_actual_source_and_prefix_checks=2,full_task_evidence_content_checked=True,full_task_replayed_this_call=False)
+-        if args.full_replay:outcomes[case]['full_replay']=accept(folder);outcomes[case]['full_task_replayed_this_call']=True
+-    assert read(HERE/'self_checks.json')['passed'] and read(HERE/'second_round_rejection_checks.json')['passed']
+-    print(json.dumps(dict(passed=True,files_verified=len(manifest),solver_calls=0,cases=outcomes),indent=2))
++    for side in ('A','B'):
++        folder=HERE/'results'/side;event=next(e for e in read(folder/'events.json') if e['kind']=='local_socp');anchor=get(HERE/'objects',event['anchor_id']);audit=Audit(read(folder/'config.json')['initial_witness']);audit.state=restore(m,anchor['state']);audit.p8=copy.deepcopy(audit.state['poses']);audit.validate_witness(audit.state['witness'])
++        with gzip.open(folder/'execution.jsonl.gz','rt') as stream:row=next(r for r in map(json.loads,stream) if r['cycle']==event['cycle'])
++        audit.numeric_update(event);audit.frame(row);rej=read(folder/'rejection/summary.json');assert rej['passed'] and len(rej['rejections'])==8 and rej['actual_steps']==99 and rej['invalid_commits']==0
++        outcomes[side]=dict(passed=True,fresh_actual_source_and_prefix_checks=1,full_task_and_rejection_evidence_content_checked=True,full_task_replayed_this_call=False)
++        if args.full_replay:outcomes[side]['full_replay']=accept(folder);outcomes[side]['full_task_replayed_this_call']=True
++    assert read(HERE/'GATE.json')['passed'] and len(read(HERE/'results/solver_calls.json'))==2
++    print(json.dumps(dict(passed=True,files_verified=len(manifest),new_solver_calls=0,cases=outcomes),indent=2))
+ if __name__=='__main__':main()

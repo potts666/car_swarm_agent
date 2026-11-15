@@ -1,0 +1,72 @@
+{
+  "physical": {
+    "h": "1/5",
+    "N": 32,
+    "L": "27/10",
+    "body_x": [
+      "-1",
+      "7/2"
+    ],
+    "body_y": [
+      "-9/10",
+      "9/10"
+    ],
+    "safety": "1/2",
+    "tube": "5000001/100000000",
+    "v": [
+      "-1",
+      "2"
+    ],
+    "delta": [
+      "-1/2",
+      "1/2"
+    ],
+    "a": [
+      "-1",
+      "1"
+    ],
+    "omega": [
+      "-1",
+      "1"
+    ],
+    "frames": {
+      "A1": 1,
+      "A2": 1,
+      "B1": -1,
+      "B2": -1
+    },
+    "source": "region003 common/physics/interval_source"
+  },
+  "map": {
+    "roads": [
+      [
+        "-52",
+        "52",
+        "-7/5",
+        "7/5"
+      ],
+      [
+        "-52",
+        "-10",
+        "-11/2",
+        "11/2"
+      ],
+      [
+        "10",
+        "52",
+        "-11/2",
+        "11/2"
+      ]
+    ],
+    "resource_x": [
+      "-16",
+      "16"
+    ],
+    "source": "region003 common.ROADS + physics.geometry"
+  },
+  "eta": "1/50",
+  "rho": "1/1000",
+  "quantum": "1/1000000000000",
+  "N": 32,
+  "numerical_scope": "initial straight / stopped steering with exact affine ZOH and fixed steering perturbations"
+}

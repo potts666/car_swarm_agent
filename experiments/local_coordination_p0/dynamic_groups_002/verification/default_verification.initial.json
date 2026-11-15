@@ -1,0 +1,112 @@
+{
+  "passed": true,
+  "experiment_gate": "partial; C numerical update and same-version comparison remain incomplete",
+  "manifest_files": 1382,
+  "manifest_sha256": "7a814656a6302f5ca3177426b352beef51f99d12714eac3f7f68f343d6fc7640",
+  "native_calls": 12,
+  "limit": 16,
+  "new_calls": 0,
+  "key_prefixes": [
+    {
+      "arm": "C-new",
+      "round": 1,
+      "steps": 33,
+      "passed": true,
+      "checked_K": [
+        [
+          "A1",
+          73
+        ],
+        [
+          "A2",
+          73
+        ],
+        [
+          "B1",
+          73
+        ],
+        [
+          "B2",
+          73
+        ]
+      ],
+      "actual_numerical_accepted": 0
+    },
+    {
+      "arm": "C-new",
+      "round": 2,
+      "steps": 33,
+      "passed": true,
+      "checked_K": [
+        [
+          "A1",
+          74
+        ],
+        [
+          "A2",
+          74
+        ],
+        [
+          "B1",
+          74
+        ],
+        [
+          "B2",
+          74
+        ]
+      ],
+      "actual_numerical_accepted": 0
+    },
+    {
+      "arm": "L-new",
+      "round": 1,
+      "steps": 33,
+      "passed": true,
+      "checked_K": [
+        [
+          "A1",
+          73
+        ],
+        [
+          "A2",
+          73
+        ],
+        [
+          "B1",
+          73
+        ],
+        [
+          "B2",
+          73
+        ]
+      ],
+      "actual_numerical_accepted": 3
+    },
+    {
+      "arm": "L-new",
+      "round": 2,
+      "steps": 33,
+      "passed": true,
+      "checked_K": [
+        [
+          "B1",
+          73
+        ],
+        [
+          "A1",
+          74
+        ],
+        [
+          "A2",
+          74
+        ],
+        [
+          "B2",
+          74
+        ]
+      ],
+      "actual_numerical_accepted": 3
+    }
+  ],
+  "full_replays": []
+}

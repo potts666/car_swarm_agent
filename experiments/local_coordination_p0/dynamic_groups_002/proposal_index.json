@@ -1,0 +1,87 @@
+{
+  "rule": {
+    "deltas": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "width": 4,
+    "depth": 2,
+    "max_pool": 16,
+    "J": "exact full saved control-input cost including analytic launch repair"
+  },
+  "scan_id": "75b3a85f4d02e41e34a21f2df96b73df8b9b3b07d8ec641f68c420e95eaf28f7",
+  "sources_scanned": 2769,
+  "winners": {
+    "3": {
+      "cycle": 41,
+      "shifts": {
+        "A1": 16
+      },
+      "score": [
+        -3,
+        "-3",
+        2761,
+        "30651399538585517107557370543/531738281250000000000000000",
+        "3e7d0cae5f0845a4567e06a7c0e40bc185b5a26b8801b63c4654e35a73032ff5"
+      ],
+      "active": [
+        "A1",
+        "A2",
+        "B2"
+      ],
+      "added": [
+        "A1"
+      ],
+      "progress": {
+        "A1": "1/50",
+        "A2": "1/5",
+        "B1": "0",
+        "B2": "1/5"
+      }
+    },
+    "2": {
+      "cycle": 53,
+      "shifts": {
+        "A1": 4,
+        "B1": 8
+      },
+      "score": [
+        -2,
+        "-2",
+        2749,
+        "953044739135019366392189482877/17015625000000000000000000000",
+        "bbec77035353724d4428b7b9bcfc23c8945397e9e8cb8ef10fc8f821d920750d"
+      ],
+      "active": [
+        "A1",
+        "B2"
+      ],
+      "added": [
+        "A1"
+      ],
+      "progress": {
+        "A1": "1/50",
+        "A2": "0",
+        "B1": "0",
+        "B2": "3/50"
+      }
+    }
+  },
+  "rejection_classes": {
+    "rewrites_executed_motion": 323
+  },
+  "old_score_replaced": "early diagnostic scan used 32-step old-plan score; corrected to actual full-tail cost before any solve",
+  "initial_rejection_scan": {
+    "initial_witness": "2b5c52a0f55fd22744a2d6697da489b0d3e67e4b67307b695fdb468529c92f52",
+    "winners": {},
+    "counts": {
+      "pool_candidate": 29995,
+      "rewrites_movement": 323
+    },
+    "sources_scanned": 2770,
+    "initial_four_motion_regression_ticks": 30,
+    "scan_id": "44158982fe969152a984931d2c8bc3835ef4bde6bceafaace19cd8b06eaf51c8"
+  }
+}

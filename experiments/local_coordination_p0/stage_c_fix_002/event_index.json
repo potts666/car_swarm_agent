@@ -1,0 +1,194 @@
+[
+  {
+    "run_id": "two_updates_001",
+    "interface": "curve",
+    "round": 1,
+    "phase": 5,
+    "history": "5a94259278c6ea59598f8ad9c4584e90791ddc9d2beab73c7b20664e7aa3c341",
+    "parent_plan_id": "baffd3e92180d0fbd46aaa0671d563cc917a367787ccfa7ed126572b389f652e",
+    "anchor_id": "7ae7fa1524ad5244443df8749c8419a532e1cb84710fd55ce1a66a2338a809c6",
+    "derivative_id": "6f92d40887c9f948c7c12277681b641a38e21681e27e75a4364e0f5db3b5d479",
+    "assembly_id": "0600d2263413410c970cbce4b4e43263dee5e4c770521384bfd7f4d8eae13628",
+    "raw_result_id": "fc45b9b0089944b509147c16d650b4170ab7c56fabe6a8d5829f1e9261df4b89",
+    "policy_result_id": "b8db43479b60547ca51b2f25786bd454a6fcf751165c78fb4730c9951bb3b5ec",
+    "accepted": true,
+    "accepted_plan_id": "5ebca65237fc889940f95685b0bf4866c68da8b11a40e998fb3d2ff1882713d1",
+    "commit_id": "8b4272b879e0271a3f0fbfc35c28acb3d5ef2dc51054ba51e218c0ba6cc62d2e",
+    "derivative_and_solve_and_cert_wall_s": 2.125234000995988,
+    "failure_layer": null,
+    "old_pending_reset": null,
+    "new_pending_reset": {
+      "phase": 37,
+      "next_phase": 38,
+      "row_sha256": "e1ac5e65dfa5ce2f75cf261673f8fd60cd42899e1c395e565ccffb0942a4e83e",
+      "input": [
+        "4332551291/250000000000",
+        "143618028667/500000000000"
+      ]
+    },
+    "old_K_disposition": "first box contract",
+    "selected_plan_id": "5ebca65237fc889940f95685b0bf4866c68da8b11a40e998fb3d2ff1882713d1",
+    "actual_selected_first": [
+      "97729645647/125000000000",
+      "4565101967/15625000000"
+    ],
+    "old_first": [
+      "3128363/4000000",
+      "5843627/20000000"
+    ],
+    "actual_output": [
+      "97729645647/125000000000",
+      "4565101967/15625000000"
+    ],
+    "actual_successor_history": "98ac975602d9c75a9872684556fe24e816d76eb10c61459ba09e09c2e9725c6e",
+    "actual_first_changed": true
+  },
+  {
+    "run_id": "two_updates_001",
+    "interface": "curve",
+    "round": 2,
+    "phase": 6,
+    "history": "98ac975602d9c75a9872684556fe24e816d76eb10c61459ba09e09c2e9725c6e",
+    "parent_plan_id": "11717c5cda51300d68d847299f2c730ca23919fe4dd27b236086633d089cb17e",
+    "anchor_id": "8f7c1733b49d894bebe7ccb2f9656d096d509ba46d6c0dff837161bbe308a544",
+    "derivative_id": "b927415d04298506e35c42e2c7bd76caec51eb56adcd5f196b2f9d4d9ea8f555",
+    "assembly_id": "cbeb8790b0d34b0de73cb3a06d1f3fe68f89293ac6ba6642172a2497d187af11",
+    "raw_result_id": "6328fd530e5db456dc988f5c7d6ff5a94d54375d479ff00c242dd1a15cd1f0dd",
+    "policy_result_id": "bfd2b912c29a91ca6fdfa7766bd3d7de87a07861d53112861a47c2796fd51670",
+    "accepted": true,
+    "accepted_plan_id": "73a25b3daa567895f576a6e0b992276e6adca058947c07c51d894a18469e6319",
+    "commit_id": "afa56a9340a8215ca6026c02404f01bbbd00bd2e82061dac4a3408da1dd2f0c3",
+    "derivative_and_solve_and_cert_wall_s": 2.1063821879797615,
+    "failure_layer": null,
+    "old_pending_reset": {
+      "phase": 37,
+      "next_phase": 38,
+      "row_sha256": "e1ac5e65dfa5ce2f75cf261673f8fd60cd42899e1c395e565ccffb0942a4e83e",
+      "input": [
+        "4332551291/250000000000",
+        "143618028667/500000000000"
+      ]
+    },
+    "new_pending_reset": {
+      "phase": 38,
+      "next_phase": 39,
+      "row_sha256": "c4988632dd04743c5ffc1d913afee223dba9c753c2c52881d5600b0980c0df7d",
+      "input": [
+        "17374208213/1000000000000",
+        "205458897309/500000000000"
+      ]
+    },
+    "old_K_disposition": "entire accepted prefix/receiver/K replaces old obligation atomically",
+    "selected_plan_id": "73a25b3daa567895f576a6e0b992276e6adca058947c07c51d894a18469e6319",
+    "actual_selected_first": [
+      "390769799793/500000000000",
+      "143850646011/500000000000"
+    ],
+    "old_first": [
+      "156367051049/200000000000",
+      "287714786251/1000000000000"
+    ],
+    "actual_output": [
+      "390769799793/500000000000",
+      "143850646011/500000000000"
+    ],
+    "actual_successor_history": "30dd12a5301b3bdd9b6e496c780a6c638969e6b98db6dbf84de35771742c65bb",
+    "actual_first_changed": true
+  },
+  {
+    "run_id": "two_updates_001",
+    "interface": "straight_acceleration",
+    "round": 1,
+    "phase": 10,
+    "history": "5d8f78e9912c0aa944634651040e50ade2ab2f9a0d36f42994f7554bd1594ade",
+    "parent_plan_id": "0a96df8faa81e1b6cefbc08cdd0b62d86daf8e85b33e2e293eeb93778bd69bc7",
+    "anchor_id": "37617f003608b3434a3b3d1d7dfb2d673a74342fc098448a02af524efa30c857",
+    "derivative_id": "7977280fba033be04e7f6a4c825832793b608ffaa1a913576ea9018690b02cd2",
+    "assembly_id": "74e1f0311a03bba6634404d1d4b6f3de69a174848f7c495fadab879019b9b625",
+    "raw_result_id": "be24d74535c7ce9036de81c6b9ab463ea3754ef698baba418ab5e074b6f161f2",
+    "policy_result_id": "249dfb6ab4fdc8c9d2a2851025e92d5fbcaca2e48c99295a9baa33b215b47eaa",
+    "accepted": true,
+    "accepted_plan_id": "c8d58e3f1d791b8fcd1958af4c17c12e9e902be77a2d3e4ea435d4b18b83bc6c",
+    "commit_id": "7e831f54220e94cf345b19f8e3447e548bc995924ca74d375edca5724f63cccb",
+    "derivative_and_solve_and_cert_wall_s": 2.1566612269962206,
+    "failure_layer": null,
+    "old_pending_reset": null,
+    "new_pending_reset": {
+      "phase": 42,
+      "next_phase": 43,
+      "row_sha256": "98c158f0f6297875805de7d327f80743107213b876b46d7319b75666102fcfcc",
+      "input": [
+        "172468659873/250000000000",
+        "73745669/250000000000"
+      ]
+    },
+    "old_K_disposition": "first box contract",
+    "selected_plan_id": "c8d58e3f1d791b8fcd1958af4c17c12e9e902be77a2d3e4ea435d4b18b83bc6c",
+    "actual_selected_first": [
+      "1713847/200000000000",
+      "531984873/12500000000"
+    ],
+    "old_first": [
+      "73/4000000",
+      "213139/5000000"
+    ],
+    "actual_output": [
+      "1713847/200000000000",
+      "531984873/12500000000"
+    ],
+    "actual_successor_history": "13d2492be3ee369f6460506b55cdf48bc1dd12d80c246aafa7182723c5ddae09",
+    "actual_first_changed": true
+  },
+  {
+    "run_id": "two_updates_001",
+    "interface": "straight_acceleration",
+    "round": 2,
+    "phase": 11,
+    "history": "13d2492be3ee369f6460506b55cdf48bc1dd12d80c246aafa7182723c5ddae09",
+    "parent_plan_id": "c98a2dba8217f72c083030576f66c5ddd5ae646b6d909e20b15756c6fb3cca82",
+    "anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+    "derivative_id": "89297aabe05f4f55358c4f353135b67bf411850bb9f64e6ab26074583fa32756",
+    "assembly_id": "2bff8c668634f122519a4c9f6420361bf1cb1f0d5d35568d968e74c1e3f1c2ad",
+    "raw_result_id": "ca3231b2e00c48b023b9777d6dcd275bc4f81a01d7f373f5ac627da8a04ad57f",
+    "policy_result_id": "3ad6f86618a09e33b40d62ed18269d01406573ab8b6fe2a02989b509cdd5c44c",
+    "accepted": true,
+    "accepted_plan_id": "273313e21d8ef192e0edd8b00aca1db38662bb9802c0f4d5632a2412aeb4389e",
+    "commit_id": "eb12ef5bec3aa301d054262de048d7e4bc1a9028e9ce4b4e3fcc4bc1185535db",
+    "derivative_and_solve_and_cert_wall_s": 2.106248614989454,
+    "failure_layer": null,
+    "old_pending_reset": {
+      "phase": 42,
+      "next_phase": 43,
+      "row_sha256": "98c158f0f6297875805de7d327f80743107213b876b46d7319b75666102fcfcc",
+      "input": [
+        "172468659873/250000000000",
+        "73745669/250000000000"
+      ]
+    },
+    "new_pending_reset": {
+      "phase": 43,
+      "next_phase": 44,
+      "row_sha256": "a96fa77bc54b4ef1dea85cdf55d0c10e3e183c78a4c81494bae3079306ee8516",
+      "input": [
+        "-5196621689/1000000000000",
+        "294914809/1000000000000"
+      ]
+    },
+    "old_K_disposition": "entire accepted prefix/receiver/K replaces old obligation atomically",
+    "selected_plan_id": "273313e21d8ef192e0edd8b00aca1db38662bb9802c0f4d5632a2412aeb4389e",
+    "actual_selected_first": [
+      "4484711/1000000000000",
+      "-32800017711/1000000000000"
+    ],
+    "old_first": [
+      "2119591/250000000000",
+      "-1310424183/40000000000"
+    ],
+    "actual_output": [
+      "4484711/1000000000000",
+      "-32800017711/1000000000000"
+    ],
+    "actual_successor_history": "4991a81172a35b845cc9dfa779a13aaf84e395681f04f46565a54d048490a55a",
+    "actual_first_changed": true
+  }
+]

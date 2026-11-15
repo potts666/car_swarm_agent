@@ -1,0 +1,127 @@
+{
+  "development_algorithm_frozen": true,
+  "gate": "P0_GATE_v2.json",
+  "formal_algorithm_frozen": false,
+  "historical_register": "results/document_history_033/pending_parameters.json",
+  "development_fixed": {
+    "h": ".2",
+    "N": 32,
+    "v": [
+      0,
+      2
+    ],
+    "a": [
+      -1,
+      1
+    ],
+    "delta": [
+      -0.5,
+      0.5
+    ],
+    "omega": [
+      -1,
+      1
+    ],
+    "clearance": ".5",
+    "exact_goal_velocity_steering": 0,
+    "solver": "clarabel 0.11.1",
+    "solver_tolerance": "1e-10",
+    "solver_max_iter": 300,
+    "solver_time_limit_s": 5,
+    "rational_input_quantum": "1e-12",
+    "norm_upper_quantum": "1e-24",
+    "stop_nodes": "physical route entry/exit waypoints plus resource stage interfaces",
+    "policy": "common witnessed S policy; versioned U_pi; m+U(target)<=U(source)",
+    "local_objective": "normalized input energy; fixed connection duration; no local time search"
+  },
+  "development_cases": [
+    {
+      "M_edges": 402,
+      "M_nodes": 141,
+      "S_edges": 402,
+      "S_nodes": 141,
+      "case": "asymmetric_baseline",
+      "initial_C_M": 1198,
+      "initial_C_S": 1271,
+      "initial_gap_to_S_library": 30,
+      "initial_strategy_ticks": 1301,
+      "preparation_wall_s": 77.18110486300066
+    },
+    {
+      "M_edges": 446,
+      "M_nodes": 149,
+      "S_edges": 446,
+      "S_nodes": 149,
+      "case": "tight_curve",
+      "initial_C_M": 1199,
+      "initial_C_S": 1273,
+      "initial_gap_to_S_library": 32,
+      "initial_strategy_ticks": 1305,
+      "preparation_wall_s": 78.09149896999952
+    },
+    {
+      "M_edges": 293,
+      "M_nodes": 112,
+      "S_edges": 293,
+      "S_nodes": 112,
+      "case": "exit_merge_dependency",
+      "initial_C_M": 1194,
+      "initial_C_S": 1269,
+      "initial_gap_to_S_library": 26,
+      "initial_strategy_ticks": 1295,
+      "preparation_wall_s": 78.68616465699961
+    }
+  ],
+  "source_domain": {
+    "coarse_pose_radius_m": ".001 initial, then .005/.005/.02",
+    "coarse_yaw_radius_rad": ".00001 initial, then .00005/.00005/.00015",
+    "coarse_velocity_steering": "exact zero",
+    "moving_receivers": "exact-flow images or certified inner boxes"
+  },
+  "unfrozen": [
+    {
+      "name": "正式任务分布、生成区间、随机种子和样本数",
+      "reason": "三例为开发案例；尚未生成留出集或置信区间。"
+    },
+    {
+      "name": "最小效应量、配对统计与多重比较规则",
+      "reason": "开发差异不能替代正式统计设计。"
+    },
+    {
+      "name": "正式任务Tmax与失败截断统计",
+      "reason": "当前每例使用共同可行U上界，不采用历史180s。"
+    },
+    {
+      "name": "停止节点敏感性与资源交接强基线",
+      "reason": "现有路线入口/出口停车；资源交接仅停车的同几何参考已列出，但未新增闭环敏感性运行。"
+    },
+    {
+      "name": "兼容多车运动并行、计算并行和四车同组消融",
+      "reason": "当前统一单活动车、串行理想消息；不能声称分组加速或运动并行收益。"
+    },
+    {
+      "name": "更广候选前端、反馈覆盖和v/delta非退化域",
+      "reason": "当前全程库较保守；粗节点精确v/delta0，任意域成员/新任务自动受理并未实现。"
+    },
+    {
+      "name": "持续物理时钟与迟到处理",
+      "reason": "目前计算时物理时钟暂停；不声称0.2s实时运行。"
+    },
+    {
+      "name": "正式硬件、墙钟重复次数和缓存规则",
+      "reason": "当前逐例单次开发计时，任务准备约77至79s；不可给硬件泛化结论。"
+    },
+    {
+      "name": "外部同模型规划对照与规模实验",
+      "reason": "库内精确最短路已有；外部算法适配和规模实验未运行。"
+    },
+    {
+      "name": "局部更短m搜索/收敛与最优性",
+      "reason": "当前SOCP固定m、认证微小控制修正；没有全局或局部最优性证书。"
+    },
+    {
+      "name": "准备阶段更细的成本分解",
+      "reason": "本轮记录每任务冷启动整体准备成本；没有单独计量地图预处理、路线生成、证书及策略构造。"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "source_plan": "d7e0e8f77c8e34554705902bd31b9a47cc260b2c790243f272ea0491936fb8cf",
+  "selected": "d7fd8797ab32abce4688ade40f53e2e83f1f02b0df59cc1e39b0be7f368fac01",
+  "candidate_pool": "59838dce2cceb3db7c7282b2715dfa25f3353b117f544a8027fe7ab77183e107",
+  "index_id": "b4eb66be3bc2b44e132e8c1656de4eb4834e055580b6d4a7d2d6fc1d2ffc422d",
+  "source_cycle": 0,
+  "rounds": [
+    0,
+    1
+  ],
+  "actors": [
+    [
+      "A1",
+      "A2",
+      "B1",
+      "B2"
+    ],
+    [
+      "A1",
+      "A2",
+      "B1",
+      "B2"
+    ]
+  ],
+  "limit": 8,
+  "variables_per_actor": 64,
+  "horizon": 32,
+  "eta": "1/50",
+  "trust_l2": "1/1000",
+  "quantum": "1/1000000000000",
+  "cost": "sum(a^2+omega^2), fixed suffix",
+  "submission": "one all-four endpoint/resource transaction; first-layer new-contract anchor; missing ACK restores old full plan",
+  "source_files": {
+    "audit.py": "1897aa003b789550d60ac38224e1c3db35ad1b3d361d8e71ad84d0fc5660e002",
+    "common.py": "c5c4cd5fa1628768bec40d47493bf63df7825aee77b7f38e45105da76617ad12",
+    "discovery.py": "877ab2e0301dc3121aecf1952bcad7f89f2e3f20a114fb2c53016150ca97c4d3",
+    "initialize.py": "0e11b61e8794ee8ad39ba73753036aaa0c17c9be7c31b72896bb334ba8673190",
+    "map_domain.py": "bd3d944def207ec46e98750254e65e08a60d42fc4d76230b934639a0c9259ee8",
+    "physics.py": "e6edc61a707aab24f7cf530eba0c10a3bc3ba9104269da165a43a780929ccc39",
+    "preflight.py": "6f65d2e92f0a5d3d20474cd16813250f10c508dae3fa0ccfe862374338257bee",
+    "stage_driver.py": "e81a649c4c2c140c42f75705f49ca03b2ea71dbd51ce67674ec033b6764f4a3b"
+  },
+  "executed_sources": {
+    "audit.py": "1897aa003b789550d60ac38224e1c3db35ad1b3d361d8e71ad84d0fc5660e002",
+    "certify_flow.py": "0edb830783fedc93c4ff7a9b859e337a0c3bc6e712a5b8c8eb4d8cf5f1e41b51",
+    "check_protocol.py": "fd2683ed8efce016970a3b40e3295e968f1efa54cfe61b6cb98dbd9c251a0ab9",
+    "common.py": "c5c4cd5fa1628768bec40d47493bf63df7825aee77b7f38e45105da76617ad12",
+    "discovery.py": "cd340637571521a97903642788b715e3e73163397de20869086102d2d2b88250",
+    "freeze_registration.py": "fe987daca7c06582d9fbf69b457842029f6c6076bd132331ea25576ceddee7fd",
+    "initialize.py": "0e11b61e8794ee8ad39ba73753036aaa0c17c9be7c31b72896bb334ba8673190",
+    "local_mpc.py": "a898a9fdb3a7e6749dbb94e82721c433d4ab71e28c97dd44a7fb65e244030fe9",
+    "map_domain.py": "bd3d944def207ec46e98750254e65e08a60d42fc4d76230b934639a0c9259ee8",
+    "physics.py": "e6edc61a707aab24f7cf530eba0c10a3bc3ba9104269da165a43a780929ccc39",
+    "preflight.py": "6f65d2e92f0a5d3d20474cd16813250f10c508dae3fa0ccfe862374338257bee",
+    "run_update.py": "46873887ec226780bbe827cd097fd2190eada911bad47df78f26d1b5b7325a14",
+    "stage_driver.py": "e81a649c4c2c140c42f75705f49ca03b2ea71dbd51ce67674ec033b6764f4a3b",
+    "transaction.py": "a4fd118b3b792cea69c03883371777e13046195c3877e8877a95a4511fcbfc5f",
+    "verify_delivery.py": "575841c9916b8d87962c47baee125935a177788f840d05b0328ad047fdb37288"
+  },
+  "native_gate": "zero init replays, map domain, full pool replays, protocol and both actual-source zero jobs passed"
+}

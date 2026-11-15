@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "repository": "potts666/car_swarm_agent",
+  "branch": "feature/deadlock-experiment",
+  "release_tag": "experiment-evidence-20261115-083601",
+  "archive": {
+    "filename": "experiment-evidence-20261115-083601.tar.gz",
+    "url": "https://github.com/potts666/car_swarm_agent/releases/download/experiment-evidence-20261115-083601/experiment-evidence-20261115-083601.tar.gz",
+    "sha256": "c25328fd92b1f4aca8016b8bcbfd2478338fc11966c0b825ea6b85c79b183549",
+    "bytes": 983672973,
+    "file_count": 24822,
+    "top_level": "experiments/"
+  },
+  "inventory": {
+    "filename": "snapshot_files.json",
+    "url": "https://github.com/potts666/car_swarm_agent/releases/download/experiment-evidence-20261115-083601/snapshot_files.json",
+    "sha256": "513387c27bda6e37eb3b81d5189300c937aeafc3e67df74a9a52cd4a6d2bbd41"
+  },
+  "excluded_only": [
+    "__pycache__",
+    ".git",
+    ".pytest_cache"
+  ],
+  "preservation": "All experimental source, raw results, old versions, failures and existing deliverables retained locally and byte-verified in full snapshot."
+}

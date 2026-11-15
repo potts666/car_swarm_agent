@@ -1,0 +1,160 @@
+{
+  "passed": true,
+  "task": "curve_joint_001",
+  "limit": 16,
+  "source_cycle": 32,
+  "source": {
+    "poses_Q": {
+      "A1": [
+        [
+          -3091754303461691763347,
+          -3091754303461691762736
+        ],
+        [
+          299996762328575268752,
+          299996762328575269335
+        ],
+        [
+          -328515567188006593,
+          -328515567188006590
+        ]
+      ],
+      "A2": [
+        [
+          -3319875587876153658550,
+          -3319875587876153658519
+        ],
+        [
+          -300000000000000000000,
+          -300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "B1": [
+        [
+          3125016985922269677393,
+          3125016985922269677424
+        ],
+        [
+          300000000000000000000,
+          300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "B2": [
+        [
+          3418802154411354347805,
+          3418802154411354347836
+        ],
+        [
+          -300000000000000000000,
+          -300000000000000000000
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "v": {
+      "A1": "4336405486881/22000000000000",
+      "A2": "4031373033403/4100000000000",
+      "B1": "3031373033403/3875000000000",
+      "B2": "4531373033403/4600000000000"
+    },
+    "delta": {
+      "A1": "-422853926133/1000000000000",
+      "A2": "0",
+      "B1": "0",
+      "B2": "0"
+    },
+    "history": "de8c82dfb0fa25a39f98e04f1d4bbf57afc2a2f695e45a319b86da2ad24de7bf",
+    "cycle": 32
+  },
+  "actors": [
+    "A1",
+    "A2"
+  ],
+  "arms": [
+    "F-E",
+    "O-E",
+    "F-P",
+    "O-P"
+  ],
+  "rounds": 2,
+  "lambda": 1,
+  "eta": "1/50",
+  "R": [
+    1,
+    1
+  ],
+  "S": [
+    1,
+    1
+  ],
+  "rho": "1/1000",
+  "h": "1/5",
+  "N": 32,
+  "quantum": "1/1000000000000",
+  "objective_multiplier": 5,
+  "failures_counted": true,
+  "automatic_retry": false,
+  "source_hashes": {
+    "audit.py": "9f115bdd7d8c5eb9df6df31a4c0a2f45a6ca517c3b1cea039d83a94c1851e48a",
+    "check_contract.py": "58857a8b93e0ce916e12e8d112dc9948c70df6390d97c5d0a11893256afffa04",
+    "check_preflight.py": "267c5fd5fa856f28c4964b6d1890cd8b39827a547373c5626a52d10ef2dae551",
+    "common.py": "c5c4cd5fa1628768bec40d47493bf63df7825aee77b7f38e45105da76617ad12",
+    "contract.py": "4ce0250753c80b2650f27652dbfefbfeba613fce21d2538edaeae6e3b4d57e7a",
+    "curve_bounds.py": "6884810ebf34109a9c6c6a8f4d8e9229d1e9c991fd6cb52492200cd5ff142013",
+    "curve_model.py": "e650c61152706bcddab51415730ae9c5d04646c1befac35e1ce7aa615f62f2ee",
+    "derivatives.py": "f359432a9f78a41bb02ee1f46e291b19057aaa0386331ba1ed5f6969ea31474c",
+    "discovery.py": "cd340637571521a97903642788b715e3e73163397de20869086102d2d2b88250",
+    "encounter.py": "c2b705c85f6e7a52086c8f032c2c8f27c76a085413d319c70d9314535f06c7b6",
+    "execution.py": "e8b888248c028c9e04ae4aff3e66d307a3587f45f3ef34eb3157902303b9e218",
+    "freeze_registration.py": "ac369f12b36866316cc74a3318f1c2a62e476b455fe9233016cae1aab6c629ef",
+    "initialize.py": "0e11b61e8794ee8ad39ba73753036aaa0c17c9be7c31b72896bb334ba8673190",
+    "instructions/theory/symbolic_checks.py": "f1f142060d273cf7a9365f8e3ea3f41ad1d07c898c8fe5c3c90e0ebb09312836",
+    "instructions/verify_package.py": "6fc224c2550d67ec24df2eab13f2148e0ae9c867cb1f8caf873ecb2ca68ad91a",
+    "local_mpc.py": "34a55cb100224e56e40c41e86ff0711379a91fa58d116fed91f814b2b42bd4b5",
+    "map_domain.py": "bd3d944def207ec46e98750254e65e08a60d42fc4d76230b934639a0c9259ee8",
+    "physics.py": "74e2d070fb471e561852da05d64cf2301bbaed8f5f8f708500e8efc8c4cb6b14",
+    "plan_io.py": "795f2be3d558e836dab90edc79dbac77bda122236d963ff20f1ba78111a851b4",
+    "preflight.py": "f6e884386b98dc0f5bacbbbac312929af3b7693c447c290dc3d4f84f6349987c",
+    "probe_source.py": "c189e797826838f1542d99cf2aebd9ec4358a6e8581d5ee97be95dbf96b7f09a",
+    "progression.py": "005361413fd52074833af4dcfb41695b320b83e18466fb04f234149179a32b7e",
+    "quantization.py": "c4a848e1f7c1be4bd206186ae65c86e3f9452f269e4f083ff1f1612990b26e13",
+    "rebuild_reference.py": "5cd0bbc1a5fb5dfea7cbe3b6aa285a2aa6e079aa6edf991904a5d20c420cf9ed",
+    "receivers.py": "8a4115c01f6b8d5b33d51305a09c3baee424d353b78c402a4dd82287831d7f06",
+    "run_experiment.py": "77d0c9a5dd307f11a51f498890bd0b49eb7fa98f8ab58f3fc2919c28412e1128",
+    "sources/certify_interfaces.py": "d2bb44e7e8f595f00a9296cc3cda0499e60f41841863fd858d70f285c7ee9b9d",
+    "sources/common.py": "b2578d9832a5aaf744be22023ed0a5bb2660d5c56ff1a3fc7e7e347d50d9a90b",
+    "sources/construct_certificate.py": "5bb5a8c09e1bbb3bca283741abed7a314dfda8cbec758002c00dda34087793d3",
+    "sources/interval_source.py": "bac15f5e841b511293ca4a220e48ccfda9a9a350795ab91102647ba906743df3",
+    "sources/physics.py": "e6edc61a707aab24f7cf530eba0c10a3bc3ba9104269da165a43a780929ccc39",
+    "stage_driver.py": "fe9c7f8aad049f6d6c0723f73b7763840b38c6a0feeb7fe23ba1c698c9ab482e",
+    "transport.py": "818808380cef40f73857e85501d7cc4b63fa7db75cbbac8e5c7681b024d04d37"
+  },
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.39",
+  "dependencies": {
+    "clarabel": "0.11.1",
+    "numpy": "1.26.4",
+    "scipy": "1.11.4"
+  },
+  "solver_settings": {
+    "max_iter": 200,
+    "tol_gap_abs": 1e-10,
+    "tol_gap_rel": 1e-10,
+    "tol_feas": 1e-10,
+    "time_limit": "infinity (existing default)",
+    "worker_channel_timeout_seconds": 30
+  },
+  "old_reference": "82fe21609f34de5583aa494ed8985aa934364fdd61cf81f6f13a3b0af2da18fc",
+  "fairness": "same first-source rows/receivers sealed and checked; freeze/energy-progress flags are sole arm differences; round2 actual own successors regenerated"
+}

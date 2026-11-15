@@ -1,0 +1,121 @@
+{
+  "initial_C": 1198,
+  "initial_R": 1232,
+  "C_completion": [
+    {
+      "edge_id": 3,
+      "actor": "B2",
+      "source": "0000",
+      "target": "0002",
+      "ticks": 242,
+      "motion": "B2-0-2"
+    },
+    {
+      "edge_id": 6,
+      "actor": "A2",
+      "source": "0002",
+      "target": "0302",
+      "ticks": 298,
+      "motion": "A2-0-3"
+    },
+    {
+      "edge_id": 83,
+      "actor": "B2",
+      "source": "0302",
+      "target": "0303",
+      "ticks": 70,
+      "motion": "B2-2-3"
+    },
+    {
+      "edge_id": 85,
+      "actor": "B1",
+      "source": "0303",
+      "target": "0323",
+      "ticks": 231,
+      "motion": "B1-0-2"
+    },
+    {
+      "edge_id": 93,
+      "actor": "B1",
+      "source": "0323",
+      "target": "0333",
+      "ticks": 74,
+      "motion": "B1-2-3"
+    },
+    {
+      "edge_id": 105,
+      "actor": "A1",
+      "source": "0333",
+      "target": "3333",
+      "ticks": 283,
+      "motion": "A1-0-3"
+    }
+  ],
+  "R_completion": [
+    {
+      "edge_id": 0,
+      "actor": "A1",
+      "source": "0000",
+      "target": "2000",
+      "ticks": 224,
+      "motion": "A1-0-2"
+    },
+    {
+      "edge_id": 187,
+      "actor": "B1",
+      "source": "2000",
+      "target": "2020",
+      "ticks": 231,
+      "motion": "B1-0-2"
+    },
+    {
+      "edge_id": 201,
+      "actor": "A2",
+      "source": "2020",
+      "target": "2120",
+      "ticks": 239,
+      "motion": "A2-0-1"
+    },
+    {
+      "edge_id": 220,
+      "actor": "B1",
+      "source": "2120",
+      "target": "2130",
+      "ticks": 74,
+      "motion": "B1-2-3"
+    },
+    {
+      "edge_id": 229,
+      "actor": "B2",
+      "source": "2130",
+      "target": "2131",
+      "ticks": 242,
+      "motion": "B2-0-1"
+    },
+    {
+      "edge_id": 232,
+      "actor": "A1",
+      "source": "2131",
+      "target": "3131",
+      "ticks": 74,
+      "motion": "A1-2-3"
+    },
+    {
+      "edge_id": 327,
+      "actor": "A2",
+      "source": "3131",
+      "target": "3331",
+      "ticks": 74,
+      "motion": "A2-1-3"
+    },
+    {
+      "edge_id": 400,
+      "actor": "B2",
+      "source": "3331",
+      "target": "3333",
+      "ticks": 74,
+      "motion": "B2-1-3"
+    }
+  ],
+  "scope": "Certified coarse-domain composition; source membership, geometry and budgets, not an execution experiment"
+}

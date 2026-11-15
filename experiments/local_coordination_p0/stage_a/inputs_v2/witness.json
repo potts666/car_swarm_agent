@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "source_event_sha256": "a77d0bab7b74e61b88a8f950bcf8d9dac89d9a1af2d934ac1cdc8a0ae2ade902",
+  "source_policy_sha256": "2fff250dad9b39168c490dcae1cb0926d3b5e9ab2087a0d5a59fe153d8bb1844",
+  "old_budget": 1301,
+  "accepted_budget": 1279,
+  "chain": [
+    {
+      "actor": "A2",
+      "kind": "M",
+      "motion": "A2-0-2",
+      "object": "b3a139077439f7dcf9a38e9265930828a49408100f4ae3509284a629a0e84d9f",
+      "source": "0000",
+      "target": "0200",
+      "ticks": 239
+    },
+    {
+      "actor": "B1",
+      "kind": "S",
+      "motion": "B1-0-2",
+      "object": "845eba7f655d20dcc957df784fcaf1e11a9115391d9ba6c58719b46737243ac9",
+      "source": "0200",
+      "target": "0220",
+      "ticks": 249
+    },
+    {
+      "actor": "B1",
+      "kind": "S",
+      "motion": "B1-2-3",
+      "object": "ad15fefb4e7136cf60ceb090e82c89a2df90290dad7df12e01b95c41a3691ec4",
+      "source": "0220",
+      "target": "0230",
+      "ticks": 74
+    },
+    {
+      "actor": "A1",
+      "kind": "S",
+      "motion": "A1-0-1",
+      "object": "05281ad54126080020a5ec1ef6cf044c97142f4d2608fb7b3e66cb0f0a8063c3",
+      "source": "0230",
+      "target": "1230",
+      "ticks": 243
+    },
+    {
+      "actor": "A1",
+      "kind": "S",
+      "motion": "A1-1-3",
+      "object": "ee0c221e536f77baf0ab22e42811fc5dac0ab4c443cf056c3bd60886ab090c71",
+      "source": "1230",
+      "target": "3230",
+      "ticks": 70
+    },
+    {
+      "actor": "B2",
+      "kind": "S",
+      "motion": "B2-0-1",
+      "object": "a87353df9a354b884955792185eb7c7a270a3cf8f5864f038ebc0bb7d9e2e694",
+      "source": "3230",
+      "target": "3231",
+      "ticks": 260
+    },
+    {
+      "actor": "A2",
+      "kind": "S",
+      "motion": "A2-2-3",
+      "object": "7903f58d64d868e79c0975d7a707d4e49fd91031dbcd998826c3b9ecc70fec73",
+      "source": "3231",
+      "target": "3331",
+      "ticks": 70
+    },
+    {
+      "actor": "B2",
+      "kind": "S",
+      "motion": "B2-1-3",
+      "object": "6f56548aa480ff938646b95975717dc9c83da40e8cbada9bf69c8764aba15390",
+      "source": "3331",
+      "target": "3333",
+      "ticks": 74
+    }
+  ],
+  "U": {
+    "0000": 1279,
+    "0200": 1040,
+    "0220": 791,
+    "0230": 717,
+    "1230": 474,
+    "3230": 404,
+    "3231": 144,
+    "3331": 74,
+    "3333": 0
+  }
+}

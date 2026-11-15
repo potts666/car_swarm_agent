@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "scope": "Analytic controls and geometric tube, no rational-input controller replay",
+  "domain_bounds": {
+    "wait_yaw": "579973/5399730000",
+    "wait_after_brake_position": "3/250",
+    "wait_full_body": "56645311211/2699865000000",
+    "entry_position_from_wait": "71176463/5399730000",
+    "entry_reset_yaw": "1258823/5294115000",
+    "exit_position": "90899451473/2647057500000",
+    "exit_tail_body": "243671/6250000",
+    "simultaneous_tail_approach_gap": "96274606680622822847/100000000000000000000"
+  },
+  "ticks": {
+    "preparation": 55,
+    "approach": 101,
+    "crossing": 562,
+    "tail": 95,
+    "per_car": 758,
+    "serial": 3087,
+    "overlapped": 2802
+  },
+  "preparation_profiles": {
+    "A1": 30,
+    "A2": 50,
+    "B1": 40,
+    "B2": 55
+  },
+  "geometry_certificate_sha256": "963a76d41650de18807012635e4db95c815c6b7e41eba40f54938be9fdf95eb8"
+}

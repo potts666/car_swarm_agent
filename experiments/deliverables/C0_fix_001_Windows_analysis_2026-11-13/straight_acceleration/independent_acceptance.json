@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "actual_steps": 240,
+  "accepted_numeric_candidates": 1,
+  "actual_K_executions": 1,
+  "damaged_K_proposals_rejected_with_actual_old_K": 1,
+  "remaining_budget": 1039,
+  "reconstructed_completion_witness": "d038db36d63515f7775265ffff5907dfe4a337a08d9672a4a43f7fb30377ca4e",
+  "shift_recertifications": [
+    {
+      "phase": 11,
+      "new_anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+      "different_from_initial": true,
+      "inherited_actual_tail_verified": true,
+      "free_box_available": true
+    }
+  ],
+  "minimum_road_lower_m": 0.49852990795272917,
+  "minimum_pair_lower_m": 0.5019554092847529,
+  "wall_s": 8.673436547993333,
+  "shared": [
+    "interval arithmetic, trigonometry, propagation",
+    "certified variational generator and derivative replay",
+    "A identity helpers"
+  ],
+  "independent": [
+    "terminal Taylor parameter derivation",
+    "raw-to-rational input provenance",
+    "bodies, road, six pairs, permissions",
+    "actual boxes/K/flow, shift, completion witness and budget"
+  ]
+}

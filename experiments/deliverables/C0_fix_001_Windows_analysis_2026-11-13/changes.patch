@@ -1,0 +1,348 @@
+--- base_c/base_b/execute_case.py
++++ execute_fix.py
+@@ -2,9 +2,9 @@
+ """Fixed-duration B runs, real solver provenance, rejection fallback and K replay."""
+ import argparse
+ import time
+-from common import *
++from fix_common import *
+ from derivatives import build,verify
+-from socp import solve,diagnostic,rows_for
++from socp import diagnostic,rows_for,evaluate
+ 
+ 
+ def main():
+@@ -28,22 +28,22 @@
+                     if phase==start:
+                         assert anchor_id==item['anchor_id'];cert=shared_cert;derivative_id=item['derivative_id'];attempt_subs=[cert['subdivisions']]
+                     else:attempt_subs=[8,16,32]
+-                    records=[]
+-                    for sub in attempt_subs:
+-                        if phase!=start:
+-                            cert=build(data,m,anchor,sub);verify(data,m,cert,anchor);derivative_id=put(HERE/'objects',cert)
+-                        result=solve(data,m,anchor,cert,args.method);result['derivative_id']=derivative_id
+-                        result_id=put(HERE/'objects',result);records.append(dict(result_id=result_id,derivative_id=derivative_id,subdivisions=sub,status=result['status'],accepted=result['accepted']))
+-                        if result['accepted'] or result['status']=='free_box_temporarily_unavailable':break
+-                    event=dict(phase=phase,anchor_id=anchor_id,attempts=records,accepted=result['accepted'],rejection_layer=result.get('failure_layer'))
+-                    if result['accepted']:
++                    if phase==start:
++                        chosen=read(HERE/'results/probe/summary.json')[args.interface+'_centered']['chosen_id']
++                        result=get(HERE/'objects',chosen);assert result['accepted'] and result['anchor_id']==anchor_id
++                        result['interface']=args.interface;result_id=put(HERE/'objects',result)
+                         proposal=result['accepted_proposal'];accepted+=1;candidate_id=result_id
+-                        assert result['candidate_source'].startswith('Clarabel')
+-                    else:numeric_rejected+=1
++                        event=dict(phase=phase,anchor_id=anchor_id,attempts=[dict(result_id=result_id,derivative_id=derivative_id,subdivisions=cert['subdivisions'],status=result['status'],accepted=True)],accepted=True,rejection_layer=None)
++                    else:
++                        cert=build(data,m,anchor,32);verify(data,m,cert,anchor);derivative_id=put(HERE/'objects',cert)
++                        zero=evaluate(rows_for(data,m,anchor,cert,'B-JL'),[F(0)]*64)
++                        staged=copy.deepcopy(state)
++                        for j,u in enumerate(A.window(old)):
++                            if old['pending_reset'] and phase+j==old['pending_reset']['phase']:assert in_box(m,staged,c,data.row(phase+j))
++                            legacy.execute(m,staged,c,u,data.cfg,data.cert['source']>0)
++                        assert in_flow(m,staged,data.cert,phase+32)
++                        event=dict(kind='actual_shift_recertification',phase=phase,anchor_id=anchor_id,derivative_id=derivative_id,free_box_zero_check=zero,inherited_plan_id=old['id'],remaining_budget=budget,actual_tail_continuously_verified=True,new_solve=False,accepted=False)
+                     events.append(event)
+-                    if phase==start:
+-                        fixture=get(HERE/'objects',item['A_reference_id']);diag=diagnostic(result['rows'],fixture['dA'])
+-                        write(args.output/'A_direction_diagnostic.json',diag)
+                 pending=old['pending_reset']
+                 if pending is not None and pending['phase']==phase:
+                     # A valid fixture over the numerical old tail is corrupted;
+--- base_c/base_b/accept_case.py
++++ accept_fix.py
+@@ -2,8 +2,8 @@
+ """External B replay, numerical provenance and flexible multi-update acceptance."""
+ import argparse
+ import time
+-from common import *
+-from validate_numeric import check
++from fix_common import *
++from validate_fix import check
+ 
+ 
+ def accept(run):
+@@ -36,7 +36,23 @@
+                 audit.step(edge['actor'],tuple(map(F,cert['inputs'][0])),cert['source']>0,row['actual'])
+             else:
+                 phase=row['phase'];assert phase==count and row['old_plan_id']==expected['id'];plan=row['plan'];c=data.cert['car'];event=row['solver_event']
+-                if event:
++                if event and event.get('kind')=='actual_shift_recertification':
++                    from derivatives import verify
++                    from socp import rows_for,evaluate
++                    anchor=anchor_for(data,m,dict(poses=audit.p4,v=audit.v,delta=audit.d,history=audit.history),expected)
++                    assert content_id(anchor)==event['anchor_id']
++                    cert=get(HERE/'objects',event['derivative_id']);verify(data,m,cert,anchor)
++                    rows=rows_for(data,m,anchor,cert,'B-JL');zero=evaluate(rows,[F(0)]*64)
++                    assert content_id(zero)==content_id(event['free_box_zero_check'])
++                    assert event['inherited_plan_id']==expected['id'] and event['remaining_budget']==budget
++                    trial=audit.clone()
++                    for j,u in enumerate(A.window(expected)):
++                        if expected['pending_reset'] and phase+j==expected['pending_reset']['phase']:trial.box(c,data.row(phase+j))
++                        trial.step(c,u,data.cert['source']>0)
++                    trial.flow(c,data.cert,phase+32)
++                    recert.append(dict(phase=phase,new_anchor_id=content_id(anchor),different_from_initial=content_id(anchor)!=cfg['shared_anchor_id'],inherited_actual_tail_verified=True,free_box_available=zero['passed']))
++                    assert plan['id']==expected['id'] and row['accepted_result_id'] is None
++                elif event:
+                     anchor=anchor_for(data,m,dict(poses=audit.p4,v=audit.v,delta=audit.d,history=audit.history),expected)
+                     assert event['anchor_id']==content_id(anchor)
+                     if phase==cfg['prefix_start']:assert event['anchor_id']==cfg['shared_anchor_id']
+--- base_c/base_b/validate_numeric.py
++++ validate_fix.py
+@@ -1,5 +1,5 @@
+ """External numerical provenance and certificate checks, independent terminal rows."""
+-from common import *
++from fix_common import *
+ from derivatives import verify,unpack
+ from socp import evaluate
+ from socp_anchor import derivative_bounds as global_bounds
+@@ -28,11 +28,24 @@
+         assert not any(map(F,row['linear']))
+     trust=next(r for r in rows if r['name']=='hard_trust');assert F(trust['g_upper'])==-RHO and F(trust['gradient_error'])==1 and F(trust['hessian'])==0
+     if not result['accepted']:return True
+-    assert result['status']=='Solved' and result['solver_called'] and result['variables']==66 and result['input_variables']==64
++    assert result['admission_policy'] in ('strict_solved_v1','certificate_suboptimal_v1')
++    allowed=('Solved',) if result['admission_policy']=='strict_solved_v1' else ('Solved','AlmostSolved')
++    assert result['status'] in allowed and result['solver_called'] and result['variables']==65 and result['input_variables']==64
++    import math
++    assert all(math.isfinite(v) for key in ('raw_solution','raw_slack','raw_dual') for v in result[key])
++    sources=read(HERE/'results/probe/summary.json');source=get(HERE/'objects',sources[result['interface']+'_'+result['representation']]['result_id'])
++    for key in ('raw_solution','raw_slack','raw_dual','assembly_id','status','anchor_id','derivative_id'):assert result[key]==source[key],key
++    model=get(HERE/'objects',result['assembly_id']);assert content_id(model['physical_rows'])==content_id(rows)
++    from fix_socp import assembly,reserved_rows
++    import numpy as np
++    inner,_=reserved_rows(rows,'Q');ref=np.asarray([[float(F(x)) for x in u] for u in anchor['plan']['remaining'][:32]]).ravel()
++    rebuilt=assembly(inner,ref,F(1,10000))[-1]
++    for key in ('P','q','A','b','cone_dimensions'):assert model[key]==rebuilt[key],key
+     assert F(result['physical_trust_radius'])==RHO and result['solver_tolerance']<=1e-10
+     raw=result['raw_solution'];scale=F(result['numerical_variable_scale']);alpha=F(result['accepted_alpha']);assert alpha in (1,F(1,2),F(1,4))
+-    physical=[float(scale)*float(x) for x in raw[:64]]
+-    delta=[F(round(float(alpha)*x*10**12),10**12) for x in physical]
++    physical=[scale*F.from_float(float(x)) for x in raw[:64]]
++    delta=[F(round(alpha*x*10**12),10**12) for x in physical]
++    assert F(result['rebuilt_t'])==norm_upper(delta) and F(result['rebuilt_s'])==norm_upper(delta)**2
+     assert list(map(F,result['accepted_delta']))==delta,'input did not come from raw Clarabel point'
+     cone=evaluate(rows,delta);assert cone['passed'] and F(cone['norm_upper'])<=RHO,'rational cone rejection'
+     accepted=result['accepted_proposal'];assert proposal is None or proposal==accepted
+--- /dev/null
++++ fix_common.py
+@@ -0,0 +1,7 @@
++from pathlib import Path
++import sys
++ROOT=Path(__file__).resolve().parent
++sys.path.insert(0,str(ROOT/"base_c"))
++from c_common import *
++HERE=ROOT
++def setup():return Certificates(ROOT/"inputs"),legacy.load_model(REBUILD)
+--- /dev/null
++++ fix_socp.py
+@@ -0,0 +1,51 @@
++"""Centered SOC equivalent; fixed Q rows, scale and strict solver settings."""
++import math,time
++import numpy as np
++from scipy import sparse
++import clarabel
++from fix_common import *
++from c_socp import assembly as old_assembly,nearest,reserved_rows
++from socp import rows_for,evaluate
++
++
++def assembly(rows,reference,scale):
++    P,q,a,b,cones,export=old_assembly(rows,reference,scale)
++    a=a.toarray();b=b.copy();offset=export['cone_dimensions'][0]+65;branches=[];errors=[]
++    for row in rows:
++        g=F(row['g_upper']);h=F(row['hessian'])
++        if not h:branches.append('linear');continue
++        if g<0:
++            ell=[scale*F(x)/(-g) for x in row['linear']]+[scale*F(row['gradient_error'])/(-g)]
++            beta=2*h*scale**2/(-g);root=math.sqrt(float(beta))
++            a[offset]=list(map(float,ell));a[offset+1]=0;a[offset+1,64]=-root;a[offset+2]=a[offset];b[offset:offset+3]=(2,0,0)
++            errors.append(dict(name=row['name'],maximum_coefficient_error=str(max(abs(F.from_float(float(x))-x) for x in ell)),root_squared_error=str(F.from_float(root)**2-beta)))
++            branches.append('centered')
++        else:branches.append('old_valid_cone_nonpositive_margin')
++        offset+=3
++    assert offset==len(b)
++    export.update(A=a.tolist(),b=b.tolist(),representation='centered_equivalent_v1',branches=branches,centered_conversion=errors)
++    return P,q,sparse.csc_matrix(a),b,cones,export
++
++
++def admit(data,m,anchor,cert,source,policy):
++    record=copy.deepcopy(source);record.update(admission_policy=policy,accepted=False)
++    rows=rows_for(data,m,anchor,cert,'B-JL');assert content_id(rows)==content_id(record['rows'])
++    allowed=('Solved',) if policy=='strict_solved_v1' else ('Solved','AlmostSolved') if policy=='certificate_suboptimal_v1' else ()
++    if record['status'] not in allowed or not all(math.isfinite(x) for key in ('raw_solution','raw_slack','raw_dual') for x in record[key]):
++        return record|dict(failure_layer='candidate_numeric',rejection='status/finite whitelist')
++    assert record['anchor_id']==content_id(anchor) and record['derivative_id']==content_id(cert)
++    scale=F(record['numerical_variable_scale']);raw=[scale*F.from_float(float(x)) for x in record['raw_solution'][:64]]
++    state=restore(m,anchor['state']);old=anchor['plan'];attempts=[]
++    for alpha in (F(1),F(1,2),F(1,4)):
++        begin=time.perf_counter();delta=nearest([alpha*x for x in raw]);error=norm_upper([d-alpha*x for d,x in zip(delta,raw)]);assert error<=F(4,10**12)
++        cone=evaluate(rows,delta);attempt=dict(alpha=str(alpha),rational_delta=list(map(str,delta)),rounding_error=str(error),cone=cone,repair_wall_s=time.perf_counter()-begin)
++        if cone['passed']:
++            commands=[tuple(F(x)+delta[2*j+k] for k,x in enumerate(u)) for j,u in enumerate(old['remaining'][:32])];proposal=numerical_plan(data,state,old,commands);check=time.perf_counter()
++            try:proof=A.validate_candidate(m,data,state,old,proposal,old['phase'])
++            except ValueError as exc:attempt.update(passed=False,failure_layer='nonlinear_geometry_terminal_K_energy_budget',rejection=str(exc))
++            else:
++                attempt.update(passed=True,nonlinear_proof=proof,validation_wall_s=time.perf_counter()-check);attempts.append(attempt)
++                return record|dict(accepted=True,changed=any(delta),accepted_proposal=proposal,accepted_delta=list(map(str,delta)),accepted_alpha=str(alpha),attempts=attempts,accepted_prefix_energy=str(H*sum(sum(x*x for x in u) for u in commands)),candidate_source='Clarabel raw solution, exact-rational nearest grid and bounded backoff',rebuilt_t=str(norm_upper(delta)),rebuilt_s=str(norm_upper(delta)**2))
++        else:attempt.update(passed=False,failure_layer='rational_cone',rejection=cone['violations'])
++        attempts.append(attempt)
++    return record|dict(attempts=attempts,failure_layer=attempts[-1]['failure_layer'],rejection=attempts[-1]['rejection'])
+--- /dev/null
++++ probe.py
+@@ -0,0 +1,55 @@
++"""Four registered solves only; complete public callback and exact dyadic audit."""
++from fix_socp import *
++import platform,sys
++
++def fields(obj):
++    out={}
++    for k in dir(obj):
++        if k.startswith('_') or callable(getattr(obj,k)):continue
++        v=getattr(obj,k);out[k]=v if isinstance(v,(float,int,str,bool,list)) else str(v)
++    return out
++
++def strict_interior(model):
++    rows=model['assembled_rows'];T=min([RHO/2,F(1,2)]+[-F(r['g_upper'])/(2*(F(r['gradient_error'])+F(r['hessian'])/2)) for r in rows if F(r['gradient_error'])+F(r['hessian'])/2>0]);assert T>0
++    slack=[F.from_float(float(b))-F.from_float(float(a[-1]))*T/F(1,10000) for a,b in zip(model['A'],model['b'])];n=model['cone_dimensions'][0];assert all(x>0 for x in slack[:n])
++    for size in model['cone_dimensions'][1:]:
++        block=slack[n:n+size];assert block[0]>0 and block[0]**2>sum(x*x for x in block[1:]);n+=size
++    return dict(passed=True,T=str(T),all_binary64_coefficients_treated_as_exact=True)
++
++def exact_audit(model,solution):
++    cv=lambda v:[F.from_float(float(x)) for x in v]
++    x,s,z=cv(solution.x),cv(solution.s),cv(solution.z);a=[cv(r) for r in model['A']];p=[cv(r) for r in model['P']];q,b=cv(model['q']),cv(model['b'])
++    dot=lambda u,v:sum((t*w for t,w in zip(u,v) if t and w),F(0))
++    rp=[dot(row,x)+ss-bb for row,ss,bb in zip(a,s,b)]
++    rd=[dot(p[j],x)+q[j]+dot([r[j] for r in a],z) for j in range(65)]
++    px=dot(x,[dot(row,x) for row in p]);qx=dot(q,x);bz=dot(b,z)
++    def norm(v):return math.sqrt(float(dot(v,v)))
++    return dict(primal_vector=list(map(str,rp)),dual_vector=list(map(str,rd)),primal_norm=norm(rp),dual_norm=norm(rd),normalized_primal=norm(rp)/max(1,norm(b)+norm(x)+norm(s)),normalized_dual=norm(rd)/max(1,norm(q)+norm(x)+norm(z)),primal_objective=str(px/2+qx),dual_objective=str(-px/2-bz),b_dot_z=str(bz),cancellation_ratio=float(sum(abs(t*w) for t,w in zip(b,z))/max(1,abs(bz))),objective_energy_scale='1/10000')
++
++def main():
++    dest=HERE/'results/probe';assert not dest.exists();dest.mkdir(parents=True)
++    data,m=setup();levels=read(HERE/'base_c/analysis/numerical_levels.json');index=read(BASE/'results/enrichment_001/index.json');out={}
++    write(dest/'environment.json',dict(python=sys.version,platform=platform.platform(),clarabel=clarabel.__version__,numpy=np.__version__,settings_source='Clarabel.rs v0.11.1 default/settings.rs'))
++    for name,item in index.items():
++        anchor=get(HERE/'objects',item['anchor_id']);cert=get(HERE/'objects',item['derivative_id']);original=get(HERE/'objects',levels[name+'_Q_1_10000']['assembly_id']);rows=rows_for(data,m,anchor,cert,'B-JL');inner,res=reserved_rows(rows,'Q');assert content_id(inner)==content_id(original['assembled_rows'])
++        ref=np.array([[float(F(x)) for x in u] for u in anchor['plan']['remaining'][:32]]).ravel()
++        for representation in ('old','centered'):
++            P,q,a,b,cones,model=(old_assembly if representation=='old' else assembly)(inner,ref,F(1,10000))
++            for k in ('P','q','A','b','cone_dimensions'):
++                if representation=='old':assert model[k]==original[k],k
++            model.update(physical_rows=rows,assembled_rows=inner,rounding_reserves=res);assembly_id=put(HERE/'objects',model);interior=strict_interior(model)
++            cfg=clarabel.DefaultSettings();cfg.verbose=True;cfg.max_iter=300;cfg.time_limit=5.;cfg.tol_feas=cfg.tol_gap_abs=cfg.tol_gap_rel=1e-10
++            solver=clarabel.DefaultSolver(P,q,a,b,cones,cfg);solver.print_to_buffer();trace=[]
++            def callback(info):trace.append(fields(info));return False
++            solver.set_termination_callback(callback);solution=solver.solve();info=fields(solver.get_info());tag=name+'_'+representation
++            (dest/(tag+'.log')).write_text(solver.get_print_buffer());write(dest/(tag+'_trace.json'),trace);write(dest/(tag+'_settings.json'),fields(solver.get_settings()));write(dest/(tag+'_exact_audit.json'),exact_audit(model,solution))
++            result=dict(method='B-JL',anchor_id=item['anchor_id'],derivative_id=item['derivative_id'],rows=rows,solver_called=True,variables=65,input_variables=64,assembly_id=assembly_id,numerical_variable_scale='1/10000',physical_trust_radius=str(RHO),solver_tolerance=1e-10,solver_version=clarabel.__version__,status=str(solution.status),primal_residual=solution.r_prim,dual_residual=solution.r_dual,raw_solution=solution.x,raw_slack=solution.s,raw_dual=solution.z,raw_objective=solution.obj_val,raw_dual_objective=solution.obj_val_dual,iterations=solution.iterations,solver_wall_s=solution.solve_time,info=info,pre_postprocess_status='unknown: callback does not expose a guaranteed post-termination pre-postprocess state',unavailable=['per-factorization dynamic regularization events','per-iteration refinement counts'],interior=interior,representation=representation,rounding_reserves=res)
++            strict=admit(data,m,anchor,cert,result,'strict_solved_v1');strict_id=put(HERE/'objects',strict)
++            chosen=strict;policy_id=None
++            if representation=='centered' and solution.status==clarabel.SolverStatus.AlmostSolved:
++                chosen=admit(data,m,anchor,cert,result,'certificate_suboptimal_v1');policy_id=put(HERE/'objects',chosen)
++            out[tag]=dict(result_id=put(HERE/'objects',result),strict_id=strict_id,policy_id=policy_id,chosen_id=put(HERE/'objects',chosen),status=result['status'],strict_accepted=strict['accepted'],accepted=chosen['accepted'],policy=chosen['admission_policy'],info=info)
++            write(dest/'summary.json',out);print(tag,result['status'],'accepted',chosen['accepted'],flush=True)
++    assert len(out)==4
++    return out
++if __name__=='__main__':main()
+--- /dev/null
++++ self_check.py
+@@ -0,0 +1,71 @@
++"""Exact cone equivalence and trust-boundary regression, no new solves."""
++from fix_socp import *
++from probe import strict_interior
++from validate_fix import check
++import hashlib,urllib.request
++
++def main():
++    count=0
++    for beta in (F(0),F(1,17),F(10),F(1000)):
++        for tau in (F(-2),F(-1,3),F(0),F(1,3),F(2)):
++            boundary=1-beta*tau*tau/4
++            for w in (-2,F(0),F(1),F(3,2),boundary,boundary-F(1,100),boundary+F(1,100)):
++                lhs=(2-w)**2-w*w-beta*tau*tau;rhs=4*(1-w-beta*tau*tau/4)
++                assert lhs==rhs
++                assert (2-w>=0 and lhs>=0)==(rhs>=0);count+=1
++    # Actual assembly branches, including unavailable anchors, both signs of tau.
++    branch_tests=[]
++    for h in (F(0),F(2)):
++        for g in (F(-1),F(0),F(1)):
++            row=dict(name='edge',linear=[F(1)]+[F(0)]*63,g_upper=g,gradient_error=F(1,2),hessian=h,kind='test')
++            linear=dict(row,name='linear_anchor',g_upper=-1,hessian=0)
++            fixture=[linear,row]
++            old=old_assembly(fixture,np.zeros(64),F(1,10000))[-1];new=assembly(fixture,np.zeros(64),F(1,10000))[-1]
++            if not h or g>=0:
++                assert old['A']==new['A'] and old['b']==new['b']
++            else:
++                assert new['b'][-3:]==[2,0,0]
++                assert all(v==0 for v in new['A'][-2][:-1])
++            branch_tests.append(dict(h=str(h),g=str(g),branch=new['branches'][-1],zero_anchor_legal=g<=0))
++    q=F(1,10**12)
++    for i in range(-64,65):
++        raw=[F(i,3)*q+q/2]*64;assert norm_upper([a-b for a,b in zip(nearest(raw),raw)])<=4*q
++    data,m=setup();summary=read(HERE/'results/probe/summary.json');rejections=[];independent=[]
++    for name in ('curve','straight_acceleration'):
++        source=get(HERE/'objects',summary[name+'_centered']['result_id']);anchor=get(HERE/'objects',source['anchor_id']);cert=get(HERE/'objects',source['derivative_id'])
++        for status in ('NumericalError','InsufficientProgress','MaxTime','PrimalInfeasible'):
++            bad=copy.deepcopy(source);bad['status']=status
++            assert not admit(data,m,anchor,cert,bad,'certificate_suboptimal_v1')['accepted'];rejections.append(name+':'+status)
++        bad=copy.deepcopy(source);bad['raw_solution'][0]=float('nan');assert not admit(data,m,anchor,cert,bad,'certificate_suboptimal_v1')['accepted'];rejections.append(name+':NaN')
++        accepted=get(HERE/'objects',summary[name+'_centered']['chosen_id']);accepted['interface']=name
++        assert check(data,m,anchor,cert,accepted)
++        for key in ('raw_solution','anchor_id','derivative_id'):
++            bad=copy.deepcopy(accepted)
++            if key=='raw_solution':bad[key][0]+=1
++            else:bad[key]='0'*64
++            try:check(data,m,anchor,cert,bad,recompute=False)
++            except (AssertionError,ValueError,KeyError):rejections.append(name+':'+key)
++            else:raise AssertionError('bad provenance admitted')
++        model=get(HERE/'objects',source['assembly_id']);strict_interior(model)
++        old=anchor['plan'];state=restore(m,anchor['state'])
++        for kind in ('K','phase','object','domain','deadline','witness','budget'):
++            bad=copy.deepcopy(accepted['accepted_proposal'])
++            if kind=='K':bad['pending_reset']['input'][0]=str(F(bad['pending_reset']['input'][0])+1)
++            elif kind=='phase':bad['phase']+=1
++            elif kind=='object':bad['object']='0'*64
++            elif kind=='domain':bad['receiver']['domain']['speed_radius']='1'
++            elif kind=='deadline':bad['receiver']['deadline']+=1
++            elif kind=='witness':bad['witness']='0'*64
++            elif kind=='budget':bad['budget']+=1
++            bad=A.seal(bad)
++            try:A.commit(m,data,state,old,bad,old['phase'],old['phase'])
++            except ValueError as e:rejections.append(name+':'+kind+':'+str(e))
++            else:raise AssertionError('damaged proposal committed')
++        independent.append(name)
++    original=HERE.parent
++    preservation={name:sha(original/name)==digest for name,digest in read(HERE/'historical_hashes.json').items()};assert all(preservation.values())
++    inputs={name:sha(HERE/'instructions'/name)==digest for name,digest in read(HERE/'instructions/SHA256SUMS.json').items()};assert all(inputs.values())
++    manifest=read(HERE/'base_c/DELIVERY_MANIFEST.json')['files'];assert all(sha(HERE/'base_c'/name)==v['sha256'] for name,v in manifest.items())
++    result=dict(passed=True,exact_identity_cases=count,branch_tests=branch_tests,quantization_cases=129,rejected_cases=rejections,independent_numeric_certificates=independent,history_files_unchanged=len(preservation),instructions_hashes_verified=inputs,original_C_manifest_verified=len(manifest))
++    write(HERE/'results/self_checks.json',result);print('Exact equivalence, quantization, provenance, damage rejection and preservation checks passed',flush=True)
++if __name__=='__main__':main()
+--- /dev/null
++++ run_validation.py
+@@ -0,0 +1,23 @@
++"""Bounded stages: content-checked checkpoints; preserve failures and full logs."""
++import os,sys,subprocess,json,hashlib
++from pathlib import Path
++ROOT=Path(__file__).resolve().parent
++ENV={**os.environ,'PYTHONPATH':'/tmp/dmpc-p0-deps','OPENBLAS_NUM_THREADS':'1','PYTHONDONTWRITEBYTECODE':'1'}
++def run(layer,args,evidence):
++    checkpoint=ROOT/'results'/(layer+'_checkpoint.json')
++    if checkpoint.exists():
++        data=json.loads(checkpoint.read_text());assert data['exit_code']==0
++        for name,digest in data['evidence'].items():assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==digest
++        print(layer,'verified checkpoint',flush=True);return
++    with (ROOT/'results'/(layer+'.log')).open('x') as log:
++        result=subprocess.run([sys.executable,*map(str,args)],env=ENV,stdout=log,stderr=subprocess.STDOUT,timeout=180)
++    data=dict(layer=layer,exit_code=result.returncode,evidence={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in evidence if p.exists()})
++    checkpoint.write_text(json.dumps(data,indent=2));print(json.dumps(data),flush=True)
++    if result.returncode:raise SystemExit(result.returncode)
++def main():
++    for name in ('curve','straight_acceleration'):
++        dest=ROOT/'results'/name
++        if not dest.exists():run('execute_'+name,[ROOT/'execute_fix.py','--index',ROOT/'base_c/base_b/results/enrichment_001/index.json','--output',dest,'--interface',name,'--method','B-JL','--shift-recert'],[dest/'summary.json',dest/'execution.jsonl.gz'])
++        assert json.loads((dest/'summary.json').read_text())['passed']
++        run('accept_'+name,[ROOT/'accept_fix.py','--run',dest],[dest/'independent_acceptance.json',dest/'execution.jsonl.gz'])
++if __name__=='__main__':main()

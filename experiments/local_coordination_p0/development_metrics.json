@@ -1,0 +1,2905 @@
+{
+  "development_only": true,
+  "formal_batch": false,
+  "full_runs": 15,
+  "metrics": {
+    "asymmetric_baseline": {
+      "S-L": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "asymmetric_baseline",
+          "method": "S-L",
+          "cycles": 1301,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B1": "562/5",
+            "A1": "1153/5",
+            "A2": "1227/5",
+            "B2": "1301/5"
+          },
+          "T_all_s": "1301/5",
+          "continuous_road_lower_m": 0.49526777654401544,
+          "continuous_pair_lower_m": 0.5487379702774876,
+          "initial_budget_ticks": 1301,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 294,
+            "accepted": 940,
+            "rejected": 361,
+            "native_solves": 656,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 38.204374226179766,
+          "input_change_energy": 41.833575506065124,
+          "acceleration_energy": 36.85852167881161,
+          "steering_rate_energy": 1.345852547368153,
+          "application_messages": 52072,
+          "application_bytes": 69823684,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 30.02587272600067,
+          "path_length_m": {
+            "A1": 83.13487603512507,
+            "A2": 87.42747576924091,
+            "B1": 83.76730221300096,
+            "B2": 88.37684033922056
+          },
+          "waiting_before_arrival_s": {
+            "A1": "836/5",
+            "A2": "896/5",
+            "B1": "243/5",
+            "B2": "967/5"
+          },
+          "handoff_stops": 12,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 78,
+              "actor": "A1",
+              "v": "0",
+              "delta": "41/250000000000"
+            },
+            {
+              "cycle": 188,
+              "actor": "A1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 327,
+              "actor": "B1",
+              "v": "0",
+              "delta": "-33/1000000000000"
+            },
+            {
+              "cycle": 437,
+              "actor": "B1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 607,
+              "actor": "A2",
+              "v": "0",
+              "delta": "-24639/1000000000000"
+            },
+            {
+              "cycle": 764,
+              "actor": "A2",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 867,
+              "actor": "B2",
+              "v": "0",
+              "delta": "6827/625000000000"
+            },
+            {
+              "cycle": 1024,
+              "actor": "B2",
+              "v": "0",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.0172227790026227,
+            "p95": 0.03450316899397876,
+            "p99": 0.04004614700534148
+          },
+          "cycle_max_s": 0.1618472260015551,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1301,
+          "changed_input_sequences_rebuilt": 294,
+          "goals": {
+            "B1": "562/5",
+            "A1": "1153/5",
+            "A2": "1227/5",
+            "B2": "1301/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988127661729471,
+          "continuous_pair_lower_m": 0.502404958852641,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 30.569559381001454,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 294,
+          "candidate_numeric": 67
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 322,
+          "(66, 331)": 95,
+          "(66, 333)": 8,
+          "(66, 335)": 8,
+          "(66, 337)": 8,
+          "(66, 339)": 8,
+          "(66, 341)": 8,
+          "(66, 343)": 8,
+          "(66, 345)": 8,
+          "(66, 347)": 8,
+          "(66, 349)": 8,
+          "(66, 351)": 8,
+          "(66, 353)": 8,
+          "(66, 355)": 8,
+          "(66, 357)": 8,
+          "(66, 359)": 8,
+          "(66, 361)": 8,
+          "(66, 363)": 8,
+          "(66, 365)": 8,
+          "(66, 367)": 8,
+          "(66, 369)": 8,
+          "(66, 371)": 8,
+          "(66, 373)": 8,
+          "(66, 375)": 8,
+          "(66, 377)": 8,
+          "(66, 379)": 8,
+          "(66, 381)": 8,
+          "(66, 383)": 8,
+          "(66, 385)": 8,
+          "(66, 387)": 8,
+          "(66, 389)": 8,
+          "(66, 391)": 7
+        },
+        "native_status_histogram": {
+          "Solved": 589,
+          "AlmostSolved": 67
+        },
+        "maximum_group_size_histogram": {
+          "2": 1276,
+          "3": 25
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "35f01b8dd8df6eee37f674fabb4c73f5e8ffe1faf33f60e3b4fea0e8a2508c5a",
+          "independent_acceptance.json": "6f5bbf47e8eb7c69491eecf86f1969464004932ba11d910c5e10a5929a367b14",
+          "execution.jsonl.gz": "5903b64164e3cd9f99af0eeeb14b38651a46bd5919e27c959630180cdfa14797",
+          "coordination_events.json": "3af84d358bd536b125056895e888bc2365f2997773b8aebe5e37bfa72ecb75a3"
+        }
+      },
+      "S-T": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "asymmetric_baseline",
+          "method": "S-T",
+          "cycles": 1271,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B2": "576/5",
+            "A2": "646/5",
+            "B1": "1197/5",
+            "A1": "1271/5"
+          },
+          "T_all_s": "1271/5",
+          "continuous_road_lower_m": 0.49526777654401544,
+          "continuous_pair_lower_m": 0.8049321101110917,
+          "initial_budget_ticks": 1301,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 228,
+            "accepted": 989,
+            "rejected": 282,
+            "native_solves": 510,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 33.223346592886315,
+          "input_change_energy": 36.70774708968104,
+          "acceleration_energy": 32.283124650972056,
+          "steering_rate_energy": 0.9402219419142571,
+          "application_messages": 50864,
+          "application_bytes": 67376224,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 27.890046142994834,
+          "path_length_m": {
+            "A1": 83.13487603512507,
+            "A2": 86.08801096482324,
+            "B1": 83.4948648642158,
+            "B2": 86.76493276573264
+          },
+          "waiting_before_arrival_s": {
+            "A1": "954/5",
+            "A2": "319/5",
+            "B1": "889/5",
+            "B2": "257/5"
+          },
+          "handoff_stops": 10,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 45,
+              "actor": "A2",
+              "v": "0",
+              "delta": "-24639/1000000000000"
+            },
+            {
+              "cycle": 202,
+              "actor": "A2",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 305,
+              "actor": "B2",
+              "v": "0",
+              "delta": "19399/2500000000000"
+            },
+            {
+              "cycle": 462,
+              "actor": "B2",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 724,
+              "actor": "A1",
+              "v": "0",
+              "delta": "41/250000000000"
+            },
+            {
+              "cycle": 834,
+              "actor": "A1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 973,
+              "actor": "B1",
+              "v": "0",
+              "delta": "-33/1000000000000"
+            },
+            {
+              "cycle": 1083,
+              "actor": "B1",
+              "v": "0",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.014384854002855718,
+            "p95": 0.03422754499842995,
+            "p99": 0.03619167059587198
+          },
+          "cycle_max_s": 0.1665182030046708,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1271,
+          "changed_input_sequences_rebuilt": 228,
+          "goals": {
+            "B2": "576/5",
+            "A2": "646/5",
+            "B1": "1197/5",
+            "A1": "1271/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988127661729471,
+          "continuous_pair_lower_m": 0.5024191841022317,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 29.26524291599344,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 221,
+          "candidate_numeric": 61
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 237,
+          "(66, 331)": 93,
+          "(66, 333)": 6,
+          "(66, 335)": 6,
+          "(66, 337)": 6,
+          "(66, 339)": 6,
+          "(66, 341)": 6,
+          "(66, 343)": 6,
+          "(66, 345)": 6,
+          "(66, 347)": 6,
+          "(66, 349)": 6,
+          "(66, 351)": 6,
+          "(66, 353)": 6,
+          "(66, 355)": 6,
+          "(66, 357)": 6,
+          "(66, 359)": 6,
+          "(66, 361)": 6,
+          "(66, 363)": 6,
+          "(66, 365)": 6,
+          "(66, 367)": 6,
+          "(66, 369)": 6,
+          "(66, 371)": 6,
+          "(66, 373)": 6,
+          "(66, 375)": 6,
+          "(66, 377)": 6,
+          "(66, 379)": 6,
+          "(66, 381)": 6,
+          "(66, 383)": 6,
+          "(66, 385)": 6,
+          "(66, 387)": 6,
+          "(66, 389)": 6,
+          "(66, 391)": 6
+        },
+        "native_status_histogram": {
+          "Solved": 449,
+          "AlmostSolved": 61
+        },
+        "maximum_group_size_histogram": {
+          "2": 1249,
+          "3": 22
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "b7a08197d6a155b87a077de3072511cce35eb1c926a7d05f5d8a9a0f414049a2",
+          "independent_acceptance.json": "9e389d3ba56e04db916be64a23e5e40de4b54650f29fe482eba05b2c4393797a",
+          "execution.jsonl.gz": "3a548961474d4964f6d2ddd04a6eca8e6ab683a98f48b829327bc97f55640c84",
+          "coordination_events.json": "c3c9f13496c39b5f4b88520ab8a2491b3a6017e8ba268a5b3865ce2eebf63ccd"
+        }
+      },
+      "M-L": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "asymmetric_baseline",
+          "method": "M-L",
+          "cycles": 1228,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B1": "105",
+            "A1": "216",
+            "A2": "1154/5",
+            "B2": "1228/5"
+          },
+          "T_all_s": "1228/5",
+          "continuous_road_lower_m": 0.4952685307229633,
+          "continuous_pair_lower_m": 0.5485507304833572,
+          "initial_budget_ticks": 1301,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 302,
+            "accepted": 907,
+            "rejected": 321,
+            "native_solves": 623,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 23.537952910496692,
+          "input_change_energy": 44.9381031563641,
+          "acceleration_energy": 21.97787834291914,
+          "steering_rate_energy": 1.5600745675775514,
+          "application_messages": 49152,
+          "application_bytes": 66062444,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 29.167670739996538,
+          "path_length_m": {
+            "A1": 83.13504675721168,
+            "A2": 87.42792273179889,
+            "B1": 83.7674647481644,
+            "B2": 88.37720307135764
+          },
+          "waiting_before_arrival_s": {
+            "A1": "782/5",
+            "A2": "841/5",
+            "B1": "224/5",
+            "B2": "912/5"
+          },
+          "handoff_stops": 4,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 73,
+              "actor": "A1",
+              "v": "6000000025337/5000000000000",
+              "delta": "313/1000000000000"
+            },
+            {
+              "cycle": 174,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 304,
+              "actor": "B1",
+              "v": "150000000603/125000000000",
+              "delta": "-489/5000000000000"
+            },
+            {
+              "cycle": 405,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 566,
+              "actor": "A2",
+              "v": "1200000064523/1000000000000",
+              "delta": "-37157/5000000000000"
+            },
+            {
+              "cycle": 714,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 808,
+              "actor": "B2",
+              "v": "6000000351327/5000000000000",
+              "delta": "3201/312500000000"
+            },
+            {
+              "cycle": 956,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.017459797494666418,
+            "p95": 0.03505405419964518,
+            "p99": 0.04130162888483029
+          },
+          "cycle_max_s": 0.18302490699716145,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1228,
+          "changed_input_sequences_rebuilt": 302,
+          "goals": {
+            "B1": "105",
+            "A1": "216",
+            "A2": "1154/5",
+            "B2": "1228/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988124726247703,
+          "continuous_pair_lower_m": 0.5004117185056426,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 28.860982919999515,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 277,
+          "candidate_numeric": 44
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 383,
+          "(66, 332)": 8,
+          "(66, 334)": 8,
+          "(66, 336)": 8,
+          "(66, 338)": 8,
+          "(66, 340)": 8,
+          "(66, 342)": 8,
+          "(66, 344)": 8,
+          "(66, 346)": 8,
+          "(66, 348)": 8,
+          "(66, 350)": 8,
+          "(66, 352)": 8,
+          "(66, 354)": 8,
+          "(66, 356)": 8,
+          "(66, 358)": 8,
+          "(66, 360)": 8,
+          "(66, 362)": 8,
+          "(66, 364)": 8,
+          "(66, 366)": 8,
+          "(66, 368)": 8,
+          "(66, 370)": 8,
+          "(66, 372)": 8,
+          "(66, 374)": 8,
+          "(66, 376)": 8,
+          "(66, 378)": 8,
+          "(66, 380)": 8,
+          "(66, 382)": 8,
+          "(66, 384)": 8,
+          "(66, 386)": 8,
+          "(66, 388)": 8,
+          "(66, 390)": 8
+        },
+        "native_status_histogram": {
+          "Solved": 579,
+          "AlmostSolved": 44
+        },
+        "maximum_group_size_histogram": {
+          "2": 1204,
+          "3": 24
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "927fae55ad8c137eeff5d2d8d9c4771aafeb4fba0fab06b7d09ae53fc1c60bca",
+          "independent_acceptance.json": "e643b786d80559bbbf07742f9a2c8dd6ab2697f667bc459e2c5b92e9f9c165a0",
+          "execution.jsonl.gz": "b94df0ec52483d74130163d3a2c1bbc22c47e9841ea272b3ce87dbd76e31e5ff",
+          "coordination_events.json": "4a821cd42ab8e9d4eae12d1d1210891b09e918517541003de0dd2de56c2fd113"
+        }
+      },
+      "M-T": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "asymmetric_baseline",
+          "method": "M-T",
+          "cycles": 1198,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B2": "108",
+            "A1": "1054/5",
+            "A2": "1124/5",
+            "B1": "1198/5"
+          },
+          "T_all_s": "1198/5",
+          "continuous_road_lower_m": 0.4952685307229633,
+          "continuous_pair_lower_m": 0.8110055545639837,
+          "initial_budget_ticks": 1301,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 226,
+            "accepted": 944,
+            "rejected": 254,
+            "native_solves": 480,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 18.451771481816063,
+          "input_change_energy": 39.61494882325315,
+          "acceleration_energy": 17.339381084616488,
+          "steering_rate_energy": 1.112390397199579,
+          "application_messages": 47944,
+          "application_bytes": 63498888,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 26.538490193001053,
+          "path_length_m": {
+            "A1": 81.52301693261109,
+            "A2": 86.08845462537724,
+            "B1": 85.10693495738252,
+            "B2": 86.76517373401344
+          },
+          "waiting_before_arrival_s": {
+            "A1": "771/5",
+            "A2": "163",
+            "B1": "893/5",
+            "B2": "239/5"
+          },
+          "handoff_stops": 2,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 41,
+              "actor": "A2",
+              "v": "1200000064523/1000000000000",
+              "delta": "-37157/5000000000000"
+            },
+            {
+              "cycle": 189,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 283,
+              "actor": "B2",
+              "v": "6000000186341/5000000000000",
+              "delta": "4061/2500000000000"
+            },
+            {
+              "cycle": 431,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 620,
+              "actor": "B1",
+              "v": "150000000603/125000000000",
+              "delta": "-489/5000000000000"
+            },
+            {
+              "cycle": 721,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 844,
+              "actor": "A1",
+              "v": "6000000025337/5000000000000",
+              "delta": "313/1000000000000"
+            },
+            {
+              "cycle": 945,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.014472800998191815,
+            "p95": 0.03428010545103461,
+            "p99": 0.035976171065485674
+          },
+          "cycle_max_s": 0.16779337099433178,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1198,
+          "changed_input_sequences_rebuilt": 226,
+          "goals": {
+            "B2": "108",
+            "A1": "1054/5",
+            "A2": "1124/5",
+            "B1": "1198/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988124726247703,
+          "continuous_pair_lower_m": 0.500418367844915,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 27.862618443999963,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "candidate_numeric": 49,
+          "new_candidate": 205
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 300,
+          "(66, 332)": 6,
+          "(66, 334)": 6,
+          "(66, 336)": 6,
+          "(66, 338)": 6,
+          "(66, 340)": 6,
+          "(66, 342)": 6,
+          "(66, 344)": 6,
+          "(66, 346)": 6,
+          "(66, 348)": 6,
+          "(66, 350)": 6,
+          "(66, 352)": 6,
+          "(66, 354)": 6,
+          "(66, 356)": 6,
+          "(66, 358)": 6,
+          "(66, 360)": 6,
+          "(66, 362)": 6,
+          "(66, 364)": 6,
+          "(66, 366)": 6,
+          "(66, 368)": 6,
+          "(66, 370)": 6,
+          "(66, 372)": 6,
+          "(66, 374)": 6,
+          "(66, 376)": 6,
+          "(66, 378)": 6,
+          "(66, 380)": 6,
+          "(66, 382)": 6,
+          "(66, 384)": 6,
+          "(66, 386)": 6,
+          "(66, 388)": 6,
+          "(66, 390)": 6
+        },
+        "native_status_histogram": {
+          "AlmostSolved": 49,
+          "Solved": 431
+        },
+        "maximum_group_size_histogram": {
+          "2": 1176,
+          "3": 22
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "d0c10398423deb73696177127be1f9961e113d86749d7e58e95d4d8b6fe5bcaa",
+          "independent_acceptance.json": "212d5b4f12de346525fddfa55945e63bf765a907de27bf089b7783c7043ba532",
+          "execution.jsonl.gz": "81cfcdba1ac60e17cfc6e16e61c5d3d755e9e2297f53a713cb4c8e44e432e56d",
+          "coordination_events.json": "a77d0bab7b74e61b88a8f950bcf8d9dac89d9a1af2d934ac1cdc8a0ae2ade902"
+        }
+      },
+      "M-R": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "asymmetric_baseline",
+          "method": "M-R",
+          "cycles": 1198,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B2": "108",
+            "A1": "1054/5",
+            "A2": "1124/5",
+            "B1": "1198/5"
+          },
+          "T_all_s": "1198/5",
+          "continuous_road_lower_m": 0.495279628984887,
+          "continuous_pair_lower_m": 0.811008537911526,
+          "initial_budget_ticks": 1301,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 0,
+            "accepted": 0,
+            "rejected": 0,
+            "native_solves": 0,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 18.451809455045456,
+          "input_change_energy": 39.61498863041685,
+          "acceleration_energy": 17.339417620805555,
+          "steering_rate_energy": 1.112391834239903,
+          "application_messages": 47944,
+          "application_bytes": 60845692,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 16.90186569400248,
+          "path_length_m": {
+            "A1": 81.52303162,
+            "A2": 86.088473118,
+            "B1": 85.106952,
+            "B2": 86.765186512
+          },
+          "waiting_before_arrival_s": {
+            "A1": "771/5",
+            "A2": "163",
+            "B1": "893/5",
+            "B2": "239/5"
+          },
+          "handoff_stops": 2,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 41,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 189,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 283,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 431,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 620,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 721,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 844,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 945,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.009959224000340328,
+            "p95": 0.012802457947691435,
+            "p99": 0.01544683040629024
+          },
+          "cycle_max_s": 0.16563086899986956,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1198,
+          "changed_input_sequences_rebuilt": 0,
+          "goals": {
+            "B2": "108",
+            "A1": "1054/5",
+            "A2": "1124/5",
+            "B1": "1198/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988260419662118,
+          "continuous_pair_lower_m": 0.5004222823739051,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 27.810063887998695,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {},
+        "native_dimensions_histogram": {},
+        "native_status_histogram": {},
+        "maximum_group_size_histogram": {
+          "2": 1176,
+          "3": 22
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "183f61a0f8ec22fa3ceb118c777c9f0e52971897030e137b9fdb126d4390a037",
+          "independent_acceptance.json": "1ba56bb8d16459e7f123a30d7b17164a9b0f9924ac84fd22a803cc0bf7c2fee5",
+          "execution.jsonl.gz": "95703b15e49144f4da2ef64eefa3979b47ecf1dc69c52f3b32ea9914c6ea76f9",
+          "coordination_events.json": "a77d0bab7b74e61b88a8f950bcf8d9dac89d9a1af2d934ac1cdc8a0ae2ade902"
+        }
+      }
+    },
+    "tight_curve": {
+      "S-L": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "tight_curve",
+          "method": "S-L",
+          "cycles": 1305,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B1": "562/5",
+            "A1": "231",
+            "A2": "246",
+            "B2": "261"
+          },
+          "T_all_s": "261",
+          "continuous_road_lower_m": 0.49526477054588997,
+          "continuous_pair_lower_m": 0.675095381072128,
+          "initial_budget_ticks": 1305,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 281,
+            "accepted": 935,
+            "rejected": 370,
+            "native_solves": 652,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 38.19510302239909,
+          "input_change_energy": 41.78216698993753,
+          "acceleration_energy": 36.74538641976123,
+          "steering_rate_energy": 1.4497166026378523,
+          "application_messages": 52232,
+          "application_bytes": 69993932,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 31.175285860001168,
+          "path_length_m": {
+            "A1": 83.34291371250195,
+            "A2": 87.66269690479024,
+            "B1": 83.84392394836608,
+            "B2": 88.6075955740616
+          },
+          "waiting_before_arrival_s": {
+            "A1": "837/5",
+            "A2": "898/5",
+            "B1": "243/5",
+            "B2": "969/5"
+          },
+          "handoff_stops": 12,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 78,
+              "actor": "A1",
+              "v": "0",
+              "delta": "369/5000000000000"
+            },
+            {
+              "cycle": 188,
+              "actor": "A1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 327,
+              "actor": "B1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 437,
+              "actor": "B1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 607,
+              "actor": "A2",
+              "v": "0",
+              "delta": "-34363/2500000000000"
+            },
+            {
+              "cycle": 764,
+              "actor": "A2",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 868,
+              "actor": "B2",
+              "v": "0",
+              "delta": "33871/5000000000000"
+            },
+            {
+              "cycle": 1025,
+              "actor": "B2",
+              "v": "0",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.017628501998842694,
+            "p95": 0.03561266600008821,
+            "p99": 0.03957255888177319
+          },
+          "cycle_max_s": 0.18332280100003118,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1305,
+          "changed_input_sequences_rebuilt": 281,
+          "goals": {
+            "B1": "562/5",
+            "A1": "231",
+            "A2": "246",
+            "B2": "261"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988101537507729,
+          "continuous_pair_lower_m": 0.5042924010677377,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 30.62359384699812,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 291,
+          "candidate_numeric": 79
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 328,
+          "(66, 331)": 84,
+          "(66, 333)": 8,
+          "(66, 335)": 8,
+          "(66, 337)": 8,
+          "(66, 339)": 8,
+          "(66, 341)": 8,
+          "(66, 343)": 8,
+          "(66, 345)": 8,
+          "(66, 347)": 8,
+          "(66, 349)": 8,
+          "(66, 351)": 8,
+          "(66, 353)": 8,
+          "(66, 355)": 8,
+          "(66, 357)": 8,
+          "(66, 359)": 8,
+          "(66, 361)": 8,
+          "(66, 363)": 8,
+          "(66, 365)": 8,
+          "(66, 367)": 8,
+          "(66, 369)": 8,
+          "(66, 371)": 8,
+          "(66, 373)": 8,
+          "(66, 375)": 8,
+          "(66, 377)": 8,
+          "(66, 379)": 8,
+          "(66, 381)": 8,
+          "(66, 383)": 8,
+          "(66, 385)": 8,
+          "(66, 387)": 8,
+          "(66, 389)": 8,
+          "(66, 391)": 8
+        },
+        "native_status_histogram": {
+          "Solved": 573,
+          "AlmostSolved": 79
+        },
+        "maximum_group_size_histogram": {
+          "2": 1280,
+          "3": 25
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "d61e87378f733c6ebfc293869dc3016bb6f42e92e0926fa7141fc844180cbc11",
+          "independent_acceptance.json": "813f4866f5ee7c529ef4e3f2631b72c2716c7e5a18a436f7a548236e5f54c656",
+          "execution.jsonl.gz": "6ddae17b92f7d5ee6cbd769f13c955caa83353b0d7498b671ce5214996817dc9",
+          "coordination_events.json": "256d269bae3a5e6b56347ac571a3c8ceff29df7f9e1d0303173ef7aa6eb95af4"
+        }
+      },
+      "S-T": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "tight_curve",
+          "method": "S-T",
+          "cycles": 1273,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B2": "577/5",
+            "A2": "647/5",
+            "B1": "1198/5",
+            "A1": "1273/5"
+          },
+          "T_all_s": "1273/5",
+          "continuous_road_lower_m": 0.49526477054588997,
+          "continuous_pair_lower_m": 0.8870787503165589,
+          "initial_budget_ticks": 1305,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 233,
+            "accepted": 1007,
+            "rejected": 266,
+            "native_solves": 499,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 33.23625006221834,
+          "input_change_energy": 36.68402064868249,
+          "acceleration_energy": 32.22488051926308,
+          "steering_rate_energy": 1.0113695429552572,
+          "application_messages": 50944,
+          "application_bytes": 67568276,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 28.62708410500636,
+          "path_length_m": {
+            "A1": 83.34291371250195,
+            "A2": 86.19457765244584,
+            "B1": 83.5450736198644,
+            "B2": 86.84062534427696
+          },
+          "waiting_before_arrival_s": {
+            "A1": "191",
+            "A2": "64",
+            "B1": "178",
+            "B2": "257/5"
+          },
+          "handoff_stops": 10,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 45,
+              "actor": "A2",
+              "v": "0",
+              "delta": "-34363/2500000000000"
+            },
+            {
+              "cycle": 202,
+              "actor": "A2",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 306,
+              "actor": "B2",
+              "v": "0",
+              "delta": "14013/1000000000000"
+            },
+            {
+              "cycle": 463,
+              "actor": "B2",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 725,
+              "actor": "A1",
+              "v": "0",
+              "delta": "369/5000000000000"
+            },
+            {
+              "cycle": 835,
+              "actor": "A1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 974,
+              "actor": "B1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 1084,
+              "actor": "B1",
+              "v": "0",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.014617761000408791,
+            "p95": 0.03517335940123303,
+            "p99": 0.04000316580233626
+          },
+          "cycle_max_s": 0.17305598399980227,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1273,
+          "changed_input_sequences_rebuilt": 233,
+          "goals": {
+            "B2": "577/5",
+            "A2": "647/5",
+            "B1": "1198/5",
+            "A1": "1273/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988101537507729,
+          "continuous_pair_lower_m": 0.5042948031178938,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 29.659448268001142,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 201,
+          "candidate_numeric": 65
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 239,
+          "(66, 331)": 82,
+          "(66, 333)": 6,
+          "(66, 335)": 6,
+          "(66, 337)": 6,
+          "(66, 339)": 6,
+          "(66, 341)": 6,
+          "(66, 343)": 6,
+          "(66, 345)": 6,
+          "(66, 347)": 6,
+          "(66, 349)": 6,
+          "(66, 351)": 6,
+          "(66, 353)": 6,
+          "(66, 355)": 6,
+          "(66, 357)": 6,
+          "(66, 359)": 6,
+          "(66, 361)": 6,
+          "(66, 363)": 6,
+          "(66, 365)": 6,
+          "(66, 367)": 6,
+          "(66, 369)": 6,
+          "(66, 371)": 6,
+          "(66, 373)": 6,
+          "(66, 375)": 6,
+          "(66, 377)": 6,
+          "(66, 379)": 6,
+          "(66, 381)": 6,
+          "(66, 383)": 6,
+          "(66, 385)": 6,
+          "(66, 387)": 6,
+          "(66, 389)": 5,
+          "(66, 391)": 5
+        },
+        "native_status_histogram": {
+          "Solved": 434,
+          "AlmostSolved": 65
+        },
+        "maximum_group_size_histogram": {
+          "2": 1251,
+          "3": 22
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "b64dc5855c1625f6c5125841f0185ed14811170a74bd351c2963496b8465ebf8",
+          "independent_acceptance.json": "d410a62ecb515949da20007b09a0127eaa8af6cf75aaf4a7f903a8a9873284a0",
+          "execution.jsonl.gz": "2273d784440500523f3cb8667d9fd9297aa159c23313b41561046053a502b4bd",
+          "coordination_events.json": "6d0a4fdd89ace88fb8a18f1acc6486e403748384f7ae965fab9040d7d9fbe9a8"
+        }
+      },
+      "M-L": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "tight_curve",
+          "method": "M-L",
+          "cycles": 1231,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B1": "105",
+            "A1": "1081/5",
+            "A2": "1156/5",
+            "B2": "1231/5"
+          },
+          "T_all_s": "1231/5",
+          "continuous_road_lower_m": 0.4952725144592787,
+          "continuous_pair_lower_m": 0.6746618723898821,
+          "initial_budget_ticks": 1305,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 317,
+            "accepted": 917,
+            "rejected": 314,
+            "native_solves": 631,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 23.640788078133433,
+          "input_change_energy": 45.20055477750543,
+          "acceleration_energy": 21.950459136251595,
+          "steering_rate_energy": 1.6903289418818397,
+          "application_messages": 49272,
+          "application_bytes": 66429908,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 29.266651700003422,
+          "path_length_m": {
+            "A1": 83.34310293859905,
+            "A2": 87.66318377910817,
+            "B1": 83.84410663252945,
+            "B2": 88.6079884664784
+          },
+          "waiting_before_arrival_s": {
+            "A1": "782/5",
+            "A2": "842/5",
+            "B1": "224/5",
+            "B2": "914/5"
+          },
+          "handoff_stops": 4,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 73,
+              "actor": "A1",
+              "v": "1200000005437/1000000000000",
+              "delta": "749/2500000000000"
+            },
+            {
+              "cycle": 174,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 304,
+              "actor": "B1",
+              "v": "3000000010083/2500000000000",
+              "delta": "-49/625000000000"
+            },
+            {
+              "cycle": 405,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 566,
+              "actor": "A2",
+              "v": "6000000309123/5000000000000",
+              "delta": "-9471/1000000000000"
+            },
+            {
+              "cycle": 714,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 808,
+              "actor": "B2",
+              "v": "6000000390643/5000000000000",
+              "delta": "30413/1250000000000"
+            },
+            {
+              "cycle": 956,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.017584106004505884,
+            "p95": 0.03507046999948216,
+            "p99": 0.03803923760351609
+          },
+          "cycle_max_s": 0.1671963400003733,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1231,
+          "changed_input_sequences_rebuilt": 317,
+          "goals": {
+            "B1": "105",
+            "A1": "1081/5",
+            "A2": "1156/5",
+            "B2": "1231/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.49881507472190023,
+          "continuous_pair_lower_m": 0.5082617232597765,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 28.96334008299891,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 269,
+          "candidate_numeric": 45
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 391,
+          "(66, 332)": 8,
+          "(66, 334)": 8,
+          "(66, 336)": 8,
+          "(66, 338)": 8,
+          "(66, 340)": 8,
+          "(66, 342)": 8,
+          "(66, 344)": 8,
+          "(66, 346)": 8,
+          "(66, 348)": 8,
+          "(66, 350)": 8,
+          "(66, 352)": 8,
+          "(66, 354)": 8,
+          "(66, 356)": 8,
+          "(66, 358)": 8,
+          "(66, 360)": 8,
+          "(66, 362)": 8,
+          "(66, 364)": 8,
+          "(66, 366)": 8,
+          "(66, 368)": 8,
+          "(66, 370)": 8,
+          "(66, 372)": 8,
+          "(66, 374)": 8,
+          "(66, 376)": 8,
+          "(66, 378)": 8,
+          "(66, 380)": 8,
+          "(66, 382)": 8,
+          "(66, 384)": 8,
+          "(66, 386)": 8,
+          "(66, 388)": 8,
+          "(66, 390)": 8
+        },
+        "native_status_histogram": {
+          "Solved": 586,
+          "AlmostSolved": 45
+        },
+        "maximum_group_size_histogram": {
+          "2": 1207,
+          "3": 24
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "b3a959b965e0fbd6b1ab9075b996e242e5942800f3ba061d81bdde3a4a2f5617",
+          "independent_acceptance.json": "0d8dca1441d4cdcfed1deacb6c6f7a21b3bdd6a469735a2a95f86214fc155d97",
+          "execution.jsonl.gz": "8b0b30c5a01b280a60f44a2acc2cbead2a55f140ac1510c2eec752cc3f10667e",
+          "coordination_events.json": "df7462086f6f8d62347b3142d45ab38fdd7ed248462ded95ea567dfe25fd0771"
+        }
+      },
+      "M-T": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "tight_curve",
+          "method": "M-T",
+          "cycles": 1199,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "A2": "108",
+            "B1": "1054/5",
+            "A1": "1129/5",
+            "B2": "1199/5"
+          },
+          "T_all_s": "1199/5",
+          "continuous_road_lower_m": 0.4952726551473568,
+          "continuous_pair_lower_m": 0.6255589445625162,
+          "initial_budget_ticks": 1305,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 231,
+            "accepted": 945,
+            "rejected": 254,
+            "native_solves": 485,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 18.578370501991504,
+          "input_change_energy": 39.86845507099499,
+          "acceleration_energy": 17.37269811030445,
+          "steering_rate_energy": 1.205672391687051,
+          "application_messages": 47984,
+          "application_bytes": 63639244,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 26.67372236400115,
+          "path_length_m": {
+            "A1": 83.34310293859905,
+            "A2": 85.896082614304,
+            "B1": 83.5451243828764,
+            "B2": 87.13986937058304
+          },
+          "waiting_before_arrival_s": {
+            "A1": "166",
+            "A2": "242/5",
+            "B1": "764/5",
+            "B2": "887/5"
+          },
+          "handoff_stops": 2,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 44,
+              "actor": "B2",
+              "v": "3000000169459/2500000000000",
+              "delta": "40069/5000000000000"
+            },
+            {
+              "cycle": 192,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 283,
+              "actor": "A2",
+              "v": "6000000275383/5000000000000",
+              "delta": "-8971/1250000000000"
+            },
+            {
+              "cycle": 431,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 613,
+              "actor": "A1",
+              "v": "1200000005437/1000000000000",
+              "delta": "749/2500000000000"
+            },
+            {
+              "cycle": 714,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 844,
+              "actor": "B1",
+              "v": "3000000010083/2500000000000",
+              "delta": "-49/625000000000"
+            },
+            {
+              "cycle": 945,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.01445812800375279,
+            "p95": 0.03454662569638458,
+            "p99": 0.038095620756212145
+          },
+          "cycle_max_s": 0.17807230499602156,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1199,
+          "changed_input_sequences_rebuilt": 231,
+          "goals": {
+            "A2": "108",
+            "B1": "1054/5",
+            "A1": "1129/5",
+            "B2": "1199/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.49881507472190023,
+          "continuous_pair_lower_m": 0.5103168472204545,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 27.985325894005655,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 214,
+          "candidate_numeric": 40
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 305,
+          "(66, 332)": 6,
+          "(66, 334)": 6,
+          "(66, 336)": 6,
+          "(66, 338)": 6,
+          "(66, 340)": 6,
+          "(66, 342)": 6,
+          "(66, 344)": 6,
+          "(66, 346)": 6,
+          "(66, 348)": 6,
+          "(66, 350)": 6,
+          "(66, 352)": 6,
+          "(66, 354)": 6,
+          "(66, 356)": 6,
+          "(66, 358)": 6,
+          "(66, 360)": 6,
+          "(66, 362)": 6,
+          "(66, 364)": 6,
+          "(66, 366)": 6,
+          "(66, 368)": 6,
+          "(66, 370)": 6,
+          "(66, 372)": 6,
+          "(66, 374)": 6,
+          "(66, 376)": 6,
+          "(66, 378)": 6,
+          "(66, 380)": 6,
+          "(66, 382)": 6,
+          "(66, 384)": 6,
+          "(66, 386)": 6,
+          "(66, 388)": 6,
+          "(66, 390)": 6
+        },
+        "native_status_histogram": {
+          "Solved": 445,
+          "AlmostSolved": 40
+        },
+        "maximum_group_size_histogram": {
+          "2": 1177,
+          "3": 22
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "f850d8ebd3f2c75db9066e11eb5b7d7915515b85e90d10b12557312273bc24ed",
+          "independent_acceptance.json": "e415ecb337848931c4b532a1219638fe8b958c8044be389b604b801d3767074b",
+          "execution.jsonl.gz": "796f7490f86f2a0c56ba5a0097fad46afd429bf38702fce120a1bbf3e82e87c1",
+          "coordination_events.json": "02803350544cf465aab6c79126d45024c6198143f73a21f0b931f73c2072762f"
+        }
+      },
+      "M-R": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "tight_curve",
+          "method": "M-R",
+          "cycles": 1199,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "A2": "108",
+            "B1": "1054/5",
+            "A1": "1129/5",
+            "B2": "1199/5"
+          },
+          "T_all_s": "1199/5",
+          "continuous_road_lower_m": 0.4952795568861712,
+          "continuous_pair_lower_m": 0.6255556705081821,
+          "initial_budget_ticks": 1305,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 0,
+            "accepted": 0,
+            "rejected": 0,
+            "native_solves": 0,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 18.57840827773223,
+          "input_change_energy": 39.86849503001893,
+          "acceleration_energy": 17.3727344494558,
+          "steering_rate_energy": 1.205673828276434,
+          "application_messages": 47984,
+          "application_bytes": 60933800,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 16.628145258000586,
+          "path_length_m": {
+            "A1": 83.34311858,
+            "A2": 85.896096702,
+            "B1": 83.54513364,
+            "B2": 87.139891634
+          },
+          "waiting_before_arrival_s": {
+            "A1": "166",
+            "A2": "242/5",
+            "B1": "764/5",
+            "B2": "887/5"
+          },
+          "handoff_stops": 2,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 44,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 192,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 283,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 431,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 613,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 714,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 844,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 945,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.009958247006579768,
+            "p95": 0.011490394199790893,
+            "p99": 0.015482369782112069
+          },
+          "cycle_max_s": 0.1587674580005114,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1199,
+          "changed_input_sequences_rebuilt": 0,
+          "goals": {
+            "A2": "108",
+            "B1": "1054/5",
+            "A1": "1129/5",
+            "B2": "1199/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.49882597247820687,
+          "continuous_pair_lower_m": 0.5103185130456833,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 27.937136571999872,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {},
+        "native_dimensions_histogram": {},
+        "native_status_histogram": {},
+        "maximum_group_size_histogram": {
+          "2": 1177,
+          "3": 22
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "b045e9b0f6aeafd371c69aaaf41afc908d15a0bae08cce342ecc20219eddf32b",
+          "independent_acceptance.json": "53b5c962454d478d240a60b2816140dee8e511eda8459028d8b954db7700cd7e",
+          "execution.jsonl.gz": "9d32a54f1ef271552ce4618194f9edd7f8e2961ed57f2ccba3dd0a70833f4dcf",
+          "coordination_events.json": "02803350544cf465aab6c79126d45024c6198143f73a21f0b931f73c2072762f"
+        }
+      }
+    },
+    "exit_merge_dependency": {
+      "S-L": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "exit_merge_dependency",
+          "method": "S-L",
+          "cycles": 1295,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B1": "579/5",
+            "A1": "892/5",
+            "A2": "1221/5",
+            "B2": "259"
+          },
+          "T_all_s": "259",
+          "continuous_road_lower_m": 0.49526777654401544,
+          "continuous_pair_lower_m": 0.6885098731877803,
+          "initial_budget_ticks": 1295,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 298,
+            "accepted": 947,
+            "rejected": 348,
+            "native_solves": 646,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 38.04969828966815,
+          "input_change_energy": 42.924494062089735,
+          "acceleration_energy": 36.672813936786525,
+          "steering_rate_energy": 1.3768843528816244,
+          "application_messages": 51832,
+          "application_bytes": 69057604,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 30.268251815999974,
+          "path_length_m": {
+            "A1": 81.7954070472828,
+            "A2": 85.61676055591592,
+            "B1": 85.10676925049172,
+            "B2": 87.90111220836792
+          },
+          "waiting_before_arrival_s": {
+            "A1": "579/5",
+            "A2": "179",
+            "B1": "256/5",
+            "B2": "962/5"
+          },
+          "handoff_stops": 12,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 44,
+              "actor": "A2",
+              "v": "0",
+              "delta": "-10997/5000000000000"
+            },
+            {
+              "cycle": 201,
+              "actor": "A2",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 340,
+              "actor": "B1",
+              "v": "0",
+              "delta": "-33/1000000000000"
+            },
+            {
+              "cycle": 450,
+              "actor": "B1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 657,
+              "actor": "A1",
+              "v": "0",
+              "delta": "41/250000000000"
+            },
+            {
+              "cycle": 767,
+              "actor": "A1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 939,
+              "actor": "B2",
+              "v": "0",
+              "delta": "38441/2500000000000"
+            },
+            {
+              "cycle": 1096,
+              "actor": "B2",
+              "v": "0",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.017323462998319883,
+            "p95": 0.03508160570345353,
+            "p99": 0.04034996035552467
+          },
+          "cycle_max_s": 0.17996024299645796,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1295,
+          "changed_input_sequences_rebuilt": 298,
+          "goals": {
+            "B1": "579/5",
+            "A1": "892/5",
+            "A2": "1221/5",
+            "B2": "259"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988127661729471,
+          "continuous_pair_lower_m": 0.5015144279709491,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 30.06368813800509,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 289,
+          "candidate_numeric": 59
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 311,
+          "(66, 331)": 95,
+          "(66, 333)": 8,
+          "(66, 335)": 8,
+          "(66, 337)": 8,
+          "(66, 339)": 8,
+          "(66, 341)": 8,
+          "(66, 343)": 8,
+          "(66, 345)": 8,
+          "(66, 347)": 8,
+          "(66, 349)": 8,
+          "(66, 351)": 8,
+          "(66, 353)": 8,
+          "(66, 355)": 8,
+          "(66, 357)": 8,
+          "(66, 359)": 8,
+          "(66, 361)": 8,
+          "(66, 363)": 8,
+          "(66, 365)": 8,
+          "(66, 367)": 8,
+          "(66, 369)": 8,
+          "(66, 371)": 8,
+          "(66, 373)": 8,
+          "(66, 375)": 8,
+          "(66, 377)": 8,
+          "(66, 379)": 8,
+          "(66, 381)": 8,
+          "(66, 383)": 8,
+          "(66, 385)": 8,
+          "(66, 387)": 8,
+          "(66, 389)": 8,
+          "(66, 391)": 8
+        },
+        "native_status_histogram": {
+          "Solved": 587,
+          "AlmostSolved": 59
+        },
+        "maximum_group_size_histogram": {
+          "2": 1270,
+          "3": 25
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "7003bff62469ec82c071e34cbbf47505bbdcdd08d633deff4cc7d72074ab277f",
+          "independent_acceptance.json": "a69c1a3a9c48508cdd97a81b6ab5516f8e2907d85063761fb5bb217cfb6c4b83",
+          "execution.jsonl.gz": "fe2eb824ee7bd5ff20e9faa0216d4152a949a940d367eb6167b82a52bb2de6ad",
+          "coordination_events.json": "18d4c95d9558dad59e27eeb2351321f80cc2cff6d6534041199dd050c5687eb5"
+        }
+      },
+      "S-T": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "exit_merge_dependency",
+          "method": "S-T",
+          "cycles": 1269,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B2": "574/5",
+            "A2": "644/5",
+            "B1": "239",
+            "A1": "1269/5"
+          },
+          "T_all_s": "1269/5",
+          "continuous_road_lower_m": 0.49526777654401544,
+          "continuous_pair_lower_m": 0.6885098731877803,
+          "initial_budget_ticks": 1295,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 232,
+            "accepted": 997,
+            "rejected": 272,
+            "native_solves": 504,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 33.19386167682246,
+          "input_change_energy": 36.582976916736854,
+          "acceleration_energy": 32.13375702492963,
+          "steering_rate_energy": 1.060104651892828,
+          "application_messages": 50784,
+          "application_bytes": 67169472,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 27.762031288999424,
+          "path_length_m": {
+            "A1": 83.13487603512507,
+            "A2": 85.61676055591592,
+            "B1": 83.4948648642158,
+            "B2": 86.28920883419136
+          },
+          "waiting_before_arrival_s": {
+            "A1": "952/5",
+            "A2": "318/5",
+            "B1": "887/5",
+            "B2": "256/5"
+          },
+          "handoff_stops": 10,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 44,
+              "actor": "A2",
+              "v": "0",
+              "delta": "-10997/5000000000000"
+            },
+            {
+              "cycle": 201,
+              "actor": "A2",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 303,
+              "actor": "B2",
+              "v": "0",
+              "delta": "38441/2500000000000"
+            },
+            {
+              "cycle": 460,
+              "actor": "B2",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 722,
+              "actor": "A1",
+              "v": "0",
+              "delta": "41/250000000000"
+            },
+            {
+              "cycle": 832,
+              "actor": "A1",
+              "v": "0",
+              "delta": "0"
+            },
+            {
+              "cycle": 971,
+              "actor": "B1",
+              "v": "0",
+              "delta": "-33/1000000000000"
+            },
+            {
+              "cycle": 1081,
+              "actor": "B1",
+              "v": "0",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.014231968998501543,
+            "p95": 0.034250493398576505,
+            "p99": 0.037366394277196374
+          },
+          "cycle_max_s": 0.1768793960000039,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1269,
+          "changed_input_sequences_rebuilt": 232,
+          "goals": {
+            "B2": "574/5",
+            "A2": "644/5",
+            "B1": "239",
+            "A1": "1269/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988127661729471,
+          "continuous_pair_lower_m": 0.5015144279709491,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 29.45190893599647,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 222,
+          "candidate_numeric": 50
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 231,
+          "(66, 331)": 93,
+          "(66, 333)": 6,
+          "(66, 335)": 6,
+          "(66, 337)": 6,
+          "(66, 339)": 6,
+          "(66, 341)": 6,
+          "(66, 343)": 6,
+          "(66, 345)": 6,
+          "(66, 347)": 6,
+          "(66, 349)": 6,
+          "(66, 351)": 6,
+          "(66, 353)": 6,
+          "(66, 355)": 6,
+          "(66, 357)": 6,
+          "(66, 359)": 6,
+          "(66, 361)": 6,
+          "(66, 363)": 6,
+          "(66, 365)": 6,
+          "(66, 367)": 6,
+          "(66, 369)": 6,
+          "(66, 371)": 6,
+          "(66, 373)": 6,
+          "(66, 375)": 6,
+          "(66, 377)": 6,
+          "(66, 379)": 6,
+          "(66, 381)": 6,
+          "(66, 383)": 6,
+          "(66, 385)": 6,
+          "(66, 387)": 6,
+          "(66, 389)": 6,
+          "(66, 391)": 6
+        },
+        "native_status_histogram": {
+          "Solved": 454,
+          "AlmostSolved": 50
+        },
+        "maximum_group_size_histogram": {
+          "2": 1247,
+          "3": 22
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "b3c1e9f69f61bccf0af6ed2198d07db75828d9258c03182548d125bb8a741e1b",
+          "independent_acceptance.json": "ff76ada3e771327a3eafbbeb54614987b2e93c3c993437928a02a11444c3b885",
+          "execution.jsonl.gz": "8cf5d525952eadf482f91c84895397ad6f9247ff6daf740170c93fca41e67a98",
+          "coordination_events.json": "6276f0a47cc5ff2cd1953b1b4b060b89f905a0ad1c896e17cd69c7b50941ab91"
+        }
+      },
+      "M-L": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "exit_merge_dependency",
+          "method": "M-L",
+          "cycles": 1220,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B1": "542/5",
+            "A1": "836/5",
+            "A2": "1146/5",
+            "B2": "244"
+          },
+          "T_all_s": "244",
+          "continuous_road_lower_m": 0.4952685307229633,
+          "continuous_pair_lower_m": 0.6825146189065809,
+          "initial_budget_ticks": 1295,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 314,
+            "accepted": 916,
+            "rejected": 304,
+            "native_solves": 618,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 23.661171047241666,
+          "input_change_energy": 46.59676224328271,
+          "acceleration_energy": 22.016917511916198,
+          "steering_rate_energy": 1.6442535353254675,
+          "application_messages": 48832,
+          "application_bytes": 65312468,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 28.402222543998505,
+          "path_length_m": {
+            "A1": 81.79557605099532,
+            "A2": 85.61725013583715,
+            "B1": 85.10693495738252,
+            "B2": 87.90150204739608
+          },
+          "waiting_before_arrival_s": {
+            "A1": "542/5",
+            "A2": "839/5",
+            "B1": "237/5",
+            "B2": "906/5"
+          },
+          "handoff_stops": 4,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 39,
+              "actor": "A2",
+              "v": "1500000091451/1250000000000",
+              "delta": "-167/625000000000"
+            },
+            {
+              "cycle": 187,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 317,
+              "actor": "B1",
+              "v": "150000000603/125000000000",
+              "delta": "-489/5000000000000"
+            },
+            {
+              "cycle": 418,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 615,
+              "actor": "A1",
+              "v": "6000000025337/5000000000000",
+              "delta": "313/1000000000000"
+            },
+            {
+              "cycle": 716,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 878,
+              "actor": "B2",
+              "v": "6000000425059/5000000000000",
+              "delta": "6837/625000000000"
+            },
+            {
+              "cycle": 1026,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.017055940003047,
+            "p95": 0.03437117420508003,
+            "p99": 0.0424824682799226
+          },
+          "cycle_max_s": 0.17680737000046065,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1220,
+          "changed_input_sequences_rebuilt": 314,
+          "goals": {
+            "B1": "542/5",
+            "A1": "836/5",
+            "A2": "1146/5",
+            "B2": "244"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988124726247703,
+          "continuous_pair_lower_m": 0.5019541323261716,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 28.328952360003314,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 261,
+          "candidate_numeric": 43
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 378,
+          "(66, 332)": 8,
+          "(66, 334)": 8,
+          "(66, 336)": 8,
+          "(66, 338)": 8,
+          "(66, 340)": 8,
+          "(66, 342)": 8,
+          "(66, 344)": 8,
+          "(66, 346)": 8,
+          "(66, 348)": 8,
+          "(66, 350)": 8,
+          "(66, 352)": 8,
+          "(66, 354)": 8,
+          "(66, 356)": 8,
+          "(66, 358)": 8,
+          "(66, 360)": 8,
+          "(66, 362)": 8,
+          "(66, 364)": 8,
+          "(66, 366)": 8,
+          "(66, 368)": 8,
+          "(66, 370)": 8,
+          "(66, 372)": 8,
+          "(66, 374)": 8,
+          "(66, 376)": 8,
+          "(66, 378)": 8,
+          "(66, 380)": 8,
+          "(66, 382)": 8,
+          "(66, 384)": 8,
+          "(66, 386)": 8,
+          "(66, 388)": 8,
+          "(66, 390)": 8
+        },
+        "native_status_histogram": {
+          "Solved": 575,
+          "AlmostSolved": 43
+        },
+        "maximum_group_size_histogram": {
+          "2": 1196,
+          "3": 24
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "b03324354c47269f1dd7d0626fdf737586fad5c2be97af658db5514aaed7770b",
+          "independent_acceptance.json": "de6e8149dfba798c4d6b53fbe9acf57cb154f0928b3962e388525dcd514d887c",
+          "execution.jsonl.gz": "b6f0f024c9a9ef5063e3d8256a47b8e9e0543d9255c9c0c07d49d52414c25042",
+          "coordination_events.json": "bb1748b2523a346560da8fdac294622a8353bc114babe309fd179bfc86d9c360"
+        }
+      },
+      "M-T": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "exit_merge_dependency",
+          "method": "M-T",
+          "cycles": 1194,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B2": "536/5",
+            "A1": "210",
+            "A2": "224",
+            "B1": "1194/5"
+          },
+          "T_all_s": "1194/5",
+          "continuous_road_lower_m": 0.4952685307229633,
+          "continuous_pair_lower_m": 0.6825146189065809,
+          "initial_budget_ticks": 1295,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 230,
+            "accepted": 948,
+            "rejected": 246,
+            "native_solves": 476,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 18.700179042124134,
+          "input_change_energy": 40.04450332459952,
+          "acceleration_energy": 17.414758679258384,
+          "steering_rate_energy": 1.2854203628657517,
+          "application_messages": 47784,
+          "application_bytes": 63200100,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 26.461408745999506,
+          "path_length_m": {
+            "A1": 81.52301693261109,
+            "A2": 85.61725013583715,
+            "B1": 85.10693495738252,
+            "B2": 86.28947580186347
+          },
+          "waiting_before_arrival_s": {
+            "A1": "767/5",
+            "A2": "813/5",
+            "B1": "889/5",
+            "B2": "237/5"
+          },
+          "handoff_stops": 2,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 39,
+              "actor": "A2",
+              "v": "1500000091451/1250000000000",
+              "delta": "-167/625000000000"
+            },
+            {
+              "cycle": 187,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 279,
+              "actor": "B2",
+              "v": "6000000425059/5000000000000",
+              "delta": "6837/625000000000"
+            },
+            {
+              "cycle": 427,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 616,
+              "actor": "B1",
+              "v": "150000000603/125000000000",
+              "delta": "-489/5000000000000"
+            },
+            {
+              "cycle": 717,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 840,
+              "actor": "A1",
+              "v": "6000000025337/5000000000000",
+              "delta": "313/1000000000000"
+            },
+            {
+              "cycle": 941,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.014436423505685525,
+            "p95": 0.034346035349881274,
+            "p99": 0.036484709032520136
+          },
+          "cycle_max_s": 0.18252676400152268,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1194,
+          "changed_input_sequences_rebuilt": 230,
+          "goals": {
+            "B2": "536/5",
+            "A1": "210",
+            "A2": "224",
+            "B1": "1194/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988124726247703,
+          "continuous_pair_lower_m": 0.5078238169484187,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 27.721096683002543,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {
+          "new_candidate": 214,
+          "candidate_numeric": 32
+        },
+        "native_dimensions_histogram": {
+          "(66, 330)": 296,
+          "(66, 332)": 6,
+          "(66, 334)": 6,
+          "(66, 336)": 6,
+          "(66, 338)": 6,
+          "(66, 340)": 6,
+          "(66, 342)": 6,
+          "(66, 344)": 6,
+          "(66, 346)": 6,
+          "(66, 348)": 6,
+          "(66, 350)": 6,
+          "(66, 352)": 6,
+          "(66, 354)": 6,
+          "(66, 356)": 6,
+          "(66, 358)": 6,
+          "(66, 360)": 6,
+          "(66, 362)": 6,
+          "(66, 364)": 6,
+          "(66, 366)": 6,
+          "(66, 368)": 6,
+          "(66, 370)": 6,
+          "(66, 372)": 6,
+          "(66, 374)": 6,
+          "(66, 376)": 6,
+          "(66, 378)": 6,
+          "(66, 380)": 6,
+          "(66, 382)": 6,
+          "(66, 384)": 6,
+          "(66, 386)": 6,
+          "(66, 388)": 6,
+          "(66, 390)": 6
+        },
+        "native_status_histogram": {
+          "Solved": 444,
+          "AlmostSolved": 32
+        },
+        "maximum_group_size_histogram": {
+          "2": 1172,
+          "3": 22
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "f607e9619ece4279ba8fd7115fde7433f4fab76b9c703381188a198361e70ca7",
+          "independent_acceptance.json": "6e76547bb4fbe306094ba144047c63109aed1175f383be0193b5534e2dfa6f91",
+          "execution.jsonl.gz": "a4e907fcca94f1239c7f9a56249d680c8ddb7f39e09856f7e99c5b80ccccd58d",
+          "coordination_events.json": "3905813c23256048759c7fd5ad0b7c58f6bb51b04115d2b42fb259256d7d95dd"
+        }
+      },
+      "M-R": {
+        "summary": {
+          "passed": true,
+          "error": null,
+          "case": "exit_merge_dependency",
+          "method": "M-R",
+          "cycles": 1194,
+          "all_goals_reached": true,
+          "arrival_s": {
+            "B2": "536/5",
+            "A1": "210",
+            "A2": "224",
+            "B1": "1194/5"
+          },
+          "T_all_s": "1194/5",
+          "continuous_road_lower_m": 0.49528005122557806,
+          "continuous_pair_lower_m": 0.682508735519065,
+          "initial_budget_ticks": 1295,
+          "remaining_budget": 0,
+          "optimizer_counts": {
+            "changed": 0,
+            "accepted": 0,
+            "rejected": 0,
+            "native_solves": 0,
+            "inherited_invalid": 0,
+            "program_errors": 0
+          },
+          "input_energy": 18.700218463337798,
+          "input_change_energy": 40.044547532467,
+          "acceleration_energy": 17.414796590705006,
+          "steering_rate_energy": 1.28542187263279,
+          "application_messages": 47784,
+          "application_bytes": 60525536,
+          "communication_scope": "serialized reliable ideal JSON messages; excludes network/DDS headers",
+          "offline_driver_wall_s": 16.266334490996087,
+          "path_length_m": {
+            "A1": 81.52303162,
+            "A2": 85.617269632,
+            "B1": 85.106952,
+            "B2": 86.289487464
+          },
+          "waiting_before_arrival_s": {
+            "A1": "767/5",
+            "A2": "813/5",
+            "B1": "889/5",
+            "B2": "237/5"
+          },
+          "handoff_stops": 2,
+          "physical_waypoint_joins": [
+            {
+              "cycle": 39,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 187,
+              "actor": "A2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 279,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 427,
+              "actor": "B2",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 616,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 717,
+              "actor": "B1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 840,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            },
+            {
+              "cycle": 941,
+              "actor": "A1",
+              "v": "6/5",
+              "delta": "0"
+            }
+          ],
+          "cycle_wall_s": {
+            "p50": 0.009788636001758277,
+            "p95": 0.011095422349171713,
+            "p99": 0.013517084026898357
+          },
+          "cycle_max_s": 0.1604917930017109,
+          "over_200ms_fraction": 0.0,
+          "invariant_hold": "all final v/delta exactly zero, zero input leaves pose fixed",
+          "local_time_search": false,
+          "secondary_objective": "sum normalized squared acceleration/steering-rate inputs",
+          "accepted_rationalized_plan_optimality_proven": false,
+          "independent_acceptance_pending": true,
+          "development_only": true,
+          "formal_batch": false
+        },
+        "independent_acceptance": {
+          "passed": true,
+          "actual_steps": 1194,
+          "changed_input_sequences_rebuilt": 0,
+          "goals": {
+            "B2": "536/5",
+            "A1": "210",
+            "A2": "224",
+            "B1": "1194/5"
+          },
+          "full_task": true,
+          "remaining_budget": 0,
+          "continuous_road_lower_m": 0.4988260184731868,
+          "continuous_pair_lower_m": 0.507822516985951,
+          "independent_geometric_substeps": 8,
+          "online_state_replay_substeps": 4,
+          "wall_s": 27.215800594996836,
+          "shared_primitives": [
+            "fixed-point interval arithmetic",
+            "Taylor trigonometry",
+            "outward propagation"
+          ],
+          "separate_checks": [
+            "rectangle construction",
+            "separating axes",
+            "road",
+            "permission",
+            "actual goal",
+            "budget and policy replay",
+            "actual input/state replay"
+          ],
+          "candidate_check_scope": "complete affine input/state/terminal rows, exact shift, conic remainder and receiver-box inclusion; cone formation separately checked in P0"
+        },
+        "rejected_proposal_layers": {},
+        "native_dimensions_histogram": {},
+        "native_status_histogram": {},
+        "maximum_group_size_histogram": {
+          "2": 1172,
+          "3": 22
+        },
+        "ack_participants": 4,
+        "simultaneous_active_movers": 1,
+        "evidence_sha256": {
+          "summary.json": "55e1a0062e19b99c693e87bf6af64b6e80016379c624024b559ac3fae0e9a96f",
+          "independent_acceptance.json": "4b677b1818d63abbe0320fbda5b4100cdda65e2d953fc9855eee583cb45c43e6",
+          "execution.jsonl.gz": "22003c9029d9a873be231b40a8af96f28bd1d3d8badff98ba651e8169ed33a01",
+          "coordination_events.json": "3905813c23256048759c7fd5ad0b7c58f6bb51b04115d2b42fb259256d7d95dd"
+        }
+      }
+    }
+  }
+}

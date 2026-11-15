@@ -1,0 +1,91 @@
+{
+  "type": "LOCAL-FRAME-v1",
+  "branches": [
+    "extended"
+  ],
+  "reference_ids": {
+    "extended": "c0e1f021203cd1df610582a4657616078f735fe77e7c44dda30d832b3d4a787b"
+  },
+  "leases": {
+    "D": {
+      "members": [
+        "A1",
+        "B1"
+      ],
+      "window": [
+        26,
+        855
+      ]
+    },
+    "B2": {
+      "members": [
+        "B2"
+      ],
+      "window": [
+        855,
+        1304
+      ]
+    },
+    "A2": {
+      "members": [
+        "A2"
+      ],
+      "window": [
+        1304,
+        1753
+      ]
+    }
+  },
+  "deadlines": {
+    "A1": 475,
+    "A2": 1753,
+    "B1": 855,
+    "B2": 1304
+  },
+  "valid_from": 0,
+  "valid_through": 1753,
+  "permanent_goals": [
+    "A1",
+    "A2",
+    "B1",
+    "B2"
+  ],
+  "body_domain": "1/40",
+  "node_tube": "5000001/100000000",
+  "time_chord": "3/40",
+  "all_six_edges": [
+    [
+      "A1",
+      "B1"
+    ],
+    [
+      "A2",
+      "B2"
+    ],
+    [
+      "A1",
+      "A2"
+    ],
+    [
+      "A1",
+      "B2"
+    ],
+    [
+      "B1",
+      "A2"
+    ],
+    [
+      "B1",
+      "B2"
+    ]
+  ],
+  "separation_faces": "dcb9a40ff614add7674b5ef78bb0e3d538b3f418fedd07ae6a4224d8695322af",
+  "directory": "e720719130b28009a652983cf3d195d026aa313ca3e618fd707621058beb3217",
+  "minimum": {
+    "road": "1749999949994476283/5000000000000000000",
+    "pair": "39999997999889518089/100000000000000000000",
+    "resource": "564362696159699999983/50000000000000000000"
+  },
+  "occupancy_semantics": "finite branch union of full continuous corner chords + .025 allowed node body deviation + original .05 tube +15*h^2/8; positive receiver SE2 tails and permanent targets included; not convex hull across alternatives",
+  "outer_frame_id": "fc5a9f2dff49c3428b08125c007fb83e864faa6e8d4019896db4029fa5df65de"
+}

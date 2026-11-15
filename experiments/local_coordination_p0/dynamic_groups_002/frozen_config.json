@@ -1,0 +1,79 @@
+{
+  "physics": {
+    "roads": [
+      [
+        -52,
+        52,
+        "-7/5",
+        "7/5"
+      ],
+      [
+        -52,
+        -10,
+        "-11/2",
+        "11/2"
+      ],
+      [
+        10,
+        52,
+        "-11/2",
+        "11/2"
+      ]
+    ],
+    "h": "1/5",
+    "L": "27/10",
+    "body": [
+      [
+        -1,
+        "7/2"
+      ],
+      [
+        "-9/10",
+        "9/10"
+      ]
+    ],
+    "v_bounds": [
+      -1,
+      2
+    ],
+    "delta_abs": "1/2",
+    "a_abs": 1,
+    "omega_abs": 1
+  },
+  "h": "1/5",
+  "N": 32,
+  "rho": "1/1000",
+  "SAFE": "1/2",
+  "TUBE": "5000001/100000000",
+  "quantum": "1/1000000000000",
+  "Q_reserve": "4/1000000000000",
+  "scale": "1/10000",
+  "policy": "certificate_suboptimal_v1",
+  "solver": {
+    "version": "0.11.1",
+    "max_iter": 300,
+    "time_limit": 5,
+    "tol_feas": 1e-10,
+    "tol_gap_abs": 1e-10,
+    "tol_gap_rel": 1e-10
+  },
+  "R": [
+    1,
+    1
+  ],
+  "old_objective_equivalence": "003 conic P and q are a common positive 1/scale multiple of normalized physical input objective",
+  "max_calls": 16,
+  "eta": "1/50",
+  "motion_threshold": "1/100000000",
+  "proposal_rule": {
+    "delta": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "width": 4,
+    "depth": 2,
+    "max_pool": 16
+  }
+}

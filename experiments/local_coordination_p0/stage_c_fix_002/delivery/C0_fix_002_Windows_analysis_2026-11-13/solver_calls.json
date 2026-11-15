@@ -1,0 +1,70 @@
+[
+  {
+    "binding": {
+      "run_id": "two_updates_001",
+      "interface": "curve",
+      "round": 1,
+      "phase": 5
+    },
+    "anchor_id": "7ae7fa1524ad5244443df8749c8419a532e1cb84710fd55ce1a66a2338a809c6",
+    "derivative_id": "6f92d40887c9f948c7c12277681b641a38e21681e27e75a4364e0f5db3b5d479",
+    "assembly_id": "0600d2263413410c970cbce4b4e43263dee5e4c770521384bfd7f4d8eae13628",
+    "started": true,
+    "completed": true,
+    "raw_result_id": "fc45b9b0089944b509147c16d650b4170ab7c56fabe6a8d5829f1e9261df4b89",
+    "policy_result_id": "b8db43479b60547ca51b2f25786bd454a6fcf751165c78fb4730c9951bb3b5ec",
+    "status": "AlmostSolved",
+    "accepted": true
+  },
+  {
+    "binding": {
+      "run_id": "two_updates_001",
+      "interface": "curve",
+      "round": 2,
+      "phase": 6
+    },
+    "anchor_id": "8f7c1733b49d894bebe7ccb2f9656d096d509ba46d6c0dff837161bbe308a544",
+    "derivative_id": "b927415d04298506e35c42e2c7bd76caec51eb56adcd5f196b2f9d4d9ea8f555",
+    "assembly_id": "cbeb8790b0d34b0de73cb3a06d1f3fe68f89293ac6ba6642172a2497d187af11",
+    "started": true,
+    "completed": true,
+    "raw_result_id": "6328fd530e5db456dc988f5c7d6ff5a94d54375d479ff00c242dd1a15cd1f0dd",
+    "policy_result_id": "bfd2b912c29a91ca6fdfa7766bd3d7de87a07861d53112861a47c2796fd51670",
+    "status": "AlmostSolved",
+    "accepted": true
+  },
+  {
+    "binding": {
+      "run_id": "two_updates_001",
+      "interface": "straight_acceleration",
+      "round": 1,
+      "phase": 10
+    },
+    "anchor_id": "37617f003608b3434a3b3d1d7dfb2d673a74342fc098448a02af524efa30c857",
+    "derivative_id": "7977280fba033be04e7f6a4c825832793b608ffaa1a913576ea9018690b02cd2",
+    "assembly_id": "74e1f0311a03bba6634404d1d4b6f3de69a174848f7c495fadab879019b9b625",
+    "started": true,
+    "completed": true,
+    "raw_result_id": "be24d74535c7ce9036de81c6b9ab463ea3754ef698baba418ab5e074b6f161f2",
+    "policy_result_id": "249dfb6ab4fdc8c9d2a2851025e92d5fbcaca2e48c99295a9baa33b215b47eaa",
+    "status": "AlmostSolved",
+    "accepted": true
+  },
+  {
+    "binding": {
+      "run_id": "two_updates_001",
+      "interface": "straight_acceleration",
+      "round": 2,
+      "phase": 11
+    },
+    "anchor_id": "49325174aeeee899b125baef2683181701b7604a3168b10e95ba3c318c3c6437",
+    "derivative_id": "89297aabe05f4f55358c4f353135b67bf411850bb9f64e6ab26074583fa32756",
+    "assembly_id": "2bff8c668634f122519a4c9f6420361bf1cb1f0d5d35568d968e74c1e3f1c2ad",
+    "started": true,
+    "completed": true,
+    "raw_result_id": "ca3231b2e00c48b023b9777d6dcd275bc4f81a01d7f373f5ac627da8a04ad57f",
+    "policy_result_id": "3ad6f86618a09e33b40d62ed18269d01406573ab8b6fe2a02989b509cdd5c44c",
+    "status": "AlmostSolved",
+    "accepted": true
+  }
+]

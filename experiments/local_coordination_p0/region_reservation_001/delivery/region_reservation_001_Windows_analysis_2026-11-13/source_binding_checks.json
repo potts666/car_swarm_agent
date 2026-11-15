@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "cases": {
+    "opposite": {
+      "passed": true,
+      "actual_commits_checked": 2802,
+      "adopted_policy_changes": 5,
+      "stale_next_cycle_proposal_rejected": true,
+      "rejection": "stale numerical source"
+    },
+    "same_direction": {
+      "passed": true,
+      "actual_commits_checked": 2802,
+      "adopted_policy_changes": 5,
+      "stale_next_cycle_proposal_rejected": true,
+      "rejection": "proposal rewrites executed inputs or permissions"
+    }
+  }
+}

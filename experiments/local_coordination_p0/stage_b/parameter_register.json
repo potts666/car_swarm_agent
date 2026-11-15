@@ -1,0 +1,47 @@
+{
+  "frozen": {
+    "h": ".2",
+    "m": 32,
+    "connection_ticks": 239,
+    "rho": "1/1000",
+    "subdivision_attempts": [
+      8,
+      16,
+      32
+    ],
+    "rational_backoff": [
+      1,
+      "1/2",
+      "1/4"
+    ],
+    "per_stage_timeout_s": 180,
+    "solver_limit_s": 5,
+    "solver_max_iter": 300,
+    "solver_tolerance": "1e-10",
+    "input_quantum": "1e-12",
+    "Mc": 15
+  },
+  "final_numerical_scale": "1/10000",
+  "physical_rho": "1/1000",
+  "objective": "h * sum(a^2+omega^2), unchanged",
+  "objective_divisor": "1/10000, positive scaling only",
+  "numerical_status_acceptance": "Solved only; never accepted AlmostSolved or NumericalError",
+  "scaling_probe_history": [
+    "1/1000",
+    "1/100000",
+    "1/10000"
+  ],
+  "derivative_enrichment_history": [
+    8,
+    16,
+    32
+  ],
+  "final_shared_derivative_subdivisions": 32,
+  "rational_backoff": [
+    1,
+    "1/2",
+    "1/4"
+  ],
+  "rational_zero_sum_terminal_repair": false,
+  "formal_batch_allowed": false
+}

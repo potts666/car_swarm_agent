@@ -1,0 +1,10 @@
+﻿区域预约001工程验证
+
+先读report.md和GATE.json；comparison_windows.csv可用Excel打开，分数列请按文本导入。
+两条四车完整任务均2802拍、预算0，资源外出口/准备两车重叠，核心资源保持排他。局部求解各一次：Solved与AlmostSolved，均通过完整证书实际采用。
+注意：9.49e-12m是节点参考差；连续全时域量化界为uniform_quantization_check.json中的3.23e-10m，预留1e-8m。
+flow_images.json与flow_receivers描述保留流像；metrics区分逻辑时间、墙钟、预测与实际输入代价。
+每个case有实际JSONL、独立验收、绘图CSV、原始求解设置/输出、版本及新K拒绝分支。trajectory_display的浮点中值仅供画图；精确区间在JSONL/CSV的Q整数字段中，Q=1e20，B车实际航向=pi+theta。速度有符号，负值为倒车。
+完整ZIP含源代码、原理论材料、内容对象、执行源码快照和复核工具。v2补齐旧协议传递导入的OSQP版本；本轮只调用Clarabel两次，数值结果与v1相同。objects中也保留故意损坏提案，是否实际认可须按event_index与提交ID判断。
+默认verify_delivery复用已内容校验的完整独立验收，并重算两处源与33拍前缀；加--full-replay才重新跑两个2802拍独立验收。
+DELIVERY_MANIFEST对应ZIP内region_reservation_001目录，SHARED_FILES_SHA256对应本分析文件夹。历史实验与论文保留，无Git提交和正式批量。

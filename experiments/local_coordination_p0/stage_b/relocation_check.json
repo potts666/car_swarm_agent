@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "archive_members_verified": 344,
+  "B_external_acceptance_replayed": {
+    "passed": true,
+    "actual_steps": 240,
+    "accepted_numeric_candidates": 1,
+    "actual_K_executions": 1,
+    "damaged_K_proposals_rejected_with_actual_old_K": 1,
+    "remaining_budget": 1039,
+    "reconstructed_completion_witness": "d038db36d63515f7775265ffff5907dfe4a337a08d9672a4a43f7fb30377ca4e",
+    "shift_recertifications": [],
+    "minimum_road_lower_m": 0.4988240812680778,
+    "minimum_pair_lower_m": 0.5017273193714914,
+    "wall_s": 6.438946470996598,
+    "shared": [
+      "interval arithmetic, trigonometry, propagation",
+      "certified variational generator and derivative replay",
+      "A identity helpers"
+    ],
+    "independent": [
+      "terminal Taylor parameter derivation",
+      "raw-to-rational input provenance",
+      "bodies, road, six pairs, permissions",
+      "actual boxes/K/flow, shift, completion witness and budget"
+    ]
+  },
+  "A_reference_external_acceptance_replayed": {
+    "passed": true,
+    "actual_steps": 240,
+    "accepted_box_candidates": 1,
+    "actual_K_resets": 1,
+    "actual_saved_K_shifts": 1,
+    "damaged_proposals_independently_rejected": 6,
+    "same_old_first_input_replayed_after_every_rejection": true,
+    "parked_handoffs_executed": 1,
+    "current_same_version_completion_witness_rebuilt": true,
+    "remaining_budget": 1039,
+    "minimum_road_lower_m": 0.4987712610029631,
+    "minimum_pair_lower_m": 0.501727001758351,
+    "wall_s": 5.270015414993395,
+    "shared_primitives": [
+      "fixed-point interval arithmetic",
+      "trigonometry",
+      "propagation"
+    ],
+    "separate_checks": [
+      "box membership",
+      "live K",
+      "inverse flow containment",
+      "actual tail/shift",
+      "geometric bodies, roads, six pairs and permissions",
+      "witness/budget"
+    ],
+    "full_fourcar_task": false,
+    "derivative_bounds_connected": false
+  },
+  "relocated_to": "/tmp/DMPC_stage_B_relocation_20261113/stage_b",
+  "wall_s": 11.731846991999191,
+  "original_workspace_imports_used": false,
+  "verified_import_paths": {
+    "common": "/tmp/DMPC_stage_B_relocation_20261113/stage_b/common.py",
+    "derivatives": "/tmp/DMPC_stage_B_relocation_20261113/stage_b/derivatives.py",
+    "socp": "/tmp/DMPC_stage_B_relocation_20261113/stage_b/socp.py",
+    "validate_numeric": "/tmp/DMPC_stage_B_relocation_20261113/stage_b/validate_numeric.py",
+    "accept_case": "/tmp/DMPC_stage_B_relocation_20261113/stage_b/accept_case.py",
+    "region_certificates": "/tmp/DMPC_stage_B_relocation_20261113/stage_b/dependencies/repo/experiments/local_coordination_p0/stage_a/region_certificates.py",
+    "region_control": "/tmp/DMPC_stage_B_relocation_20261113/stage_b/dependencies/repo/experiments/local_coordination_p0/stage_a/region_control.py",
+    "pilot_control": "/tmp/DMPC_stage_B_relocation_20261113/stage_b/dependencies/repo/experiments/local_coordination_p0/pilot_control.py",
+    "moving_objects": "/tmp/DMPC_stage_B_relocation_20261113/stage_b/dependencies/repo/experiments/local_coordination_p0/moving_objects.py",
+    "accept_interfaces": "/tmp/DMPC_stage_B_relocation_20261113/stage_b/dependencies/repo/experiments/local_coordination_p0/stage_a/accept_interfaces.py"
+  }
+}

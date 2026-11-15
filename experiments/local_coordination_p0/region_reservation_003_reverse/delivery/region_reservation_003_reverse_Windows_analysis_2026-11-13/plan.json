@@ -1,0 +1,36 @@
+{
+  "task": "reverse_SOCP_v2",
+  "source_commit": "ebc3d29f5d7caf0b77b6d11887f82252e9a151dc",
+  "solver_calls_limit": 2,
+  "initial_calls_already_used": 0,
+  "controls": 64,
+  "variables": 65,
+  "N": 32,
+  "h": "1/5",
+  "rho": "1/1000",
+  "scale": "1/10000",
+  "grid": "1/1000000000000",
+  "tol": 1e-10,
+  "max_iter": 300,
+  "time_limit": 5,
+  "solver": "Clarabel 0.11.1",
+  "policy": "certificate_suboptimal_v1",
+  "cases": [
+    "A",
+    "B"
+  ],
+  "selection_trace": "opposite",
+  "registration": {
+    "A": {
+      "actor": "A1",
+      "cycle": 58
+    },
+    "B": {
+      "actor": "B1",
+      "cycle": 721
+    }
+  },
+  "formal_batch": false,
+  "more_orders": "queued",
+  "papers_changed": false
+}

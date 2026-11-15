@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "task": "rolling_interval_001",
+  "criteria": {
+    "source_integrity": {
+      "status": "pass",
+      "evidence": "source_inventory.json; results/source_isolation_certificate.json; results/source_read_scope.json; results/tail_ack_source_certificate.json"
+    },
+    "continuous_generation": {
+      "status": "pass",
+      "evidence": "results/rolling_preflight.json; cycle_summary.csv (1672 actual car-cycles)"
+    },
+    "rolling_update": {
+      "status": "pass",
+      "evidence": "budget_ledger.json; results/matrix_stream_certificate.json; results/rolling_independent.json"
+    },
+    "receiver_successor": {
+      "status": "pass",
+      "evidence": "results/rolling_independent.json (507 independent64 prefixes); results/tail_ack_source_certificate.json"
+    },
+    "release_interaction": {
+      "status": "pass",
+      "evidence": "event_trace.csv; results/R-rolling_summary.json; actual saved modified tails"
+    },
+    "fallback": {
+      "status": "pass",
+      "evidence": "results/rolling_recovery.json; recovery full actual traces and independent audits"
+    },
+    "safety_completion": {
+      "status": "pass",
+      "evidence": "E-anchor/R-rolling/recovery *_independent.json, original8-subinterval six-pair replay"
+    },
+    "coverage": {
+      "status": "pass",
+      "evidence": "interval_registration.json; results/R-rolling_summary.json: [406,824), Clear786, effective792+32"
+    }
+  },
+  "formal_attempts": 518,
+  "native_solved": 518,
+  "adopted": 507,
+  "classifications": {
+    "numerical_update": 507,
+    "certified_optimum": 798,
+    "fallback_after_failure": 11,
+    "unique_control": 7,
+    "goal_hold": 349
+  },
+  "stop": null,
+  "coverage_cycles": 418,
+  "main_completion": 1615,
+  "new_verification_calls": 0,
+  "remaining_budget": 1530,
+  "rejected_or_backup_car_cycles": 11,
+  "backup_logical_cycles": 8,
+  "independent_actual_trajectories": 4,
+  "source_isolation_passed": true,
+  "matrix_stream_all518_passed": true,
+  "tail_ACK_source_all507_passed": true
+}

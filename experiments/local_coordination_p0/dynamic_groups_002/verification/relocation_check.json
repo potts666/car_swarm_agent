@@ -1,0 +1,113 @@
+{
+  "passed": true,
+  "experiment_gate": "partial; C numerical update and same-version comparison remain incomplete",
+  "manifest_files": 1422,
+  "manifest_sha256": "96e701f3c9495e7a79827059fdeff35d9c74d6b134ad8d7394920fe3c58a5883",
+  "native_calls": 12,
+  "limit": 16,
+  "new_calls": 0,
+  "key_prefixes": [
+    {
+      "arm": "C-new",
+      "round": 1,
+      "steps": 33,
+      "passed": true,
+      "checked_K": [
+        [
+          "A1",
+          73
+        ],
+        [
+          "A2",
+          73
+        ],
+        [
+          "B1",
+          73
+        ],
+        [
+          "B2",
+          73
+        ]
+      ],
+      "actual_numerical_accepted": 0
+    },
+    {
+      "arm": "C-new",
+      "round": 2,
+      "steps": 33,
+      "passed": true,
+      "checked_K": [
+        [
+          "A1",
+          74
+        ],
+        [
+          "A2",
+          74
+        ],
+        [
+          "B1",
+          74
+        ],
+        [
+          "B2",
+          74
+        ]
+      ],
+      "actual_numerical_accepted": 0
+    },
+    {
+      "arm": "L-new",
+      "round": 1,
+      "steps": 33,
+      "passed": true,
+      "checked_K": [
+        [
+          "A1",
+          73
+        ],
+        [
+          "A2",
+          73
+        ],
+        [
+          "B1",
+          73
+        ],
+        [
+          "B2",
+          73
+        ]
+      ],
+      "actual_numerical_accepted": 3
+    },
+    {
+      "arm": "L-new",
+      "round": 2,
+      "steps": 33,
+      "passed": true,
+      "checked_K": [
+        [
+          "B1",
+          73
+        ],
+        [
+          "A1",
+          74
+        ],
+        [
+          "A2",
+          74
+        ],
+        [
+          "B2",
+          74
+        ]
+      ],
+      "actual_numerical_accepted": 3
+    }
+  ],
+  "full_replays": [],
+  "relocated_root": "/tmp/dg002_relocated_tiz_b6q3/dynamic_groups_002"
+}

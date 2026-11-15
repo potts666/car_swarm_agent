@@ -1,0 +1,83 @@
+{
+  "passed": true,
+  "new_solver_calls": 0,
+  "records": [
+    {
+      "kind": "existing_forward",
+      "case": "opposite",
+      "side": null,
+      "generation_id": "356c9a26938feca7a7dcc4eb0f1443d4d24dfec6144a39e5c296b56dd350a0c7",
+      "proof_id": "b5ef0c1b47f5ace876a2eac0e8c87d21efe0783152cebcdc8b9780cfc41b322c",
+      "passed": true,
+      "source_phase": 787,
+      "K_phase": 819,
+      "retained_phase": 1381
+    },
+    {
+      "kind": "existing_shifted",
+      "case": "opposite",
+      "side": null,
+      "generation_id": "ecf5e49111295900a1f3d4eb65f71368ee0b9519335a73d7eab1b68df0135f56",
+      "proof_id": "4af6cd435698b89f446343a48b205fcfc5e637003336af6b5b862a24877e7ae1",
+      "passed": true,
+      "source_phase": 788,
+      "K_phase": 820,
+      "retained_phase": 1381
+    },
+    {
+      "kind": "existing_forward",
+      "case": "same_direction",
+      "side": null,
+      "generation_id": "1af515da1330558390942f332c27c7c488ed161f430cc139c020461e3a8f69ea",
+      "proof_id": "499c95fec208c7506d836858fd16172ef06b91f00f63943b5af637a40bd3815f",
+      "passed": true,
+      "source_phase": 787,
+      "K_phase": 819,
+      "retained_phase": 1381
+    },
+    {
+      "kind": "existing_shifted",
+      "case": "same_direction",
+      "side": null,
+      "generation_id": "5396bde52b54db294caab523f27afb1c31d2bfbdcb6e1e928e190a4b68ae8ad5",
+      "proof_id": "44e851cbbc0daba1486e44485e32f7dfc03374b9c8d059ec59cfaae1ed5d6fa2",
+      "passed": true,
+      "source_phase": 788,
+      "K_phase": 820,
+      "retained_phase": 1381
+    },
+    {
+      "kind": "reverse",
+      "case": null,
+      "side": "A",
+      "generation_id": "72845d50b3c6f3a6fb769ee33aacdf4115223359f74414043f9ca311d0b2f07a",
+      "proof_id": "8c3f73b6da47b510878fc1ee3c67aa44bb1aefcdb0cd62a3da98c0fde858f7b6",
+      "passed": true,
+      "source_phase": 58,
+      "K_phase": 90,
+      "retained_phase": 156
+    },
+    {
+      "kind": "reverse",
+      "case": null,
+      "side": "B",
+      "generation_id": "c94a1ef417e7c3ea414300680644817b749d25e5d11ecacf3b54901f3e38a4b1",
+      "proof_id": "b10a13a84971bb40125245b273c2c596631cc23bd208c132a85e535bb8c34d74",
+      "passed": true,
+      "source_phase": 721,
+      "K_phase": 753,
+      "retained_phase": 819
+    },
+    {
+      "kind": "zero_speed",
+      "case": null,
+      "side": null,
+      "generation_id": "3be9fe6ca43250109873b76bc0c6e5eb9bc08308a2f2734d0e307220397eecd9",
+      "proof_id": "e712330aca0ff0ea278a39b0c1303f1ca29280c3b898f32f99287b05edca67d2",
+      "passed": true,
+      "source_phase": 0,
+      "K_phase": 32,
+      "retained_phase": 55
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+stream,messages,serialized_bytes,inter_endpoint_messages,inter_endpoint_bytes,self_dispatch_messages,ACK_messages,transport
+C,40,27787,32,19671,8,8,serialized in-process logical endpoints; not real-network traffic
+D_missing_ACK,8,3116,2,786,6,2,serialized in-process logical endpoints; not real-network traffic
+L,36,25643,20,10379,16,6,serialized in-process logical endpoints; not real-network traffic
+damaged_D_certificate,9,3585,3,1255,6,3,serialized in-process logical endpoints; not real-network traffic
+extension,17,5754,17,5754,0,4,serialized in-process logical endpoints; not real-network traffic
+initialization,8,3194,8,3194,0,4,serialized in-process logical endpoints; not real-network traffic
+preflight_missing_ack,8,2992,2,724,6,2,serialized in-process logical endpoints; not real-network traffic

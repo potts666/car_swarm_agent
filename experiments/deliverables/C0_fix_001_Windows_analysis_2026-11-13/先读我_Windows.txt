@@ -1,0 +1,11 @@
+﻿C0 新分析材料（2026-11-13）
+
+先读report.md，再读GATE.json和comparison_windows.csv（UTF-8 BOM，便于Excel打开）。
+metrics.json：实际能量、输入改变、净空、开销。
+solver_diagnostics/：四次求解的逐轮日志、完整设置、精确残差分析。
+curve/、straight_acceleration/：各240拍执行与独立验收，execution.jsonl已解压。
+DMPC_C0_fix_001_Windows.zip：完整代码、内容对象、指令、冻结依赖和证据，可在Windows直接解压。
+.tar.gz：原Ubuntu分发包及原SHA256，保持原样。
+DELIVERY_MANIFEST.json对应完整ZIP内的stage_c_fix_001目录；SHARED_FILES_SHA256.json对应本导出目录。
+
+结论：完整证书受理下两接口实际接续通过；严格Solved修复未通过。下一锚点已复核，未追加第二次优化。未开展正式批量、C2、预约和多活动车。历史结果及论文保留。

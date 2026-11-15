@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "sympy_version": "1.14.0",
+  "check_categories": 12,
+  "checks": [
+    "heading_integrand_hessian",
+    "one_slot_exact_first_and_mixed_variations",
+    "orthogonal_block_spectral_polynomial",
+    "prefix_second_moment_and_seam",
+    "position_second_variation_chain_rule",
+    "body_corner_second_variation",
+    "three_block_double_primitive_and_positivity_form",
+    "exact_finite_transform_for_progress_gain",
+    "trigonometric_progress_coefficient_identity",
+    "N32_integer_moments_and_direction_norm",
+    "local_frame_window_and_deadline_arithmetic",
+    "fully_rational_nonzero_step_certificate"
+  ],
+  "optimizer_calls": 0,
+  "project_control_runs": 0,
+  "example": {
+    "moments": [
+      "304/75",
+      "32512/1875",
+      "3904856/46875"
+    ],
+    "Bp_upper": "15",
+    "Bc_upper": "35",
+    "alpha": "1/100000",
+    "certified_objective_improvement": "433/250000000",
+    "assumptions": "Positive face and receiver margins specified in theory; not current-map evidence"
+  },
+  "scope": "Exact symbolic identities and illustrative arithmetic; current-map certification separate"
+}

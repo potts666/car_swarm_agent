@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "manifest_files_verified": 461,
+  "archived_derivative_recomputed": true,
+  "C1_independent_replays": {
+    "old_20": {
+      "passed": true,
+      "actual_steps": 23,
+      "prefix_endpoint": [
+        "2",
+        "0",
+        "0",
+        "1/2",
+        "0"
+      ],
+      "final_goal": [
+        "43/20",
+        0,
+        0,
+        "0",
+        0
+      ],
+      "energy": "5/12"
+    },
+    "new_11": {
+      "passed": true,
+      "actual_steps": 14,
+      "prefix_endpoint": [
+        "2",
+        "0",
+        "0",
+        "1/2",
+        "0"
+      ],
+      "final_goal": [
+        "43/20",
+        0,
+        0,
+        "0",
+        0
+      ],
+      "energy": "37/24"
+    }
+  },
+  "original_workspace_imports_used": false,
+  "implementation_paths": {
+    "c_common": "/tmp/DMPC_stage_C_relocation_20261113/stage_c/c_common.py",
+    "common": "/tmp/DMPC_stage_C_relocation_20261113/stage_c/base_b/common.py",
+    "derivatives": "/tmp/DMPC_stage_C_relocation_20261113/stage_c/base_b/derivatives.py",
+    "analytic_c1": "/tmp/DMPC_stage_C_relocation_20261113/stage_c/analytic_c1.py",
+    "region_control": "/tmp/DMPC_stage_C_relocation_20261113/stage_c/base_b/dependencies/repo/experiments/local_coordination_p0/stage_a/region_control.py",
+    "pilot_control": "/tmp/DMPC_stage_C_relocation_20261113/stage_c/base_b/dependencies/repo/experiments/local_coordination_p0/pilot_control.py"
+  },
+  "no_additional_solver_calls": true,
+  "C2_executed": false
+}

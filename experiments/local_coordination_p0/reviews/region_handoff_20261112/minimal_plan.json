@@ -1,0 +1,89 @@
+{
+  "scope": "review and plan only; no controller changes or new experiments",
+  "source_git": "ebc3d29",
+  "old_gate": "P0_GATE_v2.json",
+  "stages": [
+    {
+      "id": "A",
+      "name": "接收域与K接入",
+      "implemented": false,
+      "prefix_duration": "fixed",
+      "theory": [
+        "theory(17)-(19)",
+        "theory(23)-(24)",
+        "map report(1)-(10),(16)"
+      ],
+      "files": [
+        "region_certificates.py (proposed new)",
+        "pilot_control.py",
+        "socp_anchor.py",
+        "run_pilot.py",
+        "accept_execution.py"
+      ],
+      "acceptance": [
+        "one straight and one curved interface",
+        "nonzero terminal v/delta within certified box",
+        "actual reset-feedback step enters inherited flow",
+        "shift and branch-memory replay",
+        "invalid K/domain/phase/mode/deadline rejected with old action executed"
+      ]
+    },
+    {
+      "id": "B",
+      "name": "实际梯度与局部导数界",
+      "implemented": false,
+      "prerequisite": "A passed",
+      "theory": [
+        "theory(21)-(22)",
+        "map report(11)-(14)"
+      ],
+      "files": [
+        "region_certificates.py (proposed new)",
+        "socp_anchor.py",
+        "pilot_control.py",
+        "accept_execution.py"
+      ],
+      "acceptance": [
+        "per-step derivative-domain inclusion",
+        "certified composite 5 x 2m Jacobian",
+        "gradient interval error budget",
+        "reference-centered 1e-3 trust accounting",
+        "rational nonlinear constraint and continuous-prefix acceptance"
+      ]
+    },
+    {
+      "id": "C",
+      "name": "有限时长分支",
+      "implemented": false,
+      "prerequisite": "A and B passed",
+      "theory": [
+        "theory(19)-(20)",
+        "theory(23)-(25)",
+        "theory(32)"
+      ],
+      "files": [
+        "cross_stop.py",
+        "prepare_pilot.py",
+        "run_pilot.py",
+        "pilot_control.py",
+        "socp_anchor.py",
+        "accept_execution.py"
+      ],
+      "acceptance": [
+        "exact 2m example: 20 to 11 steps, same full endpoint",
+        "allow energy increase for improved total completion steps",
+        "one map interface with independently certified shorter anchor",
+        "no skipped physics or timestamp-only speedup",
+        "new duration and suffix satisfy old budget"
+      ]
+    }
+  ],
+  "deferred": [
+    "formal holdout batch",
+    "real processes and persistent physical clock",
+    "compatible parallel motion",
+    "conflict-driven grouping",
+    "moving inter-car permission transfer",
+    "full other-scene and S certificate expansion"
+  ]
+}

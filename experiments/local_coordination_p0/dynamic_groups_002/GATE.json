@@ -1,0 +1,82 @@
+{
+  "passed": false,
+  "status": "partial",
+  "criteria": {
+    "theory_conditions": {
+      "status": "passed",
+      "evidence": "v3 explicit planes, M2 deadlines, atlas certification and all declared progress zero anchors"
+    },
+    "physical_contract_change": {
+      "status": "passed",
+      "evidence": "one actual physical transition per numerical arm; four-car closure and resource/plane diffs"
+    },
+    "activity_expansion": {
+      "status": "passed",
+      "old_first_two": [
+        2,
+        2
+      ],
+      "new_first_two": [
+        3,
+        3
+      ],
+      "newly_active": [
+        "A1"
+      ],
+      "primary_maximum": 3,
+      "four_car_goal": "main numerical window achieved 3; post-experiment W_hold-suffix diagnostic fork certified 4 then 3 with zero solver calls"
+    },
+    "multi_car_update": {
+      "status": "partial",
+      "C_new_accepted_by_round": [
+        0,
+        0
+      ],
+      "L_new_accepted_by_round": [
+        3,
+        3
+      ],
+      "reason": "C-v1 admission failures retained; L-v3 achieved three independent accepted numerical candidates on two actual successors"
+    },
+    "continuation": {
+      "status": "passed",
+      "evidence": "true round-2 sources, shifted Gi/K, real-candidate two-layer rejection suffixes independently replayed"
+    },
+    "completion": {
+      "status": "passed",
+      "steps": [
+        2802,
+        2802,
+        2802
+      ],
+      "B_final": 0
+    },
+    "same_version_controlled_comparison": {
+      "status": "pending",
+      "reason": "C-v1 and L-v3 have different physical planes and terminal equality encoding; do not infer submission-performance effects"
+    }
+  },
+  "native_solver_calls": 12,
+  "native_solver_limit": 16,
+  "unused_calls": 4,
+  "states": {
+    "Solved": 5,
+    "AlmostSolved": 7
+  },
+  "accepted_actual_numerical_candidates": 6,
+  "C_v1_failure_calls_counted": true,
+  "L_v3_three_car_two_round_goal": true,
+  "physical_source_same": true,
+  "anchor_controls_same": true,
+  "controlled_comparison_valid": false,
+  "formal_batch": false,
+  "next_required": "incorporate the certified W_hold suffix into one shared pool and preregister matched C/L two rounds (4 then3 per arm,14 new calls); alternatively six C-v3 calls complete only the existing three-car comparison",
+  "four_car_diagnostic_fork": {
+    "passed": true,
+    "first_activity": 4,
+    "next_activity": 3,
+    "new_calls": 0,
+    "not_original_pool": true,
+    "not_main_numerical_arm": true
+  }
+}

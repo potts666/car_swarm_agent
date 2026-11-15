@@ -1,0 +1,124 @@
+{
+  "passed": true,
+  "damage_checks": [
+    {
+      "case": "opposite",
+      "damage": "permission_version",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "opposite",
+      "damage": "resource_id",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "opposite",
+      "damage": "history",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "opposite",
+      "damage": "owner",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "opposite",
+      "damage": "certificate_id",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "opposite",
+      "damage": "parent_plan_id",
+      "rejected": true,
+      "reason": "wrong actual inherited parent"
+    },
+    {
+      "case": "opposite",
+      "damage": "outside_tail_permission",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "opposite",
+      "damage": "premature_release",
+      "rejected": true,
+      "reason": "receiving pose/yaw: A1/G_out"
+    },
+    {
+      "case": "opposite",
+      "damage": "uncertified_actual_suffix",
+      "rejected": true,
+      "object_id": "2b228182a4ff64a6ff6747310fac5b1b36dd3ac7fb82f024ce127717483c5ffe",
+      "reason": "unproved completion-policy modification"
+    },
+    {
+      "case": "same_direction",
+      "damage": "permission_version",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "same_direction",
+      "damage": "resource_id",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "same_direction",
+      "damage": "history",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "same_direction",
+      "damage": "owner",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "same_direction",
+      "damage": "certificate_id",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "same_direction",
+      "damage": "parent_plan_id",
+      "rejected": true,
+      "reason": "wrong actual inherited parent"
+    },
+    {
+      "case": "same_direction",
+      "damage": "outside_tail_permission",
+      "rejected": true,
+      "reason": "stale or damaged resource/plan version"
+    },
+    {
+      "case": "same_direction",
+      "damage": "premature_release",
+      "rejected": true,
+      "reason": "receiving pose/yaw: A1/G_out"
+    },
+    {
+      "case": "same_direction",
+      "damage": "uncertified_actual_suffix",
+      "rejected": true,
+      "object_id": "f6f506f100c031b01f2d2e679545947d145fc94fcef19fa882a094e8d5d402f0",
+      "reason": "unproved completion-policy modification"
+    },
+    {
+      "damage": "unreserved_resource_body",
+      "rejected": true,
+      "reason": "unreserved body enters resource: A1"
+    }
+  ],
+  "historical_files_unchanged": 2299,
+  "object_identities_verified": 27,
+  "static_contexts_with_extra_quantization_reserve": 24,
+  "both_recorded_actual_runs_satisfy_strengthened_parent_policy_validation": true
+}

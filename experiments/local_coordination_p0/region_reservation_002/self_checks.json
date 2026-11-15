@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "case": "opposite",
+      "passed": true,
+      "two_actual_sources": true,
+      "both_source_bodies_moving": [
+        "A1",
+        "B1"
+      ],
+      "source_state_matches_actual_first_step": true,
+      "zero_anchor_checks": [
+        {
+          "phase": 787,
+          "inherited_prefix_in_new_rows": true
+        },
+        {
+          "phase": 788,
+          "inherited_prefix_in_new_rows": true
+        }
+      ],
+      "second_receiver_phase": 820,
+      "second_K_phase": 820,
+      "first_K_phase": 819,
+      "actual_second_K_exact_reset": true,
+      "subsequent_choices_keep_shifted_receiver": true,
+      "rejected_then_same_old_tail_cases": 6
+    },
+    {
+      "case": "same_direction",
+      "passed": true,
+      "two_actual_sources": true,
+      "both_source_bodies_moving": [
+        "A1",
+        "A2"
+      ],
+      "source_state_matches_actual_first_step": true,
+      "zero_anchor_checks": [
+        {
+          "phase": 787,
+          "inherited_prefix_in_new_rows": true
+        },
+        {
+          "phase": 788,
+          "inherited_prefix_in_new_rows": true
+        }
+      ],
+      "second_receiver_phase": 820,
+      "second_K_phase": 820,
+      "first_K_phase": 819,
+      "actual_second_K_exact_reset": true,
+      "subsequent_choices_keep_shifted_receiver": true,
+      "rejected_then_same_old_tail_cases": 6
+    }
+  ],
+  "solver_calls": 4,
+  "historical_files_unchanged": 2686,
+  "frozen_source_versions_unchanged": true
+}

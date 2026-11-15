@@ -1,0 +1,93 @@
+{
+  "task": "encounter_coordination_001",
+  "archive": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/encounter_coordination_001_evidence.tar.gz",
+  "bytes": 5011791,
+  "sha256": "7199be8f77482eb255df5a62a33e2072f6271cc99c4dfaf1dedd1b8729b84d3f",
+  "manifest_sha256": "3912117a1dcc01a1260c2644a913ecb241c14ddbd0458bf2e4d84836d2283c82",
+  "default": {
+    "integrity_passed": true,
+    "experiment_passed": true,
+    "full_replay": false,
+    "files": 331,
+    "native_calls_recorded": 8,
+    "new_native_calls": 0
+  },
+  "full_replay": {
+    "integrity_passed": true,
+    "experiment_passed": true,
+    "full_replay": true,
+    "files": 331,
+    "native_calls_recorded": 8,
+    "new_native_calls": 0
+  },
+  "portable": {
+    "integrity_passed": true,
+    "experiment_passed": true,
+    "full_replay": false,
+    "files": 331,
+    "native_calls_recorded": 8,
+    "new_native_calls": 0
+  },
+  "numerical": {
+    "passed": true,
+    "native_calls": 8,
+    "releases": 8,
+    "accepted": [
+      4,
+      4
+    ],
+    "first_changed": [
+      4,
+      4
+    ],
+    "steps": 1753
+  },
+  "GATE": "passed",
+  "deadline_transition": {
+    "old_b": {
+      "A1": 474,
+      "A2": 1821,
+      "B1": 923,
+      "B2": 1372
+    },
+    "new_b": {
+      "A1": 474,
+      "A2": 1752,
+      "B1": 854,
+      "B2": 1303
+    },
+    "block_max_old": 1821,
+    "block_max_new": 1752,
+    "block_passed": true,
+    "per_car_passed": true,
+    "delays": {}
+  },
+  "source_preservation": {
+    "passed": true,
+    "source_files": 263,
+    "source_path": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/autonomy_init_002",
+    "old_Gate": "passed",
+    "old_native_calls": 8
+  },
+  "history_preservation": {
+    "autonomy_init_001": {
+      "passed": true,
+      "files": 256
+    },
+    "dynamic_groups_001": {
+      "passed": true,
+      "files": 741
+    },
+    "dynamic_groups_002": {
+      "passed": true,
+      "files": 1425
+    },
+    "region_reservation_003_reverse": {
+      "passed": true,
+      "files": 509
+    }
+  },
+  "verification_repair": "Only independent auditor/verification files differ from immutable executed snapshot; original failure/log and both SHA identities retained. No numeric source/model/data change.",
+  "new_native_calls_during_verification": 0,
+  "git_commit_performed": false
+}

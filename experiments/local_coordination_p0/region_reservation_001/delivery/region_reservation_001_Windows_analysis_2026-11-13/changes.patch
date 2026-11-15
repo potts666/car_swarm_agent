@@ -1,0 +1,1332 @@
+--- /dev/null
++++ accept_case.py
+@@ -0,0 +1,170 @@
++"""External replay: independent bodies, six pairs, authority, source, domain and budget."""
++import argparse,itertools,time
++import numpy as np
++from common import *
++from physics import propagate
++from derivatives import verify,unpack
++from socp_rows import rows_for
++from conic import assembly
++
++
++class Audit:
++    def __init__(self,initial_witness):
++        coords={'A1':(-35,3),'A2':(-39,-3),'B1':(37,3),'B2':(40,-3)}
++        self.state=dict(poses={c:(m.I(x),m.I(y),m.I(0)) for c,(x,y) in coords.items()},v={c:F(0) for c in coords},delta={c:F(0) for c in coords},cycle=0,history=content_id(dict(initial=coords,model=sha(MODEL_PATH),h=F(1,5))),witness=initial_witness,owner=None,permission_version=0,served=[])
++        self.p8=copy.deepcopy(self.state['poses']);self.road=self.pair=F(100);self.overlap=0;self.valid=set();self.domains=read(HERE/'domain_checks.json')['domains'];self.numeric=[]
++    def clone(self):
++        result=copy.copy(self);result.state=copy.deepcopy(self.state);result.p8=copy.deepcopy(self.p8);result.valid=self.valid.copy();result.numeric=self.numeric.copy();return result
++    def rect(self,p,c):
++        sn,cs=m.sincos(p[2]);s=1 if c.startswith('A') else -1
++        return [(p[0]+s*(cs*x-sn*y),p[1]+s*(sn*x+cs*y)) for x in (F(-1),F(7,2)) for y in (-F(9,10),F(9,10))]
++    def domain(self,c,kind):
++        sign=1 if c.startswith('A') else -1;world_wait={'A1':(-30,3),'A2':(-30,-3),'B1':(30,3),'B2':(30,-3)}
++        xy=world_wait[c] if kind in ('W_in','W_hold') else ((-22 if kind=='G_in' else 34 if kind=='G_out' else 46)*sign,0 if kind in ('G_in','G_out') else world_wait[c][1]);r=self.domains[kind]
++        for poses in (self.state['poses'],self.p8):
++            assert sum((poses[c][j]-xy[j]).abs_upper() for j in (0,1))<=F(r['position_l1']),('independent domain position',c,kind)
++            assert poses[c][2].abs_upper()<=F(r['yaw'])
++        assert F(r['v'][0])<=self.state['v'][c]<=F(r['v'][1]) and F(r['delta'][0])<=self.state['delta'][c]<=F(r['delta'][1])
++    def geometry(self,nodes,owner):
++        roads=((-52,52,F(-7,5),F(7,5)),(-52,-10,F(-11,2),F(11,2)),(10,52,F(-11,2),F(11,2)))
++        moving={c:any(pose_rows(p)!=pose_rows(nodes[c][0]) for p in nodes[c][1:]) for c in CARS};eps=F(15)*(H/8)**2/8;pad={c:F(1,20)+F(1,10**8)+(eps if moving[c] else 0) for c in CARS}
++        for j in range(8):
++            rects={c:self.rect(nodes[c][j],c)+self.rect(nodes[c][j+1],c) for c in CARS};boxes={c:(min(x.l for x,y in b),max(x.u for x,y in b),min(y.l for x,y in b),max(y.u for x,y in b)) for c,b in rects.items()}
++            for c,b in boxes.items():
++                lo,hi,bt,tp=map(lambda x:F(x,m.Q),b);margin=max(min(lo-a,z-hi,bt-bot,top-tp) for a,z,bot,top in roads)-pad[c];assert margin>=0,'independent road';self.road=min(self.road,margin)
++                if c!=owner:assert hi+pad[c]<-16 or lo-pad[c]>16,'independent unreserved resource intersection'
++            for c,d in itertools.combinations(CARS,2):
++                b,e=boxes[c],boxes[d];gap=F(max(e[0]-b[1],b[0]-e[1],e[2]-b[3],b[2]-e[3]),m.Q)
++                for pose in (nodes[c][j],nodes[d][j]):
++                    theta=float(F(pose[2].l+pose[2].u,2*m.Q));nx=F(round(.999999*math.cos(theta)*10**6),10**6);ny=F(round(.999999*math.sin(theta)*10**6),10**6);assert nx*nx+ny*ny<=1
++                    for ax,ay in ((nx,ny),(-ny,nx)):
++                        pp=[x*ax+y*ay for x,y in rects[c]];qq=[x*ax+y*ay for x,y in rects[d]];gap=max(gap,F(min(t.l for t in qq)-max(t.u for t in pp),m.Q),F(min(t.l for t in pp)-max(t.u for t in qq),m.Q))
++                gap-=pad[c]+pad[d];assert gap>=F(1,2),'independent six-pair separation';self.pair=min(self.pair,gap)
++        if self.state['cycle']>=55 and sum(moving.values())>=2:self.overlap+=1
++    def step(self,commands,owner,record=None):
++        s=self.state;p4={};n8={};vv={};dd={}
++        for c in CARS:
++            a,w=commands[c];v,d=s['v'][c],s['delta'][c];nv,nd=v+H*a,d+H*w
++            assert max(abs(a),abs(w))<=1 and -1<=v<=2 and -1<=nv<=2 and max(abs(d),abs(nd))<=F(1,2)
++            sign=1 if c.startswith('A') else -1;p4[c]=propagate(s['poses'][c],v,nv,d,nd,sign,4)[-1];n8[c]=propagate(self.p8[c],v,nv,d,nd,sign,8);vv[c]=nv;dd[c]=nd
++        self.geometry(n8,owner);self.p8={c:ns[-1] for c,ns in n8.items()};s.update(poses=p4,v=vv,delta=dd,cycle=s['cycle']+1,history=content_id(dict(parent=s['history'],commands=commands,owner=owner)))
++        if record:
++            assert record['commands']=={c:list(map(str,u)) for c,u in commands.items()} and record['poses_Q']=={c:pose_rows(p) for c,p in p4.items()}
++            assert record['v']=={c:str(v) for c,v in vv.items()} and record['delta']=={c:str(d) for c,d in dd.items()} and record['history']==s['history']
++    def expected_tables(self,w,parent):
++        data=read(HERE/'rational_inputs.json');u={c:[['0','0'] for _ in range(2802)] for c in CARS};owner=[None]*2802;starts={};events={}
++        for c in CARS:u[c][:len(data['preparation'][c])]=data['preparation'][c]
++        for rank,c in enumerate(w['order']):
++            start=55+663*rank;starts[c]=start;route=get(HERE/'objects',data['routes'][c]);u[c][start:start+758]=route['controls'];owner[start:start+663]=[c]*663
++            for off,kind in ((0,'W_in'),(2,'W_hold'),(101,'G_in'),(663,'G_out'),(758,'target')):events.setdefault(str(start+off),[]).append([c,kind])
++        if parent:
++            rank=w['adoption_rank'];assert parent['order'][:rank]==w['order'][:rank]
++            for c in w['order'][:rank]:u[c]=parent['controls'][c]
++        assert w['controls']==u and w['owners']==owner and w['starts']==starts and w['events']==events and w['goal_times']=={c:k+758 for c,k in starts.items()}
++    def validate_witness(self,wid):
++        if wid in self.valid:return
++        w=get(HERE/'objects',wid);assert sorted(w['order'])==sorted(CARS) and w['model_sha256']==sha(MODEL_PATH) and w['ticks']==2802
++        assert w['domain_certificate']==read(HERE/'domain_checks.json')['certificate_id']
++        assert not w.get('optimization_origin'),'new numerical policy must be independently checked at its actual source'
++        parent=get(HERE/'objects',w['parent_witness']) if w['parent_witness'] else None
++        if parent:self.validate_witness(w['parent_witness'])
++        self.expected_tables(w,parent);self.valid.add(wid)
++    def numeric_update(self,event):
++        old=get(HERE/'objects',self.state['witness']);raw=get(HERE/'objects',event['raw_result_id']);pol=get(HERE/'objects',event['policy_result_id']);anchor=get(HERE/'objects',event['anchor_id']);cert=get(HERE/'objects',event['derivative_id']);actor=event['actor'];k=self.state['cycle'];sign=1 if actor.startswith('A') else -1
++        assert raw['history']==self.state['history']==event['source_history'] and raw['source_witness']==self.state['witness']==event['parent_witness']
++        assert anchor['state']==normal(state_record(self.state)) and anchor['plan']['remaining']==old['controls'][actor][k:] and anchor['phase']==k and anchor['receiver_phase']==k+32
++        assert anchor['peer_horizon_id']==content_id({c:old['controls'][c][k:k+33] for c in CARS if c!=actor}) and anchor['direction_sign']==sign
++        assert raw['anchor_id']==event['anchor_id']==content_id(anchor) and raw['derivative_id']==event['derivative_id'] and raw['assembly_id']==event['assembly_id']
++        assert pol['raw_result_id']==event['raw_result_id'] and pol['admission_policy']=='certificate_suboptimal_v1' and pol['accepted']==event['accepted']
++        settings=raw['settings'];assert raw['solver_version']=='0.11.1' and settings['tol_feas']==settings['tol_gap_abs']==settings['tol_gap_rel']==1e-10 and settings['time_limit']==5 and settings['max_iter']==300
++        row=dict(phase=k+32,domain=dict(center_pose_Q=[[-22*sign,1],[0,1],[0,1]],position_l1_radius='1/50',yaw_radius='1/5000',center_v='1/2',speed_radius='1/100',center_delta='0',steering_radius='1/1000',feedback_a_ref='0',feedback_omega_ref='0'),certificate_id=read(HERE/'domain_checks.json')['certificate_id'])
++        cfg=dict(roads=ROADS,h=H,L=F(27,10),body=[[-1,F(7,2)],[-F(9,10),F(9,10)]],v_bounds=[-1,2],delta_abs=F(1,2),a_abs=1,omega_abs=1)
++        data=SimpleNamespace(cfg=cfg,cert={'car':actor,'source':0},row=lambda phase:row if phase==k+32 else None);verify(data,m,cert,anchor,recompute=True);rows=rows_for(data,m,anchor,cert,'B-JL');model=get(HERE/'objects',raw['assembly_id'])
++        assert content_id(model['physical_rows'])==content_id(rows)
++        # Derive terminal Taylor faces independently from the interval Jacobian.
++        J=unpack(m,cert['prefix_jacobians'][-1]);p=[m.I.raw(*x) for x in cert['terminal_state']['poses_Q'][actor]];prof=cert['local_profiles'][-1];expected={}
++        for sx,sy in itertools.product((-1,1),repeat=2):expected[f'position_{sx}_{sy}']=(F((sx*(p[0]+22*sign)+sy*p[1]).u,m.Q)-F(1,50),[sx*J[0][j]+sy*J[1][j] for j in range(64)],F(3,2)*F(prof['Hp']))
++        for sx in (-1,1):expected[f'yaw_{sx}']=(F((sx*p[2]).u,m.Q)-F(1,5000),[sx*x for x in J[2]],F(prof['P2']))
++        for r in rows:
++            if r['kind']=='terminal':
++                g,jac,hess=expected[r['name']];assert F(r['g_upper'])==g and list(map(F,r['linear']))==[F(t.l+t.u,2*m.Q) for t in jac]
++                assert F(r['gradient_error'])==norm_upper([F(t.u-t.l,2*m.Q) for t in jac]) and F(r['hessian'])==hess
++        if not pol['accepted']:return
++        assert raw['status'] in ('Solved','AlmostSolved') and all(math.isfinite(x) for name in ('x','s','z') for x in raw[name])
++        attempt=pol['attempts'][-1];alpha=F(attempt['alpha']);assert alpha in (1,F(1,2),F(1,4));delta=[F(round(alpha*F(1,10000)*F.from_float(float(x))*10**12),10**12) for x in raw['x'][:64]];assert delta==list(map(F,attempt['delta']));t=norm_upper(delta);assert t<=F(1,1000)
++        for r in rows:assert F(r['g_upper'])+sum(F(a)*b for a,b in zip(r['linear'],delta))+F(r['gradient_error'])*t+F(r['hessian'])*t*t/2<=0
++        # Independently reproduce the exact Q margin, then the exported floating model.
++        e=F(4,10**12);inner=[]
++        for r in rows:
++            eta=(norm_upper(r['linear'])+F(r['gradient_error'])+F(r['hessian'])*F(1,1000))*e+F(r['hessian'])*e*e/2;rr=copy.deepcopy(r);rr['g_upper']=F(rr['g_upper'])+(eta if F(rr['g_upper'])+eta<=0 else 0);inner.append(rr)
++        ref=np.asarray([[float(F(x)) for x in u] for u in old['controls'][actor][k:k+32]]).ravel();rebuilt=assembly(inner,ref,F(1,10000))[-1]
++        for key in ('P','q','A','b','cone_dimensions'):assert model[key]==rebuilt[key]
++        wid=event['accepted_witness'];new=get(HERE/'objects',wid);assert pol['accepted_witness']==wid and new['optimization_origin']==event['raw_result_id'] and new['parent_witness']==self.state['witness']
++        for c in CARS:
++            if c==actor:
++                assert new['controls'][c][:k]==old['controls'][c][:k] and new['controls'][c][k+33:]==old['controls'][c][k+33:]
++                assert [F(a)-F(b) for u,v in zip(new['controls'][c][k:k+32],old['controls'][c][k:k+32]) for a,b in zip(u,v)]==delta
++            else:assert new['controls'][c]==old['controls'][c]
++        for name in ('order','owners','starts','events','goal_times','ticks','domain_certificate'):assert new[name]==old[name]
++        assert H*sum(F(x)**2 for u in new['controls'][actor][k:k+32] for x in u)<=H*sum(F(x)**2 for u in old['controls'][actor][k:k+32] for x in u)
++        trial=self.clone()
++        for j in range(33):
++            if j==32:
++                trial.domain(actor,'G_in');K=((F(1,2)-trial.state['v'][actor])/H,-trial.state['delta'][actor]/H);assert tuple(map(F,new['controls'][actor][k+32]))==K
++            trial.step({c:tuple(map(F,new['controls'][c][k+j])) for c in CARS},new['owners'][k+j])
++        assert trial.state['v'][actor]==F(1,2) and trial.state['delta'][actor]==0
++        self.valid.add(wid);self.numeric.append(dict(actor=actor,phase=k,passed=True,status=raw['status'],raw_result_id=event['raw_result_id']))
++    def frame(self,row):
++        s=self.state;k=s['cycle'];assert row['cycle']==k and row['parent_plan_id']==content_id(dict(witness=s['witness'],cycle=k,history=s['history'],remaining=2802-k))
++        wid=row['witness_id'];self.validate_witness(wid);w=get(HERE/'objects',wid);ctx=row['token']['context'];owner=w['owners'][k];version=s['permission_version']+int(owner!=s['owner'])
++        assert ctx['source_snapshot']==normal(state_record(s)) and ctx['history']==s['history'] and ctx['cycle']==k and ctx['permission_version']==version and ctx['owner']==owner
++        assert ctx['resource_id']==content_id(dict(road=ROADS,x_abs_max=16)) and ctx['certificate_id']==w['domain_certificate'] and ctx['witness_id']==wid and ctx['parent_plan_id']==row['parent_plan_id'] and ctx['remaining_budget']==2802-k and ctx['receiver_chain']==w['events']
++        assert ctx['plan_id']==content_id(dict(witness=wid,cycle=k,history=s['history'],remaining=2802-k))
++        if owner!=s['owner']:
++            if s['owner']:
++                self.domain(s['owner'],'G_out');c=s['owner'];rect=self.rect(self.p8[c],c);near=min(F(x.l,m.Q) for x,y in rect) if c[0]=='A' else -max(F(x.u,m.Q) for x,y in rect);assert near-TUBE>16
++            if owner:assert owner not in s['served'];self.domain(owner,'W_in')
++        ids={}
++        for c in CARS:
++            st=w['starts'][c];action='initial_preparation' if k<55 else 'core_reservation' if owner==c else 'outside_exit_tail' if st+663<=k<st+758 else 'hold';assert ctx['actions'][c]==action
++            commands=w['controls'][c][k:k+32]+[['0','0']]*max(0,32-(2802-k))
++            ids[c]=content_id(dict(car=c,context=ctx,controls=commands,permission=action,source_pose_Q=pose_rows(s['poses'][c]),v=str(s['v'][c]),delta=str(s['delta'][c]),certificate_id=w['domain_certificate']))
++            if action=='hold':assert s['v'][c]==s['delta'][c]==0 and w['controls'][c][k]==['0','0']
++        token=row['token'];assert token['plans']==ids and token['application_messages']==40 and token['commit_id']==content_id(dict(context=ctx,plans=ids))
++        if owner!=s['owner'] and owner:s['served'].append(owner)
++        s.update(owner=owner,permission_version=version,witness=wid);self.step({c:tuple(map(F,w['controls'][c][k])) for c in CARS},owner,row['actual'])
++        for c,kind in w['events'].get(str(k+1),[]):self.domain(c,kind)
++        assert row['budget_before']==2802-k and row['budget_after']==2801-k and row['shifted_plan_id']==content_id(dict(witness=wid,cycle=k+1,history=s['history'],remaining=2801-k))
++
++
++def accept(run):
++    began=time.perf_counter();cfg=read(run/'config.json');summary=read(run/'summary.json');audit=Audit(cfg['initial_witness']);fork=None;events=[];choices=[]
++    with gzip.open(run/'execution.jsonl.gz','rt') as stream:
++        for row in map(json.loads,stream):
++            event=row.get('event')
++            if event and event['kind']=='local_socp':audit.numeric_update(event)
++            if event and event['kind']=='resource_choice':
++                eligible=[c for c in CARS if c not in audit.state['served']];assert event['choice']['eligible']==eligible
++                previous=choices[-1] if choices else None;preferred=[c for c in eligible if previous and (direction(c)!=direction(previous))==(cfg['case']=='opposite')];chosen=min(preferred or eligible);assert event['choice']['chosen']==chosen;choices.append(chosen)
++                for c in eligible:audit.domain(c,'W_in')
++            if row['cycle']==718:
++                damage=read(run/'version_rejection/summary.json');assert damage['source']==normal(state_record(audit.state)) and damage['old_witness']==audit.state['witness'] and damage['invalid_commits']==0
++                req=damage['damaged_request'];w=get(HERE/'objects',damage['proposed_witness']);assert req['permission_version']!=audit.state['permission_version']+int(w['owners'][718]!=audit.state['owner'])
++                branch=audit.clone()
++                with gzip.open(run/'version_rejection/execution.jsonl.gz','rt') as fs:
++                    for rr in map(json.loads,fs):assert rr['witness_id']==damage['old_witness'];branch.frame(rr)
++                assert branch.state['cycle']==750 and branch.state['history']==damage['final']['history'] and damage['actual_steps']==32;fork=dict(passed=True,actual_steps=32,old_tail_preserved=True)
++            audit.frame(row)
++            if event:assert event['commit_id']==row['token']['commit_id'];events.append(event)
++    for c in CARS:audit.domain(c,'target')
++    assert summary['passed'] and audit.state['cycle']==summary['actual_steps']==2802 and summary['remaining_budget']==0 and audit.overlap==summary['overlap_ticks']>0
++    assert audit.state['history']==summary['final']['history'] and choices==[c['chosen'] for c in summary['selection']] and len(audit.numeric)==1 and fork
++    return dict(passed=True,actual_steps=2802,logical_time_s='2802/5',remaining_budget=0,selection=choices,actual_overlap_ticks=audit.overlap,minimum_road_m=float(audit.road),minimum_pair_m=float(audit.pair),local_socp=audit.numeric,version_rejection=fork,all_four_goals=True,wall_s=time.perf_counter()-began,shared=['integer intervals/trigonometry and exact ZOH propagation','variational generator and cone compiler','immutable configuration/identity primitives'],independent=['bodies/road/six pairs, 8-subsegment continuous envelopes','source snapshots, four-public-plan IDs and authority versions','waiting/entry/exit/goal domain membership','completion table construction, raw-to-rational commands, terminal Taylor rows','actual resource clear, outside-tail actions, same-old-witness rejection replay, budgets'])
++
++
++def main():
++    parser=argparse.ArgumentParser();parser.add_argument('--case',choices=('opposite','same_direction'),required=True);args=parser.parse_args();run=HERE/'results'/args.case;dest=run/'independent_acceptance.json';assert not dest.exists()
++    try:result=accept(run)
++    except Exception as error:write(dest,dict(passed=False,error=repr(error)));raise
++    write(dest,result);print(json.dumps(result,indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ certify_domains.py
+@@ -0,0 +1,41 @@
++"""Actual L1 receiving polytopes, rational quantization reserve and whole-curve margins."""
++from common import *
++
++def main():
++    source=read(HERE/'inputs/domain_certificate.json');rebuilt=read(HERE/'results/analytic_rebuild/domain_certificate.json')
++    for key in ('domain_bounds','ticks','preparation_profiles'):assert source[key]==rebuilt[key]
++    assert read(HERE/'inputs/geometry_certificate.json')==read(HERE/'results/analytic_rebuild/geometry_certificate.json')
++    for name,digest in read(HERE/'inputs/SHA256SUMS.json').items():assert sha(HERE/'inputs'/name)==digest
++    rational=read(HERE/'rational_inputs.json');quant=F(rational['maximum_body_quantization_error']);assert quant<EXTRA
++    kw=F(1,100)/(1-F(1,100)**2/2)/m.L;tw=F(1,10000)+kw/500
++    pw=F(1,100)+F(1,500)*(1+tw+tw*tw/2);assert pw<F(12001,10**6) and tw<F(108,10**6)
++    holdP,holdT=F(12001,10**6),F(108,10**6)
++    entry=holdP+F(3,2)*11*holdT+EXTRA;whole=holdP+(F(3,2)*80+RB)*holdT+EXTRA
++    assert entry<F(1,50) and whole<F(1,20)
++    ke=F(1,1000)/(1-F(1,1000)**2/2)/m.L;te=F(1,5000)+F(51,100)*H*ke;rot=te+te*te/2
++    pout=F(1,50)+F(1,1000)*(1+rot)+(F(51,100)*H+56)*rot
++    assert te<F(24,100000) and pout<F(35,1000)
++    goalP=F(35,1000)+F(3,2)*13*F(24,100000)+EXTRA;goalBody=F(35,1000)+(F(3,2)*13+RB)*F(24,100000)+EXTRA
++    assert goalP<F(2,25) and goalBody<F(1,20)
++    from construct_inputs import DS
++    overlap=33-(24+F(DS.u,m.Q))-2*TUBE;assert overlap>SAFE
++    # Corner acceleration is bounded using absolute signed speed, hence reverse is covered.
++    tanhalf=F(1,2)/(1-F(1,2)**2/2);kap=tanhalf/m.L;kd=(1+tanhalf*tanhalf)/m.L
++    Mc=1+4*kap+RB*(kap+2*kd+4*kap*kap);assert Mc<15
++    cert=read(HERE/'results/analytic_rebuild/geometry_certificate.json');leaves=[]
++    for segment in cert['segments']:
++        for leaf in segment['leaves']:
++            road=F(leaf['road_lower'])-EXTRA;pair=F(leaf['pair_lower'])-2*EXTRA;assert road>=0 and pair>=SAFE
++            leaves.append(dict(car=segment['car'],segment=segment['segment'],lo=leaf['lo'],hi=leaf['hi'],road_lower=road,pair_lower=pair))
++    domains=dict(W_in=dict(position_l1='1/100',yaw='1/10000',v=['0','1/50'],delta=['-1/100','1/100']),W_hold=dict(position_l1=str(holdP),yaw=str(holdT),v=['0','0'],delta=['0','0']),G_in=dict(position_l1='1/50',yaw='1/5000',v=['49/100','51/100'],delta=['-1/1000','1/1000']),G_out=dict(position_l1='7/200',yaw='3/12500',v=['0','0'],delta=['0','0']),target=dict(position_l1='2/25',yaw='1/100',v=['0','0'],delta=['0','0']))
++    value=dict(passed=True,domains=domains,source_domain_change='W_in and receiving position domains use L1 balls, subsets of original L2 balls; new L1 inclusions proved explicitly',quantization_body_bound=quant,quantization_reserve=EXTRA,total_body_tube=TUBE,bounds=dict(wait_position=pw,wait_yaw=tw,entry_position=entry,wait_full_body=whole,entry_reset_yaw=te,exit_position=pout,goal_position=goalP,goal_body=goalBody,overlap_gap=overlap,Mc_signed=Mc),timing=source['ticks'],geometry_leaves=leaves,minimum_road=min(F(x['road_lower']) for x in leaves),minimum_pair=min(F(x['pair_lower']) for x in leaves),source_sha256=sha(MODEL_PATH),feedback_laws=dict(wait_brake='a=-v/h; omega=0',wait_steer='v=0; omega=-delta/h',entry='a=(1/2-v)/h; omega=-delta/h'),flow_images='F_j = exact ZOH image of the certified source domain with saved feedback/commands; immutable command object and phase identify every image')
++    key=put(HERE/'objects',value);write(HERE/'domain_checks.json',dict(certificate_id=key,**value));print(json.dumps(dict(passed=True,certificate_id=key,minimum_road=float(value['minimum_road']),minimum_pair=float(value['minimum_pair']),exit_position=float(pout),Mc_signed=float(Mc))))
++
++def check_domain(state,car,kind,domains):
++    sign=direction(car)
++    center=WAIT[car] if kind in ('W_in','W_hold') else (sign*(-22 if kind=='G_in' else 34 if kind=='G_out' else 46),0 if kind in ('G_in','G_out') else WAIT[car][1])
++    d=domains[kind];p=state['poses'][car];error=sum((p[j]-F(center[j])).abs_upper() for j in (0,1))
++    if error>F(d['position_l1']) or p[2].abs_upper()>F(d['yaw']):raise ValueError('receiving pose/yaw: '+car+'/'+kind)
++    if not F(d['v'][0])<=state['v'][car]<=F(d['v'][1]) or not F(d['delta'][0])<=state['delta'][car]<=F(d['delta'][1]):raise ValueError('receiving v/delta: '+car+'/'+kind)
++    return dict(car=car,kind=kind,position_l1=str(error),yaw=str(p[2].abs_upper()),v=str(state['v'][car]),delta=str(state['delta'][car]))
++if __name__=='__main__':main()
+--- /dev/null
++++ certify_flows.py
+@@ -0,0 +1,44 @@
++"""Explicit exact-flow indices and conservative receiving bounds for every route phase."""
++from common import *
++
++
++def main():
++    certificates=read(HERE/'domain_checks.json');bound=certificates['bounds'];rational=read(HERE/'rational_inputs.json');profiles={};index={}
++    holdP=F(12001,10**6);holdT=F(108,10**6);waitP=holdP+F(3,2)*80*holdT+EXTRA
++    outP=F(bound['exit_position'])+EXTRA;outT=F(bound['entry_reset_yaw'])+EXTRA;goalP=F(bound['goal_position']);goalT=F(24,100000)+EXTRA
++    for c in CARS:
++        route=get(HERE/'objects',rational['routes'][c]);rows=[];parent=None
++        for phase in range(759):
++            kind='waiting_feedback' if phase<2 else 'W_hold_image' if phase<101 else 'G_in' if phase==101 else 'G_in_feedback_image' if phase<663 else 'G_out' if phase==663 else 'G_out_image'
++            P,T=(holdP,holdT) if phase<2 else (waitP,holdT+EXTRA) if phase<101 else (F(1,50),F(1,5000)) if phase==101 else (outP,outT) if phase<663 else (F(35,1000),F(24,100000)) if phase==663 else (goalP,goalT)
++            nominal=(route['knots'][phase][0],route['knots'][phase][2]) if phase<758 else ('0','0')
++            velocity_interval=['0','1/50'] if phase==0 else ['49/100','51/100'] if phase==101 else [str(nominal[0])]*2
++            steering_interval=['-1/100','1/100'] if phase<2 else ['-1/1000','1/1000'] if phase==101 else [str(nominal[1])]*2
++            row=dict(car=c,phase=phase,source_kind=kind,v_interval=velocity_interval,delta_interval=steering_interval,route_object=rational['routes'][c],domain_certificate=certificates['certificate_id'],parent_flow=parent,command=route['controls'][phase-1] if phase else None,feedback='wait_brake' if phase==1 else 'wait_steer' if phase==2 else 'entry_v_delta_reset' if phase==102 else None,position_l1_upper=str(P),yaw_error_upper=str(T),nominal_v_delta=nominal,exact_set_definition='source-domain exact ZOH image, with certified feedback at seams; current phase/command and parent identify the retained image')
++            parent=content_id(row);row['id']=parent;rows.append(row)
++        profiles[c]=rows;index[c]=[x['id'] for x in rows]
++    write(HERE/'flow_images.json',dict(passed=True,profiles=profiles,total_images=4*759,terminal_hold='reachable G_out-to-goal image is retained; the wider goal tolerance is not reused as a new source domain'))
++    results={}
++    for case in ('opposite','same_direction'):
++        run=HERE/'results'/case;counts=dict(preparation=0,waiting=0,inherited_flow=0,accepted_actual_prefix_flow=0,terminal_hold=0);minimum_body_slack=F(1);checked=0;receiver_file=run/'flow_receivers.jsonl.gz'
++        assert not receiver_file.exists()
++        with gzip.open(run/'execution.jsonl.gz','rt') as stream,gzip.open(receiver_file,'wt') as dest:
++            for record in map(json.loads,stream):
++                w=get(HERE/'objects',record['witness_id']);k=record['cycle']+1;poses=record['actual']['poses_Q'];receivers={}
++                for c in CARS:
++                    start=w['starts'][c];j=k-start;end=min(k+32,2802)-start
++                    if k<=55:counts['preparation']+=1;receivers[c]=dict(kind='initial_straight_exact_flow',source=INITIAL[c],phase=k,command_witness=record['witness_id']);continue
++                    if j<0:
++                        counts['waiting']+=1;p=[m.I.raw(*z) for z in poses[c]];assert sum((p[t]-WAIT[c][t]).abs_upper() for t in (0,1))<=F(1,100);receivers[c]=dict(kind='waiting_hold',phase=j,terminal_flow=index[c][max(0,min(758,end))]);continue
++                    route=get(HERE/'objects',rational['routes'][c]);phase=min(758,j);flow=profiles[c][phase]
++                    free=w.get('optimization_actor')==c and w.get('optimization_phase',-100)<k<=w.get('optimization_phase',-100)+33
++                    if free:
++                        counts['accepted_actual_prefix_flow']+=1;receivers[c]=dict(kind='actual_source_exact_flow',raw_result=w['optimization_origin'],phase_since_source=k-w['optimization_phase'],command_witness=record['witness_id'],terminal_flow=index[c][max(0,min(758,end))]);continue
++                    p=[m.I.raw(*z) for z in poses[c]];ref=[m.I.raw(*z) for z in route['poses_Q'][phase]];ep=sum((p[t]-ref[t]).abs_upper() for t in (0,1));et=(p[2]-ref[2]).abs_upper();P,T=F(flow['position_l1_upper']),F(flow['yaw_error_upper']);assert ep<=P and et<=T,(case,c,k,'flow enclosure')
++                    assert [record['actual']['v'][c],record['actual']['delta'][c]]==list(flow['nominal_v_delta']),(case,c,k,'flow affine state')
++                    body=ep+RB*et;assert body<TUBE;minimum_body_slack=min(minimum_body_slack,TUBE-body)
++                    counts['terminal_hold' if j>=758 else 'inherited_flow']+=1;checked+=1;receivers[c]=dict(kind=flow['source_kind'],current_flow=flow['id'],terminal_flow=index[c][max(0,min(758,end))],witness=record['witness_id'])
++                dest.write(json.dumps(dict(cycle=k,receivers=receivers),separators=(',',':'))+'\n')
++        results[case]=dict(passed=True,counts=counts,concrete_enclosures_checked=checked,minimum_body_tube_slack=str(minimum_body_slack),all_32_tick_receivers_indexed=True,authority_source='same immutable witness/phase/domain chain bound by original four-car commit, no retrospective log alteration')
++    write(HERE/'flow_checks.json',dict(passed=True,interfaces=results,total_route_flow_images=3036));print(json.dumps(results,indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ check_feedback.py
+@@ -0,0 +1,24 @@
++"""Nonzero boundary-domain ZOH feedback examples; separate from full-task metrics."""
++from common import *
++from physics import step
++from feedback_controls import waiting,entering
++from certify_domains import check_domain
++
++
++def source(car,xy,theta,v,delta,owner):
++    s=initial_state();s['poses']={c:(m.I(WAIT[c][0]),m.I(WAIT[c][1]),m.I(0)) for c in CARS};s['poses'][car]=(m.I(xy[0]),m.I(xy[1]),m.I(theta));s['v'][car]=F(v);s['delta'][car]=F(delta);s['owner']=owner;s['history']=content_id(dict(fixture=car,xy=xy,theta=theta,v=v,delta=delta));return s
++
++def replay(s,car,commands,owner):
++    road=pair=F(100);records=[]
++    for u in commands:
++        joint={c:(F(0),F(0)) for c in CARS};joint[car]=tuple(map(F,u));r=step(s,joint,owner,8);road=min(road,r['bounds']['road']);pair=min(pair,r['bounds']['pair']);records.append(r)
++    return dict(actual_steps=len(records),minimum_road=str(road),minimum_pair=str(pair),source_input_commands=[list(map(str,u)) for u in commands],final=state_record(s))
++
++def main():
++    dom=read(HERE/'domain_checks.json')['domains'];routes=read(HERE/'rational_inputs.json')['routes'];results=[]
++    for car,sgn in (('A1',1),('B1',-1)):
++        s=source(car,(F(WAIT[car][0])+F(sgn,100),WAIT[car][1]),F(sgn,10000),F(1,50),F(sgn,100),None);check_domain(s,car,'W_in',dom);u=waiting(s['v'][car],s['delta'][car]);r=replay(s,car,u,None);r.update(case='W_in_to_W_hold',car=car,receiver=check_domain(s,car,'W_hold',dom));assert s['v'][car]==s['delta'][car]==0;results.append(r)
++        d=direction(car);s=source(car,(-22*d+F(d,50),F(0)),F(sgn,5000),F(51,100) if sgn>0 else F(49,100),F(sgn,1000),car);check_domain(s,car,'G_in',dom);route=get(HERE/'objects',routes[car]);u=[tuple(map(F,x)) for x in route['controls'][101:663]];u[0]=entering(s['v'][car],s['delta'][car]);r=replay(s,car,u,car);r.update(case='G_in_to_G_out',car=car,receiver=check_domain(s,car,'G_out',dom));assert s['v'][car]==s['delta'][car]==0;results.append(r)
++        s=source(car,(34*d+F(d*35,1000),F(0)),F(sgn*24,100000),0,0,None);check_domain(s,car,'G_out',dom);u=[tuple(map(F,x)) for x in route['controls'][663:]];r=replay(s,car,u,None);r.update(case='G_out_to_target',car=car,receiver=check_domain(s,car,'target',dom));results.append(r)
++    write(HERE/'feedback_checks.json',dict(passed=True,cases=results,scope='auxiliary nonzero boundary-domain feedback executions, not counted as new full-task trials or solver calls'));print('Six nonzero boundary-domain ZOH feedback/continuation examples passed')
++if __name__=='__main__':main()
+--- /dev/null
++++ check_integration_bounds.py
+@@ -0,0 +1,12 @@
++"""Absolute derivative bounds remain valid with v in [-1,2]."""
++from common import *
++
++def main():
++    t=F(1,2)/(1-F(1,2)**2/2);k0=t/m.L;k1=(1+t*t)/m.L;k2=2*t*(1+t*t)/m.L;k3=2*(1+t*t)*(1+3*t*t)/m.L;k4=8*t*(1+t*t)*(2+3*t*t)/m.L
++    p1=2*k0;p2=k0+2*k1;p3=2*k1+2*k2;p4=3*k2+2*k3;p5=4*k3+2*k4
++    f4=2*(p1**4+6*p1*p1*p2+3*p2*p2+4*p1*p3+p4)+4*(p1**3+3*p1*p2+p3)
++    Mc=1+4*k0+RB*(k0+2*k1+4*k0*k0)
++    assert p5<84 and f4<256 and Mc<15
++    values=dict(passed=True,domain=dict(v=['-1','2'],abs_a='1',abs_omega='1',abs_delta='1/2'),yaw_rate_fourth=str(p5),position_integrand_fourth=str(f4),corner_acceleration=str(Mc),implemented_caps=dict(rate_Simpson=84,position_Simpson=256,corner_chord=15),basis='Absolute-value derivatives; sign of v does not enter upper polynomials. Simpson error M*dt^5/2880; corner chord error Mc*dt^2/8.',model_sha256=sha(MODEL_PATH))
++    write(HERE/'integration_bounds.json',values);print(json.dumps(values,indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ check_native_rejection.py
+@@ -0,0 +1,23 @@
++"""A damaged new K must leave the overlapping old joint tail executable."""
++from common import *
++from protocol import prepare,commit
++from run_case import advance
++from accept_case import Audit
++
++
++def main():
++    cases=[]
++    for case in ('opposite','same_direction'):
++        run=HERE/'results'/case;event=next(e for e in read(run/'events.json') if e['kind']=='local_socp');raw=get(HERE/'objects',event['raw_result_id']);anchor=get(HERE/'objects',event['anchor_id']);state=restore(m,anchor['state']);old=state['witness'];new=copy.deepcopy(get(HERE/'objects',event['accepted_witness']));actor=event['actor'];k=state['cycle'];new['controls'][actor][k+32][0]=str(F(new['controls'][actor][k+32][0])+F(1,100));bad=put(HERE/'objects',new);dest=run/'native_K_rejection';assert not dest.exists();dest.mkdir()
++        try:request=prepare(state,bad,content_id(dict(witness=old,cycle=k,history=state['history'],remaining=2802-k)));commit(state,request)
++        except (AssertionError,ValueError) as error:reason=repr(error)
++        else:raise AssertionError('damaged K committed')
++        assert normal(state_record(state))==anchor['state'];audit=Audit(old);audit.state=copy.deepcopy(state);audit.p8=copy.deepcopy(state['poses'])
++        vv=state['v'][actor]+H*sum(F(u[0]) for u in new['controls'][actor][k:k+32]);dd=state['delta'][actor]+H*sum(F(u[1]) for u in new['controls'][actor][k:k+32]);assert tuple(map(F,new['controls'][actor][k+32]))!=((F(1,2)-vv)/H,-dd/H)
++        with gzip.open(dest/'execution.jsonl.gz','wt') as stream:
++            for j in range(33):
++                row=advance(state,old);audit.frame(row);stream.write(json.dumps(row,default=str,separators=(',',':'))+'\n')
++        assert audit.state['history']==state['history'] and state['v'][actor]==F(1,2) and state['delta'][actor]==0
++        result=dict(passed=True,case=case,source_anchor_id=event['anchor_id'],bad_witness=bad,old_witness=old,rejection=reason,invalid_commits=0,actual_steps=33,old_K_phase=k+32,old_K_exact_reset=True,final=state_record(state),independent_eight_segment_replay=True,scope='auxiliary copied source at phase787, excluded from main timing/solver counts');write(dest/'summary.json',result);cases.append(result)
++    write(HERE/'native_rejection_checks.json',dict(passed=True,cases=cases));print('Both damaged-new-K proposals rejected; actual 33-step old tails independently accepted')
++if __name__=='__main__':main()
+--- /dev/null
++++ check_source_bindings.py
+@@ -0,0 +1,20 @@
++"""Check strengthened proposal-source conditions against every saved actual commit."""
++from common import *
++from protocol import validate_request,prepare,commit
++from run_case import advance
++
++
++def main():
++    result={}
++    for case in ('opposite','same_direction'):
++        run=HERE/'results'/case;count=changes=0
++        with gzip.open(run/'execution.jsonl.gz','rt') as stream:
++            for row in map(json.loads,stream):
++                source=restore(m,row['token']['context']['source_snapshot']);validate_request(source,row['token']['context']);count+=1;changes+=source['witness']!=row['witness_id']
++        event=next(e for e in read(run/'events.json') if e['kind']=='local_socp');anchor=get(HERE/'objects',event['anchor_id']);source=restore(m,anchor['state']);old=source['witness'];advance(source,old)
++        try:request=prepare(source,event['accepted_witness'],content_id(dict(witness=old,cycle=source['cycle'],history=source['history'],remaining=2802-source['cycle'])));commit(source,request)
++        except (ValueError,AssertionError) as error:reason=str(error)
++        else:raise AssertionError('stale numerical proposal adopted')
++        result[case]=dict(passed=True,actual_commits_checked=count,adopted_policy_changes=changes,stale_next_cycle_proposal_rejected=True,rejection=reason)
++    write(HERE/'source_binding_checks.json',dict(passed=True,cases=result));print(json.dumps(result,indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ check_uniform_quantization.py
+@@ -0,0 +1,18 @@
++"""All-time input-quantization bound, separate from endpoint interval diagnostics."""
++from common import *
++from construct_inputs import ALPHA,ALPHA_LO,ALPHA_HI,DELTA,DS,D
++
++
++def main():
++    k=m.tan(m.I(DELTA))/m.L;dk=max(abs(F(k.l,m.Q)-F(1,6)),abs(F(k.u,m.Q)-F(1,6)))
++    length_error=6*max(abs(ALPHA-ALPHA_LO),abs(ALPHA_HI-ALPHA));Derror=max(abs(D-F(DS.l,m.Q)),abs(D-F(DS.u,m.Q)))
++    arc_heading_error=6*ALPHA*dk+length_error/6;theta=4*arc_heading_error
++    length_total=2*Derror+4*length_error;assert 62+24*ALPHA_HI<80
++    position_l1=F(3,2)*(length_total+80*theta);body=position_l1+RB*theta;assert body<EXTRA
++    # The real and rational lengths use the same ramp/coast counts, so each
++    # within-segment traveled length is the same fraction of the total length.
++    for lo,hi,q,expected in ((F(DS.l,m.Q)-7,F(DS.u,m.Q)-7,D-7,10),(6*ALPHA_LO,6*ALPHA_HI,6*ALPHA,27),(12-F(DS.u,m.Q),12-F(DS.l,m.Q),12-D,26)):
++        assert 5+max(5,math.ceil(lo/H))==5+max(5,math.ceil(hi/H))==5+max(5,math.ceil(q/H))==expected
++    value=dict(passed=True,scope='uniform over continuous time, all four routes, including negative staging and stationary steering; endpoint-only sampling is not the proof',curvature_error=str(dk),arc_length_error=str(length_error),D_error=str(Derror),yaw_error=str(theta),position_l1_error=str(position_l1),body_error=str(body),reserved_extra=str(EXTRA),proof='For matched trapezoidal profiles: integral |v_q-v| <= sum length errors; |yaw_q-yaw| <= sum(|k_q-k|*ell_q + |ell_q-ell|/6); L1 position <= 3/2*(length_error + 80*yaw_error); body <= position_L1 + rB*yaw_error. All real/rational counts agree.',rational_inputs_id=content_id(read(HERE/'rational_inputs.json')),domain_certificate_id=read(HERE/'domain_checks.json')['certificate_id'],model_sha256=sha(MODEL_PATH))
++    key=put(HERE/'objects',value);write(HERE/'uniform_quantization_check.json',dict(certificate_id=key,**value));print(json.dumps(dict(passed=True,body_error=float(body),reserve=float(EXTRA))))
++if __name__=='__main__':main()
+--- /dev/null
++++ common.py
+@@ -0,0 +1,46 @@
++"""Region-local identities and model; historical single-mover controllers stay frozen."""
++import copy,gzip,hashlib,importlib.util,json,math,sys
++from fractions import Fraction as F
++from pathlib import Path
++from types import SimpleNamespace
++HERE=Path(__file__).resolve().parent
++CARS=('A1','A2','B1','B2');H=F(1,5);RHO=F(1,1000);RB=F(1807,500);SAFE=F(1,2);EXTRA=F(1,10**8);TUBE=F(1,20)+EXTRA
++MODEL_PATH=HERE/'inputs/interval_source.py'
++spec=importlib.util.spec_from_file_location('region_interval',MODEL_PATH);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
++INITIAL={'A1':(-35,3),'A2':(-39,-3),'B1':(37,3),'B2':(40,-3)}
++WAIT={'A1':(-30,3),'A2':(-30,-3),'B1':(30,3),'B2':(30,-3)}
++ROADS=((-52,52,F(-7,5),F(7,5)),(-52,-10,F(-11,2),F(11,2)),(10,52,F(-11,2),F(11,2)))
++
++def read(p):return json.loads(Path(p).read_text())
++def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
++def content_id(v):return hashlib.sha256(json.dumps(v,sort_keys=True,separators=(',',':'),default=str).encode()).hexdigest()
++def normal(v):return json.loads(json.dumps(v,default=str))
++def write(p,v):Path(p).parent.mkdir(parents=True,exist_ok=True);Path(p).write_text(json.dumps(v,default=str,ensure_ascii=False,indent=2)+'\n')
++def put(root,v):
++    root=Path(root);root.mkdir(parents=True,exist_ok=True);key=content_id(v);f=root/(key+'.json.gz');raw=json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':'),default=str).encode()
++    if f.exists():assert gzip.decompress(f.read_bytes())==raw
++    else:f.write_bytes(gzip.compress(raw,mtime=0))
++    return key
++_OBJECT_CACHE={}
++def get(root,key):
++    f=Path(root)/(key+'.json.gz')
++    if str(f) not in _OBJECT_CACHE:
++        value=json.loads(gzip.decompress(f.read_bytes()));assert content_id(value)==key;_OBJECT_CACHE[str(f)]=value
++    return _OBJECT_CACHE[str(f)]  # Objects are immutable; callers copy before proposing replacements.
++def norm_upper(v,grid=10**24):
++    z=sum(F(x)**2 for x in v);n=math.isqrt(z.numerator*grid*grid//z.denominator)
++    if F(n,grid)**2<z:n+=1
++    return F(n,grid)
++def pose_rows(p):return [[q.l,q.u] for q in p]
++def direction(c):return 1 if c[0]=='A' else -1
++
++def initial_state():
++    return dict(poses={c:(m.I(INITIAL[c][0]),m.I(INITIAL[c][1]),m.I(0)) for c in CARS},v={c:F(0) for c in CARS},delta={c:F(0) for c in CARS},cycle=0,history=content_id(dict(initial=INITIAL,model=sha(MODEL_PATH),h=H)),witness=None,owner=None,permission_version=0,served=[])
++def state_record(state):return dict(poses_Q={c:pose_rows(state['poses'][c]) for c in CARS},v={c:str(x) for c,x in state['v'].items()},delta={c:str(x) for c,x in state['delta'].items()},history=state['history'],cycle=state['cycle'],witness=state['witness'],owner=state.get('owner'),permission_version=state.get('permission_version',0),served=state.get('served',[]))
++def restore(model,record):return dict(poses={c:tuple(model.I.raw(*p) for p in record['poses_Q'][c]) for c in CARS},v={c:F(x) for c,x in record['v'].items()},delta={c:F(x) for c,x in record['delta'].items()},history=record['history'],cycle=record['cycle'],witness=record['witness'],owner=record.get('owner'),permission_version=record.get('permission_version',0),served=record.get('served',[]).copy())
++
++def execute_one(model,state,actor,command,cfg,released):
++    from physics import step
++    witness=get(HERE/'objects',state['witness']);k=state['cycle'];commands={c:tuple(map(F,witness['controls'][c][k])) for c in CARS};commands[actor]=command
++    return step(state,commands,witness['owners'][k],4)
++legacy=SimpleNamespace(execute=execute_one)
+--- /dev/null
++++ conic.py
+@@ -0,0 +1,43 @@
++import numpy as np
++from scipy import sparse
++import clarabel,math
++from common import *
++
++def old_assembly(rows,reference,scale):
++    nonneg=[];rhs=[];socblocks=[];socrhs=[];cones=[];normalizers=[];conversions=[]
++    for row in rows:
++        a=list(map(F,row['linear']));g=F(row['g_upper']);e=F(row['gradient_error']);Hess=F(row['hessian'])
++        L=max(abs(g),*(abs(x*scale) for x in a),abs(e*scale),Hess*scale*scale/2,F(1,10**100))
++        linear=[x*scale/L for x in a]+[e*scale/L];rconst=-g/L;normalizers.append(str(L))
++        errors=[abs(F.from_float(float(x))-x) for x in linear]
++        if Hess==0:
++            nonneg.append(list(map(float,linear)));rhs.append(float(rconst))
++            conversions.append(dict(name=row['name'],normalizer=str(L),maximum_coefficient_error=str(max(errors)),constant_error=str(abs(F.from_float(float(rconst))-rconst))))
++        else:
++            K=2*Hess*scale*scale/L;root=math.sqrt(float(K));block=np.zeros((3,65));block[0]=list(map(float,linear));block[2]=block[0];block[1,64]=-root
++            socblocks.append(block);socrhs.extend([float(rconst+1),0.,float(rconst-1)])
++            conversions.append(dict(name=row['name'],normalizer=str(L),root_squared_error=str(abs(F.from_float(root)**2-K)),maximum_coefficient_error=str(max(errors)),constant_plus_error=str(abs(F.from_float(float(rconst+1))-(rconst+1))),constant_minus_error=str(abs(F.from_float(float(rconst-1))-(rconst-1)))))
++    norm=np.zeros((65,65));norm[0,64]=-1;norm[1:,:64]=-np.eye(64)
++    blocks=[np.asarray(nonneg),norm,*socblocks];b=np.r_[rhs,np.zeros(65),socrhs]
++    cones=[clarabel.NonnegativeConeT(len(nonneg)),clarabel.SecondOrderConeT(65)]+[clarabel.SecondOrderConeT(3) for _ in socblocks]
++    P=sparse.diags([float(2*H*scale)]*64+[0.],format='csc');q=np.r_[2*float(H)*reference,0.]
++    return P,q,sparse.csc_matrix(np.vstack(blocks)),b,cones,dict(row_normalizers=normalizers,coefficient_conversion=conversions,cone_dimensions=[len(nonneg),65]+[3]*len(socblocks),P=P.toarray().tolist(),q=q.tolist(),A=np.vstack(blocks).tolist(),b=b.tolist(),representation='R=-f_linear/L; (R+1,sqrt(2*Hrow*scale^2/L)*tau,R-1) in SOC')
++
++
++def assembly(rows,reference,scale):
++    P,q,a,b,cones,export=old_assembly(rows,reference,scale)
++    a=a.toarray();b=b.copy();offset=export['cone_dimensions'][0]+65;branches=[];errors=[]
++    for row in rows:
++        g=F(row['g_upper']);h=F(row['hessian'])
++        if not h:branches.append('linear');continue
++        if g<0:
++            ell=[scale*F(x)/(-g) for x in row['linear']]+[scale*F(row['gradient_error'])/(-g)]
++            beta=2*h*scale**2/(-g);root=math.sqrt(float(beta))
++            a[offset]=list(map(float,ell));a[offset+1]=0;a[offset+1,64]=-root;a[offset+2]=a[offset];b[offset:offset+3]=(2,0,0)
++            errors.append(dict(name=row['name'],maximum_coefficient_error=str(max(abs(F.from_float(float(x))-x) for x in ell)),root_squared_error=str(F.from_float(root)**2-beta)))
++            branches.append('centered')
++        else:branches.append('old_valid_cone_nonpositive_margin')
++        offset+=3
++    assert offset==len(b)
++    export.update(A=a.tolist(),b=b.tolist(),representation='centered_equivalent_v1',branches=branches,centered_conversion=errors)
++    return P,q,sparse.csc_matrix(a),b,cones,export
+--- /dev/null
++++ construct_inputs.py
+@@ -0,0 +1,73 @@
++"""Rational commands; exact constant-curvature integration against analytic intervals."""
++from common import *
++from physics import propagate,trig
++ALPHA_LO,ALPHA_HI=F('0.722734247813'),F('0.722734247814')
++DELTA_LO,DELTA_HI=F('0.422853926132'),F('0.422853926134')
++ALPHA=(ALPHA_LO+ALPHA_HI)/2;DELTA=(DELTA_LO+DELTA_HI)/2
++SQ=m.I.raw(math.isqrt(7*m.Q*m.Q),math.isqrt(7*m.Q*m.Q)+1);DS=3*SQ
++D=F(round(F(DS.l+DS.u,2*m.Q)*10**12),10**12)
++
++def trapezoid(length):
++    M=5;n=M+max(M,math.ceil(abs(length)/H));V=F(length)/(H*(n-M));v=F(0);u=[]
++    for j in range(n):
++        a=V/(M*H) if j<M else -V/(M*H) if j>=n-M else F(0);u.append((a,F(0)));v+=H*a
++    assert v==0 and max(abs(a) for a,w in u)<=1
++    assert H*sum(F(n-1-j)*H*a+H*a/2 for j,(a,w) in enumerate(u))==length
++    return u
++
++def reference(car,name,progress):
++    s=direction(car);yl=s*WAIT[car][1];pre=m.I(-23)-DS;endpre=m.I(46)-DS
++    if name in ('staging','approach','crossing','exit'):
++        xx0,xx1,yy={'staging':(m.I(-30),pre,m.I(yl)),'approach':(m.I(-23),m.I(-22),m.I(0)),'crossing':(m.I(-22),m.I(34),m.I(0)),'exit':(m.I(34),endpre,m.I(0))}[name]
++        return xx0+(xx1-xx0)*progress,yy,m.I(0)
++    parking=name.startswith('parking');first=name.endswith('first');sign=(1 if yl>0 else -1)*(1 if parking else -1)
++    f=progress if first else 1-progress;phi=m.I.raw(m.I(ALPHA_LO*f).l,m.I(ALPHA_HI*f).u);si,co=m.sincos(phi)
++    if first:
++        x0,y0=(endpre,m.I(0)) if parking else (pre,m.I(yl));x=x0+6*si;y=y0+sign*6*(m.I(1)-co)
++    else:
++        x1,y1=(m.I(46),m.I(yl)) if parking else (m.I(-23),m.I(0));x=x1-6*si;y=y1-sign*6*(m.I(1)-co)
++    return x,y,sign*phi
++
++def make_route(car):
++    sign=direction(car);yl=sign*WAIT[car][1];merge=-1 if yl>0 else 1;parking=-merge
++    commands=[];labels=[];references=[];phase_ranges={};current_d=F(0)
++    def add(label,u):
++        phase_ranges[label]=[len(commands),len(commands)+len(u)];commands.extend(u);labels.extend([label]*len(u))
++    def turn(label,target):
++        nonlocal current_d
++        add(label,[(F(0),(target-current_d)/(5*H))]*5);current_d=target
++    add('waiting_feedback',[(F(0),F(0))]*2)
++    add('staging',trapezoid(-(D-7)));turn('merge_turn_first',merge*DELTA)
++    add('merge_first',trapezoid(6*ALPHA));turn('merge_turn_second',-merge*DELTA)
++    add('merge_second',trapezoid(6*ALPHA));turn('merge_turn_zero',F(0))
++    add('approach',[(F(1,8),F(0))]*20)
++    add('crossing',[(F(0),F(0))]*558+[(F(-5,8),F(0))]*4)
++    add('exit',trapezoid(12-D));turn('parking_turn_first',parking*DELTA)
++    add('parking_first',trapezoid(6*ALPHA));turn('parking_turn_second',-parking*DELTA)
++    add('parking_second',trapezoid(6*ALPHA));turn('parking_turn_zero',F(0))
++    assert len(commands)==758 and phase_ranges['crossing']==[101,663] and phase_ranges['exit'][0]==663
++    p=(m.I(WAIT[car][0]),m.I(WAIT[car][1]),m.I(0));v=d=F(0);poses=[pose_rows(p)];knots=[];errors=[];distance=F(0)
++    for j,(a,w) in enumerate(commands):
++        label=labels[j];nv,nd=v+H*a,d+H*w;knots.append([v,nv,d,nd]);p=propagate(p,v,nv,d,nd,sign,4)[-1]
++        if label in ('staging','approach','crossing','exit','merge_first','merge_second','parking_first','parking_second'):
++            if j==phase_ranges[label][0]:distance=F(0)
++            distance+=H*(v+nv)/2
++            length={'staging':-(D-7),'approach':F(1),'crossing':F(56),'exit':12-D}.get(label,6*ALPHA)
++            ref=reference(car,label,distance/length);ref=(sign*ref[0],sign*ref[1],ref[2])
++            ep=sum((p[k]-ref[k]).abs_upper() for k in (0,1));et=(p[2]-ref[2]).abs_upper();errors.append(dict(phase=j+1,segment=label,position_l1=str(ep),yaw=str(et),body=str(ep+RB*et)))
++        v,d=nv,nd;poses.append(pose_rows(p))
++        assert -1<=v<=2 and abs(d)<=F(1,2) and max(abs(a),abs(w))<=1
++    assert v==d==0 and max(F(x['body']) for x in errors)<EXTRA
++    return dict(car=car,controls=commands,knots=knots,poses_Q=poses,phase_ranges=phase_ranges,labels=labels,analytic_error=errors,ticks=len(commands))
++
++def main():
++    assert m.sincos(m.I(ALPHA_LO))[1].l>m.I(F(3,4)).u and m.sincos(m.I(ALPHA_HI))[1].u<m.I(F(3,4)).l
++    assert m.tan(m.I(DELTA_LO)).u<m.I(F(9,20)).l and m.tan(m.I(DELTA_HI)).l>m.I(F(9,20)).u
++    results={};maxerr=F(0)
++    for c in CARS:
++        route=make_route(c);key=put(HERE/'objects',route);results[c]=key;maxerr=max(maxerr,max(F(x['body']) for x in route['analytic_error']))
++    prepare={c:trapezoid(F(abs(WAIT[c][0]-INITIAL[c][0]))) for c in CARS}
++    assert max(map(len,prepare.values()))==55
++    write(HERE/'rational_inputs.json',dict(routes=results,preparation=prepare,alpha_q=ALPHA,delta_q=DELTA,D_q=D,maximum_body_quantization_error=maxerr,reserved_quantization_error=EXTRA,body_tube=TUBE,approach=101,crossing=562,tail=95,overlapped_ticks=55+4*663+95,serial_ticks=55+4*758))
++    print(json.dumps(dict(passed=True,routes=4,max_body_error=float(maxerr),reserved=float(EXTRA),actual_ticks=2802)))
++if __name__=='__main__':main()
+--- frozen_derivatives.py
++++ derivatives.py
+@@ -7,7 +7,7 @@
+ import time
+ 
+ from common import *
+-spec=importlib.util.spec_from_file_location('B_certified_map_builder',HERE/'sources/certify_interfaces.py')
++spec=importlib.util.spec_from_file_location('region_variational_builder',HERE/'sources/certify_interfaces.py')
+ builder=importlib.util.module_from_spec(spec);spec.loader.exec_module(builder)
+ ORDER=['px','py','psi','v','delta','a','omega']
+ 
+@@ -43,24 +43,22 @@
+ 
+ 
+ def geometry_margin(m,data,state,actor,nodes):
+-    Q=m.Q;epsilon=m.I(15*(H/4)**2/8).u;roads=[[m.I(F(x)).l for x in r] for r in data.cfg['road_rectangles']]
+-    peers={c:m.corners(state['poses'][c],1 if c[0]=='A' else -1) for c in CARS if c!=actor}
+-    boxes={c:m.axis_box(p) for c,p in peers.items()}
+-    peer_error={c:m.I(F(data.cert['stage_radii'][int(data.edge['source'][CARS.index(c)])][0])+builder.RB*F(data.cert['stage_radii'][int(data.edge['source'][CARS.index(c)])][1])).u for c in peers}
+-    best=100*Q
+-    for left,right in zip(nodes,nodes[1:]):
+-        body=m.corners(left,1 if actor[0]=='A' else -1)+m.corners(right,1 if actor[0]=='A' else -1);box=m.axis_box(body)
+-        margins=[m.road(box,roads)-epsilon]
+-        for c in peers:margins.append(m.gap(body,peers[c],box,boxes[c],m.normed_axes(left))-epsilon-peer_error[c]-Q//2)
+-        if data.cert['source']>0:margins.append(m.rear(box,1 if actor[0]=='A' else -1)-epsilon-F(53,2)*Q)
+-        best=min(best,*margins)
+-    assert best>0,'anchor geometry has no certified reserve'
+-    return F(best,2*Q)
++    from physics import geometry
++    w=get(HERE/'objects',state['witness']);bounds=geometry(nodes,w['owners'][state['cycle']],4)
++    reserve=min(bounds['road'],bounds['pair']-SAFE)/2
++    assert reserve>0,'actual joint trajectory has no local geometric reserve'
++    return reserve
++
++
++def joint_nodes(state,actor,command):
++    from physics import predicted_nodes
++    w=get(HERE/'objects',state['witness']);k=state['cycle'];u={c:tuple(map(F,w['controls'][c][k])) for c in CARS};u[actor]=command
++    return predicted_nodes(state,u,4)
+ 
+ 
+ def build(data,m,anchor,subdivisions=8):
+     start=time.perf_counter();state=restore(m,anchor['state']);actor=anchor['actor'];u=[tuple(map(F,x)) for x in anchor['plan']['remaining'][:32]]
+-    assert anchor['m']==32 and anchor['rho']==str(RHO) and anchor['model_sha256']==sha(REBUILD/'work/M2b_首段自由度与递归可行性/route_zoh_certificate.py')
++    assert anchor['m']==32 and anchor['rho']==str(RHO) and anchor['model_sha256']==sha(MODEL_PATH)
+     assert anchor['direction_sign']==(1 if actor[0]=='A' else -1) and anchor['physics_sha256']==content_id(data.cfg)
+     states=[];singles=[];prefix=[];knots=[];geometry=[];S=[[] for _ in range(5)]
+     for j,(a,w) in enumerate(u):
+@@ -74,11 +72,11 @@
+         nextS=[]
+         for r in range(5):nextS.append([sum((J[r][q]*S[q][k] for q in range(5)),m.I(0)) for k in range(2*j)]+[J[r][5],J[r][6]])
+         S=nextS;prefix.append(pack(m,S));singles.append(dict(source=source,source_id=content_id(source),matrix=raw));states.append(state_record(state))
+-        nodes=m.propagate(pose,v,v1,d,d1,1 if actor[0]=='A' else -1,4)
++        nodes=joint_nodes(state,actor,(a,w))
+         geometry.append(geometry_margin(m,data,state,actor,nodes));knots.append((v,v1,d,d1))
+         legacy.execute(m,state,actor,(a,w),data.cfg,data.cert['source']>0)
+     profiles=local_profiles(knots)
+-    return dict(anchor_id=content_id(anchor),anchor=anchor,source_kind='fresh actual-anchor single-step rectangles, not nominal cache',columns=ORDER,coordinate_branch=anchor['coordinate_branch'],direction_sign=anchor['direction_sign'],rho=str(RHO),trust_center=content_id(anchor),input_dimension=64,single_step_dimension=7,subdivisions=subdivisions,singles=singles,prefix_jacobians=prefix,local_profiles=profiles,geometry_margins=geometry,terminal_state=state_record(state),all_32_source_ranges_covered=True,physical_affine_rows_required=True,build_wall_s=time.perf_counter()-start)
++    return dict(anchor_id=content_id(anchor),anchor=anchor,source_kind='fresh actual joint state and time-aligned fixed peer trajectories',columns=ORDER,coordinate_branch=anchor['coordinate_branch'],direction_sign=anchor['direction_sign'],rho=str(RHO),trust_center=content_id(anchor),input_dimension=64,single_step_dimension=7,subdivisions=subdivisions,singles=singles,prefix_jacobians=prefix,local_profiles=profiles,geometry_margins=geometry,terminal_state=state_record(state),all_32_source_ranges_covered=True,physical_affine_rows_required=True,build_wall_s=time.perf_counter()-start)
+ 
+ 
+ def verify(data,m,cert,anchor,recompute=True):
+--- /dev/null
++++ feedback_controls.py
+@@ -0,0 +1,10 @@
++"""Materialize the domain feedback laws as exact rational ZOH commands."""
++from common import *
++
++def waiting(v,delta):
++    v,d=F(v),F(delta);assert 0<=v<=F(1,50) and abs(d)<=F(1,100)
++    return [(-v/H,F(0)),(F(0),-d/H)]
++
++def entering(v,delta):
++    v,d=F(v),F(delta);assert F(49,100)<=v<=F(51,100) and abs(d)<=F(1,1000)
++    return ((F(1,2)-v)/H,-d/H)
+--- /dev/null
++++ local_update.py
+@@ -0,0 +1,96 @@
++"""One 65-variable candidate per case on a genuine two-mover anchor."""
++import time,math
++import numpy as np
++import clarabel
++from common import *
++from derivatives import build,verify
++from socp_rows import rows_for,evaluate
++from conic import assembly
++from physics import step
++from certify_domains import check_domain
++
++CFG=dict(roads=ROADS,h=H,L=F(27,10),body=[[-1,F(7,2)],[-F(9,10),F(9,10)]],v_bounds=[-1,2],delta_abs=F(1,2),a_abs=1,omega_abs=1)
++
++def data_for(actor,phase):
++    d=direction(actor);domain=dict(center_pose_Q=[[-22*d,1],[0,1],[0,1]],position_l1_radius='1/50',yaw_radius='1/5000',center_v='1/2',speed_radius='1/100',center_delta='0',steering_radius='1/1000',feedback_a_ref='0',feedback_omega_ref='0')
++    row=dict(phase=phase,domain=domain,certificate_id=read(HERE/'domain_checks.json')['certificate_id'])
++    return SimpleNamespace(cfg=CFG,cert={'car':actor,'source':0},row=lambda k:row if k==phase else (_ for _ in ()).throw(ValueError('wrong receiving phase')))
++
++def anchor_for(state,actor):
++    w=get(HERE/'objects',state['witness']);k=state['cycle'];data=data_for(actor,k+32)
++    value=dict(state=state_record(state),model_sha256=sha(MODEL_PATH),physics_sha256=content_id(CFG),actor=actor,coordinate_branch='A:psi=theta; B:psi=pi+theta',direction_sign=direction(actor),m=32,rho=str(RHO),phase=k,receiver_phase=k+32,receiver_row_sha256=content_id(data.row(k+32)),witness=state['witness'],permission_owner=state['owner'],peer_horizon_id=content_id({c:w['controls'][c][k:k+33] for c in CARS if c!=actor}),plan=dict(phase=k,remaining=w['controls'][actor][k:],budget=2802-k,witness=state['witness']))
++    return normal(value)
++
++def reserved_rows(rows):
++    out=[];res=[];e=F(4,10**12)
++    for r in rows:
++        eta=(norm_upper(r['linear'])+F(r['gradient_error'])+F(r['hessian'])*RHO)*e+F(r['hessian'])*e*e/2;applied=F(r['g_upper'])+eta<=0
++        rr=copy.deepcopy(r);rr['g_upper']=F(rr['g_upper'])+(eta if applied else 0);out.append(rr);res.append(dict(name=r['name'],eta=eta,applied=applied))
++    return out,res
++
++def certify_prefix(state,new,actor):
++    k=state['cycle'];trial=copy.deepcopy(state);trial['witness']=content_id(new);dom=read(HERE/'domain_checks.json')['domains'];road=pair=F(100)
++    for j in range(33):
++        if j==32:terminal=check_domain(trial,actor,'G_in',dom)
++        cmds={c:tuple(map(F,new['controls'][c][k+j])) for c in CARS};result=step(trial,cmds,new['owners'][k+j],4)
++        road=min(road,result['bounds']['road']);pair=min(pair,result['bounds']['pair'])
++        for c,kind in new['events'].get(str(k+j+1),[]):check_domain(trial,c,kind,dom)
++    assert trial['v'][actor]==F(1,2) and trial['delta'][actor]==0
++    return dict(passed=True,terminal=terminal,after_K=state_record(trial),minimum_road=road,minimum_pair=pair,suffix_certificate=new['domain_certificate'],completion_ticks=2802-k)
++
++def fields(obj):
++    return {key:getattr(obj,key) if isinstance(getattr(obj,key),(int,float,bool,str,list)) else str(getattr(obj,key)) for key in dir(obj) if not key.startswith('_') and not callable(getattr(obj,key))}
++
++
++def solve(state,actor,case,output):
++    began=time.perf_counter();anchor=anchor_for(state,actor);aid=put(HERE/'objects',anchor);data=data_for(actor,anchor['receiver_phase']);cert=build(data,m,anchor,32);verify(data,m,cert,anchor,recompute=False);did=put(HERE/'objects',cert)
++    rows=rows_for(data,m,anchor,cert,'B-JL');inner,reserves=reserved_rows(rows);reference=np.array([[float(F(x)) for x in u] for u in anchor['plan']['remaining'][:32]]).ravel()
++    P,q,A,b,cones,model=assembly(inner,reference,F(1,10000));model.update(physical_rows=rows,assembled_rows=inner,rounding_reserves=reserves);mid=put(HERE/'objects',model)
++    cfg=clarabel.DefaultSettings();cfg.verbose=True;cfg.max_iter=300;cfg.time_limit=5.;cfg.tol_feas=cfg.tol_gap_abs=cfg.tol_gap_rel=1e-10
++    solver=clarabel.DefaultSolver(P,q,A,b,cones,cfg);solver.print_to_buffer();trace=[]
++    def callback(info):trace.append(fields(info));return False
++    solver.set_termination_callback(callback);calls=read(HERE/'results/solver_calls.json') if (HERE/'results/solver_calls.json').exists() else [];assert len(calls)<2 and case not in [c['case'] for c in calls]
++    calls.append(dict(case=case,phase=state['cycle'],anchor_id=aid,started=True,completed=False));write(HERE/'results/solver_calls.json',calls)
++    result=solver.solve();info=fields(solver.get_info());output.mkdir();(output/'solver.log').write_text(solver.get_print_buffer());write(output/'settings.json',fields(solver.get_settings()));write(output/'trace.json',trace)
++    raw=dict(case=case,phase=state['cycle'],history=state['history'],source_witness=state['witness'],anchor_id=aid,derivative_id=did,assembly_id=mid,solver_version=clarabel.__version__,status=str(result.status),x=result.x,s=result.s,z=result.z,info=info,settings=fields(solver.get_settings()),scale='1/10000',rho=str(RHO),quantization='1/1000000000000',policy='certificate_suboptimal_v1');rid=put(HERE/'objects',raw);accepted=False;attempts=[];old=get(HERE/'objects',state['witness']);oldE=H*sum(F(x)**2 for u in old['controls'][actor][state['cycle']:state['cycle']+32] for x in u);wid=state['witness'];proposal=None
++    if raw['status'] in ('Solved','AlmostSolved') and all(math.isfinite(x) for key in ('x','s','z') for x in raw[key]):
++        for alpha in (F(1),F(1,2),F(1,4)):
++            delta=[F(round(alpha*F(1,10000)*F.from_float(float(x))*10**12),10**12) for x in raw['x'][:64]];cone=evaluate(rows,delta);attempt=dict(alpha=str(alpha),cone=cone,delta=list(map(str,delta)),passed=False)
++            if cone['passed']:
++                proposal=copy.deepcopy(old);k=state['cycle'];trial=copy.deepcopy(state)
++                for j in range(32):
++                    proposal['controls'][actor][k+j]=[str(F(u)+delta[2*j+i]) for i,u in enumerate(old['controls'][actor][k+j])]
++                    commands={c:tuple(map(F,proposal['controls'][c][k+j])) for c in CARS};step(trial,commands,proposal['owners'][k+j],4)
++                K=((F(1,2)-trial['v'][actor])/H,-trial['delta'][actor]/H);proposal['controls'][actor][k+32]=list(map(str,K));proposal.update(parent_witness=state['witness'],optimization_origin=rid,optimization_actor=actor,optimization_phase=k)
++                E=H*sum(F(x)**2 for u in proposal['controls'][actor][k:k+32] for x in u)
++                try:
++                    if E>oldE:raise ValueError('prefix energy increased')
++                    proof=certify_prefix(state,proposal,actor)
++                except (ValueError,AssertionError) as error:attempt['failure']=repr(error)
++                else:
++                    attempt.update(passed=True,proof=proof,energy=str(E));attempts.append(attempt);accepted=True;wid=put(HERE/'objects',proposal);break
++            attempts.append(attempt)
++    policy=dict(accepted=accepted,changed=accepted and any(delta),raw_result_id=rid,anchor_id=aid,derivative_id=did,assembly_id=mid,admission_policy='certificate_suboptimal_v1',accepted_witness=wid,attempts=attempts,old_energy=str(oldE),wall_s=time.perf_counter()-began)
++    pid=put(HERE/'objects',policy);calls[-1].update(completed=True,raw_result_id=rid,policy_result_id=pid,status=raw['status'],accepted=accepted);write(HERE/'results/solver_calls.json',calls)
++    return wid,dict(kind='local_socp',case=case,cycle=state['cycle'],actor=actor,source_history=state['history'],parent_witness=state['witness'],anchor_id=aid,derivative_id=did,assembly_id=mid,raw_result_id=rid,policy_result_id=pid,accepted=accepted,accepted_witness=wid)
++
++
++def verify_update(wid,recompute=True):
++    """Recompute binding and exact rows; no numerical solver called."""
++    new=get(HERE/'objects',wid);raw=get(HERE/'objects',new['optimization_origin']);old=get(HERE/'objects',raw['source_witness']);anchor=get(HERE/'objects',raw['anchor_id']);cert=get(HERE/'objects',raw['derivative_id']);state=restore(m,anchor['state']);actor=anchor['actor'];k=state['cycle']
++    assert raw['source_witness']==state['witness']==new['parent_witness'] and new['optimization_actor']==actor and new['optimization_phase']==k and raw['history']==state['history']
++    assert anchor_for(state,actor)==anchor and raw['status'] in ('Solved','AlmostSolved') and raw['solver_version']=='0.11.1' and all(math.isfinite(x) for key in ('x','s','z') for x in raw[key])
++    settings=raw['settings'];assert settings['tol_feas']==settings['tol_gap_abs']==settings['tol_gap_rel']==1e-10 and settings['time_limit']==5 and settings['max_iter']==300
++    data=data_for(actor,k+32);verify(data,m,cert,anchor,recompute);rows=rows_for(data,m,anchor,cert,'B-JL');inner,reserves=reserved_rows(rows);model=get(HERE/'objects',raw['assembly_id']);reference=np.asarray([[float(F(x)) for x in u] for u in old['controls'][actor][k:k+32]]).ravel();rebuilt=assembly(inner,reference,F(1,10000))[-1]
++    for key in ('P','q','A','b','cone_dimensions'):assert model[key]==rebuilt[key],key
++    delta=[F(x)-F(y) for u,v in zip(new['controls'][actor][k:k+32],old['controls'][actor][k:k+32]) for x,y in zip(u,v)]
++    matches=[alpha for alpha in (F(1),F(1,2),F(1,4)) if delta==[F(round(alpha*F(1,10000)*F.from_float(float(x))*10**12),10**12) for x in raw['x'][:64]]];assert matches and evaluate(rows,delta)['passed']
++    for c in CARS:
++        if c==actor:assert new['controls'][c][:k]==old['controls'][c][:k] and new['controls'][c][k+33:]==old['controls'][c][k+33:]
++        else:assert new['controls'][c]==old['controls'][c]
++    assert new['owners']==old['owners'] and new['events']==old['events'] and new['ticks']-k<=old['ticks']-k
++    trial=copy.deepcopy(state)
++    for j in range(32):step(trial,{c:tuple(map(F,new['controls'][c][k+j])) for c in CARS},new['owners'][k+j],4)
++    K=((F(1,2)-trial['v'][actor])/H,-trial['delta'][actor]/H);assert tuple(map(F,new['controls'][actor][k+32]))==K
++    assert H*sum(F(x)**2 for u in new['controls'][actor][k:k+32] for x in u)<=H*sum(F(x)**2 for u in old['controls'][actor][k:k+32] for x in u)
++    certify_prefix(state,new,actor);return True
+--- /dev/null
++++ package_delivery.py
+@@ -0,0 +1,46 @@
++"""Portable, deduplicated archives plus a Windows analysis export."""
++import os,sys,subprocess,shutil,tarfile,tempfile,zipfile
++from common import *
++
++
++def files():return [f for f in sorted(HERE.rglob('*')) if f.is_file() and '__pycache__' not in f.parts and 'delivery' not in f.relative_to(HERE).parts]
++def manifest():write(HERE/'DELIVERY_MANIFEST.json',dict(files={str(f.relative_to(HERE)):dict(bytes=f.stat().st_size,sha256=sha(f)) for f in files() if f!=HERE/'DELIVERY_MANIFEST.json'},source_commit=read(HERE/'plan.json')['source_commit']))
++def tarball(path):
++    seen={}
++    with tarfile.open(path,'w:gz') as tar:
++        for f in files():
++            name=str(Path(HERE.name)/f.relative_to(HERE));info=tar.gettarinfo(str(f),arcname=name);key=sha(f)
++            if key in seen:info.type=tarfile.LNKTYPE;info.linkname=seen[key];info.size=0;tar.addfile(info)
++            else:
++                seen[key]=name
++                with f.open('rb') as stream:tar.addfile(info,stream)
++
++def main():
++    output=HERE/'delivery';assert not output.exists();output.mkdir();manifest()
++    with tempfile.TemporaryDirectory(prefix='dmpc-region-relocation-') as tmp:
++        archive=Path(tmp)/'candidate.tar.gz';tarball(archive)
++        with tarfile.open(archive) as tar:tar.extractall(tmp,filter='data')
++        env={**os.environ,'PYTHONPATH':'/tmp/dmpc-p0-deps','OPENBLAS_NUM_THREADS':'1','PYTHONDONTWRITEBYTECODE':'1'}
++        result=subprocess.run([sys.executable,str(Path(tmp)/HERE.name/'verify_delivery.py')],cwd=tmp,env=env,capture_output=True,text=True,timeout=180)
++        (output/'relocation_stdout.log').write_text(result.stdout);(output/'relocation_stderr.log').write_text(result.stderr);assert result.returncode==0,(result.returncode,result.stderr)
++        write(HERE/'relocation_check.json',dict(passed=True,exit_code=0,solver_calls=0,mode='content-checked full-trajectory evidence plus freshly recomputed derivative/numeric/33-tick prefix checks; not a second full-task replay',result=json.loads(result.stdout),temporary_root=tmp))
++    manifest();tpath=output/'DMPC_region_reservation_001_2026-11-13.tar.gz';tarball(tpath);zpath=output/'DMPC_region_reservation_001_2026-11-13.zip'
++    with zipfile.ZipFile(zpath,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
++        for f in files():z.write(f,str(Path(HERE.name)/f.relative_to(HERE)))
++    with zipfile.ZipFile(zpath) as z:assert z.testzip() is None
++    analysis=output/'region_reservation_001_Windows_analysis_2026-11-13';analysis.mkdir()
++    for name in ('report.md','GATE.json','comparison.csv','comparison_windows.csv','metrics.json','event_index.json','CERTIFICATE_BUNDLE.json','rational_inputs.json','domain_checks.json','uniform_quantization_check.json','integration_bounds.json','feedback_checks.json','flow_images.json','flow_checks.json','self_checks.json','source_binding_checks.json','native_rejection_checks.json','preservation_check.json','versions.json','requirements.txt','pending_parameters.json','changes.patch','HANDOFF.md','relocation_check.json','DELIVERY_MANIFEST.json'):shutil.copy2(HERE/name,analysis/name)
++    for case in ('opposite','same_direction'):
++        src=HERE/'results'/case;dest=analysis/case;dest.mkdir()
++        for name in ('config.json','events.json','summary.json','execution.jsonl.gz','independent_acceptance.json','trajectory_display.csv','flow_receivers.jsonl.gz'):shutil.copy2(src/name,dest/name)
++        (dest/'execution.jsonl').write_bytes(gzip.decompress((src/'execution.jsonl.gz').read_bytes()))
++        for name in ('local_socp','version_rejection','native_K_rejection'):shutil.copytree(src/name,dest/name)
++    for f in (tpath,zpath):
++        checksum=f.with_suffix(f.suffix+'.sha256');checksum.write_text(sha(f)+'  '+f.name+'\n');shutil.copy2(f,analysis/f.name);shutil.copy2(checksum,analysis/checksum.name)
++    (analysis/'先读我_Windows.txt').write_text('区域预约001工程验证\n\n先读report.md和GATE.json；comparison_windows.csv可用Excel打开，分数列请按文本导入。\n两条四车完整任务均2802拍、预算0，资源外出口/准备两车重叠，核心资源保持排他。局部求解各一次：Solved与AlmostSolved，均通过完整证书实际采用。\n注意：9.49e-12m是节点参考差；连续全时域量化界为uniform_quantization_check.json中的3.23e-10m，预留1e-8m。\nflow_images.json与flow_receivers描述保留流像；metrics区分逻辑时间、墙钟、预测与实际输入代价。\n每个case有实际JSONL、独立验收、绘图CSV、原始求解设置/输出、版本及新K拒绝分支。trajectory_display的浮点中值仅供画图；精确区间在JSONL/CSV的Q整数字段中，Q=1e20，B车实际航向=pi+theta。速度有符号，负值为倒车。\n完整ZIP含源代码、原理论材料、内容对象、执行源码快照和复核工具。objects中也保留故意损坏提案，是否实际认可须按event_index与提交ID判断。\n默认verify_delivery复用已内容校验的完整独立验收，并重算两处源与33拍前缀；加--full-replay才重新跑两个2802拍独立验收。\nDELIVERY_MANIFEST对应ZIP内region_reservation_001目录，SHARED_FILES_SHA256对应本分析文件夹。历史实验与论文保留，无Git提交和正式批量。\n',encoding='utf-8-sig')
++    hashes={str(f.relative_to(analysis)):dict(bytes=f.stat().st_size,sha256=sha(f)) for f in sorted(analysis.rglob('*')) if f.is_file()};write(analysis/'SHARED_FILES_SHA256.json',hashes)
++    shared=Path('/media/sf_DMPC_Theory')/analysis.name;assert not shared.exists();shutil.copytree(analysis,shared)
++    for name,item in hashes.items():assert sha(shared/name)==item['sha256'],name
++    assert sha(shared/'SHARED_FILES_SHA256.json')==sha(analysis/'SHARED_FILES_SHA256.json')
++    print(json.dumps(dict(passed=True,local_delivery=str(output),shared_directory=str(shared),shared_files_verified=len(hashes)+1,tar_sha256=sha(tpath),tar_bytes=tpath.stat().st_size,zip_sha256=sha(zpath),zip_bytes=zpath.stat().st_size,relocation_passed=True),ensure_ascii=False,indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ physics.py
+@@ -0,0 +1,59 @@
++"""Signed ZOH simultaneous execution with continuous corner-error envelopes."""
++from functools import lru_cache
++import itertools
++from common import *
++
++@lru_cache(32768)
++def cached_trig(lo,hi):
++    if lo==hi==0:return m.I(0),m.I(1)
++    return m.sincos(m.I.raw(lo,hi))
++def trig(z):return cached_trig(z.l,z.u)
++
++def propagate(p,v0,v1,d0,d1,sign,sub):
++    if v0==v1==0:return [p]*(sub+1)
++    if d0!=d1 or 0<abs(d0)<F(1,10**6):return m.propagate(p,v0,v1,d0,d1,sign,sub)
++    x,y,theta=p;a=(v1-v0)/H;nodes=[p]
++    if d0:
++        kap=m.tan(m.I(d0))/m.L;ksign=1 if d0>0 else -1;den=kap*ksign;s0,c0=trig(theta)
++    for j in range(1,sub+1):
++        t=H*j/sub;s=v0*t+a*t*t/2
++        if d0:
++            tt=theta+kap*s;ss,cc=trig(tt);nodes.append((x+(ss-s0)/den*(sign*ksign),y+(c0-cc)/den*(sign*ksign),tt))
++        else:
++            si,co=trig(theta);nodes.append((x+sign*s*co,y+sign*s*si,theta))
++    return nodes
++
++def body(p,c):
++    si,co=trig(p[2]);s=direction(c)
++    return [(p[0]+s*(x*co-y*si),p[1]+s*(x*si+y*co)) for x,y in itertools.product((F(-1),F(7,2)),(F(-9,10),F(9,10)))]
++
++def predicted_nodes(state,commands,sub):
++    result={}
++    for c in CARS:
++        a,w=map(F,commands[c]);v,d=state['v'][c],state['delta'][c];nv,nd=v+H*a,d+H*w
++        if max(abs(a),abs(w))>1 or not -1<=v<=2 or not -1<=nv<=2 or max(abs(d),abs(nd))>F(1,2):raise ValueError('signed input/state bound: '+c)
++        result[c]=propagate(state['poses'][c],v,nv,d,nd,direction(c),sub)
++    return result
++
++
++def geometry(nodes,owner,sub,tube=TUBE):
++    road=pair=F(100);active={c:any(pose_rows(p)!=pose_rows(nodes[c][0]) for p in nodes[c][1:]) for c in CARS};epsilon=F(15)*(H/sub)**2/8
++    static={c:body(nodes[c][0],c) for c in CARS if not active[c]}
++    for j in range(sub):
++        bodies={c:body(nodes[c][j],c)+body(nodes[c][j+1],c) if active[c] else static[c] for c in CARS};boxes={c:m.axis_box(b) for c,b in bodies.items()};errors={c:tube+(epsilon if active[c] else 0) for c in CARS}
++        for c,b in boxes.items():
++            margin=F(m.road(b,[[m.I(x).l for x in r] for r in ROADS]),m.Q)-errors[c];road=min(road,margin)
++            if margin<0:raise ValueError('continuous road: '+c)
++            if c!=owner and not (F(b[1],m.Q)+errors[c]<-16 or F(b[0],m.Q)-errors[c]>16):raise ValueError('unreserved body enters resource: '+c)
++        for a,b in itertools.combinations(CARS,2):
++            axes=m.normed_axes(nodes[a][j])+m.normed_axes(nodes[b][j]);gap=F(m.gap(bodies[a],bodies[b],boxes[a],boxes[b],axes),m.Q)-errors[a]-errors[b];pair=min(pair,gap)
++            if gap<SAFE:raise ValueError('continuous six-pair separation: '+a+'/'+b)
++    return dict(road=road,pair=pair,active=[c for c in CARS if active[c]],chord_error=epsilon,body_tube=tube)
++
++
++def step(state,commands,owner,sub=4):
++    commands={c:tuple(map(F,commands[c])) for c in CARS};nodes=predicted_nodes(state,commands,sub);bounds=geometry(nodes,owner,sub)
++    for c in CARS:
++        state['poses'][c]=nodes[c][-1];state['v'][c]+=H*commands[c][0];state['delta'][c]+=H*commands[c][1]
++    state['history']=content_id(dict(parent=state['history'],commands=commands,owner=owner));state['cycle']+=1
++    return dict(commands={c:list(map(str,u)) for c,u in commands.items()},poses_Q={c:pose_rows(state['poses'][c]) for c in CARS},v={c:str(v) for c,v in state['v'].items()},delta={c:str(d) for c,d in state['delta'].items()},history=state['history'],bounds=bounds)
+--- /dev/null
++++ protocol.py
+@@ -0,0 +1,72 @@
++"""Resource and outside-exit permissions committed with one four-plan barrier."""
++from common import *
++from witness import actions,plan_id
++from certify_domains import check_domain
++from physics import body
++sys.path.insert(0,str(HERE/'frozen_protocol'))
++from m2b_protocol import Barrier
++RESOURCE_ID=content_id(dict(road=ROADS,x_abs_max=16))
++
++
++def prepare(state,wid,parent):
++    from strategy import validate_strategy
++    validate_strategy(wid)
++    w=get(HERE/'objects',wid);k=state['cycle'];owner=w['owners'][k];change=owner!=state['owner'];version=state['permission_version']+int(change)
++    return normal(dict(resource_id=RESOURCE_ID,owner=owner,permission_version=version,cycle=k,history=state['history'],source_snapshot=state_record(state),certificate_id=w['domain_certificate'],witness_id=wid,parent_plan_id=parent,plan_id=plan_id(state,wid),remaining_budget=2802-k,actions=actions(w,k),enter_condition='complete body sweep holds reservation before intersecting |x|<=16',release_condition='actual G_out, whole body outside resource, compatible saved exit/next-entry tails',receiver_chain=w['events']))
++
++
++def validate_request(state,request):
++    w=get(HERE/'objects',request['witness_id']);expected=prepare(state,request['witness_id'],request['parent_plan_id'])
++    if request!=expected:raise ValueError('stale or damaged resource/plan version')
++    if request['parent_plan_id']!=plan_id(state,state['witness']):raise ValueError('wrong actual inherited parent')
++    if request['witness_id']!=state['witness']:
++        previous=get(HERE/'objects',state['witness']);k=state['cycle']
++        if any(w['controls'][c][:k]!=previous['controls'][c][:k] for c in CARS) or w['owners'][:k]!=previous['owners'][:k]:raise ValueError('proposal rewrites executed inputs or permissions')
++        if w.get('optimization_origin'):
++            raw=get(HERE/'objects',w['optimization_origin'])
++            if w['optimization_phase']!=k or raw['history']!=state['history'] or raw['source_witness']!=state['witness']:raise ValueError('stale numerical source')
++        elif w['adoption_rank']*663+55!=k:raise ValueError('stale authorization source phase')
++    if w['ticks']-state['cycle']>2802-state['cycle'] or w['domain_certificate']!=read(HERE/'domain_checks.json')['certificate_id']:raise ValueError('completion/certificate binding')
++    domains=read(HERE/'domain_checks.json')['domains'];new=request['owner'];old=state['owner']
++    if new!=old:
++        if old:
++            check_domain(state,old,'G_out',domains);box=m.axis_box(body(state['poses'][old],old));near=F(box[0],m.Q) if direction(old)==1 else -F(box[1],m.Q)
++            if near-TUBE<=16:raise ValueError('whole body not released')
++        if new:
++            if new in state['served']:raise ValueError('already served owner')
++            check_domain(state,new,'W_in',domains)
++    return True
++
++
++def public_plans(state,request):
++    w=get(HERE/'objects',request['witness_id']);k=state['cycle'];plans={}
++    for c in CARS:
++        cmds=w['controls'][c][k:k+32]+[['0','0']]*max(0,32-(2802-k))
++        public=dict(car=c,context=request,controls=cmds,permission=request['actions'][c],source_pose_Q=pose_rows(state['poses'][c]),v=str(state['v'][c]),delta=str(state['delta'][c]),certificate_id=w['domain_certificate']);key=content_id(public);plans[c]=dict(**public,id=key,kind='final')
++    return plans
++
++
++def commit(state,request):
++    validate_request(state,request);barrier=Barrier(request);plans=public_plans(state,request);wire=[]
++    def deliver(sender,target,kind,payload):
++        raw=json.dumps(dict(sender=sender,target=target,kind=kind,payload=payload),sort_keys=True,default=str);decoded=json.loads(raw);wire.append(content_id(decoded));return decoded['payload']
++    for c in CARS:
++        for target in [o for o in CARS if o!=c]+['coordinator']:deliver(c,target,'snapshot',request['source_snapshot'])
++    for c in CARS:
++        for target in [o for o in CARS if o!=c]+['coordinator']:
++            p=deliver(c,target,'final',plans[c])
++            if target=='coordinator':barrier.publish(p)
++    ids={c:p['id'] for c,p in plans.items()}
++    for c in CARS:validate_request(state,request);barrier.accept(deliver(c,'coordinator','ack',dict(car=c,context=request,plans=ids,accepted=True)))
++    token=barrier.token()
++    for c in CARS:deliver('coordinator',c,'commit',token)
++    return dict(**token,commit_id=content_id(token),application_messages=len(wire),message_digest=content_id(wire))
++
++
++def select_for_execution(state,token):
++    ctx=token['context'];validate_request(state,ctx);plans=public_plans(state,ctx)
++    if token['plans']!={c:p['id'] for c,p in plans.items()} or token['commit_id']!=content_id(dict(context=ctx,plans=token['plans'])) or token['application_messages']!=40:raise ValueError('mixed four-car commit')
++    w=get(HERE/'objects',ctx['witness_id']);owner=ctx['owner']
++    if owner!=state['owner'] and owner:state['served'].append(owner)
++    state.update(owner=owner,permission_version=ctx['permission_version'],witness=ctx['witness_id'])
++    return {c:tuple(map(F,w['controls'][c][state['cycle']])) for c in CARS}
+--- /dev/null
++++ run_case.py
+@@ -0,0 +1,53 @@
++"""Two full controlled traces; real authorization, simultaneous ZOH and local update."""
++import argparse,time
++from common import *
++from witness import make,propose_choice,plan_id
++from protocol import prepare,commit,select_for_execution
++from physics import step
++from certify_domains import check_domain
++from local_update import solve
++
++
++def advance(state,wid):
++    parent=plan_id(state,state['witness']);request=prepare(state,wid,parent);token=commit(state,request);commands=select_for_execution(state,token);actual=step(state,commands,state['owner'],4)
++    checks=[];w=get(HERE/'objects',wid)
++    for c,kind in w['events'].get(str(state['cycle']),[]):checks.append(check_domain(state,c,kind,read(HERE/'domain_checks.json')['domains']))
++    return dict(cycle=state['cycle']-1,parent_plan_id=parent,witness_id=wid,token=token,actual=actual,budget_before=2803-state['cycle'],budget_after=2802-state['cycle'],shifted_plan_id=plan_id(state,wid),domain_checks=checks)
++
++
++def damage_fork(state,proposed,output):
++    trial=copy.deepcopy(state);old=trial['witness'];request=prepare(trial,proposed,plan_id(trial,old));bad=copy.deepcopy(request);bad['permission_version']+=9
++    try:commit(trial,bad)
++    except ValueError as error:reason=str(error)
++    else:raise AssertionError('damaged version committed')
++    assert state_record(trial)==state_record(state);output.mkdir();records=[]
++    with gzip.open(output/'execution.jsonl.gz','wt') as stream:
++        for j in range(32):
++            row=advance(trial,old);records.append(row);stream.write(json.dumps(row,default=str,separators=(',',':'))+'\n')
++    value=dict(passed=True,kind='damaged_permission_version',source=state_record(state),old_witness=old,proposed_witness=proposed,damaged_request=bad,rejection=reason,invalid_commits=0,actual_steps=32,first_actual=records[0]['actual']['commands'],final=state_record(trial),remaining_budget=2802-trial['cycle'])
++    write(output/'summary.json',value);return value
++
++
++def main():
++    parser=argparse.ArgumentParser();parser.add_argument('--case',choices=('opposite','same_direction'),required=True);args=parser.parse_args();output=HERE/'results'/args.case;assert not output.exists();output.mkdir();began=time.perf_counter()
++    state=initial_state();wid=put(HERE/'objects',make(list(CARS)));state['witness']=wid;write(output/'config.json',dict(case=args.case,initial_witness=wid,logical_h=str(H),source_commit=read(HERE/'plan.json')['source_commit'],formal_batch=False));events=[];overlap=[];minimum_road=minimum_pair=F(100);failure=None;selection=[]
++    with gzip.open(output/'execution.jsonl.gz','wt') as stream:
++        try:
++            for cycle in range(2802):
++                assert state['cycle']==cycle;event=None;w=get(HERE/'objects',state['witness']);wid=state['witness']
++                if cycle>=55 and (cycle-55)%663==0 and (cycle-55)//663<4:
++                    new,choice=propose_choice(state,w,args.case);wid=put(HERE/'objects',new);event=dict(kind='resource_choice',cycle=cycle,old_witness=state['witness'],new_witness=wid,choice=choice)
++                    if cycle==718:damage_fork(state,wid,output/'version_rejection')
++                    selection.append(choice)
++                if cycle==787:
++                    actor=w['owners'][cycle];wid,event=solve(state,actor,args.case,output/'local_socp')
++                row=advance(state,wid);row['event']=event
++                if event:event['commit_id']=row['token']['commit_id'];events.append(event)
++                if cycle>=55 and len(row['actual']['bounds']['active'])>=2:overlap.append(dict(cycle=cycle,cars=row['actual']['bounds']['active']))
++                minimum_road=min(minimum_road,F(row['actual']['bounds']['road']));minimum_pair=min(minimum_pair,F(row['actual']['bounds']['pair']));stream.write(json.dumps(row,default=str,separators=(',',':'))+'\n')
++            for c in CARS:check_domain(state,c,'target',read(HERE/'domain_checks.json')['domains'])
++            assert overlap and state['cycle']==2802
++        except Exception as error:failure=repr(error)
++    summary=dict(passed=failure is None,error=failure,case=args.case,actual_steps=state['cycle'],actual_task_time_s=str(H*state['cycle']),remaining_budget=2802-state['cycle'],wall_s=time.perf_counter()-began,minimum_road_m=str(minimum_road),minimum_pair_m=str(minimum_pair),overlap_ticks=len(overlap),overlap=overlap,selection=selection,events=events,final=state_record(state),local_socp_accepted=any(e['kind']=='local_socp' and e['accepted'] for e in events),formal_batch=False)
++    write(output/'events.json',events);write(output/'summary.json',summary);print(json.dumps({k:v for k,v in summary.items() if k not in ('overlap','events','final')},indent=2));return 0 if failure is None else 1
++if __name__=='__main__':raise SystemExit(main())
+--- /dev/null
++++ run_validation.py
+@@ -0,0 +1,18 @@
++"""Bounded independent stages; do not rerun the completed numerical controllers."""
++import os,sys,subprocess,json,hashlib
++from pathlib import Path
++HERE=Path(__file__).resolve().parent
++ENV={**os.environ,'PYTHONPATH':'/tmp/dmpc-p0-deps','OPENBLAS_NUM_THREADS':'1','PYTHONDONTWRITEBYTECODE':'1'}
++def main():
++    for name in ('opposite','same_direction'):
++        run=HERE/'results'/name;assert json.loads((run/'summary.json').read_text())['passed']
++        dest=run/'independent_acceptance.json'
++        if dest.exists():assert json.loads(dest.read_text())['passed'];print(name,'verified saved independent acceptance',flush=True);continue
++        logfile=HERE/'results'/(name+'_accept.log')
++        with logfile.open('x') as log:
++            try:result=subprocess.run([sys.executable,str(HERE/'accept_case.py'),'--case',name],env=ENV,stdout=log,stderr=subprocess.STDOUT,timeout=300);code=result.returncode
++            except subprocess.TimeoutExpired:code=124
++        record=dict(layer='independent_'+name,exit_code=code,evidence_path=str(dest),log_path=str(logfile));(HERE/'results'/('completion_'+name+'.json')).write_text(json.dumps(record,indent=2));print(json.dumps(record),flush=True)
++        if code:raise SystemExit(code)
++    print('Independent completion accepted for both cases; no solver calls',flush=True)
++if __name__=='__main__':main()
+--- /dev/null
++++ self_check.py
+@@ -0,0 +1,47 @@
++"""Trust-boundary damage, signed permission and saved-policy regression; no new solve."""
++from common import *
++from protocol import prepare,commit
++from strategy import validate_strategy
++from physics import predicted_nodes,geometry
++
++
++def main():
++    checks=[]
++    for case in ('opposite','same_direction'):
++        events=read(HERE/'results'/case/'events.json')
++        for e in events:
++            wid=e['new_witness'] if e['kind']=='resource_choice' else e['accepted_witness'];assert validate_strategy(wid)
++        fork=read(HERE/'results'/case/'version_rejection/summary.json');source=restore(m,fork['source']);wid=fork['proposed_witness'];request=prepare(source,wid,content_id(dict(witness=source['witness'],cycle=source['cycle'],history=source['history'],remaining=2802-source['cycle'])))
++        for key,value in (('permission_version',999),('resource_id','wrong'),('history','stale'),('owner',None),('certificate_id','wrong'),('parent_plan_id','stale')):
++            bad=copy.deepcopy(request);bad[key]=value
++            try:commit(copy.deepcopy(source),bad)
++            except (ValueError,AssertionError) as error:checks.append(dict(case=case,damage=key,rejected=True,reason=str(error)))
++            else:raise AssertionError('damaged request committed: '+key)
++        bad=copy.deepcopy(request);bad['actions'][source['owner']]='core_reservation'
++        try:commit(copy.deepcopy(source),bad)
++        except ValueError as error:checks.append(dict(case=case,damage='outside_tail_permission',rejected=True,reason=str(error)))
++        else:raise AssertionError('old exit permission mixed')
++        wrong=copy.deepcopy(source);wrong['poses'][wrong['owner']]=(m.I(0),m.I(0),m.I(0));premature=prepare(wrong,wid,request['parent_plan_id'])
++        try:commit(wrong,premature)
++        except ValueError as error:checks.append(dict(case=case,damage='premature_release',rejected=True,reason=str(error)))
++        else:raise AssertionError('uncleared owner released')
++        unproved=copy.deepcopy(get(HERE/'objects',wid));unproved['controls']['B2'][2400][0]=str(F(unproved['controls']['B2'][2400][0])+F(1,10));bid=put(HERE/'objects',unproved)
++        try:validate_strategy(bid)
++        except AssertionError as error:checks.append(dict(case=case,damage='uncertified_actual_suffix',rejected=True,object_id=bid,reason=str(error)))
++        else:raise AssertionError('changed uncertified suffix accepted')
++    state=initial_state();state['poses']['A1']=(m.I(0),m.I(0),m.I(0));zero={c:(F(0),F(0)) for c in CARS}
++    try:geometry(predicted_nodes(state,zero,4),None,4)
++    except ValueError as error:checks.append(dict(damage='unreserved_resource_body',rejected=True,reason=str(error)))
++    else:raise AssertionError('body enters without reservation')
++    for beta in (F(0),F(1,100),F(2)):
++        for tau in (-1,0,F(1,3)):
++            for w in (-2,0,1,F(3,2),1-beta*tau*tau/4):assert ((2-w>=0 and (2-w)**2-w*w-beta*tau*tau>=0)==(1-w-beta*tau*tau/4>=0))
++    hist=read(HERE/'historical_hashes.json')
++    for name,digest in hist.items():assert sha(HERE.parent/name)==digest,name
++    oldgeo=read(HERE/'inputs/geometry_certificate.json')
++    assert all(F(row['gap'])-2*EXTRA>=SAFE for row in oldgeo['static_checks'])
++    objects=[]
++    for f in (HERE/'objects').glob('*.json.gz'):get(HERE/'objects',f.name[:-8]);objects.append(f.name[:-8])
++    result=dict(passed=True,damage_checks=checks,historical_files_unchanged=len(hist),object_identities_verified=len(objects),static_contexts_with_extra_quantization_reserve=len(oldgeo['static_checks']),both_recorded_actual_runs_satisfy_strengthened_parent_policy_validation=True)
++    write(HERE/'self_checks.json',result);print(json.dumps({k:v for k,v in result.items() if k!='damage_checks'},indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ socp_rows.py
+@@ -0,0 +1,50 @@
++from common import *
++from derivatives import unpack
++
++def rows_for(data,m,anchor,cert,method):
++    assert method=='B-JL' and cert['anchor_id']==content_id(anchor)
++    u=[tuple(map(F,x)) for x in anchor['plan']['remaining'][:32]];c=anchor['actor'];state=restore(m,anchor['state'])
++    v,d=state['v'][c],state['delta'][c];rows=[]
++    def add(name,g,linear=None,error=0,hessian=0,kind='physical'):
++        rows.append(dict(name=name,g_upper=F(g),linear=[F(0)]*64 if linear is None else list(map(F,linear)),gradient_error=F(error),hessian=F(hessian),kind=kind))
++    for j,(a,w) in enumerate(u):
++        for component,value in enumerate((a,w)):
++            for sign in (-1,1):
++                gradient=[F(0)]*64;gradient[2*j+component]=F(sign)
++                add(f'input_{j}_{component}_{sign}',sign*value-1,gradient)
++        v+=H*a;d+=H*w
++        for component,value,lower,upper in ((0,v,F(0),F(2)),(1,d,F(-1,2),F(1,2))):
++            for sign,bound in ((1,upper),(-1,-lower)):
++                gradient=[F(0)]*64
++                for k in range(j+1):gradient[2*k+component]=sign*H
++                add(f'state_{j}_{component}_{sign}',sign*value-bound,gradient)
++    end=cert['terminal_state'];r=data.row(anchor['receiver_phase'])['domain'];pose=[m.I.raw(*p) for p in end['poses_Q'][c]];center=[F(*p) for p in r['center_pose_Q']]
++    G={k:F(x) for k,x in cert['local_profiles'][-1].items()}
++    matrix=unpack(m,cert['prefix_jacobians'][-1])
++    terminal=[]
++    for sx in (-1,1):
++        for sy in (-1,1):terminal.append((f'position_{sx}_{sy}',(sx*(pose[0]-center[0])+sy*(pose[1]-center[1])).u,F(r['position_l1_radius']),[sx*matrix[0][j]+sy*matrix[1][j] for j in range(64)],F(3,2)*G['Gp'],F(3,2)*G['Hp']))
++    for sign in (-1,1):terminal.append((f'yaw_{sign}',(sign*(pose[2]-center[2])).u,F(r['yaw_radius']),[sign*x for x in matrix[2]],G['P1'],G['P2']))
++    for name,upper,radius,J,gradient_bound,hessian in terminal:
++        if method=='B-JL':
++            mid=[F(x.l+x.u,2*m.Q) for x in J];epsilon=norm_upper([F(x.u-x.l,2*m.Q) for x in J])
++        else:mid=[F(0)]*64;epsilon=gradient_bound
++        add(name,F(upper,m.Q)-radius,mid,epsilon,hessian,'terminal')
++    for component,key,radius_name,refname in ((0,'v','speed_radius','center_v'),(1,'delta','steering_radius','center_delta')):
++        value=F(end[key][c])-F(r[refname]);radius=F(r[radius_name])
++        for sign in (-1,1):
++            gradient=[F(0)]*64
++            for j in range(32):gradient[2*j+component]=sign*H
++            add(f'terminal_{key}_{sign}',sign*value-radius,gradient)
++    for j,(profile,margin) in enumerate(zip(cert['local_profiles'],cert['geometry_margins'])):
++        add(f'geometry_{j+1}',-F(margin),error=F(profile['Gc']),hessian=F(profile['Hc']),kind='geometry')
++    add('hard_trust',-RHO,error=1,kind='trust')
++    return rows
++
++
++def evaluate(rows,delta):
++    delta=list(map(F,delta));t=norm_upper(delta);s=t*t;checks=[]
++    for row in rows:
++        constant=F(row['g_upper']);linear=sum(F(a)*b for a,b in zip(row['linear'],delta));error=F(row['gradient_error'])*t;second=F(row['hessian'])*s/2
++        checks.append(dict(name=row['name'],kind=row['kind'],constant=constant,linear=linear,gradient_uncertainty=error,second_order=second,slack=-(constant+linear+error+second)))
++    return dict(passed=all(x['slack']>=0 for x in checks),norm_upper=t,rows=checks,violations=[x['name'] for x in checks if x['slack']<0])
+--- /dev/null
++++ strategy.py
+@@ -0,0 +1,18 @@
++"""Immutable completion-policy admission, before any four-car acknowledgement."""
++from common import *
++from witness import make
++_VALIDATED=set()
++
++
++def validate_strategy(wid):
++    if wid in _VALIDATED:return True
++    w=get(HERE/'objects',wid);assert sorted(w['order'])==sorted(CARS) and w['model_sha256']==sha(MODEL_PATH) and w['ticks']==2802
++    assert w['domain_certificate']==read(HERE/'domain_checks.json')['certificate_id']
++    if w.get('optimization_origin'):
++        validate_strategy(w['parent_witness'])
++        from local_update import verify_update
++        verify_update(wid)
++    elif w['parent_witness']:
++        validate_strategy(w['parent_witness']);old=get(HERE/'objects',w['parent_witness']);expected=make(w['order'],w['parent_witness'],old,w['adoption_rank']);assert w==expected,'unproved completion-policy modification'
++    else:assert w==make(w['order']),'uncertified initial completion policy'
++    _VALIDATED.add(wid);return True
+--- /dev/null
++++ summarize.py
+@@ -0,0 +1,146 @@
++"""Five-layer measured report; separate uniform proof, logical time and wall time."""
++from common import *
++import csv,difflib,platform
++import clarabel,numpy,scipy
++
++
++def main():
++    assert read(HERE/'self_checks.json')['passed'] and read(HERE/'feedback_checks.json')['passed'] and read(HERE/'native_rejection_checks.json')['passed']
++    quant=read(HERE/'uniform_quantization_check.json');domains=read(HERE/'domain_checks.json');assert quant['passed'] and read(HERE/'integration_bounds.json')['passed'] and read(HERE/'flow_checks.json')['passed']
++    bundle=dict(model_sha256=sha(MODEL_PATH),analytic_geometry_sha256=sha(HERE/'inputs/geometry_certificate.json'),domain_certificate_id=domains['certificate_id'],uniform_quantization_certificate_id=quant['certificate_id'],rational_inputs_id=content_id(read(HERE/'rational_inputs.json')),flow_images_sha256=sha(HERE/'flow_images.json'),integration_bounds_sha256=sha(HERE/'integration_bounds.json'))
++    write(HERE/'CERTIFICATE_BUNDLE.json',dict(certificate_id=put(HERE/'objects',bundle),**bundle))
++    comparison=[];metrics={};events=[];checkpoints={}
++    for case in ('opposite','same_direction'):
++        run=HERE/'results'/case;s=read(run/'summary.json');a=read(run/'independent_acceptance.json');assert s['passed'] and a['passed'];ev=read(run/'events.json');event=next(e for e in ev if e['kind']=='local_socp');raw=get(HERE/'objects',event['raw_result_id']);pol=get(HERE/'objects',event['policy_result_id']);old=get(HERE/'objects',event['parent_witness']);new=get(HERE/'objects',event['accepted_witness']);actor=event['actor'];k=event['cycle'];info=raw['info'];firstpair=['A1','B1' if case=='opposite' else 'A2']
++        with gzip.open(run/'execution.jsonl.gz','rt') as stream:records=list(map(json.loads,stream))
++        target_overlap=[r['cycle'] for r in records if 718<=r['cycle']<813 and all(c in r['actual']['bounds']['active'] for c in firstpair)]
++        assert target_overlap and all(c in records[k]['actual']['bounds']['active'] for c in firstpair)
++        Eold=H*sum(F(x)**2 for u in old['controls'][actor][k:k+33] for x in u);Eactual=H*sum(F(x)**2 for r in records[k:k+33] for x in r['actual']['commands'][actor]);assert Eactual==H*sum(F(x)**2 for u in new['controls'][actor][k:k+33] for x in u)
++        actual_changed_phases=[j for j in range(k,k+33) if records[j]['actual']['commands'][actor]!=old['controls'][actor][j]];assert actual_changed_phases
++        E32old=F(pol['old_energy']);E32new=F(pol['attempts'][-1]['energy']);delta=list(map(F,pol['attempts'][-1]['delta']));firstold=old['controls'][actor][k];firstnew=records[k]['actual']['commands'][actor]
++        native=dict(case=case,actor=actor,cycle=k,status=raw['status'],primal=info['res_primal'],dual=info['res_dual'],gap_abs=info['gap_abs'],gap_rel=info['gap_rel'],iterations=info['iterations'],solver_s=info['solve_time'],pipeline_s=pol['wall_s'],accepted=pol['accepted'],changed=pol['changed'],actual_first_changed=firstnew!=firstold,first_actual_changed_cycle=min(actual_changed_phases),actual_changed_steps=len(actual_changed_phases),strict_failed=';'.join(key for key,ok in dict(primal=info['res_primal']<1e-10,dual=info['res_dual']<1e-10,gap=info['gap_abs']<1e-10 or info['gap_rel']<1e-10,ktratio=info['ktratio']<=1).items() if not ok),delta_norm_upper=str(norm_upper(delta)),alpha=pol['attempts'][-1]['alpha'],predicted_32_energy_improvement_percent=float(100*(E32old-E32new)/E32old),actual_33_energy_improvement_percent=float(100*(Eold-Eactual)/Eold),actual_energy_interval=f'[{k},{k+33})',raw_result_id=event['raw_result_id'],policy_result_id=event['policy_result_id'])
++        comparison.append(native);events.extend(ev)
++        with (run/'trajectory_display.csv').open('w',encoding='utf-8-sig',newline='') as f:
++            fields=['cycle_after','logical_time_s','car','x_mid_m','y_mid_m','physical_yaw_mid_rad','v_rational','delta_rational','a_rational','omega_rational','owner','permission_version','action','x_lo_Q','x_hi_Q','y_lo_Q','y_hi_Q','theta_lo_Q','theta_hi_Q'];writer=csv.DictWriter(f,fieldnames=fields);writer.writeheader()
++            for r in records:
++                for c in CARS:
++                    pp=r['actual']['poses_Q'][c];ctx=r['token']['context'];writer.writerow(dict(cycle_after=r['cycle']+1,logical_time_s=float(H*(r['cycle']+1)),car=c,x_mid_m=float(F(sum(pp[0]),2*m.Q)),y_mid_m=float(F(sum(pp[1]),2*m.Q)),physical_yaw_mid_rad=float(F(sum(pp[2]),2*m.Q))+(math.pi if c.startswith('B') else 0),v_rational=r['actual']['v'][c],delta_rational=r['actual']['delta'][c],a_rational=r['actual']['commands'][c][0],omega_rational=r['actual']['commands'][c][1],owner=ctx['owner'],permission_version=ctx['permission_version'],action=ctx['actions'][c],x_lo_Q=pp[0][0],x_hi_Q=pp[0][1],y_lo_Q=pp[1][0],y_hi_Q=pp[1][1],theta_lo_Q=pp[2][0],theta_hi_Q=pp[2][1]))
++        metrics[case]=dict(passed=True,actual_steps=s['actual_steps'],actual_logical_time_s=float(F(s['actual_task_time_s'])),initial_budget=2802,final_budget=s['remaining_budget'],controller_wall_s=s['wall_s'],independent_wall_s=a['wall_s'],selection=a['selection'],target_overlap_pair=firstpair,target_overlap_ticks=len(target_overlap),all_after_release_two_body_motion_ticks=a['actual_overlap_ticks'],initial_preparation_ticks=55,initial_max_simultaneous_bodies=max(len(r['actual']['bounds']['active']) for r in records[:55]),initial_four_body_motion_ticks=sum(len(r['actual']['bounds']['active'])==4 for r in records[:55]),independent_minimum_road_m=a['minimum_road_m'],independent_minimum_pair_m=a['minimum_pair_m'],controller_minimum_road_m=float(F(s['minimum_road_m'])),controller_minimum_pair_m=float(F(s['minimum_pair_m'])),local_update=native,version_rejection_actual_old_tail_steps=32,damaged_new_K_actual_old_tail_steps=33,all_four_goals=True)
++        evidence=[run/'config.json',run/'execution.jsonl.gz',run/'summary.json',run/'events.json',run/'independent_acceptance.json',run/'version_rejection/summary.json',run/'version_rejection/execution.jsonl.gz']
++        checkpoints[case]=dict(passed=True,full_independent_replay_already_performed=True,files={str(f.relative_to(HERE)):sha(f) for f in evidence},code={name:sha(HERE/name) for name in ('accept_case.py','common.py','physics.py','derivatives.py','socp_rows.py','conic.py','inputs/interval_source.py','sources/certify_interfaces.py')})
++    write(HERE/'metrics.json',metrics);write(HERE/'event_index.json',events);write(HERE/'results/independent_checkpoints.json',checkpoints)
++    with (HERE/'comparison.csv').open('w') as f:
++        writer=csv.DictWriter(f,fieldnames=list(comparison[0]));writer.writeheader();writer.writerows(comparison)
++    (HERE/'comparison_windows.csv').write_bytes(b'\xef\xbb\xbf'+(HERE/'comparison.csv').read_bytes())
++    preserved=read(HERE/'historical_hashes.json');assert all(sha(HERE.parent/name)==digest for name,digest in preserved.items());write(HERE/'preservation_check.json',dict(passed=True,historical_files_unchanged=len(preserved),original_inputs_unchanged=all(sha(HERE/'inputs'/name)==digest for name,digest in read(HERE/'inputs/SHA256SUMS.json').items())))
++    calls=read(HERE/'results/solver_calls.json');assert len(calls)==2 and all(c['completed'] for c in calls)
++    write(HERE/'versions.json',dict(python=sys.version,platform=platform.platform(),clarabel=clarabel.__version__,numpy=numpy.__version__,scipy=scipy.__version__))
++    (HERE/'requirements.txt').write_text(f'clarabel=={clarabel.__version__}\nnumpy=={numpy.__version__}\nscipy=={scipy.__version__}\n')
++    gate=dict(version='region_reservation_001',passed=True,layers=dict(analytic_checks=dict(passed=True,segments=32,leaves=64),rational_inputs_and_domains=dict(passed=True,uniform_all_time_body_error=float(F(quant['body_error'])),extra_reserve=1e-8,domains='L1 polytope subsets, independent feedback and signed integration checks passed'),reservation_protocol=dict(passed=True,all_four_ACKs=True,resource_and_outside_exit_permissions_separate=True,damaged_version_and_K_rejected=True),control_replays=dict(passed=True,cases=metrics),local_socp_updates=dict(passed=True,actual_anchors=2,solver_calls=2,statuses=[r['status'] for r in comparison],policy='certificate_suboptimal_v1',scope='one forward 32-tick update per two-moving-car case, fixed peer predictions')),
++        original_experiments_preserved=True,papers_changed=False,formal_batch=False,vehicle_priority_rule='experimental selector only; not frozen',limits=['Nominal model and ideal original four-car start','Synchronous in-process four-car common barrier; no physical clock or async guarantee','Two online selection traces, not enumeration of all 24 orders','One 64-input/65-variable forward local update per case; reverse is certified backup, not a reverse SOCP experiment','Numerical status AlmostSolved for same-direction case; no global optimality claim','Target reachable flow image retained, wider goal tolerance is not a new restart domain'])
++    write(HERE/'GATE.json',gate)
++    table='\n'.join(f"|{case}|{'→'.join(v['selection'])}|{v['actual_steps']}|{v['actual_logical_time_s']:.1f}|{v['target_overlap_ticks']}|{v['independent_minimum_road_m']:.6f}|{v['independent_minimum_pair_m']:.6f}|" for case,v in metrics.items())
++    numtable='\n'.join(f"|{r['case']}|{r['actor']}|{r['status']}|{r['primal']:.3g}|{r['gap_abs']:.3g}|{r['delta_norm_upper']}|{r['predicted_32_energy_improvement_percent']:.6f}%|{r['actual_33_energy_improvement_percent']:.6f}%|" for r in comparison)
++    timing='\n'.join(f"|{case}|{v['controller_wall_s']:.3f}|{v['independent_wall_s']:.3f}|{v['local_update']['solver_s']:.6f}|{v['local_update']['pipeline_s']:.3f}|" for case,v in metrics.items())
++    report=f'''# 区域预约：有理输入、域衔接及两车重叠最小接入
++
++已完成五层最小验收：原解析证书复现、有理输入与域衔接认证、预约共同提交、两种方向控制回放及各一次局部SOCP更新。新工作仅在region_reservation_001；历史实验、原资料和论文保留。
++
++## 五层验收
++
++|层|结果|主要证据|
++|---|---|---|
++|解析检查|通过：32段、64叶；原始道路/车对下界0.109973188539/0.528223178768m|results/analytic_rebuild、analytic_geometry.log、analytic_domains.log|
++|有理输入与域|通过：四车实际有理ZOH、全时域量化界、带倒车的积分误差界、L1域包含和6个非零边界辅助回放|rational_inputs.json、uniform_quantization_check.json、integration_bounds.json、domain_checks.json、feedback_checks.json|
++|预约协议|通过：资源与出口动作权限分开；四份计划同版ACK；损坏版本/新K拒绝后执行真实旧尾段|protocol.py、strategy.py、每个case的version_rejection和native_K_rejection|
++|控制回放|通过：两条4车完整任务均2802拍、预算2802→0、两车实际重叠、独立8子段验收|results/*/execution.jsonl.gz及independent_acceptance.json|
++|局部SOCP更新|通过（限定范围）：重叠期间B1/A2各一次32拍64输入/65变量新求解和实际采用|comparison.csv、event_index.json、局部source/derivative/assembly/raw/policy对象|
++
++## 原资料与复现
++
++原材料位置：/home/sunflower/Downloads/DMPC_region_construction_001。完整副本与原SHA清单保存在inputs；先在results/analytic_rebuild运行construct_certificate.py与check_domains.py，避免改写原证书。重建几何与原JSON语义逐项相同，域边界/拍数逐项相同；重建JSON换行格式引起的文件SHA差异单独保留，原文件未覆盖。
++
++基础模型沿用inputs/interval_source.py，SHA {sha(MODEL_PATH)}。原解析32段实为每车8个空间段；静态等待/完成组合24项也在追加量化余量后复核。原失败布局counterexample_old_wait_parking.json保留，未把原失败构造替换成成功记录。
++
++## 有理输入、连续误差与适用域
++
++alpha取已验证根区间中点，delta_q=0.422853926133，D_q为3sqrt(7)区间中点的有理近似。每段以实际有理速度爬升/制动保证v精确归零，停车时按实际轮角差转轮，保证delta精确达到新目标。基准备份允许v∈[-1,2]；倒车限1m/s，前进限2m/s。h固定0.2s，输入及轮角界保持。
++
++恒定轮角段使用真实曲率tan(delta_q)/2.7的区间闭式ZOH积分，静止转轮保持位姿，变化轮角的ZOH用原带余项积分。新推导以绝对速度重证84/256的Simpson上界和15m/s²车角曲率弦误差上界，覆盖倒车。4子段控制器与8子段独立包络都计入每车0.05000001m管，并检查所有6对车身，而非单活动车与静态邻车假设。
++
++必须区分两项量化结果：节点参考差最大9.48885644e-12m；最终连续全时域整车上界为{float(F(quant['body_error'])):.12g}m，预留1e-8m。rational_inputs.json里的maximum_body_quantization_error是初始导出的节点诊断字段，完整全时域证明以uniform_quantization_check.json为准。证明比较同一固定时序下的累计弧长与曲率误差，利用全路径<80m，形成对任意连续时刻有效的上界，未用节点采样替代连续证明。
++
++加入额外管后，解析全参数证书道路下界为{float(F(domains['minimum_road'])):.12f}m，车对下界为{float(F(domains['minimum_pair'])):.12f}m，均保持0.5m要求；同侧出口/入口纵向分离仍大于0.962746m。四车初始准备最多55拍，入场准备101拍、通行562拍、出口尾段95拍不变。
++
++实际采用的五状态接收域为“位置L1多面域×航向/速度/轮角区间”，是原L2位置域的收紧子集。重新推导了W_in→W_hold→G_in→G_out→目标的L1包含，而非直接套用原L2数值。Win非零v/delta的两拍反馈、Gin非零v/delta的一拍反馈均在feedback_controls.py导出精确有理命令，辅助边界回放真实执行并通过。主任务从给定理想静止初态开始，等待反馈恰为零；优化后的Gin反馈为实际非零K并执行，未声明任意外部扰动下都保持这份已物化时间表。
++
++flow_images.json给出3036个相位流像索引，flow_receivers.jsonl.gz逐拍导出32拍接收索引。源域、实际输入对象和相位共同定义精确流像；每步保留真实尾段。优化前缀使用本次实际源快照的精确流像，进入Gin/K后接回新认证域链。目标后的保持使用更紧的可达终端流像，未把0.08m目标容差整体重新作为0.05m静态管的源域。
++
++## 预约、选择与共同提交
++
++资源为D∩{{|x|≤16}}，owner在入场准备前取得预约。实际达到Gout、完整矩形清空资源、旧出口尾段与下一准备策略相容后才释放；本轮没有优化更早释放。前车95拍出口尾段在同一联合版本中继续有效，下一车101拍准备与其重叠。资源占用权与区域外出口动作权限分别记录，后者不因owner切换消失。
++
++复用冻结的四车Barrier；未复用旧Channel的±18/26.5m几何规则。新context绑定resource_id、owner、资源版本、全源快照/history、域证书、完整剩余见证、接收链与动作权限。四个公开计划及ACK指向同一context；执行端再次核对四份内容ID、提交编号及源版本，才输出四车实际首拍。
++
++选择函数从当前未服务且在合法等待域的车中提出候选，先保留一份具体完整备份，再共同认可新选择。两种方向偏好仅用于本次受控轨迹，ID破同序，不是本方法冻结的车辆优先规则；用户所说“先来后到”只表示研究顺序。
++
++|用例|实际在线选择轨迹|拍数|逻辑任务时间s|首个指定交接的两车实际运动重叠拍数|独立道路下界m|独立六对净空下界m|
++|---|---|---:|---:|---:|---:|---:|
++{table}
++
++各用例在资源释放后累计194拍出现两车实际位姿运动；这些不是把静止转轮计为运动。初始55拍也独立检查四车同时准备。两条完整任务均到四个停车目标、v/delta归零，预算逐拍减1至0。
++
++版本损坏分支分别在首个交接时拒绝错误版本，实际执行同一旧见证32拍；相反方向主分支选择B1，而被拒后的复制分支仍沿旧备份A2准备，明确没有偷偷采用被拒的新选择。另各拒绝一份损坏新K提案，再从本次数值源状态实际执行旧联合尾段33拍，进入Gin并执行其旧K，独立8子段核对。所有辅助分支与主任务时间/求解次数分开。
++
++## 重叠期间的局部SOCP
++
++两用例都在cycle787，旧车出口、下一车合流实际同时运动时，从实际状态/history新建锚点。逐步更新32拍其他车辆的固定预测，并生成相同时间片上的联合几何余量；不把运动中的旧车当作静态障碍。生成5×7单步实际流Jacobian区间、64列复合Jacobian、本地二阶界、物理行与Gin终端行。
++
++求解设置沿用Clarabel0.11.1、rho=.001、scale=1e-4、Q量化预留、居中等价锥、三个容差1e-10、300迭代、5秒。每个用例一次求解，总共2次，无扫描。使用certificate_suboptimal_v1完整受理：精确有理最近量化与有限alpha回退、原行/真实连续联合前缀、Gin、实际K、保存后续、固定前缀能量非增与预算共同验证。
++
++|用例|优化车|状态|原始残差|绝对gap|改动范数上界|32拍预测代价改善|同一33拍实际代价改善（含K）|
++|---|---|---|---:|---:|---|---:|---:|
++{numtable}
++
++完整状态/gap/时间、raw→有理→实际输入绑定均在comparison.csv及对象。相反方向候选的首拍与旧首拍相同，首次实际修改拍及实际改变拍数在CSV单列；后续修改已实际执行，未把将来提案当成首拍改变。非优化车辆的计划保持冻结，但实际继续运动；本轮不是128维联合优化，也不是每车每拍在线求解。倒车由有理备份认证，本轮两处局部SOCP窗口均为前进；扩大到倒车SOCP或持续多轮优化需另立覆盖检查。同方向AlmostSolved的采用依据是完整物理与后续证书，不将它报告为严格Solved或严格最优性证明。
++
++## 时间与开销
++
++h=0.2s是逻辑ZOH步长。两条本轮实际执行记录均为2802拍，即560.4s，与解析上界数值相同是因为采用同一固定时序；不是拿解析上界充当测得轨迹。完全串行的3087拍/617.4s仅是重新构造得到的参考策略，本轮未运行串行实验，因此57s只作为这组构造的重叠调度差值，不作新的实验方法性能结论。
++
++|用例|控制器墙钟s（含复制版本分支）|独立重放墙钟s|数值求解s|局部构造/受理流水线s|
++|---|---:|---:|---:|---:|
++{timing}
++
++这些开销不是0.2s硬实时达标声明。通信为同步进程内可靠序列化协议；没有持续物理时钟、实际独立ROS进程异步或外部扰动实验。
++
++## 实现版本、保留与复核
++
++源码及原始依据均单独保存；源提交见plan.json。执行时源码快照在results/runtime_sources与executed_source_versions.json。完成回放后，strategy.py显式递归认证优化见证父策略，protocol.py补上不可改写已执行输入/权限及新数值提案源相位/history检查；5604份实际提交逐项满足这些加强条件，陈旧下一拍提案被拒绝。原运行源码快照保留，没有重跑或替换数值结果。独立验收入口不依赖该控制器缓存。
++
++{len(preserved)}份历史非缓存文件SHA核对保持不变，原始理论包清单也逐项通过。新材料不做Git提交，不修改论文，不启动正式批量。
++
++复核已存控制与独立验收：
++
++```bash
++OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 run_validation.py
++OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 verify_delivery.py
++# 需要完整重算两个2802拍独立验收时：
++OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 verify_delivery.py --full-replay
++```
++
++默认分发复核校验完整内容清单、独立验收的源码/输入checkpoint、重新复算两次数值来源/导数与33拍前缀；明确复用已通过的完整独立轨迹验收。full-replay才重新执行两条完整8子段独立重放。此区分写入迁移报告，避免把内容复核称为重新跑完任务。
++
++尚未冻结：通用车辆选择/公平规则、更早释放策略、更多并行组合、任意域源状态的在线策略物化、倒车局部SOCP与连续多轮优化、扰动/持续物理时钟/异步部署。当前通过的是用户指定的最小两方向接入及对应证书范围。
++'''
++    (HERE/'report.md').write_text(report)
++    write(HERE/'pending_parameters.json',dict(frozen_this_run=read(HERE/'plan.json'),not_frozen=['general priority/fairness selector','earlier release optimization','additional parallel configurations','arbitrary-domain-source online policy materialization','reverse SOCP anchors','persistent wall clock and asynchronous process deployment','disturbance model'],unchanged_theory_reference_bounds=dict(overlapped_ticks=2802,serial_ticks=3087),no_formal_batch=True))
++    patch=[]
++    for f in sorted(HERE.glob('*.py')):
++        if f.name=='certify_interfaces.py':continue
++        before=(HERE/'sources/derivatives.py').read_text().splitlines(True) if f.name=='derivatives.py' else []
++        patch+=list(difflib.unified_diff(before,f.read_text().splitlines(True),fromfile='frozen_derivatives.py' if before else '/dev/null',tofile=f.name))
++    (HERE/'changes.patch').write_text(''.join(patch))
++    (HERE/'HANDOFF.md').write_text('目标：区域预约001五层最小接入。\n状态：原两证书复现、有理输入全时域量化/域/倒车积分、两种方向2802拍四车任务、两次局部求解采用、版本和K拒绝续行及独立验收均通过。\n约束：保留历史和论文，不做正式批量；一般优先规则、反向SOCP、持续物理时钟/异步仍待另立任务。\n源提交：'+read(HERE/'plan.json')['source_commit']+'\n证据：GATE.json、CERTIFICATE_BUNDLE.json、metrics.json、comparison.csv、各independent_acceptance.json。\n恢复：OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 run_validation.py\n分发校验：OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dmpc-p0-deps python3 verify_delivery.py\n')
++    print(json.dumps(dict(passed=True,metrics=metrics),indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ verify_delivery.py
+@@ -0,0 +1,24 @@
++"""Content-checked evidence reuse, fresh source/prefix check; optional full replay."""
++import argparse
++from common import *
++from accept_case import Audit,accept
++
++
++def main():
++    parser=argparse.ArgumentParser();parser.add_argument('--full-replay',action='store_true');args=parser.parse_args();manifest=read(HERE/'DELIVERY_MANIFEST.json')['files']
++    for name,item in manifest.items():assert sha(HERE/name)==item['sha256'],name
++    objects=0
++    for f in (HERE/'objects').glob('*.json.gz'):get(HERE/'objects',f.name[:-8]);objects+=1
++    checkpoints=read(HERE/'results/independent_checkpoints.json');checks={}
++    for case,checkpoint in checkpoints.items():
++        assert checkpoint['passed'] and checkpoint['full_independent_replay_already_performed']
++        for group in ('files','code'):
++            for name,digest in checkpoint[group].items():assert sha(HERE/name)==digest,name
++        run=HERE/'results'/case;event=next(e for e in read(run/'events.json') if e['kind']=='local_socp');anchor=get(HERE/'objects',event['anchor_id']);audit=Audit(read(run/'config.json')['initial_witness']);audit.state=restore(m,anchor['state']);audit.p8=copy.deepcopy(audit.state['poses']);audit.validate_witness(audit.state['witness']);audit.numeric_update(event)
++        checks[case]=dict(full_independent_evidence_content_checked=True,fresh_actual_source_derivative_and_33_tick_prefix_checked=True,full_task_replayed_this_call=False)
++        if args.full_replay:checks[case]['full_replay']=accept(run);checks[case]['full_task_replayed_this_call']=True
++    for name in ('domain_checks.json','uniform_quantization_check.json','integration_bounds.json','feedback_checks.json','flow_checks.json','source_binding_checks.json','native_rejection_checks.json','self_checks.json'):assert read(HERE/name)['passed']
++    from protocol import Barrier
++    dummy=Barrier({'relocation':'dependency-read-check'});assert dummy.context['relocation']=='dependency-read-check'
++    print(json.dumps(dict(passed=True,files_verified=len(manifest),objects_verified=objects,solver_calls=0,checks=checks),indent=2))
++if __name__=='__main__':main()
+--- /dev/null
++++ witness.py
+@@ -0,0 +1,45 @@
++"""Explicit 2802-tick four-car completion policies and an experimental online chooser."""
++from common import *
++from certify_domains import check_domain
++
++
++def make(order,parent=None,keep=None,source_cycle=0):
++    data=read(HERE/'rational_inputs.json');controls={c:[(F(0),F(0))]*2802 for c in CARS};starts={};events={};owners=[None]*2802
++    for c in CARS:
++        prep=[tuple(map(F,u)) for u in data['preparation'][c]];controls[c][:len(prep)]=prep
++    for rank,c in enumerate(order):
++        start=55+rank*663;starts[c]=start;route=get(HERE/'objects',data['routes'][c]);u=[tuple(map(F,x)) for x in route['controls']];controls[c][start:start+758]=u;owners[start:start+663]=[c]*663
++        for offset,kind in ((0,'W_in'),(2,'W_hold'),(101,'G_in'),(663,'G_out'),(758,'target')):events.setdefault(str(start+offset),[]).append([c,kind])
++    if keep:
++        for c in order[:source_cycle]:controls[c]=copy.deepcopy(keep['controls'][c])
++    value=dict(version=1,order=order,controls=controls,owners=owners,starts=starts,events=events,goal_times={c:k+758 for c,k in starts.items()},ticks=2802,model_sha256=sha(MODEL_PATH),domain_certificate=read(HERE/'domain_checks.json')['certificate_id'],rational_inputs_id=content_id(data),parent_witness=parent,adoption_rank=source_cycle)
++    return normal(value)
++
++
++def choose(eligible,last,case):
++    assert eligible
++    if last:
++        preferred=[c for c in eligible if (direction(c)!=direction(last))==(case=='opposite')]
++        if preferred:return min(preferred)
++    return min(eligible)
++
++
++def propose_choice(state,old,case):
++    rank=(state['cycle']-55)//663;prefix=old['order'][:rank];eligible=[c for c in CARS if c not in state['served']]
++    domains=read(HERE/'domain_checks.json')['domains']
++    for c in eligible:check_domain(state,c,'W_in',domains)
++    chosen=choose(eligible,prefix[-1] if prefix else None,case);order=prefix+[chosen]+[c for c in old['order'][rank:] if c!=chosen]
++    new=make(order,state['witness'],old,rank)
++    for c in CARS:assert new['controls'][c][:state['cycle']]==old['controls'][c][:state['cycle']]
++    return new,dict(eligible=eligible,chosen=chosen,previous=prefix[-1] if prefix else None,case=case,basis='experimental direction preference among currently certified unfinished waiting cars; ID breaks ties; not a frozen vehicle-priority rule')
++
++
++def actions(w,k):
++    result={}
++    for c in CARS:
++        start=w['starts'][c]
++        result[c]='initial_preparation' if k<55 else 'core_reservation' if w['owners'][k]==c else 'outside_exit_tail' if start+663<=k<start+758 else 'hold'
++    return result
++
++
++def plan_id(state,wid):return content_id(dict(witness=wid,cycle=state['cycle'],history=state['history'],remaining=2802-state['cycle']))

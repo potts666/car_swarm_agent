@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "domain": {
+    "v": [
+      "-1",
+      "2"
+    ],
+    "abs_a": "1",
+    "abs_omega": "1",
+    "abs_delta": "1/2"
+  },
+  "yaw_rate_fourth": "9604400/453789",
+  "position_integrand_fourth": "56476474400/1275989841",
+  "corner_acceleration": "6081596/893025",
+  "implemented_caps": {
+    "rate_Simpson": 84,
+    "position_Simpson": 256,
+    "corner_chord": 15
+  },
+  "basis": "Absolute-value derivatives; sign of v does not enter upper polynomials. Simpson error M*dt^5/2880; corner chord error Mc*dt^2/8.",
+  "model_sha256": "bac15f5e841b511293ca4a220e48ccfda9a9a350795ab91102647ba906743df3"
+}

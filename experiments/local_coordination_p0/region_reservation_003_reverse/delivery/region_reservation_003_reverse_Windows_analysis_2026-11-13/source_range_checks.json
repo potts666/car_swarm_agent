@@ -1,0 +1,250 @@
+{
+  "passed": true,
+  "ranges": [
+    {
+      "name": "negative",
+      "passed": true,
+      "source_v": [
+        "-3/10",
+        "-1/10"
+      ],
+      "source_a": [
+        "-1/2",
+        "1/2"
+      ],
+      "fixed_delta": 0,
+      "frame_sign": 1,
+      "jacobian_id": "8ae2327ec0cd292ee6793b40176178b6bf94970e637eacc61462a6a8d5a683a8",
+      "exact_affine_extrema": [
+        {
+          "entry": [
+            1,
+            2
+          ],
+          "exact_range": [
+            "-7/100",
+            "-1/100"
+          ],
+          "interval": [
+            "-70000001/1000000000",
+            "-9999999/1000000000"
+          ]
+        },
+        {
+          "entry": [
+            2,
+            4
+          ],
+          "exact_range": [
+            "-7/270",
+            "-1/270"
+          ],
+          "interval": [
+            "-12962963/500000000",
+            "-3703703/1000000000"
+          ]
+        },
+        {
+          "entry": [
+            2,
+            6
+          ],
+          "exact_range": [
+            "-11/4050",
+            "-1/4050"
+          ],
+          "interval": [
+            "-54321/20000000",
+            "-246913/1000000000"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "zero",
+      "passed": true,
+      "source_v": [
+        "0",
+        "0"
+      ],
+      "source_a": [
+        "0",
+        "0"
+      ],
+      "fixed_delta": 0,
+      "frame_sign": 1,
+      "jacobian_id": "8f1349e1970337066c15ffe9d556ab9f771ef1fa1cd2c350ff41b44fd48480b6",
+      "exact_affine_extrema": [
+        {
+          "entry": [
+            1,
+            2
+          ],
+          "exact_range": [
+            "0",
+            "0"
+          ],
+          "interval": [
+            "0",
+            "0"
+          ]
+        },
+        {
+          "entry": [
+            2,
+            4
+          ],
+          "exact_range": [
+            "0",
+            "0"
+          ],
+          "interval": [
+            "0",
+            "0"
+          ]
+        },
+        {
+          "entry": [
+            2,
+            6
+          ],
+          "exact_range": [
+            "0",
+            "0"
+          ],
+          "interval": [
+            "0",
+            "0"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cross_zero",
+      "passed": true,
+      "source_v": [
+        "-1/20",
+        "1/20"
+      ],
+      "source_a": [
+        "-1/4",
+        "1/4"
+      ],
+      "fixed_delta": 0,
+      "frame_sign": 1,
+      "jacobian_id": "6ec95eb309f1f9276d1a16ea86682889d424b6245f3c0ea6e8b1326acbb16d3d",
+      "exact_affine_extrema": [
+        {
+          "entry": [
+            1,
+            2
+          ],
+          "exact_range": [
+            "-3/200",
+            "3/200"
+          ],
+          "interval": [
+            "-15000001/1000000000",
+            "15000001/1000000000"
+          ]
+        },
+        {
+          "entry": [
+            2,
+            4
+          ],
+          "exact_range": [
+            "-1/180",
+            "1/180"
+          ],
+          "interval": [
+            "-1388889/250000000",
+            "1388889/250000000"
+          ]
+        },
+        {
+          "entry": [
+            2,
+            6
+          ],
+          "exact_range": [
+            "-1/1620",
+            "1/1620"
+          ],
+          "interval": [
+            "-154321/250000000",
+            "154321/250000000"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cross_zero_opposite_frame",
+      "passed": true,
+      "source_v": [
+        "-1/20",
+        "1/20"
+      ],
+      "source_a": [
+        "-1/4",
+        "1/4"
+      ],
+      "fixed_delta": 0,
+      "frame_sign": -1,
+      "jacobian_id": "1ad672ea2f5d268baa2e02bd99fc9374e0bfef71b871f1c656e60b85603734e6",
+      "exact_affine_extrema": [
+        {
+          "entry": [
+            1,
+            2
+          ],
+          "exact_range": [
+            "-3/200",
+            "3/200"
+          ],
+          "interval": [
+            "-15000001/1000000000",
+            "15000001/1000000000"
+          ]
+        },
+        {
+          "entry": [
+            2,
+            4
+          ],
+          "exact_range": [
+            "-1/180",
+            "1/180"
+          ],
+          "interval": [
+            "-1388889/250000000",
+            "1388889/250000000"
+          ]
+        },
+        {
+          "entry": [
+            2,
+            6
+          ],
+          "exact_range": [
+            "-1/1620",
+            "1/1620"
+          ],
+          "interval": [
+            "-154321/250000000",
+            "154321/250000000"
+          ]
+        }
+      ]
+    }
+  ],
+  "stationary_equalities": {
+    "passed": true,
+    "frozen": 5,
+    "zero_sum_blocks": 6,
+    "quantization_error": "1162818067541/500000000000000000000000",
+    "budget": "1/250000000000"
+  },
+  "new_solver_calls": 0,
+  "scope": "range/variational checks; future policy synthesis uses exact measured v/delta, not an uncertain-speed robust deployment"
+}

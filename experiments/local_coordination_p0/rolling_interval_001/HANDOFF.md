@@ -1,0 +1,9 @@
+# Completed experiment handoff
+
+Goal: full service rolling interval + transfer + successor effective motion32. Main completed [406,824),418 cycles/1672 car-cycles; all4 goals475/855/1235/1615. Source versions v1/v2/v3 and failed original outputs preserved.
+518 formal attempts, allSolved,507 adopted;11 rejected car-cycles at8 physical ticks; no native budget reset/retry. Remaining1530 of explicit2048 ceiling is not an instruction to spend it.
+All8 GATE passed. All518 actual worker/matrix fingerprints passed. Independent507 raw/grid/original rows/64-subdivision actual prefix+Q/K, complete tail algebra/ACK/source identity passed. Four main/reference/fault trajectories physically independently replayed8 subintervals. K fault actual412 retainsA1 and executesB1 newfirst; ACK fault786 oldstep/retry787, finish1616. Zero new solves in all acceptance.
+Source-isolated fresh1822/1615 reconstruction blocked history reads until both independently audited, then matched actual policies. Initial chronology scopes disclosed in source_read_scope. Old v1/v2 stopped versions both complete1615 and passed independent physical replay. All584 recorded prior-task files remain byte-identical. No historical/paper edits or Git commit.
+Evidence: report.md,GATE.json,cycle_summary.csv,event_trace.csv,tradeoff.csv,timing/communication,results/rolling_independent.json,rolling_recovery,tail_ACK_source,source_isolation,source_read_scope,source_archive/acceptance_v2 and executed_source_versions.
+Default and --full-replay both passed (four actual trajectories, zero new solves). Archive/extracted-default validation follows this final content seal. Exact zero-solve resume: python3 verify_delivery.py --full-replay. Keep budget_ledger immutable.
+Scope nominal synchronous finite connection family; median cycle wall14.4007s, logicalh=.2, no real-time/disturbance/network claim.

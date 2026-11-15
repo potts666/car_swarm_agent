@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "status": "passed",
+  "task": "encounter_coordination_001",
+  "criteria": {
+    "event_source": {
+      "status": "passed",
+      "cycle": 1,
+      "actors": [
+        "A1",
+        "B1"
+      ],
+      "independent_overlap": [
+        "499/4",
+        "1193/4"
+      ],
+      "source_id": "b71c63594a25056f075a90d8f313f588e2a8bf06842e2ebe860aee64b112dd36"
+    },
+    "feasible_yield": {
+      "status": "passed",
+      "construction": "existing physically certified brake-to-wait tail; actual exit-domain release and resume",
+      "actual_stop": 36,
+      "actual_motion_resume": 411
+    },
+    "physical_negotiation": {
+      "status": "passed",
+      "state_guarded_release": 406,
+      "old_face_exclusion": {
+        "phase": 412,
+        "actor": "B1",
+        "old_own_position_plane_slack": "-971089857708236951/100000000000000000000"
+      },
+      "ticks_saved": 69
+    },
+    "local_transaction": {
+      "status": "passed",
+      "detected_group": [
+        "A1",
+        "B1"
+      ],
+      "closure": [
+        "A1",
+        "A2",
+        "B1",
+        "B2"
+      ],
+      "old_commit_size": 4,
+      "new_commit_size": 4,
+      "natural_size_change": 0,
+      "reason": "all future calendar endpoints affected; no artificial group-size success"
+    },
+    "numerical_chain": {
+      "status": "passed",
+      "native_calls": 8,
+      "accepted": [
+        4,
+        4
+      ],
+      "first_changed": [
+        4,
+        4
+      ],
+      "actual_cycles": [
+        1,
+        2
+      ]
+    },
+    "safety_completion": {
+      "status": "passed",
+      "steps": 1753,
+      "B_final": 0,
+      "six_pairs_every_interval": true,
+      "individual_and_block_deadlines": {
+        "old_b": {
+          "A1": 474,
+          "A2": 1821,
+          "B1": 923,
+          "B2": 1372
+        },
+        "new_b": {
+          "A1": 474,
+          "A2": 1752,
+          "B1": 854,
+          "B2": 1303
+        },
+        "block_max_old": 1821,
+        "block_max_new": 1752,
+        "block_passed": true,
+        "per_car_passed": true,
+        "delays": {}
+      }
+    },
+    "rejection_continuation": {
+      "status": "passed",
+      "branches": 3,
+      "independent_full_replay": true
+    }
+  },
+  "native_usage": {
+    "limit": 8,
+    "attempts": 8,
+    "native_entered": 8,
+    "accepted": 8,
+    "repeats": 0
+  },
+  "scope": "nominal fixed map; entry-before-core predictive event; exact initial straight/stopped-steering numerical window; inherited brake tail and new early state-conditioned release; no head-on core recovery or free curved steering/network claims"
+}

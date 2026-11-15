@@ -1,0 +1,102 @@
+{
+  "passed": false,
+  "status": "partial",
+  "criteria": {
+    "input_provenance": {
+      "status": "passed",
+      "evidence": "source manifests + instrumented read-isolated bit-identical initialization rerun"
+    },
+    "map_domain": {
+      "status": "passed",
+      "construct": "Omega_DAG",
+      "dependencies": [
+        [
+          "B2",
+          "A2"
+        ]
+      ],
+      "BUF": "not required for main DAG instance; insufficient-buffer cycle fixture rejected"
+    },
+    "autonomous_initialization": {
+      "status": "passed",
+      "B0": 1955,
+      "request_orders": [
+        [
+          "A1",
+          "B1",
+          "B2",
+          "A2"
+        ],
+        [
+          "B2",
+          "B1",
+          "A2",
+          "A1"
+        ]
+      ],
+      "full_independent_replays": 2
+    },
+    "local_discovery": {
+      "status": "passed",
+      "scope": "synchronous in-process directory; per-car keys/owners, all tails/proposals/receivers/permanent holds, versions and sorted-lock commit checks, offline all six pairs"
+    },
+    "socp_anchor": {
+      "status": "partial",
+      "zero_certification": "two actual-source rounds, exact affine E/T grid and Gi/K identities passed",
+      "native_adapter": "v1 failed rational text conversion; v2 all eight model constructions passed zero-solve regression; numerical solve untested"
+    },
+    "multi_car_update": {
+      "status": "partial",
+      "first_two_activity": [
+        4,
+        4
+      ],
+      "budgeted_worker_attempts": 8,
+      "accepted_numerical_candidates": [
+        0,
+        0
+      ],
+      "numerical_first_changed": [
+        0,
+        0
+      ],
+      "reason": "eight worker assembly errors before native solve; actual new-C anchors retained",
+      "original_v1_deadline_condition": "failed: A1 475 -> 500; original complete-MA certification withdrawn",
+      "repaired_zero_call_fork": {
+        "passed": true,
+        "first_two_activity": [
+          4,
+          4
+        ],
+        "initial_four_active_ticks": 25,
+        "B": 1822,
+        "all_individual_deadlines_nonincrease": true,
+        "native_attempts": 0
+      },
+      "numerical_success": false
+    },
+    "safety_continuation": {
+      "status": "passed",
+      "evidence": "v1 physical1847 and repaired legal1822 complete traces plus both layers of each version independently replayed; original v1 deadline defect retained"
+    },
+    "completion": {
+      "status": "passed",
+      "steps": 1847,
+      "B_final": 0,
+      "all_four_targets": true,
+      "original_v1_individual_deadline": "A1 violated; v1 physical completion alone does not pass full deadline admission",
+      "repaired_zero_fork_steps": 1822,
+      "repaired_all_individual_deadlines_nonincrease": true
+    }
+  },
+  "usage": {
+    "budgeted_attempts": 8,
+    "limit": 8,
+    "worker_errors": 8,
+    "native_solve_calls_reached": 0,
+    "native_statuses": {},
+    "extra_attempts_after_repair": 0
+  },
+  "DG002_same_version_CL": "separate untouched task/budget",
+  "next_required": "Fresh separately authorized budget/version for two four-car native rounds using both repaired rational adapter and individual-deadline generator/selector; no reuse of old raw statuses."
+}

@@ -1,0 +1,131 @@
+{
+  "passed": true,
+  "error": null,
+  "interface": "curve",
+  "endpoint": 37,
+  "actual_steps": 240,
+  "source_budget": 1279,
+  "remaining_budget": 1039,
+  "coarse_connection_ticks": 239,
+  "duration_changed": false,
+  "accepted_box_candidates": 1,
+  "constructed_candidate": true,
+  "optimizer_called": false,
+  "actual_box_state": {
+    "pose_Q": [
+      [
+        -3013119651121300637613,
+        -3013118739310502339202
+      ],
+      [
+        -3615848021819952502,
+        -3614936211021654789
+      ],
+      [
+        8982267754984957513,
+        8982284616964125335
+      ]
+    ],
+    "v": "73666890108942150965767627/49810853566714702050000000",
+    "delta": "-35608979419762339305018073/99621707133429404100000000"
+  },
+  "actual_K_reset_state": {
+    "minimum_road_lower_Q": 159999999999999916328,
+    "minimum_pair_lower_Q": 129960400734726740071,
+    "executed_input": [
+      "44769517980512538004019/2490542678335735102500000",
+      "715414880666188612052891/2490542678335735102500000"
+    ],
+    "actual_pose_Q": [
+      [
+        -2983580405722800336015,
+        -2983579466628663370209
+      ],
+      [
+        -1529136380994805829,
+        -1528197286857840754
+      ],
+      [
+        5240040989306969393,
+        5240058307015303918
+      ]
+    ],
+    "v": "74126383/50000000",
+    "delta": "-5999829/20000000"
+  },
+  "nonzero_terminal_v_delta": true,
+  "shift_appended_saved_K": [
+    {
+      "appended_input": [
+        "44769517980512538004019/2490542678335735102500000",
+        "715414880666188612052891/2490542678335735102500000"
+      ],
+      "kind": "saved_state_dependent_K",
+      "parent": "0af6aff1b215e26a16c4a3074e8a4387d8f9415f15de6ca2b5684384e772f0f4",
+      "new_id": "11a4529c436833669d8ec17b16a6a1da1005a884fee23d9f56e53c8ab96218ce"
+    }
+  ],
+  "corrupt_proposal_rejections": [
+    {
+      "kind": "K",
+      "reason": "wrong state-dependent K",
+      "old_plan_id": "abe95da5381192b6fe70ffbc4545b147c682ba4cc7f8ede9b9eb3a86e9193b9d",
+      "old_first_input": [
+        "1564157/2000000",
+        "772787/20000000"
+      ]
+    },
+    {
+      "kind": "phase",
+      "reason": "wrong receiver phase",
+      "old_plan_id": "b9e8a8a4a104a80afb30fd0a7c03895761b62c69438e3b5d6c29e2f1a7d2ec85",
+      "old_first_input": [
+        "125133/160000",
+        "2242177/20000000"
+      ]
+    },
+    {
+      "kind": "object",
+      "reason": "wrong receiver object",
+      "old_plan_id": "a9f0b2d5411503800e431b3aa1e7bdf749dbffd7f8a8f85f2220b67a4d557f46",
+      "old_first_input": [
+        "15641679/20000000",
+        "715597/4000000"
+      ]
+    },
+    {
+      "kind": "domain",
+      "reason": "wrong or widened receiving domain",
+      "old_plan_id": "718c124f8ac3ee2ea330af4c4c28c79407df593f9be6bd5fc07dbb416e42ca8e",
+      "old_first_input": [
+        "15641729/20000000",
+        "2342477/10000000"
+      ]
+    },
+    {
+      "kind": "deadline",
+      "reason": "wrong receiver deadline",
+      "old_plan_id": "be74ccca343a41ce1b8b65ce459970f77ff51fb928707681e5f5e4d121fed470",
+      "old_first_input": [
+        "7820887/10000000",
+        "2733899/10000000"
+      ]
+    },
+    {
+      "kind": "K_after_box",
+      "reason": "wrong state-dependent K",
+      "old_plan_id": "3ace841dced8cc57f9eebcd7bd0ebdce8eeed55a063f6ce1bbae428edca952d4",
+      "old_first_input": [
+        "44769517980512538004019/2490542678335735102500000",
+        "715414880666188612052891/2490542678335735102500000"
+      ]
+    }
+  ],
+  "minimum_online_road_m": 0.4952254867312788,
+  "minimum_online_pair_m": 1.0057736273428017,
+  "parked_handoff_executed": true,
+  "wall_s": 6.642321277002338,
+  "full_fourcar_task": false,
+  "formal_batch": false,
+  "independent_acceptance_pending": true
+}

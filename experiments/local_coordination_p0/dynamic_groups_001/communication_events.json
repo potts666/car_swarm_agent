@@ -1,0 +1,582 @@
+[
+  {
+    "arm": "F-S",
+    "round": 1,
+    "participants": [
+      "A1",
+      "A2",
+      "B1",
+      "B2"
+    ],
+    "dependencies": {
+      "A1:A2": "ddfca7c270d4716396ccef1b304648e14423ac0807aa057070f958b24f333622",
+      "A1:B1": "9c0d79ea52a2f67db7c2dc1beace7f2816f29beca47a38b49d20d6a161dc6b17",
+      "A1:B2": "2e56caa633c4749f78bf255be2ae32d758e51e7d15dbc4f98790252541327c58",
+      "A2:B1": "e14c6f23f263e1e6cde500a8f06cefa05deae1800eb948a2b5deba6ddc674991",
+      "A2:B2": "44c952e28100f5bf16d63535ad72bbf48505a19c524a83d2a91d7f6844ba2519",
+      "B1:B2": "1cd3788162778f9a374228f800f4e5102c84dddaff7d8c515e959daf53cd9cc8"
+    },
+    "messages": 12,
+    "canonical_application_bytes": 98885,
+    "wire": [
+      {
+        "id": "5c448f196ebda336be215d169f59089d0e574ed5a3a2caa8afb340882812c0e2",
+        "bytes": 24016,
+        "sender": "A1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "218a7af147f8c4399f30492467e397ad142279458fe5e1bd859f43a667e38fa8",
+        "bytes": 24196,
+        "sender": "A2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "b0d6722696989d2f488e5d6396e498c9d476e08756139a94b6daf718f60b8f46",
+        "bytes": 25394,
+        "sender": "B1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "4be04b447f661028f9ed6ddc26dc8ac33d619d9570f170964e8df7f565b238a2",
+        "bytes": 24195,
+        "sender": "B2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "49cf71e7242ac0cec0e9f7113d08526e8739586067b55ee7a06b5d4561bf0ed5",
+        "bytes": 134,
+        "sender": "A1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "90dd3014905edd5f0451743c8baa8773f5aaab68ce17aa9a936f3042a54f2df8",
+        "bytes": 134,
+        "sender": "A2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "26151664c6e9c74cb23f8edd044687f9a19e30e088077b86f39a738aa05bf957",
+        "bytes": 134,
+        "sender": "B1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "eccbf549f9774a5cd8ce7496168f9e3d2683fbd2d6f5a444279d824bf07816e8",
+        "bytes": 134,
+        "sender": "B2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "6dbfa4b2fde8014bc6e34408a0961e51a41210245d8ef65169a516c74a29d25c",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "A1",
+        "kind": "commit"
+      },
+      {
+        "id": "8b476c2bdada7074f88212f842246583c2835042e746e2a47385a60c1530edb5",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "A2",
+        "kind": "commit"
+      },
+      {
+        "id": "d2762b363237bbc760418af7e59bbac859bf6f1e0918532465dbab76399aa068",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "B1",
+        "kind": "commit"
+      },
+      {
+        "id": "143f870b7c8b9ce90b9e52f5808f58883390c2e5a799209bb6088794ef5de822",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "B2",
+        "kind": "commit"
+      }
+    ],
+    "scope": "local transaction application JSON; numerical-worker pipe transport excluded"
+  },
+  {
+    "arm": "F-S",
+    "round": 2,
+    "participants": [
+      "A1",
+      "A2",
+      "B1",
+      "B2"
+    ],
+    "dependencies": {
+      "A1:A2": "9bc8ec0556942a3b8601c612a7df2b0c8ae1019c6da7b4d5321ce2c35ed90073",
+      "A1:B1": "6213870a845a691da72c3bea4d9e6f70724d4d780089f20db99cf2c2b034e212",
+      "A1:B2": "c6eb56a7837862b87db4bf2e64bc3fbd9fefc76b053b7886f766fbba1b759049",
+      "A2:B1": "a422b917ed026bdec8454d94edd4555431f33e1b74896d49c0fb825aa419ecd2",
+      "A2:B2": "186b620941f72020cd5f7e54b6cc2978edde06c9c140a50c2fdd647d15f13618",
+      "B1:B2": "dfe709d9b62bd5d6b1e50317b0a6dd4d6e218c96044bfa6230bb179b2a0b1dc0"
+    },
+    "messages": 12,
+    "canonical_application_bytes": 98883,
+    "wire": [
+      {
+        "id": "d254f603be72d3b4be216c2051dff6ba930af3191f964dc19129dc8387a5190d",
+        "bytes": 24057,
+        "sender": "A1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "f1ab7bc3e85db5e65f3e8756701f547f86eee5adb1daa09ed14d9fbd8be72045",
+        "bytes": 24186,
+        "sender": "A2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "a762d2a7c3233d28935e311e964e0fb570410096c617fd472fcb1c127e5dff34",
+        "bytes": 25371,
+        "sender": "B1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "0f7823a3106f23748d467e51088df93047aabf97b67bbb62e49ff43d9023f968",
+        "bytes": 24185,
+        "sender": "B2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "704741e2c586fbfb486cd30b45e540cee7c65a8e912f651348c73de6a22680b5",
+        "bytes": 134,
+        "sender": "A1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "931d6dd820564a57e98459e71f6c3e436a113ebd088302d7f4ae85ece80f7027",
+        "bytes": 134,
+        "sender": "A2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "b2fdd7485eaf0953c70a9fd3e12d816dff20100d8eb74b9934dd9cfb8a995ae4",
+        "bytes": 134,
+        "sender": "B1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "c16ded90baf29274ee757aca9c44c5b5661b9333e7be4cd1a3b95a19e8debb12",
+        "bytes": 134,
+        "sender": "B2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "5ddb474bf1301e5dfcb8b000e44a44bfe7e13132d3313a63ac383ca7dce9e3aa",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "A1",
+        "kind": "commit"
+      },
+      {
+        "id": "390d814ba1705059180bbaa4c2d1de81f7d192f01163f5402c1e3474f15da2f0",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "A2",
+        "kind": "commit"
+      },
+      {
+        "id": "7b81740bf88891f53f7b60b2b63333ee24d47d5fb1c8481258ee4cf4411d9bba",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "B1",
+        "kind": "commit"
+      },
+      {
+        "id": "2d847a2686748c0446ef93c71561a9b448357ae2a23fbbe1ab82e0e93179d2a7",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "B2",
+        "kind": "commit"
+      }
+    ],
+    "scope": "local transaction application JSON; numerical-worker pipe transport excluded"
+  },
+  {
+    "arm": "F-P",
+    "round": 1,
+    "participants": [
+      "A1",
+      "A2",
+      "B1",
+      "B2"
+    ],
+    "dependencies": {
+      "A1:A2": "ddfca7c270d4716396ccef1b304648e14423ac0807aa057070f958b24f333622",
+      "A1:B1": "9c0d79ea52a2f67db7c2dc1beace7f2816f29beca47a38b49d20d6a161dc6b17",
+      "A1:B2": "2e56caa633c4749f78bf255be2ae32d758e51e7d15dbc4f98790252541327c58",
+      "A2:B1": "e14c6f23f263e1e6cde500a8f06cefa05deae1800eb948a2b5deba6ddc674991",
+      "A2:B2": "44c952e28100f5bf16d63535ad72bbf48505a19c524a83d2a91d7f6844ba2519",
+      "B1:B2": "1cd3788162778f9a374228f800f4e5102c84dddaff7d8c515e959daf53cd9cc8"
+    },
+    "messages": 12,
+    "canonical_application_bytes": 98885,
+    "wire": [
+      {
+        "id": "d0897ed377bebbd577de16b69e78b1a13904a8174a98454f09744662f67a1223",
+        "bytes": 24016,
+        "sender": "A1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "78b82bc730a8ff358c6af4e569949c144493d8fdb539fd8e870fe0a103069aae",
+        "bytes": 24196,
+        "sender": "A2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "4d1367ad9bdd0afe5b60b8549b34f20c8f98b20f83dd052b6152a148995b15dd",
+        "bytes": 25394,
+        "sender": "B1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "eec77cc847c6d0c02dba8f327d9aaaddb1fc82c06601bac411645b873b899dfb",
+        "bytes": 24195,
+        "sender": "B2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "24d8edb81573888a38c5698ba8f9ce377bd515deddf0b8dff83e455b9831d1b9",
+        "bytes": 134,
+        "sender": "A1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "4b2b01a795ca052f39592b49a5a03de20fd5e02f58cc2852fd395cf0cf576559",
+        "bytes": 134,
+        "sender": "A2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "8b6e246e7bce835a57c76dcf0558c581c493c6523d39bb8f23299b4939c905e1",
+        "bytes": 134,
+        "sender": "B1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "493c7ae0ae346e4fd782ab4b3da0eed7ee93545b64a00027804536d02c4f353a",
+        "bytes": 134,
+        "sender": "B2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "a9df400476c18bb761aa82b68430c22223514e5f5872aa9c4ed9a61703541930",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "A1",
+        "kind": "commit"
+      },
+      {
+        "id": "5fd5a8e31148202b557b6f579917d54218b0a296dd35ae37f9bd8cba9c37dc92",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "A2",
+        "kind": "commit"
+      },
+      {
+        "id": "f64f8c308478198a85f3c308aeb9b5b27f2d95bd9e46b5ddcc20e06a4fc57deb",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "B1",
+        "kind": "commit"
+      },
+      {
+        "id": "eebc439845e67bf4fa072f54de4ff4a8264905b30017ef311c61799f8fc5560a",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "B2",
+        "kind": "commit"
+      }
+    ],
+    "scope": "local transaction application JSON; numerical-worker pipe transport excluded"
+  },
+  {
+    "arm": "F-P",
+    "round": 2,
+    "participants": [
+      "A1",
+      "A2",
+      "B1",
+      "B2"
+    ],
+    "dependencies": {
+      "A1:A2": "89674acf3fd79754a660aeac23df98a02ecdee7e44ab23b67fae16a7cc188e35",
+      "A1:B1": "4b3e4876ac2bff35361776fd522da08615fc8371910cfe6f9e3d331619775b67",
+      "A1:B2": "7acb06ab0f034a6034cb1b3b3404cbe45a9564f9565cb74e2258f374f62a5a33",
+      "A2:B1": "c2b25dac8b631c2f4661ae3c257da67feb56a32c19f32913169ab320a6b347f6",
+      "A2:B2": "57452f9c8a08d0eef0f6198de71459761f6e2a81204ce2801074ab80e75fd1f3",
+      "B1:B2": "ee41896545fc08c796039338bc2e7e17dd49a636241ca9ff033fbc1b032ac581"
+    },
+    "messages": 12,
+    "canonical_application_bytes": 98883,
+    "wire": [
+      {
+        "id": "db782de6b3301657a4b6e79e3d96f361ab298c0731e1d8fd0bf6a77757ddc2ed",
+        "bytes": 24057,
+        "sender": "A1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "de55d9a6bf9b1fb6511a271410e9703df2ae2cbd4d860ad1f87e8836a46425a0",
+        "bytes": 24186,
+        "sender": "A2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "ef2125056620fccaf1a9d1de6220e8d46553d3fb277994c2c70fff3ae29f1d9f",
+        "bytes": 25371,
+        "sender": "B1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "189c054396cc6e8af62e97b0d0991865c9c32c1c17bf892d1a9f73941213f804",
+        "bytes": 24185,
+        "sender": "B2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "proposal"
+      },
+      {
+        "id": "030c05e096ceb7f543e6858d4b1af2d1d6e37ba915b427798c7a979778bfc861",
+        "bytes": 134,
+        "sender": "A1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "4777fef23188528ad9b4be148cad9aa77236bf342e61ae6ce03dc26ba61fb949",
+        "bytes": 134,
+        "sender": "A2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "b1365e057c56a789cbf6c30021d961adbc489419376846df9421af31b998c503",
+        "bytes": 134,
+        "sender": "B1",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "d15e5398139ed650338f5a4081734f78a5613d8b89b4eaf522ee0492a08fc0f3",
+        "bytes": 134,
+        "sender": "B2",
+        "target": "group:A1,A2,B1,B2",
+        "kind": "ack"
+      },
+      {
+        "id": "88fa81f7f8952bae05b9f43243f90cb1694d203dd442b5e11dfadc68fc852050",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "A1",
+        "kind": "commit"
+      },
+      {
+        "id": "b323ec00ec69746151b471b4150b1391ac81892b61247e28a4bdaef0d2f07f75",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "A2",
+        "kind": "commit"
+      },
+      {
+        "id": "61b3192bf108dcb1726c4112ae78ceb6c729a6164e18f73919acb71c00005ab0",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "B1",
+        "kind": "commit"
+      },
+      {
+        "id": "97e40425ae58c27f8a5ce66a4e4440d45e2a774598b2856eb28aad9d1ea71891",
+        "bytes": 137,
+        "sender": "group:A1,A2,B1,B2",
+        "target": "B2",
+        "kind": "commit"
+      }
+    ],
+    "scope": "local transaction application JSON; numerical-worker pipe transport excluded"
+  },
+  {
+    "arm": "D-P",
+    "round": 1,
+    "participants": [
+      "A1"
+    ],
+    "dependencies": {
+      "A1:A2": "ddfca7c270d4716396ccef1b304648e14423ac0807aa057070f958b24f333622",
+      "A1:B1": "9c0d79ea52a2f67db7c2dc1beace7f2816f29beca47a38b49d20d6a161dc6b17",
+      "A1:B2": "2e56caa633c4749f78bf255be2ae32d758e51e7d15dbc4f98790252541327c58"
+    },
+    "messages": 3,
+    "canonical_application_bytes": 24260,
+    "wire": [
+      {
+        "id": "f636a7a25e0ecc6fa3f4ffb38ee14be7e12d6402f4c72e482341d9c2596f45d7",
+        "bytes": 24007,
+        "sender": "A1",
+        "target": "group:A1",
+        "kind": "proposal"
+      },
+      {
+        "id": "d2f8db9282fccd5d964d4c9268e9251606a3b57e9d150f7aa32673ed8c16e72f",
+        "bytes": 125,
+        "sender": "A1",
+        "target": "group:A1",
+        "kind": "ack"
+      },
+      {
+        "id": "13c99b3423e1cce7f01f8b820d1f1527ac12c834746822ac525c271f903b61ab",
+        "bytes": 128,
+        "sender": "group:A1",
+        "target": "A1",
+        "kind": "commit"
+      }
+    ],
+    "scope": "local transaction application JSON; numerical-worker pipe transport excluded"
+  },
+  {
+    "arm": "D-P",
+    "round": 1,
+    "participants": [
+      "B1"
+    ],
+    "dependencies": {
+      "A1:B1": "9c0d79ea52a2f67db7c2dc1beace7f2816f29beca47a38b49d20d6a161dc6b17",
+      "A2:B1": "e14c6f23f263e1e6cde500a8f06cefa05deae1800eb948a2b5deba6ddc674991",
+      "B1:B2": "1cd3788162778f9a374228f800f4e5102c84dddaff7d8c515e959daf53cd9cc8"
+    },
+    "messages": 3,
+    "canonical_application_bytes": 25638,
+    "wire": [
+      {
+        "id": "17e0985dcc165baac54696798425ed66b13b092740222a42ff98a8e9ae8e2da1",
+        "bytes": 25385,
+        "sender": "B1",
+        "target": "group:B1",
+        "kind": "proposal"
+      },
+      {
+        "id": "8908490e4c57310cbcaee852c7da1b56ba91fdb4f281209cb2e7e12fb0aa04f1",
+        "bytes": 125,
+        "sender": "B1",
+        "target": "group:B1",
+        "kind": "ack"
+      },
+      {
+        "id": "920ce6d2f4374f77631c7921e8ef1d29b6f65495d422748464838cd2985effda",
+        "bytes": 128,
+        "sender": "group:B1",
+        "target": "B1",
+        "kind": "commit"
+      }
+    ],
+    "scope": "local transaction application JSON; numerical-worker pipe transport excluded"
+  },
+  {
+    "arm": "D-P",
+    "round": 2,
+    "participants": [
+      "A1"
+    ],
+    "dependencies": {
+      "A1:A2": "902b25bf507ecc1bff1eed0df57f04179082d0c3e13a148bab778e1b0908abe1",
+      "A1:B1": "171a40cda1281ea6b55f242999ff1daa0fa9167168f819f475cf321c624aef1a",
+      "A1:B2": "120d205f70ca021c7fb109c0cce5a0361775b0843363330b468283556dd61a9e"
+    },
+    "messages": 3,
+    "canonical_application_bytes": 24301,
+    "wire": [
+      {
+        "id": "5db38afd277f8e9eef329e767fb4c9bd0896b6e2227c01b9eeaf39e118ba0dfe",
+        "bytes": 24048,
+        "sender": "A1",
+        "target": "group:A1",
+        "kind": "proposal"
+      },
+      {
+        "id": "9890b3e455decf91b3861116a047cfeb3e70780e3290018ff93499d30880b111",
+        "bytes": 125,
+        "sender": "A1",
+        "target": "group:A1",
+        "kind": "ack"
+      },
+      {
+        "id": "e0f9a77375e615da7544f4706a5525c312b48144147fc492dbe6127a5f422e9a",
+        "bytes": 128,
+        "sender": "group:A1",
+        "target": "A1",
+        "kind": "commit"
+      }
+    ],
+    "scope": "local transaction application JSON; numerical-worker pipe transport excluded"
+  },
+  {
+    "arm": "D-P",
+    "round": 2,
+    "participants": [
+      "B1"
+    ],
+    "dependencies": {
+      "A1:B1": "171a40cda1281ea6b55f242999ff1daa0fa9167168f819f475cf321c624aef1a",
+      "A2:B1": "bf61d8d5aaf774b9c8feee80498035f6b4ee0082838ce0f46c2d932f348c07bc",
+      "B1:B2": "00c6dbe169882d15a1d03e10feb5abc168a164786fc69ed8f4b1274d10a6089b"
+    },
+    "messages": 3,
+    "canonical_application_bytes": 25615,
+    "wire": [
+      {
+        "id": "c1808757b447d3f1692d946af070ac35f5a23f6b9859cfe5b72515b375c9bcd8",
+        "bytes": 25362,
+        "sender": "B1",
+        "target": "group:B1",
+        "kind": "proposal"
+      },
+      {
+        "id": "fbb5b0872ba6498e7ceb12098087e700fd7b7af11106ca9251a91eb29dde5109",
+        "bytes": 125,
+        "sender": "B1",
+        "target": "group:B1",
+        "kind": "ack"
+      },
+      {
+        "id": "b00c6ef17527b8ea8acad8d420fe084696521e73f3d57d1c95a88b61ef9bef12",
+        "bytes": 128,
+        "sender": "group:B1",
+        "target": "B1",
+        "kind": "commit"
+      }
+    ],
+    "scope": "local transaction application JSON; numerical-worker pipe transport excluded"
+  }
+]

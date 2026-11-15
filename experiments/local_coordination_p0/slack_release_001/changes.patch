@@ -1,0 +1,1165 @@
+--- local_frame_001/audit_updates.py
++++ slack_release_001/audit_updates.py
+@@ -1,13 +1,11 @@
+-"""Independent raw/row/quant/objective and complete mixed physical audit."""
+-import copy,time,traceback,gzip
++import gzip,copy,time,traceback
+ from common import *
+-from plan_io import load,save,source,restore,record
++from plan_io import load,save,restore,record
+ from audit import audit
+-from physics import propagate,body,predicted_nodes
++from contracts import physical_id
++from physics import propagate,predicted_nodes
+ from progression import coordinate
+ from curve_bounds import sqrt_upper
+-from frame import physical_id
+-from receivers import reference
+ 
+ def own_check(job,ad,state):
+  if not ad['accepted']:return {'accepted':False,'anchor_retained':True}
+@@ -25,51 +23,69 @@
+  return {'accepted':True,'exact_ET_quantization':True,'all_rows_passed':True,'min_slack':minslack,'receiver_position_error':ep,'receiver_yaw_error':et,'JE':JE,'actual_progress_Q':[ds.l,ds.u],'true_F_upper':Fhi,'own_replay_subdivisions':64,'first_delta_a':delta[0],'first_delta_omega':delta[1]}
+ 
+ 
+-def full(plan):
+- key=physical_id(plan);path=HERE/f'results/independent/physical/{key}.json'
+- if path.exists():r=read(path);assert r['physical_id']==key;return {'reused_content_checked_physical_id':key,'certificate':str(path.relative_to(HERE)),'result':r}
+- result=audit(plan);result['physical_id']=key;write(path,result);return {'certificate':str(path.relative_to(HERE)),'result':result}
++def complete(plan,trace=None):
++ key=physical_id(plan);p=HERE/f'results/independent/{key}.json'
++ # A physical certificate may be shared only by exactly equal complete controls,
++ # owner, per-car policy and length. Protocol/source checks remain separate.
++ if p.exists() and (not trace or read(p).get('trace_sha')==sha(trace)):return {'reused_physical_id':key,'certificate':str(p.relative_to(HERE)),'result':read(p)}
++ r=audit(plan,trace=trace);r['physical_id']=key
++ if trace:r['trace_sha']=sha(trace)
++ write(p,r);return {'certificate':str(p.relative_to(HERE)),'result':r}
+ 
+-def trace_inclusion(plan,certificate):
+- ref=reference(plan);count=0;maximum=F(0)
+- with gzip.open(HERE/certificate['trace'],'rt') as f:
+-  for text in f:
+-   row=json.loads(text);k=row['cycle'];assert row['commands']=={c:list(map(str,map(F,plan['controls'][c][k-1]))) for c in CARS}
+-   for c in CARS:
+-    p=[m.I.raw(*q) for q in row['poses_Q'][c]];z=[m.I.raw(*q) for q in ref[k]['poses_Q'][c]];error=sum((p[j]-z[j]).abs_upper() for j in (0,1))+RB*(p[2]-z[2]).abs_upper();assert error<=F(1,40),('independent frame inclusion',c,k,error);maximum=max(maximum,error)
+-   count+=1
+- assert count==plan['B0']-certificate['source'];return {'passed':True,'nodes':count,'max_body_domain_error':maximum,'continuous_between_nodes':'per-corner physical acceleration bound15; frame published original tube+.025+15*h²/8'}
+-
+-def actual_successor(event,plan):
+- state=restore(event['source']);k=state['cycle'];commands={c:tuple(map(F,plan['controls'][c][k])) for c in CARS};nodes=predicted_nodes(state,commands,16);nextstate=event.get('successor',event.get('actual_successor'))
++def actual_first(event,plan):
++ state=restore(event['source']);k=state['cycle'];commands={c:tuple(map(F,plan['controls'][c][k])) for c in CARS};nodes=predicted_nodes(state,commands,16);nextstate=event['successor']
+  for c in CARS:
+-  for a,b in zip(nodes[c][-1],nextstate['poses_Q'][c]):assert max(a.l,b[0])<=min(a.u,b[1]),('actual first source integration',c,k)
++  for a,b in zip(nodes[c][-1],nextstate['poses_Q'][c]):assert max(a.l,b[0])<=min(a.u,b[1]),('actual successor',k,c)
+   assert F(nextstate['v'][c])==state['v'][c]+H*commands[c][0] and F(nextstate['delta'][c])==state['delta'][c]+H*commands[c][1]
+  assert nextstate['history']==content_id({'parent':state['history'],'commands':commands,'owner':plan['owners'][k]});return True
+ 
++def closure_semantic_id(value):
++ value=json.loads(json.dumps(value,default=str))
++ for row in value['discharged_completed_dependencies']:row['interfaces'].sort(key=lambda p:p['interface_id'])
++ return content_id(value)
++
++def release_events(summary):
++ from release import clear,verify_clear
++ from schedules import validate_prefix,deadlines,intervals_valid
++ from frames import discover,validate_publication,contains
++ from canonical import exit_phase
++ reports=[]
++ for e in summary['events']:
++  old,new=load(e['old_plan']),load(e['candidate']);s=restore(load(e['checkpoint']));proof=clear(old,s,e['meta']['outgoing']);assert content_id(proof)==content_id(e['clear']);verify_clear(old,s,proof);validate_prefix(old,new,s['cycle']);intervals_valid(new);d=deadlines(old,new,s['cycle']);assert d==e['meta']['deadlines'];assert d['Phi_new']<d['Phi_old'];oldframe,newframe=read(HERE/old['frame_file']),read(HERE/new['frame_file']);validate_publication(oldframe);validate_publication(newframe);contains(newframe,new);closure=discover(old,new,oldframe,newframe,s['cycle']);assert closure_semantic_id(closure)==closure_semantic_id(e['transaction']['closure']);accepted=e['transaction']['accepted'];assert accepted==(len(e['transaction']['ACK'])==len(closure['participants']) and e['transaction']['fixture']!='stale_K')
++  # Global serialized arrays end at B0; unchanged completed vehicles keep their
++  # exact own program through goal plus infinite zero hold, regardless of padding.
++  equivalent={}
++  for c in CARS:
++   if c not in closure['participants']:
++    goal=old['per_car_policies'][c]['goal'];assert goal==new['per_car_policies'][c]['goal'] and old['controls'][c][:goal]==new['controls'][c][:goal];assert all(tuple(map(F,u))==(0,0) for u in old['controls'][c][goal:]+new['controls'][c][goal:]);equivalent[c]={'semantic_program_id':content_id({'controls_until_goal':old['controls'][c][:goal],'goal':goal,'hold':'infinite zero'}),'old_raw_array_id':content_id(old['controls'][c]),'new_raw_array_id':content_id(new['controls'][c]),'outer_slot_unchanged':old['outer_slots'][c]==new['outer_slots'][c]};assert equivalent[c]['outer_slot_unchanged']
++  reports.append({'cycle':s['cycle'],'actor':e['meta']['outgoing'],'kind':e['meta']['kind'],'accepted':accepted,'Clear':True,'full_suffix':proof['actual_future'],'phase_guard_boundary_from_model':exit_phase(old,e['meta']['outgoing']),'participants':closure['participants'],'deadline_Phi':d,'unchanged_external_programs':equivalent,'proposal_first_legal_start':e['attempts'][-1]['start'],'old_future_valid_if_rejected':True})
++ return reports
++
+ def run():
+- assert read(HERE/'results/numerical_complete.json')['passed'];calls=read(HERE/'solver_calls.json');assert len(calls)==12;events=read(HERE/'results/events.json');previous={};rounds=[];mix_reports=[]
+- for e in events:
+-  label=e['label'];org=e['organization'];cp=load(f'results/{label}_checkpoint.json.gz');state=restore(cp['state']);plan=load(f'results/{label}_committed.json.gz');assert content_id(plan)==e['new_id'] and content_id(cp['anchor'])==e['anchor_id'];assert e['outer_frame_unchanged'];actual_successor(e,plan)
+-  if e['round']==2:assert e['source']==previous[org]['successor'] and content_id(cp['old'])==previous[org]['new_id']
+-  own=[]
+-  for c in read(HERE/'pre_registration.json')['actors']:
+-   job=load(f'results/{label}_{c}_job.json.gz');ad=read(HERE/f'results/{label}_{c}_admission.json');raw=read(HERE/f'results/workers/{label}_{c}_response.json');request=HERE/f'results/workers/{label}_{c}_request.json';assert read(request)['job']==job and raw['request_sha']==sha(request);assert job['model_id']==content_id({k:v for k,v in job.items() if k!='model_id'}) and raw['model_id']==job['model_id'];assert job['source']['poses_Q']==e['source']['poses_Q'][c] and job['source']['history']==e['source']['history'];assert job['parent']==content_id(cp['anchor']['controls'][c]);assert job['receiver']['K_id']==content_id(cp['anchor']['controls'][c][state['cycle']+32:]);own.append({'actor':c,'status':raw['status'],'gap':raw['obj_val']-raw['obj_val_dual'],'own_check':own_check(job,ad,state)})
+-   from local_mpc import assemble
+-   P,q,A,b,cones,settings=assemble(job)
+-   def sparse(x):return {'shape':list(x.shape),'indptr':x.indptr.tolist(),'indices':x.indices.tolist(),'data':x.data.tolist()}
+-   matrix={'P':sparse(P),'q':q.tolist(),'A':sparse(A),'b':b.tolist(),'cones':[str(c) for c in cones]};assert content_id(matrix)==raw['assembly']['matrix_id'];save(f'results/matrices/{job["model_id"]}.json.gz',matrix)
+-   if org=='L':assert job==load(f'results/C_r{e["round"]}_{c}_job.json.gz')
+-  for mix in e['mixes']:
+-   p=load(mix['plan']);cert=read(HERE/mix['certificate']);result=full(p);inc=trace_inclusion(p,cert);assert result['result']['passed'];mix_reports.append({'label':label,'D_new':mix['D_new'],'X_new':mix['X_new'],'plan':mix['plan'],'physical':result,'inclusion':inc});print('PASS independent mix',label,int(mix['D_new']),int(mix['X_new']),flush=True)
+-  check=full(plan);rounds.append({'label':label,'own':own,'physical':check,'actual_successor_checked':True,'outer_frame_id':plan['outer_frame_id']});write(HERE/'results/independent/progress.json',{'rounds':rounds,'mixes':mix_reports});previous[org]=e
+- # Post branches are independent zero-call work; required before final acceptance.
+- post=read(HERE/'results/post_branches.json');rejections=[];extensions=[]
+- for e in post['rejections']:
+-  p=load(e['plan']);result=full(p);inc=trace_inclusion(p,read(HERE/e['certificate']));actual_successor(e,p);assert e['external_new_first_executed'] and e['external_changed_output_ticks'];assert e['transaction']['X_committed'] and e['transaction']['external_ack_still_valid'];rejections.append({'name':e['name'],'passed':True,'physical':result,'inclusion':inc,'X_new_first':True});print('PASS independent rejection',e['name'],flush=True)
+- for e in post['extension']['branches']:
+-  p=load(e['plan']);result=full(p);inc=trace_inclusion(p,read(HERE/e['certificate']));extensions.append({'name':e['name'],'passed':True,'physical':result,'inclusion':inc,'new_frame_committed':e['new_frame_committed']});print('PASS independent extension',e['name'],flush=True)
+- assert set(post['extension']['closure']['participants'])==set(CARS);assert post['extension']['post_frame_dependency_discovery']['private_changes_need_no_external_reACK'];write(HERE/'results/independent_acceptance.json',{'passed':True,'rounds':rounds,'mixes':mix_reports,'rejections':rejections,'extensions':extensions,'all_actual_sources':True,'all_C_L_models_equal':True,'original':full(load('results/old.json.gz')),'native_attempts':12,'new_optimizer_calls':0})
++ ledger=read(HERE/'solver_calls.json');assert len(ledger)==8;branches={};releases={}
++ for name in ('R-fixed','E-anchor','E-MPC'):
++  summary=read(HERE/f'results/{name}_summary.json');p=load(summary['plan']);branches[name]=complete(p,str(HERE/summary['trace']));releases[name]=release_events(summary);print('PASS independent main',name,summary['final_cycle'],flush=True)
++ assert read(HERE/'results/E-anchor_summary.json')['goals']==read(HERE/'results/E-MPC_summary.json')['goals'];assert len([r for r in releases['E-MPC'] if r['accepted']])>=2
++ numeric=[];previous={}
++ for win in (1,2):
++  for rnd in (1,2):
++   label=f'e{win}_r{rnd}';cp=load(f'results/numeric/{label}_checkpoint.json.gz');e=read(HERE/f'results/numeric/{label}_event.json');plan=load(f'results/numeric/{label}_committed.json.gz');state=restore(cp['state']);actual_first(e,plan)
++   if rnd==2:assert e['source']==previous[win]['successor'] and physical_id(cp['plan'])==previous[win]['plan_after']
++   own=[]
++   for c in e['actors']:
++    job=load(f'results/numeric/{label}_{c}_job.json.gz');ad=read(HERE/f'results/numeric/{label}_{c}_admission.json');raw=read(HERE/f'results/workers/{label}_{c}_response.json');req=HERE/f'results/workers/{label}_{c}_request.json';assert raw['request_sha']==sha(req) and read(req)['job']==job and raw['model_id']==job['model_id'];assert job['source']['history']==e['source']['history'] and job['source']['poses_Q']==e['source']['poses_Q'][c];assert job['parent']==content_id(cp['plan']['controls'][c]);assert job['model_id']==content_id({k:v for k,v in job.items() if k!='model_id'});own.append({'actor':c,'raw_status':raw['status'],'gap':raw['obj_val']-raw['obj_val_dual'],'checks':own_check(job,ad,state)})
++    from local_mpc import assemble
++    P,q,A,b,cones,settings=assemble(job)
++    def sparse(x):return {'shape':list(x.shape),'indptr':x.indptr.tolist(),'indices':x.indices.tolist(),'data':x.data.tolist()}
++    matrix={'P':sparse(P),'q':q.tolist(),'A':sparse(A),'b':b.tolist(),'cones':[str(c) for c in cones]};assert content_id(matrix)==raw['assembly']['matrix_id'];save(f'results/matrices/{job["model_id"]}.json.gz',matrix)
++   mixes=[]
++   for mix in e['mixes']:
++    p=load(mix['plan']);cert=read(HERE/mix['certificate']);assert cert['passed'] and cert['source']==e['source'];mixes.append({'mask':mix['mask'],'physical':complete(p)})
++   numeric.append({'label':label,'own':own,'mixes':mixes,'committed_complete':complete(plan),'actual_successor':True});write(HERE/'results/independent/numeric_progress.json',numeric);previous[win]=e;print('PASS independent numeric',label,flush=True)
++ recovery=read(HERE/'results/recovery_summary.json');recoveries=[]
++ for summary in recovery['branches']:
++  p=load(summary['plan']);result=complete(p,str(HERE/summary['full_trace']));rr=release_events(summary);assert not rr[0]['accepted'] and rr[1]['accepted'];assert rr[1]['cycle']==rr[0]['cycle']+1 and len([x for x in rr if x['accepted']])>=2;recoveries.append({'name':summary['name'],'physical':result,'release_and_retry':rr,'illegal_outputs':0,'illegal_commits':0});print('PASS independent recovery',summary['name'],summary['final_cycle'],flush=True)
++ write(HERE/'results/independent_acceptance.json',{'passed':True,'main':branches,'releases':releases,'numeric':numeric,'recovery':recoveries,'formal_attempts':8,'new_optimizer_calls':0})
+ if __name__=='__main__':
+  try:run()
+- except Exception as e:write(HERE/'results/independent_failure.json',{'layer':'independent_acceptance','error':repr(e),'traceback':traceback.format_exc(),'optimizer_calls':0});raise
++ except Exception as e:write(HERE/'results/independent_failure.json',{'layer':'independent_acceptance','error':repr(e),'traceback':traceback.format_exc(),'new_optimizer_calls':0});raise
+--- /dev/null
++++ slack_release_001/canonical.py
+@@ -0,0 +1,32 @@
++"""Retimed single-car canonical phases, unchanged physical connection family."""
++from functools import lru_cache
++from common import *
++from plan_io import load
++BASE=None;STATES=None;REFERENCES={}
++def base():
++ global BASE
++ if BASE is None:BASE=load('results/R_initial.json.gz')
++ return BASE
++def states():
++ global STATES
++ if STATES is None:STATES=load('results/canonical_states.json.gz')
++ return STATES
++def index(c,t,start):
++ p=base()['per_car_policies'][c];prep=p['approach_end']
++ if t<prep:return t
++ return min(p['goal'],p['service_start']+max(0,t-start))
++def point(c,t,start):
++ r=states()[index(c,t,start)];return tuple(m.I.raw(*q) for q in r['poses_Q'][c]),F(r['v'][c]),F(r['delta'][c])
++def reference(plan):
++ key=(plan['B0'],tuple(plan['per_car_policies'][c]['service_start'] for c in CARS))
++ if key not in REFERENCES:
++  rows=[]
++  for t in range(plan['B0']+1):
++   ps={};v={};d={}
++   for c in CARS:p,vv,dd=point(c,t,plan['per_car_policies'][c]['service_start']);ps[c]=pose_rows(p);v[c]=vv;d[c]=dd
++   rows.append({'cycle':t,'poses_Q':ps,'v':v,'delta':d})
++  REFERENCES[key]=rows
++ return REFERENCES[key]
++def exit_phase(plan,c):
++ p=plan['per_car_policies'][c];return p['service_start']+plan['paths'][c]['ranges']['crossing'][1]-p['approach_end']
++def pose_error(actual,nominal):return sum((actual[j]-nominal[j]).abs_upper() for j in (0,1))+RB*(actual[2]-nominal[2]).abs_upper()
+--- local_frame_001/check_zero.py
++++ slack_release_001/check_zero.py
+@@ -1,48 +1,74 @@
+-"""Zero-solve actual worker assembly, source freedom, own-ID and fallback fixtures."""
+-import copy,traceback
++"""Zero native calls: Clear negatives, full analytic audits and two window prechecks."""
++import copy,gzip,traceback
+ from common import *
+-from plan_io import load,save,source,record
++from plan_io import load,save,restore,record
+ from curve_model import generate,evaluate
+-from contract import validate_binding,patch,replay_suffix
++from contracts import binding,continuation
+ from local_mpc import rollout,check_receiver
+-from frame import validate_frame_plan,source_valid,node_inclusion
+-from protocol import Wire,choose,check_dependency
++from physics import step
++from release import clear,verify_clear
++from schedules import propose,deadlines,validate_prefix,intervals_valid
+ from transport import exchange
++from audit import audit
+ 
+-def expect(name,fn,fixtures):
+- try:fn()
+- except (AssertionError,KeyError,ValueError) as e:fixtures.append({'fixture':name,'rejected':True,'reason':repr(e),'commits':0,'executions':0,'optimizer_calls':0})
+- else:raise AssertionError(('fixture not rejected',name))
++def source_models(plan,state,actors,stem,transport=True):
++ from itertools import combinations
++ k=state['cycle'];nextstate=copy.deepcopy(state);rows=[]
++ for phase in range(2):
++  if phase:step(nextstate,{c:plan['controls'][c][k] for c in CARS},plan['owners'][k],8)
++  for c in actors:
++   assert nextstate['v'][c]!=0;job,cert=generate(plan,nextstate,c,'O-E');binding(job,plan,nextstate);assert evaluate(job,[F(0)]*64)['passed'];ref=list(map(F,job['reference']));scores=[sum(F(a)*b for a,b in zip(col,ref)) for col in job['lattice']['T']];i=max(range(len(scores)),key=lambda j:abs(scores[j]));assert scores[i]!=0,'no energy descent in exact lattice';a=F(-1 if scores[i]>0 else 1,10**7);delta=[a*F(x) for x in job['lattice']['T'][i]];assert evaluate(job,delta)['passed'],'grid descent fails original rows';cmd=[[ref[2*j]+delta[2*j],ref[2*j+1]+delta[2*j+1]] for j in range(32)];r=rollout(job,nextstate,cmd);check_receiver(job,r);base=rollout(job,nextstate,[[ref[2*j],ref[2*j+1]] for j in range(32)]);assert r['energy']<base['energy']
++   row={'actor':c,'cycle':nextstate['cycle'],'model_id':job['model_id'],'analytic_delta':delta,'strict_energy_improvement':base['energy']-r['energy'],'receiver':job['receiver']}
++   if transport:
++    path=f'results/preflight/{stem}_p{phase}_{c}';save(path+'_job.json.gz',job);save(path+'_derivatives.json.gz',cert);raw,meta=exchange(job,'assemble',HERE/path);row.update(assembly=raw['assembly'],transport=meta)
++   rows.append(row)
++ return rows
++
++def negatives():
++ results=[];e=read(HERE/'results/E-anchor_events.json')[0];p=load(e['old_plan']);s=restore(load(e['checkpoint']));c=e['meta']['outgoing']
++ def expect(name,fn):
++  try:fn()
++  except (AssertionError,ValueError,KeyError) as err:results.append({'fixture':name,'rejected':True,'reason':repr(err),'commits':0,'executions':0})
++  else:raise AssertionError(('fixture not rejected',name))
++ bad=copy.deepcopy(s);bad['poses'][c]=(m.I(-F(TASKS[c]['goal'][0])),s['poses'][c][1],s['poses'][c][2]);expect('wrong_geometric_release_side',lambda:assert_clear(p,bad,c))
++ # Explicit physically possible reverse suffix into the core, despite clear now.
++ badp=copy.deepcopy(p);k=s['cycle'];newgoal=k+160;badp['per_car_policies'][c]['goal']=newgoal;badp['controls'][c][k:newgoal]=[['-1','0']]*5+[['0','0']]*155;expect('future_reentry',lambda:assert_clear(badp,s,c));future=clear(badp,s,c);assert not future['future_clear'];results[-1]['actual_future_certificate']=future['actual_future']
++ bad=copy.deepcopy(e['clear']);bad['source']['K_id']='missing';expect('missing_receiver_K',lambda:verify_clear(p,s,bad))
++ new=load(e['candidate']);bad=copy.deepcopy(new);bad['per_car_policies'][c]['goal']=p['per_car_policies'][c]['goal']+1;expect('deadline_increase',lambda:deadlines(p,bad,k))
++ bad=copy.deepcopy(new);bad['controls'][c][0]=['0','0'];expect('executed_prefix_modified',lambda:validate_prefix(p,bad,k))
++ bad=copy.deepcopy(new);bad['release_cuts'][c]=bad['per_car_policies'][e['meta']['incoming']]['service_start']+1;expect('half_open_owner_endpoint_overlap',lambda:intervals_valid(bad))
++ bad=copy.deepcopy(p);incoming=e['meta']['incoming'];bad['controls'][incoming][k]=['0','1/10'];expect('illegal_delete_stopped_steering_or_K',lambda:propose(bad,s,c,k))
++ after=copy.deepcopy(s);step(after,{d:p['controls'][d][k] for d in CARS},p['owners'][k],8);assert clear(p,after,c)['full_Clear'],'inherited parking flow must allow next-boundary retry';bad=clear(p,s,c);expect('stale_actual_history',lambda:verify_clear(p,after,bad))
++ # Closed occupancy temporal boundary remains a collision candidate at equality.
++ from discovery import Directory
++ directory=Directory();directory.register('A1',[F(0),F(1),F(0),F(1)],0,1,'intent');directory.register('B1',[F(0),F(1),F(0),F(1)],1,2,'permanent_goal');q=directory.query('A1',[F(0),F(1),F(0),F(1)],0,1);assert 'B1' in q['owners'];results.append({'fixture':'closed_occupancy_boundary','passed':True,'discovered_at_equal_endpoint':True})
++ from frames import validate_publication,validate_discovery,discover
++ frame=read(HERE/p['frame_file']);damaged=copy.deepcopy(frame);damaged['permanent_goals'].remove(incoming);expect('omitted_permanent_goal',lambda:validate_publication(damaged))
++ damaged=copy.deepcopy(frame);damaged['outer_slots'][c]='stale';expect('mixed_outer_inner_identity',lambda:validate_publication(damaged))
++ event2=read(HERE/'results/E-anchor_events.json')[1];old2,new2=load(event2['old_plan']),load(event2['candidate']);expected=discover(old2,new2,read(HERE/old2['frame_file']),read(HERE/new2['frame_file']),event2['cycle']);damaged=copy.deepcopy(expected);damaged['participants'].pop();expect('omitted_closure_member',lambda:validate_discovery(damaged,expected))
++ write(HERE/'results/negative_fixtures.json',{'passed':True,'fixtures':results,'next_boundary_retry_with_nonzero_delta':str(after['delta'][c]),'new_optimizer_calls':0});return results
++
++def assert_clear(plan,state,c):assert clear(plan,state,c)['full_Clear'],'Clear(actual future/Q/geometry) failed'
+ def run():
+- assert not read(HERE/'solver_calls.json');frame=read(HERE/'outer_frame.json');sel=read(HERE/'results/source_selection.json');old=load('results/old.json.gz');new=load('results/new.json.gz');k=sel['cycle'];D=sel['D'];X=sel['X'];actors=D+[X];models=[]
+- wire=Wire('initialization');acks=[]
+- for c in CARS:
+-  msg=wire.send('frame_directory',c,'establish_frame',{'outer_frame_id':frame['outer_frame_id'],'certificate':content_id(read(HERE/'results/outer_frame_certificate.json')),'own_occupancy':'old/new branch union + allowed .025 corridor + receiver/K/permanent goals','lease':next(q for q in frame['leases'].values() if c in q['members']),'deadline':frame['deadlines'][c]},'initialization');acks.append(wire.send(c,'frame_directory','ACK_frame',msg,'initialization'))
+- assert len(acks)==4;write(HERE/'results/initialization_ACK.json',acks)
+- for phase in (k,k+1):
+-  state=source(old,phase)
+-  for c in actors:
+-   job,cert=generate(new,state,c,'O-E');validate_binding(job,new,state);label=f'p{phase}_{c}';save(f'results/preflight/{label}_job.json.gz',job);save(f'results/preflight/{label}_derivatives.json.gz',cert);raw,meta=exchange(job,'assemble',HERE/f'results/preflight/{label}');r=rollout(job,state,[[F(x) for x in row] for row in new['controls'][c][phase:phase+32]]);check_receiver(job,r);assert job['lattice']['rank_free_dimension']>0
+-   # Analytic energy descent: choose an exact E/T acceleration column direction.
+-   ref=list(map(F,job['reference']));scores=[sum(ref[t]*F(col[t]) for t in range(64)) for col in job['lattice']['T']];idx=max(range(len(scores)),key=lambda t:abs(scores[t]));assert scores[idx]!=0;col=list(map(F,job['lattice']['T'][idx]));step=F(-1 if scores[idx]>0 else 1,10**7);delta=[step*x for x in col];assert evaluate(job,delta)['passed'];commands=[[ref[2*j]+delta[2*j],ref[2*j+1]+delta[2*j+1]] for j in range(32)];actual=rollout(job,state,commands);check_receiver(job,actual);assert actual['energy']<r['energy'];models.append({'phase':phase,'actor':c,'model_id':job['model_id'],'assembly':raw['assembly'],'transport':meta,'free_dimension':job['lattice']['rank_free_dimension'],'analytic_descent':r['energy']-actual['energy'],'receiver':job['receiver']});print('PASS zero model',phase,c,flush=True)
+- # X model and ACK depend on fixed outer frame and its own inputs, not D hash.
+- s=source(old,k);a,_=generate(old,s,X,'O-E');b,_=generate(new,s,X,'O-E');assert a==b,'external model invalidated by D private change';fixtures=[]
+- bad=copy.deepcopy(new);bad['outer_frame_id']='old';expect('stale_outer_frame_id',lambda:validate_frame_plan(bad,frame),fixtures)
+- expect('expired_frame',lambda:source_valid(frame,{'cycle':frame['valid_through']+1}),fixtures)
+- damaged=copy.deepcopy(frame);damaged['permanent_goals'].remove(X);expect('omitted_permanent_goal',lambda:require_goals(damaged),fixtures)
+- outside=copy.deepcopy(s);outside['poses'][X]=(outside['poses'][X][0]+1,*outside['poses'][X][1:]);expect('outside_occupancy_envelope',lambda:node_inclusion(new,outside),fixtures)
+- damaged=copy.deepcopy(new);damaged['per_car_policies'][X]['goal']+=1;expect('deadline_increase',lambda:validate_frame_plan(damaged,frame),fixtures)
+- expect('owner_endpoint_overlap',lambda:intervals([(26,475),(406,855)]),fixtures)
+- expect('mixed_internal_commit_id',lambda:one_bundle(['version1','version2']),fixtures)
+- from contract import guard
+- state=source(new,new['encounter']['first_out']);state['poses']['A1']=(state['poses']['A1'][0]-1,*state['poses']['A1'][1:]);expect('wrong_release_guard',lambda:guard(new,state),fixtures)
+- # Legacy global-parent binding would invalidate X even though own model is equal.
+- write(HERE/'results/old_identity_failure.json',{'old_global_parent_changes':content_id(old)!=content_id(new),'own_X_model_equal':a==b,'old_D_calendar':[26,475,924],'new_D_calendar':[26,406,855,924],'repair':'own-plan worker parent; outer-only external dependency; D atomic inner version','zero_calls':True})
+- chosen,event=choose(old,new,s,frame,D,X,'L',Wire('preflight_missing_ack'),acks=[D[0],X],phase='fixture');assert not event['D_committed'] and event['X_committed'];assert chosen['controls'][X]==new['controls'][X] and chosen['owners']==old['owners']
+- write(HERE/'results/preflight_certificate.json',{'passed':True,'models':models,'forecast_second_only':True,'actual_second_regenerated_before_native':True,'D':D,'X':X,'outer_frame_id':frame['outer_frame_id'],'external_model_equal_across_D_private_change':True,'fixtures':fixtures,'solver_calls':0});print('PASS preflight all; releases0',flush=True)
+-def require_goals(frame):assert set(frame['permanent_goals'])==set(CARS),'permanent goal omitted'
+-def intervals(rr):assert all(a[1]<=b[0] for a,b in zip(rr,rr[1:])),'half-open lease endpoints overlap'
+-def one_bundle(ids):assert len(set(ids))==1,'mixed internal transaction numbers'
++ assert not read(HERE/'solver_calls.json');negatives();out=[]
++ for name in ('R-fixed','E-anchor'):
++  p=load(f'results/{name}_final_plan.json.gz');result=audit(p,trace=str(HERE/f'results/{name}_actual.jsonl.gz'),output=HERE/f'results/{name}_independent.json');assert result['passed']
++ summary=read(HERE/'results/E-anchor_summary.json');events=[e for e in summary['events'] if e['transaction']['accepted']];assert len(events)>=2;rows={}
++ with gzip.open(HERE/'results/E-anchor_actual.jsonl.gz','rt') as f:
++  for text in f:r=json.loads(text);rows[r['cycle']]=r
++ previous_end=-1
++ for eventindex,event in enumerate(events[:2],1):
++  p=load(event['candidate']);chosen=None
++  for k in range(event['cycle'],min(e['cycle'] for e in events if e['cycle']>event['cycle']) if any(e['cycle']>event['cycle'] for e in events) else p['B0']):
++   if k<=previous_end:continue
++   s=restore(rows[k]);moving=[c for c in CARS if s['v'][c]!=0 and abs(H*(2*s['v'][c]+H*F(p['controls'][c][k][0]))/2)>=F(1,50)]
++   for actors in __import__('itertools').combinations(moving,2):
++    try:models=source_models(p,s,actors,f'e{eventindex}_k{k}')
++    except (AssertionError,ValueError) as err:out.append({'event':eventindex,'cycle':k,'actors':actors,'skipped':repr(err)});continue
++    chosen={'event':eventindex,'cycle':k,'actors':list(actors),'models':models,'source':record(s),'forecast_only':eventindex==2,'plan':event['candidate']};break
++   if chosen:break
++  assert chosen,('no two-round window',eventindex);out.append(chosen);previous_end=chosen['cycle']+1;print('PASS window',eventindex,chosen['cycle'],chosen['actors'],flush=True)
++ write(HERE/'results/preflight_certificate.json',{'passed':True,'windows':out,'new_optimizer_calls':0,'source_rule':'earliest actual active pair with two-phase nonzero exact-grid energy descent and receiver; actual successor regenerated before every native'})
+ if __name__=='__main__':
+  try:run()
+- except Exception as e:write(HERE/'results/preflight_failure.json',{'layer':'zero_preflight','error':repr(e),'traceback':traceback.format_exc(),'optimizer_calls':0});raise
++ except Exception as e:write(HERE/'results/preflight_failure.json',{'layer':'zero_preflight','error':repr(e),'traceback':traceback.format_exc(),'new_optimizer_calls':0});raise
+--- /dev/null
++++ slack_release_001/contracts.py
+@@ -0,0 +1,39 @@
++"""Actual full continuation, common-mode guards and immutable own-model binding."""
++import copy,gzip
++from common import *
++from canonical import reference,point,pose_error
++from receivers import check_domain
++from plan_io import record
++from physics import step
++from release import clear
++
++def binding(job,plan,state,raw=None):
++ c=job['actor'];assert job['parent']==content_id(plan['controls'][c]) and job['outer_frame_id']==plan['outer_slots'][c];assert job['cycle']==state['cycle'] and job['source']==json.loads(json.dumps({'poses_Q':pose_rows(state['poses'][c]),'v':state['v'][c],'delta':state['delta'][c],'history':state['history']},default=str));assert job['receiver']['phase']==state['cycle']+32 and job['receiver']['K_id']==content_id(plan['controls'][c][state['cycle']+32:]);assert job['model_id']==content_id({k:v for k,v in job.items() if k!='model_id'})
++ if raw:assert raw['model_id']==job['model_id']
++ return True
++
++def guards(plan,state):
++ k=state['cycle'];refs=reference(plan);out=[]
++ for c in CARS:
++  if F(refs[k]['v'][c])==0 and F(refs[k]['delta'][c])!=0:out.append(check_domain(plan,state,c))
++ if k and k<len(plan['owners']) and plan['owners'][k]!=plan['owners'][k-1] and plan['owners'][k-1]:
++  outgoing=plan['owners'][k-1];proof=clear(plan,state,outgoing);assert proof['full_Clear'],('actual owner exit guard',k,outgoing,proof);out.append({'resource_release':proof})
++ return out
++
++def physical_id(plan):return content_id({k:plan[k] for k in ('controls','owners','per_car_policies','B0')})
++def continuation(plan,state,stem):
++ key=content_id({'plan':physical_id(plan),'source':record(state)});cached=HERE/f'results/continuations/{key}.json'
++ if cached.exists():r=read(cached);write(HERE/f'results/{stem}_certificate.json',r);return r
++ s=copy.deepcopy(state);goalhits={};minimum={'road':F(100),'pair':F(100)};maxerror=F(0);events=[]
++ for k in range(s['cycle'],plan['B0']):
++  for c in CARS:
++   p,_,_=point(c,k,plan['per_car_policies'][c]['service_start']);e=pose_error(s['poses'][c],p);assert e<=F(1,40),('published body domain',c,k,e);maxerror=max(maxerror,e)
++  events.extend(guards(plan,s));r=step(s,{c:plan['controls'][c][k] for c in CARS},plan['owners'][k],8)
++  for name in minimum:minimum[name]=min(minimum[name],r['bounds'][name])
++  for c in CARS:
++   if s['cycle']==plan['per_car_policies'][c]['goal']:
++    error=sum((s['poses'][c][j]-F(TASKS[c]['goal'][j])).abs_upper() for j in (0,1));assert error<F(2,25) and s['poses'][c][2].abs_upper()<F(1,100) and s['v'][c]==s['delta'][c]==0;goalhits[c]=s['cycle']
++ # Completed goals may precede source; their permanent hold is retained.
++ for c in CARS:
++  if plan['per_car_policies'][c]['goal']<=state['cycle']:assert state['v'][c]==state['delta'][c]==0;goalhits[c]=plan['per_car_policies'][c]['goal']
++ assert len(goalhits)==4;hold=step(copy.deepcopy(s),{c:(0,0) for c in CARS},None,8);assert not hold['bounds']['active'];r={'passed':True,'source':record(state),'physical_id':physical_id(plan),'goals':goalhits,'minimum':minimum,'max_node_body_error':maxerror,'mode_and_release_guards':events,'permanent_hold':True,'final':record(s),'new_optimizer_calls':0};write(cached,r);write(HERE/f'results/{stem}_certificate.json',r);return r
+--- local_frame_001/curve_model.py
++++ slack_release_001/curve_model.py
+@@ -41,7 +41,7 @@
+  # Certified endpoint chart lies away from the curvature-switch normal seam.
+  if ch['kind']=='arc':assert F(end_s.l,m.Q)-F(ch['offset'])>F(1,100),'terminal patch too near seam'
+  job={'actor':car,'arm':arm,'cycle':k,'parent':content_id(plan['controls'][car]),'source':{'poses_Q':pose_rows(state['poses'][car]),'v':state['v'][car],'delta':state['delta'][car],'history':state['history']},'reference':u,'free_ticks':free,'open_moving_omega':list(range(free)) if arm[0]=='O' else [],'lattice':lat,'rows':rows,'receiver':receiver,'progression':{'source_chart':sch,'terminal_chart':ch,'projection_bounds':bounds_s,'gradient':g,'epsilon':eps,'H':Hs,'reference_progress_Q':[progress.l,progress.u],'source_s_Q':[start_s.l,start_s.u]},'rho':F(1,1000),'objective':{'kind':'progress' if arm[2]=='P' else 'energy','lambda':F(1),'h':H,'R':[1,1],'S':[1,1],'common_multiplier':F(5),'units':'JE=h sum normalized input²; progression metres; lambda JEunit/metre'},'derivative_id':content_id({key:val for key,val in cert.items() if key!='wall'})}
+- job.update(outer_frame_id=plan['outer_frame_id'],per_car_plan_id=content_id(plan['controls'][car]),dependencies={'outer_frame_id':plan['outer_frame_id'],'valid_from':state['cycle'],'valid_until':'infinity_with_permanent_goals'})
++ job.update(outer_frame_id=plan['outer_slots'][car],per_car_plan_id=content_id(plan['controls'][car]),dependencies={'outer_frame_id':plan['outer_slots'][car],'valid_from':state['cycle'],'valid_until':'infinity_with_permanent_goals'})
+  # Semantic identity contains no volatile wall timing.
+  job['model_id']=content_id({key:val for key,val in job.items() if key!='generation_wall'})
+  return json.loads(json.dumps(job,default=str)),cert
+--- /dev/null
++++ slack_release_001/directory_union_check.py
+@@ -0,0 +1,32 @@
++"""Independent old/new occupancy-union lookup validates catalog-derived closure."""
++from common import *
++from plan_io import load,save
++from discovery import Directory
++from frames import static_clear
++
++def run():
++ reports=[]
++ for name in ('E-anchor','E-MPC','recovery_missing_ACK','recovery_stale_K'):
++  for e in read(HERE/f'results/{name}_summary.json')['events']:
++   old,new=load(e['old_plan']),load(e['candidate']);frames=[read(HERE/old['frame_file']),read(HERE/new['frame_file'])];directory=Directory();rows=[];seen=set()
++   for frame in frames:
++    data=load(frame['directory'])
++    for r in data['records']:
++     if r['end']<e['cycle']:continue
++     key=content_id(r)
++     if key in seen:continue
++     seen.add(key);r={**r,'box':list(map(F,r['box'])),'start':max(e['cycle'],r['start'])};rows.append(r)
++   for r in rows:directory.register(**r)
++   queries=[directory.query(r['car'],r['box'],r['start'],r['end']) for r in rows];assert all(directory.commit(q) for q in queries)
++   changed={c for c in CARS if frames[0]['outer_slots'][c]!=frames[1]['outer_slots'][c]};seeds=set(changed)
++   if not seeds:seeds={c for a,b in zip(old['owners'],new['owners']) if a!=b for c in (a,b) if c}
++   discovered=set(seeds);discharged=[]
++   if changed:
++    peers={owner for r,q in zip(rows,queries) if r['car'] in changed for owner in q['owners']}
++    for c in peers-changed:
++     if old['per_car_policies'][c]['goal']<=e['cycle'] and all(static_clear(c,d)['passed'] for d in changed if d!=c):discharged.append(c)
++     else:discovered.add(c)
++   assert discovered==set(e['transaction']['participants']),(name,e['cycle'],discovered,e['transaction']['participants'])
++   reports.append({'branch':name,'cycle':e['cycle'],'registered_records':len(rows),'queries':len(queries),'participants':sorted(discovered),'changed_slot_or_owner_seeds':sorted(seeds),'static_completed_peers_discharged':sorted(discharged),'permanent_goal_records':sum(r['kind']=='permanent_goal' for r in rows),'registered_all_before_query':True,'runtime_catalog_rule_equivalent_to_explicit_union_lookup':True})
++ write(HERE/'results/directory_union_acceptance.json',{'passed':True,'checks':reports,'scope':'independent explicit old/new union replay; actual runtime used registered catalog slot/lease differences and live/completed interface closure','new_optimizer_calls':0});print('PASS old/new directory union',len(reports),'closures')
++if __name__=='__main__':run()
+--- /dev/null
++++ slack_release_001/engine.py
+@@ -0,0 +1,140 @@
++"""One actual-state observer and release/retiming loop for all three arms."""
++import argparse,copy,gzip,time,traceback
++from common import *
++from plan_io import load,save,source,restore,record
++from canonical import point,pose_error
++from release import clear,verify_clear
++from schedules import propose,deadlines,validate_prefix,intervals_valid,goals
++from frames import certify,slot_descriptors,bind,contains,discover,blocks,own_resource_proof,validate_publication,validate_discovery
++from contracts import guards,continuation,physical_id
++from wire import Wire
++from physics import step
++
++def frozen():
++ for n,h in read(HERE/'executed_source_versions.json').items():assert sha(HERE/n)==h,n
++
++def submit(old,new,state,proof,meta,oldframe,newframe,wire,name,fault=None):
++ verify_clear(old,state,proof);validate_publication(oldframe);validate_publication(newframe);contains(newframe,new);closure=discover(old,new,oldframe,newframe,state['cycle']);validate_discovery(closure,discover(old,new,oldframe,newframe,state['cycle']));participants=closure['participants'];proposalid=content_id({'source_token':proof['token'],'new_physical':physical_id(new),'new_frame':newframe['outer_frame_id']});ack=[]
++ for c in participants:
++  msg={'proposal_id':proposalid,'source_token':proof['token'],'actor':c,'old_outer_slot':oldframe['outer_slots'][c],'new_outer_slot':newframe['outer_slots'][c],'inner_version':new['inner_version'],'own_plan_id':content_id(new['controls'][c]),'deadline':new['per_car_policies'][c]['goal']};wire.send('resource_directory',c,'prepare_release',msg,'internal' if meta['kind']=='internal' else 'extension')
++  if not(fault=='missing_ACK' and c==participants[-1]):ack.append(wire.send(c,'resource_directory','ACK_release',msg,'internal' if meta['kind']=='internal' else 'extension'))
++ valid=True;reason='all affected endpoints accepted'
++ if fault=='stale_K':
++  broken=copy.deepcopy(proof);broken['source']['K_id']='damaged_fixture';valid=False
++  try:verify_clear(old,state,broken)
++  except AssertionError as e:reason=repr(e)
++  else:raise AssertionError('stale K not rejected')
++ if len(ack)!=len(participants):valid=False;reason='missing real affected endpoint ACK fixture'
++ selected=new if valid else old
++ for c in participants:wire.send('resource_directory',c,'commit_release' if valid else 'retain_old_obligation',{'proposal_id':proposalid,'own_plan_id':content_id(selected['controls'][c]),'outer_slot':selected['outer_slots'][c]},'internal' if meta['kind']=='internal' else 'extension')
++ return selected,{'proposal_id':proposalid,'accepted':valid,'reason':reason,'participants':participants,'ACK':[a['actor'] for a in ack],'closure':closure,'old_outer_frame':oldframe['outer_frame_id'],'new_outer_frame':selected['outer_frame_id'],'old_slots':oldframe['outer_slots'],'new_slots':selected['outer_slots'],'source_token':proof['token'],'fixture':fault,'name':name}
++
++def candidate(old,state,outgoing,proof,wire,stem,fault=None):
++ k=state['cycle'];oldframe=read(HERE/old['frame_file']);j=old['order'].index(outgoing)
++ if j+1==len(old['order']):return old,None,{'reason':'no successor with strictly improvable deadline'}
++ nxt=old['order'][j+1];lower=max(k,old['per_car_policies'][nxt]['approach_end']);upper=old['per_car_policies'][nxt]['service_start']-1;attempts=[]
++ for start in range(lower,upper+1):
++  assert len(attempts)<load('results/R_initial.json.gz')['B0'],'finite candidate bound'
++  try:
++   new,meta=propose(old,state,outgoing,start);meta['owner_domain']=own_resource_proof(new)
++   if meta['kind']=='internal':contains(oldframe,new);newframe=oldframe
++   else:newframe=certify(new)
++   new=bind(new,newframe);cert=continuation(new,state,f'{stem}/candidate_{start}');assert cert['passed'];verify_clear(old,state,proof)
++  except (AssertionError,ValueError) as e:
++   attempts.append({'start':start,'accepted_physical':False,'limitation':repr(e)});continue
++  attempts.append({'start':start,'accepted_physical':True,'candidate_id':physical_id(new),'certificate':f'results/{stem}/candidate_{start}_certificate.json'});selected,transaction=submit(old,new,state,proof,meta,oldframe,newframe,wire,stem,fault);save(f'results/{stem}/old.json.gz',old);save(f'results/{stem}/candidate.json.gz',new);save(f'results/{stem}/source.json.gz',record(state));result={'cycle':k,'clear':proof,'meta':meta,'search_range':[lower,upper],'maximum_checks':load('results/R_initial.json.gz')['B0'],'attempts':attempts,'transaction':transaction,'source':record(state),'old_plan':f'results/{stem}/old.json.gz','candidate':f'results/{stem}/candidate.json.gz','checkpoint':f'results/{stem}/source.json.gz'};write(HERE/f'results/{stem}/event.json',result);return selected,result,None
++ return old,None,{'reason':'no certified earlier integer start','range':[lower,upper],'attempts':attempts}
++
++def numeric_round(plan,state,actors,label):
++ from curve_model import generate
++ from local_mpc import admit
++ from contracts import binding
++ from transport import exchange
++ frozen();start=time.monotonic();jobs={};admissions={};stats=[];save(f'results/numeric/{label}_checkpoint.json.gz',{'plan':plan,'state':record(state)})
++ for c in actors:
++  job,cert=generate(plan,state,c,'O-E');binding(job,plan,state);jobs[c]=job;save(f'results/numeric/{label}_{c}_job.json.gz',job);save(f'results/numeric/{label}_{c}_derivatives.json.gz',cert)
++ for c in actors:
++  job=jobs[c];stem=HERE/f'results/workers/{label}_{c}';stem.parent.mkdir(parents=True,exist_ok=True);assembled,ameta=exchange(job,'assemble',stem.with_name(stem.name+'_precheck'))
++  def release(info):
++   frozen();ledger=read(HERE/'solver_calls.json');assert len(ledger)<8 and not any(r['label']==label and r['actor']==c for r in ledger);assert info==assembled['assembly'];ledger.append({'attempt':len(ledger)+1,'label':label,'actor':c,'cycle':state['cycle'],'model_id':job['model_id'],'source_history':state['history'],'outer_slot':job['outer_frame_id'],'released_at':time.time(),'assembly_id':info['matrix_id'],'status':'released'});write(HERE/'solver_calls.json',ledger)
++  raw,meta=exchange(job,'solve',stem,on_ready=release);ledger=read(HERE/'solver_calls.json');ledger[-1].update(status=raw['status'],native_entered_at=raw['native_entered_at'],native_finished_at=raw['native_finished_at'],solve_time=raw['solve_time'],r_prim=raw['r_prim'],r_dual=raw['r_dual'],obj_val=raw['obj_val'],obj_val_dual=raw['obj_val_dual']);write(HERE/'solver_calls.json',ledger);binding(job,plan,state,raw);ad=admit(job,raw,state) if raw['status'] in ('Solved','AlmostSolved') else {'accepted':False,'model_id':job['model_id'],'reason':raw['status']};admissions[c]=ad;write(HERE/f'results/numeric/{label}_{c}_admission.json',ad);stats.append({'actor':c,'status':raw['status'],'accepted':ad['accepted'],'solve_time':raw['solve_time'],'transport':meta,'assembly_transport':ameta});print('WORKER',label,c,raw['status'],'accepted',ad['accepted'],flush=True)
++ new=copy.deepcopy(plan)
++ for c,ad in admissions.items():
++  if ad['accepted']:new['controls'][c][state['cycle']:state['cycle']+32]=ad['commands']
++ # Every actual combination is inside the common published corridor and same
++ # frozen owner/receiver contract; check all2^2 complete tails explicitly.
++ mixes=[]
++ for mask in range(4):
++  p=copy.deepcopy(plan)
++  for b,c in enumerate(actors):
++   if mask&(1<<b) and admissions[c]['accepted']:p['controls'][c][state['cycle']:state['cycle']+32]=admissions[c]['commands']
++  path=f'numeric/{label}_mix{mask}';save(f'results/{path}_plan.json.gz',p);proof=continuation(p,state,path);mixes.append({'mask':mask,'plan':f'results/{path}_plan.json.gz','certificate':f'results/{path}_certificate.json','passed':proof['passed']})
++ wire=Wire('E-MPC_numeric');groups=blocks(plan,state['cycle']);acks=[]
++ for group in groups:
++  if not set(group)&set(actors):continue
++  version=content_id({'group':group,'own_inputs':{c:content_id(new['controls'][c]) for c in group},'slots':{c:new['outer_slots'][c] for c in group},'history':state['history']})
++  for c in group:
++   msg={'group':group,'inner_commit_id':version,'actor':c,'own_plan_id':content_id(new['controls'][c]),'outer_slot':new['outer_slots'][c],'source_history':state['history']};wire.send(group[0],c,'prepare_MPC',msg,'steady');acks.append(wire.send(c,group[0],'ACK_MPC',msg,'steady'));wire.send(group[0],c,'commit_MPC',msg,'steady')
++ save(f'results/numeric/{label}_committed.json.gz',new);write(HERE/f'results/numeric/{label}_pending_event.json',{'label':label,'source':record(state),'plan_before':physical_id(plan),'plan_after':physical_id(new),'actors':actors,'jobs':{c:j['model_id'] for c,j in jobs.items()},'workers':stats,'ACK':acks,'groups':groups,'mixes':mixes,'wall_before_execution':time.monotonic()-start,'old_new_obligation':{c:{'old_K':jobs[c]['receiver']['K_id'],'receiver_phase':state['cycle']+32,'new_own_plan':content_id(new['controls'][c])} for c in actors}});return new
++
++def run(name,mode,start_checkpoint=None,fault=None):
++ reg=read(HERE/'event_selection_rule.json');wire=Wire(name);initial=load('results/initial_bound.json.gz');plan=copy.deepcopy(initial);state=initial_state();successes=0;events=[];observations=[];deadlines_trace=[];numeric=[];windows=[];pending=None;pending_queue=[];seen=set();fault_used=False;firsthits={c:{} for c in CARS};startclock=time.monotonic()
++ if start_checkpoint:
++  plan=start_checkpoint['plan'];state=restore(start_checkpoint['state']);successes=plan['release_count']
++ tracepath=HERE/f'results/{name}_actual.jsonl.gz';sourceScan=HERE/f'results/{name}_observer.jsonl.gz'
++ with gzip.open(tracepath,'wt') as trace,gzip.open(sourceScan,'wt') as scanner:
++  while state['cycle']<plan['B0']:
++   k=state['cycle'];proofs={c:clear(plan,state,c) for c in CARS}
++   for c,p in proofs.items():
++    for term in ('geometric_clear','future_clear','receiver_valid','post_exit_phase','full_Clear'):
++     if p[term] and term not in firsthits[c]:firsthits[c][term]=k
++    scanner.write(json.dumps({'cycle':k,'actor':c,**{n:p[n] for n in ('geometric_clear','support_gap','future_clear','future_min_gap','post_exit_phase','receiver_valid','body_pose_error','full_Clear')}},default=str)+'\n')
++   owner=plan['owners'][k];event=None
++   if owner and proofs[owner]['full_Clear']:
++    idx=plan['order'].index(owner);eligible=idx+1<len(plan['order']) and plan['per_car_policies'][plan['order'][idx+1]]['service_start']>k
++    if mode=='fixed':
++     if eligible and not any(r['actor']==owner for r in observations):observations.append({'actor':owner,'cycle':k,'Clear':proofs[owner],'unused_obligation':plan['release_cuts'].get(owner,plan['per_car_policies'][owner]['goal'])-k,'calendar_unchanged':True})
++    elif eligible:
++     key=(state['history'],content_id(plan),owner)
++     if key not in seen:
++      seen.add(key);stem=f'{name}/release_attempt_{len(events)+1}';use_fault=fault if fault and not fault_used else None;old=plan;plan,event,restriction=candidate(plan,state,owner,proofs[owner],wire,stem,use_fault)
++      if event:
++       if use_fault:fault_used=True
++       events.append(event);write(HERE/f'results/{name}_events.json',events)
++       if event['transaction']['accepted']:
++        successes+=1;assert plan['release_count']==successes;print('RELEASE',name,k,owner,'->',event['meta']['incoming'],event['meta']['kind'],'goals',goals(plan),'closure',event['transaction']['participants'],flush=True)
++        if mode=='numeric' and successes<=2:
++         item={'event':successes,'not_before':k,'actors':None,'round':1}
++         if pending:pending_queue.append(item)
++         else:pending=item
++      elif restriction:observations.append({'actor':owner,'cycle':k,'restriction':restriction})
++   if mode=='numeric' and pending:
++    from check_zero import source_models
++    if pending['round']==1:
++     moving=[c for c in CARS if state['v'][c]!=0 and abs(H*(2*state['v'][c]+H*F(plan['controls'][c][k][0]))/2)>=F(1,50)];pair=None
++     for actors in itertools_pairs(moving):
++      try:source_models(plan,state,actors,f'actual_window{pending["event"]}_probe',transport=False);pair=list(actors);break
++      except (AssertionError,ValueError) as e:observations.append({'cycle':k,'window':pending['event'],'actors':actors,'limitation':repr(e)})
++     if pair:pending['actors']=pair;pending['first_cycle']=k
++    if pending['actors']:
++     label=f'e{pending["event"]}_r{pending["round"]}';plan=numeric_round(plan,state,pending['actors'],label);numeric.append(label);pending['label']=label
++   guards(plan,state);before=record(state);Bbefore=max(max(d-k,0) for d in goals(plan).values());t=time.monotonic();actual=step(state,{c:plan['controls'][c][k] for c in CARS},plan['owners'][k],8);actual['cycle']=state['cycle'];trace.write(json.dumps(actual,default=str)+'\n');deadlines_trace.append({'cycle':k,'deadlines':goals(plan),'b':{c:max(d-k,0) for c,d in goals(plan).items()},'B_before':Bbefore,'B_after':max(max(d-state['cycle'],0) for d in goals(plan).values()),'Phi':sum(goals(plan).values())})
++   if mode=='numeric' and pending and pending.get('label'):
++    label=pending['label'];entry=read(HERE/f'results/numeric/{label}_pending_event.json');entry.update(successor=record(state),actual_first=actual,execution_wall=time.monotonic()-t);write(HERE/f'results/numeric/{label}_event.json',entry)
++    if pending['round']==1:pending['round']=2;pending.pop('label');windows.append({'event':pending['event'],'first_cycle':pending['first_cycle'],'actors':pending['actors']})
++    else:pending=pending_queue.pop(0) if pending_queue else None
++   if mode=='anchor' and event and event['transaction']['accepted'] and successes<=2:
++    # Forecast window discovery uses subsequent real anchor states in check_zero.
++    pass
++  save(f'results/{name}_final_plan.json.gz',plan);save(f'results/{name}_final_state.json.gz',record(state))
++ save(f'results/{name}_deadline_trace.json.gz',deadlines_trace);write(HERE/f'results/{name}_observer_summary.json',{'first_hits':firsthits,'opportunities_or_limits':observations});result={'passed':True,'name':name,'mode':mode,'start_cycle':start_checkpoint['state']['cycle'] if start_checkpoint else 0,'final_cycle':state['cycle'],'goals':goals(plan),'events':events,'successes':len([e for e in events if e['transaction']['accepted']]),'windows':windows,'numeric_rounds':numeric,'fault_used':fault_used,'wall':time.monotonic()-startclock,'trace':str(tracepath.relative_to(HERE)),'plan':f'results/{name}_final_plan.json.gz','B_final':0};write(HERE/f'results/{name}_summary.json',result);return result
++
++def itertools_pairs(cars):return __import__('itertools').combinations(cars,2)
++if __name__=='__main__':
++ ap=argparse.ArgumentParser();ap.add_argument('--analytic',action='store_true');ap.add_argument('--numeric',action='store_true');args=ap.parse_args()
++ try:
++  if args.analytic:
++   p=load('results/R_initial.json.gz');frame=certify(p,slot_descriptors(p,True));p=bind(p,frame);save('results/initial_bound.json.gz',p);write(HERE/'results/initialization_ACK.json',{c:{'outer_slot':p['outer_slots'][c],'ACK':True} for c in CARS});run('R-fixed','fixed');run('E-anchor','anchor')
++  elif args.numeric:
++   assert not read(HERE/'solver_calls.json');frozen();run('E-MPC','numeric')
++ except Exception as e:write(HERE/f'results/{"analytic" if args.analytic else "numeric"}_failure.json',{'layer':'engine','error':repr(e),'traceback':traceback.format_exc(),'formal_attempts':len(read(HERE/'solver_calls.json'))});raise
+--- /dev/null
++++ slack_release_001/frames.py
+@@ -0,0 +1,126 @@
++"""Finite phase unions with shared geometric certificates and discovered edits."""
++import copy,itertools,time
++from functools import lru_cache
++from common import *
++from canonical import base,states,index,exit_phase
++from physics import body
++from plan_io import save,load
++from discovery import Directory
++RESERVE=TUBE+F(1,40)+15*H*H/8
++PAIR={};ROAD={};STATIC={}
++@lru_cache(None)
++def shape(c,a,b):
++ pts=[]
++ for t in (a,b):pts+=body(tuple(m.I.raw(*q) for q in states()[t]['poses_Q'][c]),c)
++ return pts
++@lru_cache(None)
++def box(c,a,b):return m.axis_box(shape(c,a,b))
++def choices(slot,c,t):
++ lo,hi=slot['start_range'];return sorted({(index(c,t,s),index(c,t+1,s)) for s in range(lo,hi+1)})
++def pair(c,a,b,d,e,f):
++ key=(c,a,b,d,e,f)
++ if key in PAIR:return PAIR[key]
++ B=shape(c,a,b);C=shape(d,e,f);bb=box(c,a,b);cc=box(d,e,f)
++ aa=[(F(cc[0]-bb[1],m.Q),(F(1),F(0)),F(bb[1]+cc[0],2*m.Q)),(F(bb[0]-cc[1],m.Q),(F(-1),F(0)),-F(bb[0]+cc[1],2*m.Q)),(F(cc[2]-bb[3],m.Q),(F(0),F(1)),F(bb[3]+cc[2],2*m.Q)),(F(bb[2]-cc[3],m.Q),(F(0),F(-1)),-F(bb[2]+cc[3],2*m.Q))];best=max(aa,key=lambda z:z[0])
++ if best[0]<2:
++  p=tuple(m.I.raw(*q) for q in states()[a]['poses_Q'][c]);q=tuple(m.I.raw(*z) for z in states()[e]['poses_Q'][d])
++  for nx,ny in m.normed_axes(p)+m.normed_axes(q):
++   for sg in (-1,1):
++    x,y=sg*nx,sg*ny;upper=max((u*x+v*y).u for u,v in B);lower=min((u*x+v*y).l for u,v in C);value=F(lower-upper,m.Q)
++    if value>best[0]:best=(value,(x,y),F(lower+upper,2*m.Q))
++ PAIR[key]={'pair':[c,d],'indices':[a,b,e,f],'gap':best[0],'n':best[1],'beta':best[2],'margin':best[0]-2*RESERVE-SAFE};return PAIR[key]
++def slot_descriptors(plan,initial=False):
++ out={};order=plan['order']
++ for c in CARS:
++  p=plan['per_car_policies'][c];g=next(v for v in plan['lease_groups'].values() if c in v['members']);starts=[p['service_start']]*2;deadline=p['goal']
++  if initial and c==order[1]:starts=[exit_phase(plan,order[0]),p['service_start']]
++  out[c]={'actor':c,'route_family':content_id(base()['paths'][c]),'start_range':starts,'deadline':deadline,'lease':g,'body_domain':'1/40','source_receiver':{'rP':'1/400','rPsi':'1/100000','v':0,'delta':0},'permanent_goal':TASKS[c]['goal'],'hold':'infinity'}
++ return out
++
++def certify(plan,slots=None):
++ started=time.monotonic();slots=slots or slot_descriptors(plan);descriptor={'slots':slots,'leases':plan['lease_groups'],'model':'same physical signed ZOH; finite canonical phase branch +.025 body node variation+.05 tube+15h²/8','permanent_goals':list(CARS)};fid=content_id(descriptor);file=HERE/f'results/frames/{fid}.json'
++ if file.exists():return read(file)
++ N=max(x['deadline'] for x in slots.values());links=[];records=[];minimum={'road':F(100),'pair':F(100),'group_resource':F(100)};convex_failure=None
++ for t in range(N):
++  ch={c:choices(slots[c],c,t) for c in CARS}
++  for c in CARS:
++   for a,b in ch[c]:
++    key=(c,a,b)
++    if key not in ROAD:ROAD[key]=F(m.road(box(c,a,b),[[m.I(x).l for x in r] for r in ROADS]),m.Q)-RESERVE
++    assert ROAD[key]>=0,('branch road',c,a,b,ROAD[key]);minimum['road']=min(minimum['road'],ROAD[key]);lo,hi=slots[c]['lease']['window']
++    if not lo<=t<hi:
++     bb=box(c,a,b);gap=max(-16-F(bb[1],m.Q)-RESERVE,F(bb[0],m.Q)-RESERVE-16);assert gap>0,('group resource',c,t,gap);minimum['group_resource']=min(minimum['group_resource'],gap)
++   if t%8==0:
++    points=[p for r in range(t,min(t+8,N)) for a,b in choices(slots[c],c,r) for p in shape(c,a,b)];bb=m.axis_box(points);inflate=RESERVE+SAFE/2;records.append({'car':c,'box':[F(bb[0],m.Q)-inflate,F(bb[1],m.Q)+inflate,F(bb[2],m.Q)-inflate,F(bb[3],m.Q)+inflate],'start':t,'end':min(t+8,N),'kind':'all_phase_branches_receivers_K'})
++   if convex_failure is None and len(ch[c])>1:
++    bb=m.axis_box([p for a,b in ch[c] for p in shape(c,a,b)]);r=F(m.road(bb,[[m.I(x).l for x in z] for z in ROADS]),m.Q)-RESERVE
++    if r<0:convex_failure={'actor':c,'cycle':t,'convex_hull_road_margin':r,'actual_branch_road_min':min(ROAD[(c,a,b)] for a,b in ch[c]),'repair':'keep finite phase union, never require convex-hull road inclusion'}
++  for c,d in itertools.combinations(CARS,2):
++   ids=[]
++   for a,b in ch[c]:
++    for e,f in ch[d]:
++     cert=pair(c,a,b,d,e,f);assert cert['margin']>=0,('union pair',t,c,d,cert);minimum['pair']=min(minimum['pair'],cert['margin']);ids.append(content_id(cert))
++   links.append({'cycle':t,'pair':[c,d],'face_ids':ids})
++ for c in CARS:
++  a=base()['per_car_policies'][c]['goal'];bb=box(c,a,a);inflate=RESERVE+SAFE/2;records.append({'car':c,'box':[F(bb[0],m.Q)-inflate,F(bb[1],m.Q)+inflate,F(bb[2],m.Q)-inflate,F(bb[3],m.Q)+inflate],'start':min(slots[c]['start_range'])+a-base()['per_car_policies'][c]['service_start'],'end':float('inf'),'kind':'permanent_goal'})
++ directory=Directory()
++ for r in records:directory.register(**r)
++ queries=[directory.query(r['car'],r['box'],r['start'],r['end']) for r in records];assert all(directory.commit(q) for q in queries)
++ save(f'results/frames/{fid}_directory.json.gz',{'records':records,'queries':queries,'events':directory.events,'all_registered_before_queries':True,'permanent_goals':True});used={x for r in links for x in r['face_ids']};save(f'results/frames/{fid}_faces.json.gz',{'links':links,'objects':{content_id(v):v for v in PAIR.values() if content_id(v) in used}})
++ out={**descriptor,'outer_frame_id':fid,'outer_slots':{c:content_id(slots[c]) for c in CARS},'passed':True,'minimum':minimum,'valid_through':N,'directory':f'results/frames/{fid}_directory.json.gz','faces':f'results/frames/{fid}_faces.json.gz','construction_wall':time.monotonic()-started,'convex_conservatism_fixture':convex_failure};write(file,out);print('FRAME',fid[:10],'choices',max(x['start_range'][1]-x['start_range'][0]+1 for x in slots.values()),'wall',round(out['construction_wall'],2),flush=True);return out
++
++def bind(plan,frame):
++ p=copy.deepcopy(plan);p['outer_frame_id']=frame['outer_frame_id'];p['outer_slots']=frame['outer_slots'];p['frame_file']=f'results/frames/{frame["outer_frame_id"]}.json';return p
++
++def contains(frame,plan):
++ for c in CARS:
++  slot=frame['slots'][c];policy=plan['per_car_policies'][c];assert slot['start_range'][0]<=policy['service_start']<=slot['start_range'][1] and policy['goal']<=slot['deadline'],('outside published phase/goal',c);assert next(v for v in plan['lease_groups'].values() if c in v['members'])==slot['lease'],('lease changed',c)
++ return True
++
++def blocks(plan,k):
++ groups=[set([c]) for c in CARS]
++ for lease in plan['lease_groups'].values():
++  if lease['window'][1]<=k:continue
++  members=set(lease['members']);hit=[g for g in groups if g&members];united=set().union(*hit);groups=[g for g in groups if not g&members]+[united]
++ return sorted(sorted(g) for g in groups)
++
++def static_clear(done,other):
++ key=(done,other)
++ if key in STATIC:return STATIC[key]
++ a=base()['per_car_policies'][done]['goal'];minimum=F(100);lim=None
++ for t in range(base()['per_car_policies'][other]['goal']):
++  cert=pair(done,a,a,other,t,t+1)
++  if cert['margin']<minimum:minimum=cert['margin'];lim=cert
++ STATIC[key]={'passed':minimum>=0,'minimum':minimum,'tight_face':lim,'valid_when':'done actor in permanent .025 goal body domain; other remains in full canonical spatial route corridor at any retiming, plus original tube/chord','interface_id':content_id({'done':done,'other':other,'goal':TASKS[done]['goal'],'route':content_id(base()['paths'][other]),'reserve':RESERVE})};return STATIC[key]
++
++def discover(old,new,oldframe,newframe,k):
++ changed={c for c in CARS if oldframe['outer_slots'][c]!=newframe['outer_slots'][c]};participants=set(changed);reasons=[{'added':c,'field':'own outer slot/lease/receiver deadline changed','old':oldframe['slots'][c],'new':newframe['slots'][c]} for c in sorted(changed)];discharged=[]
++ if not changed:
++  changedowners={c for a,b in zip(old['owners'],new['owners']) if a!=b for c in (a,b) if c};participants|=changedowners;reasons.extend({'added':c,'field':'internal owner partition changes inside same lease'} for c in sorted(changedowners))
++ else:
++  # All intents/receiver/K/goals were registered by newframe.certify before this query.
++  for c in CARS:
++   if c in participants:continue
++   proofs=[static_clear(c,d) for d in changed if d!=c]
++   if old['per_car_policies'][c]['goal']<=k and all(p['passed'] for p in proofs):discharged.append({'car':c,'permanent_goal_still_registered':True,'interfaces':proofs,'outer_slot_unchanged':True})
++   else:participants.add(c);reasons.append({'added':c,'field':'changed external future envelope against live old dependency','time':[k,old['per_car_policies'][c]['goal']]})
++ return {'participants':sorted(participants),'changed_public_slots':sorted(changed),'reasons':reasons,'discharged_completed_dependencies':discharged,'fixed_point_reached':True,'registered_before_query':True,'blocks_before':blocks(old,k),'blocks_after':blocks(new,k)}
++
++def own_resource_proof(plan):
++ minimum=F(100)
++ for t in range(plan['B0']):
++  for c in CARS:
++   if c==plan['owners'][t]:continue
++   s=plan['per_car_policies'][c]['service_start'];a,b=index(c,t,s),index(c,t+1,s);bb=box(c,a,b);gap=max(-16-F(bb[1],m.Q)-RESERVE,F(bb[0],m.Q)-RESERVE-16);assert gap>0,('own owner/corridor',c,t,gap);minimum=min(minimum,gap)
++ return {'passed':True,'min_nonowner_gap':minimum,'reserve':RESERVE,'all_allowed_MPC_node_bodies_plus_time_chords':True}
++
++def validate_publication(frame):
++ assert set(frame['permanent_goals'])==set(CARS),'permanent goal omitted'
++ assert set(frame['slots'])==set(frame['outer_slots'])==set(CARS),'frame endpoint omitted'
++ assert frame['outer_frame_id']==content_id({k:frame[k] for k in ('slots','leases','model','permanent_goals')}),'mixed outer frame version'
++ assert frame['outer_slots']=={c:content_id(frame['slots'][c]) for c in CARS},'mixed outer/per-car slot version'
++ return True
++
++def validate_discovery(actual,expected):
++ assert set(actual['participants'])==set(expected['participants']),'closure endpoint omitted'
++ return True
+--- local_frame_001/freeze_registration.py
++++ slack_release_001/freeze_registration.py
+@@ -1,16 +1,16 @@
+-"""Freeze the12-attempt same-physical-model experiment only after zero gates."""
+-import shutil,sys,platform
++import shutil,sys
+ from common import *
+ from plan_io import load
+ 
+ def run():
+- assert not read(HERE/'solver_calls.json');zero=read(HERE/'results/preflight_certificate.json');assert zero['passed'];assert read(HERE/'results/outer_frame_certificate.json')['passed'];assert read(HERE/'results/zero_joint_direction_certificate.json')['passed'];sel=read(HERE/'results/source_selection.json');assert len(sel['D'])==2 and sel['X'] not in sel['D']
+- for branch in ('old','new','extended'):assert read(HERE/f'results/references/{branch}_acceptance.json')['passed']
+- sources={str(p.relative_to(HERE)):sha(p) for p in sorted(HERE.rglob('*.py')) if 'source_archive' not in p.parts};archive=HERE/'source_archive/numerical_v1';archive.mkdir(parents=True,exist_ok=False)
++ assert read(HERE/'solver_calls.json')==[];zero=read(HERE/'results/preflight_certificate.json');assert zero['passed'];assert read(HERE/'results/negative_fixtures.json')['passed']
++ for n in ('R-fixed','E-anchor'):assert read(HERE/f'results/{n}_independent.json')['passed']
++ windows=[x for x in zero['windows'] if 'models' in x];assert len(windows)==2 and all(len(x['models'])==4 for x in windows);assert windows[1]['cycle']>windows[0]['cycle']+1
++ sources={str(q.relative_to(HERE)):sha(q) for q in HERE.rglob('*.py') if 'source_archive' not in q.parts and 'results' not in q.parts};archive=HERE/'source_archive/numerical_v1';archive.mkdir(parents=True,exist_ok=False)
+  for n in sources:
+-  dest=archive/n;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(HERE/n,dest)
++  target=archive/n;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(HERE/n,target)
+  write(HERE/'executed_source_versions.json',sources)
+  import clarabel,numpy,scipy
+- write(HERE/'pre_registration.json',{'passed':True,'task':'local_frame_001','limit':12,'organizations':['C','L'],'rounds':2,'actors':sel['D']+[sel['X']],'D':sel['D'],'X':sel['X'],'source_cycle':sel['cycle'],'first_source':sel['source'],'objective':'JE=h sum normalized(a²+omega²), U_J','arm_for_model':'O-E for both C/L','h':'1/5','N':32,'rho':'1/1000','eta':'1/50','Delta':'1/1000000000000','S':[1,1],'R':[1,1],'multiplier':5,'outer_frame_id':zero['outer_frame_id'],'failures_counted':True,'retry':False,'forecast_unique_models':len(zero['models']),'actual_models_reassembled':True,'sources':sources,'python':sys.version,'platform':platform.platform(),'dependencies':{'clarabel':clarabel.__version__,'numpy':numpy.__version__,'scipy':scipy.__version__},'settings':{'max_iter':200,'tol_gap_abs':1e-10,'tol_gap_rel':1e-10,'tol_feas':1e-10,'solver_time_limit':'infinity existing default','channel_timeout':30},'scope':'union frame may read joint map/trajectories at initialization. Online worker own inputs and fixed outer dependency, global source history digest. Serialized in-process app dispatch, real spawned independent solver workers; sequential execution, no measured parallel-speed claim'})
+- print('PASS frozen, limit12, attempts0',flush=True)
++ write(HERE/'pre_registration.json',{'passed':True,'task':'slack_release_001','limit':8,'event_windows':windows,'first_two_successful_events_only':True,'rounds_each':2,'actors_each':2,'selection':read(HERE/'event_selection_rule.json'),'constants':{'h':'1/5','N':32,'rho':'1/1000','eta':'1/50','R':[1,1],'S':[1,1],'Delta':'1/1000000000000','JE_unit':'normalized input square * seconds (U_J), not Joules','objective_multiplier':5},'settings':{'max_iter':200,'tolerance':1e-10,'solver_time_limit':'infinity existing default','channel_seconds':30},'python':sys.version,'versions':{'clarabel':clarabel.__version__,'numpy':numpy.__version__,'scipy':scipy.__version__},'failures_counted':True,'retry_solver':False,'forecast_scope':'anchor event windows; actual E-MPC sources after earlier updates always regenerated and actual byte assembly checked before solve','baseline':content_id(load('results/initial_bound.json.gz')),'initial_Phi':sum(load('results/R_initial.json.gz')['b_i'].values()),'source_hashes':sources})
++ print('PASS freeze, budget8, attempts0',flush=True)
+ if __name__=='__main__':run()
+--- local_frame_001/map_domain.py
++++ slack_release_001/map_domain.py
+@@ -3,9 +3,12 @@
+ from fractions import Fraction as F
+ from pathlib import Path
+ ROOT=Path(__file__).resolve().parent
+-sys.path.insert(0,str(ROOT/'sources'))
+-import construct_certificate as geo
+-from interval_source import I,Q
++_import_path=sys.path[:]
++try:
++ sys.path.insert(0,str(ROOT/'sources'))
++ import construct_certificate as geo
++ from interval_source import I,Q
++finally:sys.path[:]=_import_path
+ 
+ def read(n):return json.loads((ROOT/n).read_text())
+ def write(n,v):
+--- /dev/null
++++ slack_release_001/rebuild.py
+@@ -0,0 +1,24 @@
++"""Static-input1822 baseline, reference and source-input read provenance."""
++from common import *
++from initialize import run as initialize
++from preflight import simultaneous
++from plan_io import load,save,record
++from physics import step
++from audit import audit
++
++def run():
++ assert not read(HERE/'solver_calls.json');initialize();p=simultaneous(load('results/init_0.json.gz'),True);p=json.loads(json.dumps(p,default=str));order=p['order'];first=order[:2];p.update(release_cuts={},lease_groups={})
++ for i,c in enumerate(order):
++  if i==0:p['lease_groups']['D']={'members':first,'window':[p['per_car_policies'][first[0]]['service_start'],p['per_car_policies'][first[-1]]['goal']]}
++  if i>=2:p['lease_groups'][c]={'members':[c],'window':[p['per_car_policies'][c]['service_start'],p['per_car_policies'][c]['goal']]}
++ p['inner_version']=0;p['release_count']=0;p['outer_frame_id']='initial_pending';save('results/R_initial.json.gz',p);s=initial_state();states=[record(s)]
++ for k in range(p['B0']):step(s,{c:p['controls'][c][k] for c in CARS},p['owners'][k],8);states.append(record(s))
++ save('results/canonical_states.json.gz',states);audit(p,output=HERE/'results/R_initial_acceptance.json')
++ # Compare historical analytic results only after regeneration and physical replay.
++ import gzip
++ prior=HERE.parent/'local_frame_001/results/old.json.gz';old=json.loads(gzip.decompress(prior.read_bytes()))
++ for key in ('controls','owners','per_car_policies'):assert p[key]==old[key]
++ extended=HERE.parent/'local_frame_001/results/extension/success_plan.json.gz';hist=json.loads(gzip.decompress(extended.read_bytes()))
++ write(HERE/'input_lineage.json',{'passed':True,'inputs':p['source_manifest'],'fresh_initial_B0':load('results/init_0.json.gz')['B0'],'regenerated_B0':p['B0'],'goals':p['b_i'],'prior_analytic_same_controls_owners_policies':True,'historical_read_after_new_generation_and_audit':True,'comparison_only':[{'path':str(prior.resolve()),'sha':sha(prior)},{'path':str(extended.resolve()),'sha':sha(extended),'historical1753_ticks':hist['B0']}],'historical_numeric_input':False,'prior_local_verify_delivery':'passed all12 source/model/raw and physical GATE keys; actual contract.guard, frame/receiver/worker/protocol/audit inspected'})
++ print('PASS rebuilt1822',p['b_i'],flush=True)
++if __name__=='__main__':run()
+--- local_frame_001/receivers.py
++++ slack_release_001/receivers.py
+@@ -1,17 +1,9 @@
+-"""Branch-indexed positive pose receivers; own-plan identity and SE2 tail."""
+ from common import *
+-from plan_io import load
+-CACHE={}
+-def reference(plan=None):
+- name=plan.get('frame_branch','new') if plan else 'new'
+- if name not in CACHE:CACHE[name]=load(f'results/references/{name}_states.json.gz')
+- return CACHE[name]
+-def radii(car,phase,plan):
+- refs=reference(plan);length=sum(abs(H*(F(refs[t]['v'][car])+F(refs[t+1]['v'][car]))/2) for t in range(1,phase));return F(1,400)+length*F(1,100000),F(1,100000)
++from canonical import reference,point,pose_error
++
+ def synthesize(plan,state,c,cert):
+- phase=state['cycle']+32;refs=reference(plan);ref=refs[phase];nominal=[m.I.raw(*q) for q in cert['poses_Q'][-1]];target=[m.I.raw(*q) for q in ref['poses_Q'][c]];rp,rt=radii(c,phase,plan);ep=sum((nominal[j]-target[j]).abs_upper() for j in (0,1));et=(nominal[2]-target[2]).abs_upper();pos=(rp-ep)/2;yaw=(rt-et)/2;assert min(pos,yaw)>0,('receiver',c,phase,ep,et)
+- Lrem=sum(abs(H*(F(refs[t]['v'][c])+F(refs[t+1]['v'][c]))/2) for t in range(phase,plan['per_car_policies'][c]['goal']));body=rp+(Lrem+RB)*rt;assert body<F(1,40) and rp<F(1,25) and rt<F(1,100)
+- return {'version':'local_frame_pose_domain_v1','phase':phase,'parent':content_id(plan['controls'][c]),'center_pose_Q':cert['poses_Q'][-1],'center_pose':[F(z.l+z.u,2*m.Q) for z in nominal],'center_v':cert['knots'][-1][1],'center_delta':cert['knots'][-1][3],'rP':pos,'rPsi':yaw,'rv':0,'rdelta':0,'common_reference_phase_pose':ref['poses_Q'][c],'common_rP':rp,'common_rPsi':rt,'reference_position_error':ep,'reference_yaw_error':et,'L_remaining':Lrem,'suffix_body_error_upper':body,'K_id':content_id(plan['controls'][c][phase:]),'deadline':plan['per_car_policies'][c]['goal'],'inclusion':'positive local ball subset of common branch phase ball; exact v/delta and same-input SE2 full tail body error <.025; stopped and resource guards use branch-indexed domains'}
+-def check_domain(state,car,phase,plan,cap=F(1,40)):
+- r=reference(plan)[phase];p=state['poses'][car];z=[m.I.raw(*q) for q in r['poses_Q'][car]];error=sum((p[j]-z[j]).abs_upper() for j in (0,1))+RB*(p[2]-z[2]).abs_upper();assert error<=cap and state['v'][car]==F(r['v'][car]) and state['delta'][car]==F(r['delta'][car]),('mode_domain',phase,car,error)
+- return {'phase':phase,'actor':car,'body_pose_error':error,'cap':cap,'v_delta_exact':True}
++ phase=state['cycle']+32;refs=reference(plan);ref=refs[phase];nominal=[m.I.raw(*q) for q in cert['poses_Q'][-1]];target=[m.I.raw(*q) for q in ref['poses_Q'][c]];Lprefix=sum(abs(H*(F(refs[t]['v'][c])+F(refs[t+1]['v'][c]))/2) for t in range(phase));rp=F(1,400)+Lprefix/F(100000);rt=F(1,100000);ep=sum((nominal[j]-target[j]).abs_upper() for j in (0,1));et=(nominal[2]-target[2]).abs_upper();pos=(rp-ep)/2;yaw=(rt-et)/2;assert min(pos,yaw)>0,('receiver positive',c,phase,ep,et)
++ L=sum(abs(H*(F(refs[t]['v'][c])+F(refs[t+1]['v'][c]))/2) for t in range(phase,plan['per_car_policies'][c]['goal']));bound=rp+(L+RB)*rt;assert bound<F(1,40)
++ return {'version':'SR-positive-pose-v1','phase':phase,'parent':content_id(plan['controls'][c]),'center_pose_Q':cert['poses_Q'][-1],'center_pose':[F(z.l+z.u,2*m.Q) for z in nominal],'center_v':cert['knots'][-1][1],'center_delta':cert['knots'][-1][3],'rP':pos,'rPsi':yaw,'rv':0,'rdelta':0,'common_reference_phase_pose':ref['poses_Q'][c],'common_rP':rp,'common_rPsi':rt,'reference_position_error':ep,'reference_yaw_error':et,'L_remaining':L,'suffix_body_error_upper':bound,'K_id':content_id(plan['controls'][c][phase:]),'deadline':plan['per_car_policies'][c]['goal'],'inclusion':'positive receiver into canonical selected phase; exact v/delta same-input SE2 all future body error <.025, all mode and exit Q/goal hold'}
++def check_domain(plan,state,c):
++ p,v,d=point(c,state['cycle'],plan['per_car_policies'][c]['service_start']);error=pose_error(state['poses'][c],p);assert error<=F(1,40) and state['v'][c]==v and state['delta'][c]==d,('phase Q',c,state['cycle'],error);return {'actor':c,'phase':state['cycle'],'error':error}
+--- /dev/null
++++ slack_release_001/recover.py
+@@ -0,0 +1,20 @@
++"""Once-only failed release then actual old step and source-version retry, no solve."""
++import gzip,copy,traceback
++from common import *
++from plan_io import load,save
++from engine import run
++
++def run_all():
++ summary=read(HERE/'results/E-MPC_summary.json');events=[e for e in summary['events'] if e['transaction']['accepted']];event=events[1];checkpoint={'plan':load(event['old_plan']),'state':load(event['checkpoint'])};assert checkpoint['state']['cycle']==event['cycle'];ledger_before=sha(HERE/'solver_calls.json');out=[]
++ prefix=[]
++ with gzip.open(HERE/'results/E-MPC_actual.jsonl.gz','rb') as f:
++  for row in f:
++   if json.loads(row)['cycle']>event['cycle']:break
++   prefix.append(row)
++ for fault in ('missing_ACK','stale_K'):
++  name=f'recovery_{fault}';result=run(name,'anchor',copy.deepcopy(checkpoint),fault);attempts=result['events'];assert attempts[0]['transaction']['accepted'] is False and attempts[1]['transaction']['accepted'] is True;assert attempts[1]['cycle']==attempts[0]['cycle']+1 and attempts[1]['source']['history']!=attempts[0]['source']['history'];assert result['fault_used'] and result['successes']>=2
++  data=b''.join(prefix)+gzip.decompress((HERE/result['trace']).read_bytes());full=f'results/{name}_full_actual.jsonl.gz';(HERE/full).write_bytes(gzip.compress(data,mtime=0));assert len(data.splitlines())==result['final_cycle'];result['full_trace']=full;result['illegal_commits']=result['illegal_outputs']=0;write(HERE/f'results/{name}_summary.json',result);out.append(result);print('PASS recovery',fault,'retry',attempts[1]['cycle'],'final',result['final_cycle'],flush=True)
++ assert sha(HERE/'solver_calls.json')==ledger_before;write(HERE/'results/recovery_summary.json',{'passed':True,'branches':out,'same_real_checkpoint':checkpoint['state'],'formal_ledger_unchanged':True,'new_optimizer_calls':0})
++if __name__=='__main__':
++ try:run_all()
++ except Exception as e:write(HERE/'results/recovery_failure.json',{'layer':'recovery','error':repr(e),'traceback':traceback.format_exc(),'new_optimizer_calls':0});raise
+--- /dev/null
++++ slack_release_001/release.py
+@@ -0,0 +1,40 @@
++"""Actual support + invariant tail + current post-exit receiver + source identity."""
++from functools import lru_cache
++from common import *
++from canonical import base,states,point,index,exit_phase,pose_error
++from physics import body,propagate
++
++def support(c,p):
++ box=m.axis_box(body(p,c));sg=1 if F(TASKS[c]['goal'][0])>16 else -1
++ return F(box[0],m.Q)-16-TUBE if sg>0 else -16-F(box[1],m.Q)-TUBE
++@lru_cache(None)
++def future_profile(c):
++ refs=states();goal=base()['per_car_policies'][c]['goal'];out=[F(0)]*(goal+1);minimum=F(1000)
++ for t in range(goal,-1,-1):
++  p=tuple(m.I.raw(*q) for q in refs[t]['poses_Q'][c]);minimum=min(minimum,support(c,p)-F(1,40)-15*H*H/8);out[t]=minimum
++ return out
++
++def canonical_command(c,t,start):
++ p=base()['per_car_policies'][c]
++ if t<start:return base()['controls'][c][t] if t<p['approach_end'] else ['0','0']
++ j=p['service_start']+t-start
++ return base()['controls'][c][j] if j<p['goal'] else ['0','0']
++def tail_length(c,idx):
++ refs=states();goal=base()['per_car_policies'][c]['goal'];return sum(abs(H*(F(refs[t]['v'][c])+F(refs[t+1]['v'][c]))/2) for t in range(idx,goal))
++def actual_future(plan,state,c):
++ k=state['cycle'];policy=plan['per_car_policies'][c];start=policy['service_start'];goal=policy['goal'];hold=all(tuple(map(F,u))==(0,0) for u in plan['controls'][c][goal:]);changed=[t for t in range(k,goal) if tuple(map(F,plan['controls'][c][t]))!=tuple(map(F,canonical_command(c,t,start)))];end=changed[-1]+1 if changed else k;p=state['poses'][c];v=state['v'][c];d=state['delta'][c];minimum=F(1000)
++ try:
++  for t in range(k,end):
++   a,w=map(F,plan['controls'][c][t]);nv,nd=v+H*a,d+H*w;assert max(abs(a),abs(w))<=1 and -1<=nv<=2 and abs(nd)<=F(1,2);nodes=propagate(p,v,nv,d,nd,direction(c),8)
++   minimum=min(minimum,min(support(c,z) for z in nodes)-15*(H/8)**2/8);p=nodes[-1];v,d=nv,nd
++  nominal,nv,nd=point(c,end,start);ep=sum((p[j]-nominal[j]).abs_upper() for j in (0,1));et=(p[2]-nominal[2]).abs_upper();bound=ep+(tail_length(c,index(c,end,start))+RB)*et;exact=v==nv and d==nd;tail=future_profile(c)[index(c,end,start)];minimum=min(minimum,tail);valid=minimum>0 and bound<=F(1,40) and exact and hold
++  return {'passed':valid,'support_min':minimum,'saved_modified_prefix_end':end,'tail_SE2_bound':bound,'exact_v_delta_at_tail':exact,'permanent_zero_hold':hold,'method':'actual saved modified prefix then certified unchanged same-input canonical tail'}
++ except (AssertionError,ValueError) as e:return {'passed':False,'support_min':minimum,'restriction':repr(e),'permanent_zero_hold':hold}
++
++def clear(plan,state,c):
++ k=state['cycle'];p=plan['per_car_policies'][c];nominal,v,d=point(c,k,p['service_start']);raw=support(c,state['poses'][c]);tail=future_profile(c)[index(c,k,p['service_start'])];err=pose_error(state['poses'][c],nominal);phase=k-p['service_start']+p['approach_end'];after=phase>=plan['paths'][c]['ranges']['crossing'][1];ep=sum((state['poses'][c][j]-nominal[j]).abs_upper() for j in (0,1));et=(state['poses'][c][2]-nominal[2]).abs_upper();prefix=tail_length(c,0)-tail_length(c,index(c,k,p['service_start']));rp=F(1,400)+prefix/F(100000);domain=ep<=rp and et<=F(1,100000) and state['v'][c]==v and state['delta'][c]==d
++ future=actual_future(plan,state,c) if after and raw>0 else {'passed':tail>0,'support_min':tail,'method':'pre-exit canonical necessary test only; post-exit actual suffix still required'}
++ source={'cycle':k,'history':state['history'],'actor':c,'pose_Q':pose_rows(state['poses'][c]),'v':state['v'][c],'delta':state['delta'][c],'own_plan_id':content_id(plan['controls'][c]),'outer_slot':plan.get('outer_slots',{}).get(c),'contract_id':content_id(plan),'phase':phase,'deadline':p['goal'],'K_id':content_id(plan['controls'][c][k:p['goal']])};token=content_id(source)
++ return {'actor':c,'geometric_clear':raw>0,'support_gap':raw,'future_clear':future['passed'],'future_min_gap':future['support_min'],'actual_future':future,'post_exit_phase':after,'receiver_valid':domain,'body_pose_error':err,'nominal_v':v,'nominal_delta':d,'full_Clear':raw>0 and future['passed'] and after and domain,'source':source,'token':token,'guard':'actual positive goal-side rectangle support; all saved post-exit input/hold remains outside with .025 domain+15h²/8; Q_phase checks actual pose and exact phase v/delta, not point or fixed tick'}
++def verify_clear(plan,state,certificate):
++ assert certificate==clear(plan,state,certificate['actor']),'stale state/frame/history/K Clear token';assert certificate['full_Clear'],'Clear prerequisites failed';return True
+--- /dev/null
++++ slack_release_001/schedules.py
+@@ -0,0 +1,42 @@
++"""Future-only integer start search and certified zero-wait splice propagation."""
++import copy
++from common import *
++from canonical import base,point,exit_phase,pose_error
++
++def goals(p):return {c:p['per_car_policies'][c]['goal'] for c in CARS}
++def owner_intervals(p):return {c:[p['per_car_policies'][c]['service_start'],p['release_cuts'].get(c,p['per_car_policies'][c]['goal'])] for c in CARS}
++def group_for(p,c):return next(g for g,v in p['lease_groups'].items() if c in v['members'])
++def deadlines(old,new,k):
++ a,b=goals(old),goals(new);assert all(b[c]<=a[c] for c in CARS),'deadline increase';assert any(b[c]<a[c] for c in CARS),'no strictly decreased integer deadline';return {'old':a,'new':b,'Phi_old':sum(a.values()),'Phi_new':sum(b.values()),'B_old':max(max(d-k,0) for d in a.values()),'B_new':max(max(d-k,0) for d in b.values())}
++def validate_prefix(old,new,k):
++ assert all(old['controls'][c][:k]==new['controls'][c][:k] for c in CARS),'executed command prefix changed';assert old['owners'][:k]==new['owners'][:k],'executed owner prefix changed'
++def intervals_valid(p):
++ rr=sorted((a,b,c) for c,(a,b) in owner_intervals(p).items());assert all(a<=b for a,b,c in rr)
++ for (_,b,_),(a,_,_) in zip(rr,rr[1:]):assert b<=a,'overlapping half-open owner intervals'
++ for c,(a,b) in owner_intervals(p).items():lo,hi=p['lease_groups'][group_for(p,c)]['window'];assert lo<=a<=b<=hi,('outside group lease',c,a,b,lo,hi)
++ return True
++
++def propose(old,state,outgoing,start):
++ k=state['cycle'];order=old['order'];j=order.index(outgoing);assert j+1<len(order),'no successor';incoming=order[j+1];assert k<=start<old['per_car_policies'][incoming]['service_start'],'no earlier unexecuted start'
++ w=copy.deepcopy(old);same=group_for(old,outgoing)==group_for(old,incoming);changed=[incoming] if same else order[j+1:];splices=[];starts={incoming:start}
++ for n,c in enumerate(changed):
++  if n:starts[c]=w['per_car_policies'][changed[n-1]]['goal']
++  policy=old['per_car_policies'][c];previous=policy['service_start'];goal=policy['goal'];s=starts[c];assert k<=s<previous,'non-earlier propagation';assert all(tuple(map(F,u))==(0,0) for u in old['controls'][c][k:previous]),'cannot delete nonzero wait or steering/K'
++  nominal,_,_=point(c,k,previous);ep=sum((state['poses'][c][t]-nominal[t]).abs_upper() for t in (0,1));et=(state['poses'][c][2]-nominal[2]).abs_upper();assert state['v'][c]==state['delta'][c]==0,'waiting splice requires exact v/delta0';assert ep<=F(1,400) and et<=F(1,100000),'waiting receiver missing'
++  L=sum(abs(H*(F(states_v(c,t))+F(states_v(c,t+1)))/2) for t in range(base()['per_car_policies'][c]['service_start'],base()['per_car_policies'][c]['goal']));error=ep+(L+RB)*et;assert error<F(1,40),'splice full-tail SE2 inclusion'
++  commands=old['controls'][c][previous:goal];assert len(commands)>0;w['per_car_policies'][c]['service_start']=s;w['per_car_policies'][c]['goal']=s+len(commands);w['controls'][c]=copy.deepcopy(old['controls'][c][:k])+[['0','0']]*(s-k)+copy.deepcopy(commands);splices.append({'car':c,'actual_source_cycle':k,'old_start':previous,'new_start':s,'old_goal':goal,'new_goal':s+len(commands),'deleted_wait':previous-s,'exact_v_delta':[0,0],'source_position_error':ep,'source_yaw_error':et,'tail_length':L,'full_tail_body_error_bound':error,'retained_service_K_id':content_id(commands),'inclusion':'Q_wait with exact v/delta -> unchanged stopped turn/real service input; wait zero preserves pose; SE2 full tail bound <.025; no service or steering control removed'})
++ w['release_cuts'][outgoing]=start
++ if not same:
++  w['lease_groups'][group_for(w,outgoing)]['window'][1]=start
++  for c in changed:
++   g=group_for(w,c);assert w['lease_groups'][g]['members']==[c],'external propagation family requires singleton successor group';w['lease_groups'][g]['window']=[w['per_car_policies'][c]['service_start'],w['per_car_policies'][c]['goal']]
++ B=max(goals(w).values());w['B0']=B
++ for c in CARS:w['controls'][c]=w['controls'][c][:B]+[['0','0']]*max(0,B-len(w['controls'][c]))
++ w['owners']=[None]*B
++ for c,(a,b) in owner_intervals(w).items():
++  for t in range(a,b):assert w['owners'][t] is None;w['owners'][t]=c
++ w['b_i']=goals(w);w['goal_permanent']={c:[w['b_i'][c],'infinity'] for c in CARS};w['inner_version']=old['inner_version']+1;w['release_count']=old['release_count']+1;w['parent']=content_id(old);w['last_splices']=splices
++ validate_prefix(old,w,k);intervals_valid(w);delta=deadlines(old,w,k);return w,{'outgoing':outgoing,'incoming':incoming,'kind':'internal' if same else 'external','start':start,'splices':splices,'deadlines':delta,'changed_cars':changed}
++def states_v(c,t):
++ from canonical import states
++ return states()[t]['v'][c]
+--- local_frame_001/stage_driver.py
++++ slack_release_001/stage_driver.py
+@@ -1,16 +1,15 @@
+-"""Bounded autonomous stages with durable exit/layer/log events."""
+-import os,subprocess,sys,time,json
++import os,sys,subprocess,json,time
+ from pathlib import Path
+ R=Path(__file__).resolve().parent
+-STAGES={'frame':['frame.py'],'preflight':['check_zero.py'],'freeze':['freeze_registration.py'],'numeric':['run_case.py'],'accept':['audit_updates.py'],'delivery':['summarize.py','verify_delivery.py']}
++STAGES={'analytic':['engine.py --analytic'],'preflight':['check_zero.py'],'freeze':['freeze_registration.py'],'numeric':['engine.py --numeric'],'recovery':['recover.py'],'accept':['audit_updates.py'],'delivery':['summarize.py','verify_delivery.py']}
+ if __name__=='__main__':
+- stage=sys.argv[1];env=os.environ.copy();env.update(OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',PYTHONPATH='/tmp/dmpc-p0-deps')
+- for script in STAGES[stage]:
+-  beg=time.time();log=R/f'results/{script[:-3]}.log'
++ stage=sys.argv[1];env=os.environ.copy();env.update(PYTHONPATH='/tmp/dmpc-p0-deps',OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1')
++ for command in STAGES[stage]:
++  script,*args=command.split();beg=time.time();log=R/f'results/{script[:-3]}_{stage}.log'
+   with log.open('ab') as f:
+-   try:code=subprocess.run([sys.executable,str(R/script)],stdout=f,stderr=subprocess.STDOUT,env=env,timeout=2400).returncode
++   try:code=subprocess.run([sys.executable,str(R/script),*args],stdout=f,stderr=subprocess.STDOUT,env=env,timeout=3600).returncode
+    except subprocess.TimeoutExpired:code=124
+-  event={'stage':stage,'script':script,'exitcode':code,'layer':stage,'seconds':time.time()-beg,'log':str(log),'event':'complete' if code==0 else 'failure'}
+-  with (R/'results/stage_events.jsonl').open('a') as f:f.write(json.dumps(event)+'\n')
+-  print(json.dumps(event),flush=True)
++  result={'stage':stage,'exitcode':code,'layer':stage,'log':str(log),'seconds':time.time()-beg,'event':'completed' if code==0 else 'failed'}
++  with (R/'results/stage_events.jsonl').open('a') as f:f.write(json.dumps(result)+'\n')
++  print(json.dumps(result),flush=True)
+   if code:sys.exit(code)
+--- local_frame_001/summarize.py
++++ slack_release_001/summarize.py
+@@ -1,57 +1,93 @@
+-"""Measured physical/organization outcomes, explicit cost units and per-item gates."""
+-import csv,difflib,gzip,shutil
++"""Explicit calendar/cost/communication accounting and per-condition gates."""
++import csv,gzip,difflib
+ from common import *
+ from plan_io import load
+-from frame import physical_id
++from schedules import goals,group_for,owner_intervals
++from canonical import exit_phase
++from progression import coordinate
+ 
+ def csvout(name,rows):
+  with (HERE/name).open('w') as f:w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
+ def energy(p):return H*sum(F(a)**2+F(w)**2 for c in CARS for a,w in p['controls'][c])
+-def wire_stats(path):
+- rows=[json.loads(x) for x in path.read_text().splitlines()];remote=[x for x in rows if x['sender']!=x['receiver']];return {'messages':len(rows),'serialized_bytes':sum(x['bytes'] for x in rows),'inter_endpoint_messages':len(remote),'inter_endpoint_bytes':sum(x['bytes'] for x in remote),'self_dispatch_messages':len(rows)-len(remote),'ACK_messages':sum(x['kind'].startswith('ACK') for x in rows)}
++def trace_stats(plan,path):
++ v={c:F(0) for c in CARS};distance={c:F(0) for c in CARS};counts={str(n):0 for n in range(5)};intervals=[];current=None;length=0
++ with gzip.open(HERE/path,'rt') as f:
++  for text in f:
++   row=json.loads(text);active=[]
++   for c in CARS:
++    nv=F(row['v'][c]);signed=H*(v[c]+nv)/2
++    distance[c]+=H*(abs(v[c])+abs(nv))/2 if v[c]*nv>=0 else H*(v[c]*v[c]+nv*nv)/(2*abs(nv-v[c]))
++    if signed>=F(1,50):active.append(c)
++    v[c]=nv
++   n=len(active);counts[str(n)]+=1;k=row['cycle']-1
++   if current is None or current['actors']!=active:
++    if current:intervals.append(current)
++    current={'start':k,'end':k+1,'actors':active,'effective_activity':n}
++   else:current['end']=k+1
++   length+=1
++ if current:intervals.append(current)
++ return {'steps':length,'distance_m':distance,'effective_activity_ticks':counts,'maximum_activity':max(int(n) for n,count in counts.items() if count),'intervals':intervals,'definition':'actual signed-speed integral >=.02 m in each .2s interval; tested numeric first steps separately use certified directed path projection'}
+ def run():
+- acc=read(HERE/'results/independent_acceptance.json');assert acc['passed'];post=read(HERE/'results/post_branches.json');events=read(HERE/'results/events.json');ledger=read(HERE/'solver_calls.json');assert len(ledger)==12
+- old=load('results/old.json.gz');anchor=load('results/new.json.gz');C=load('results/C_final_plan.json.gz');L=load('results/L_final_plan.json.gz');assert physical_id(C)==physical_id(L);baseE=energy(old);assert baseE==energy(anchor)
+- branches=[('R-old',old),('local-anchor',anchor),('C-frame',C),('L-frame',L)]+[(f'extension-{e["name"]}',load(e['plan'])) for e in post['extension']['branches']];comparisons=[]
+- for name,p in branches:
+-  JE=energy(p);gain=baseE-JE;goals={c:p['per_car_policies'][c]['goal'] for c in CARS};comparisons.append({'branch':name,'charged_unique_ticks':f'[0,{p["B0"]})','JE_cost_units':float(JE),'JE_saving_vs_R_old_cost_units':float(gain),'JE_saving_pct_of_R_old':float(100*gain/baseE),'JE_reference_cost_units':float(baseE),'absolute_goal_A1':goals['A1'],'absolute_goal_B1':goals['B1'],'absolute_goal_B2':goals['B2'],'absolute_goal_A2':goals['A2'],'task_ticks':p['B0'],'logical_seconds':float(H*p['B0']),'B1_body_stationary_wait_ticks':444 if name=='R-old' else 375,'B1_motion_resume_interval':480 if name=='R-old' else 411,'B_final':0,'outer_frame_id':p['outer_frame_id']})
+- csvout('comparison.csv',comparisons);per=[];timings=[];trade=[]
+- for event in events:
+-  label=event['label'];roundE=anchorE=slo=shi=F(0)
+-  for worker in event['workers']:
+-   c=worker['actor'];job=load(f'results/{label}_{c}_job.json.gz');ad=read(HERE/f'results/{label}_{c}_admission.json');oldv,newv=ad['baseline_objective'],ad['objective'];de=F(newv['JE'])-F(oldv['JE']);lo=F(newv['actual_progress_Q'][0]-oldv['actual_progress_Q'][1],m.Q);hi=F(newv['actual_progress_Q'][1]-oldv['actual_progress_Q'][0],m.Q);roundE+=de;anchorE+=F(oldv['JE']);slo+=lo;shi+=hi;delta=list(map(F,ad['delta'][:2]));raw=read(HERE/f'results/workers/{label}_{c}_response.json');meta=worker['transport']
+-   per.append({'label':label,'actor':c,'model_id':job['model_id'],'raw_status':raw['status'],'gap':raw['obj_val']-raw['obj_val_dual'],'r_prim':raw['r_prim'],'r_dual':raw['r_dual'],'alpha':ad['alpha'],'certificate_accepted':ad['accepted'],'actual_first_delta_a':float(delta[0]),'actual_first_delta_omega':float(delta[1]),'delta_JE_cost_units':float(de),'delta_JE_pct_of_own_anchor':float(100*de/F(oldv['JE'])),'delta_s_mid_m':float((lo+hi)/2),'delta_F_common_mid_cost_units':float(de-(lo+hi)/2),'receiver_phase':job['receiver']['phase'],'K_id':job['receiver']['K_id'],'source_history':event['source']['history'],'successor_history':event['successor']['history'],'outer_frame_id':job['outer_frame_id'],'worker_parent_own_plan':job['parent'],'D_ACK':','.join(event['transaction']['D_participants']),'X_ACK':','.join(event['transaction']['X_participants'])})
+-   timings.append({'label':label,'actor':c,'native_solver_elapsed_seconds':raw['solve_time'],'solver_CPU_seconds':'not independently instrumented','worker_roundtrip_seconds':meta['roundtrip_wall'],'actual_precheck_roundtrip_seconds':worker['assembly_transport']['roundtrip_wall'],'round_end_to_end_seconds':event['round_wall'],'first_execution_seconds':event['execution_wall'],'generation_derivative_directory_admit_commit':'not individually timed; included in round total','application_model_JSON_bytes':len(json.dumps(job,sort_keys=True,separators=(',',':')).encode()),'worker_request_bytes':meta['sent_bytes'],'worker_final_response_bytes':meta['received_bytes'],'native_handshake_bytes':'structured ready + durable release ledger; not separate wire counter','concurrency':'sequential spawned own workers; no parallel speed claim','mixed_audit_cache':'C physical cache cold, L same-content reuse; whole-round timing is not organization speedup'})
+-  trade.append({'organization':event['organization'],'round':event['round'],'actors':'A1+B1+A2','reference':'own same-source anchor; round2 from own actual successor','delta_JE_cost_units':str(roundE),'delta_JE_pct_of_window_anchor':float(100*roundE/anchorE),'delta_s_lower_m':str(slo),'delta_s_upper_m':str(shi),'delta_F_common_lower_cost_units':str(roundE-shi),'delta_F_common_upper_cost_units':str(roundE-slo),'lambda_cost_units_per_m':1,'note':'common F=JE-s is report-only; both arms optimize JE; overlapping rounds never added'})
+- csvout('per_event.csv',per);csvout('timing.csv',timings);csvout('local_tradeoff.csv',trade)
+- wiretable=[]
+- for path in sorted((HERE/'results/wire').glob('*.jsonl')):wiretable.append({'stream':path.stem,**wire_stats(path),'transport':'serialized in-process logical endpoints; not real-network traffic'})
+- csvout('communication.csv',wiretable)
+- scans=read(HERE/'results/source_scan.json');csvout('source_scan.csv',[{'cycle':r['cycle'],'active':','.join(r['active']),'v':json.dumps(r['v'],default=str),'delta':json.dumps(r['delta'],default=str),'reason':r['reason']} for r in scans])
+- frames=read(HERE/'outer_frame.json');newframe=read(HERE/'extended_frame.json');criteria={name:{'status':'pass','reason':reason} for name,reason in {
+- 'outer_frame':'old/new union, .025 body neighborhoods, positive receiver/K, permanent goals, six edges/four cross edges, whole leases and guarded ends certified',
+- 'local_commit':'first L round changes internal owner 475->406 and B1 finish924->855 inside same D lease26..924; D ACK only A1/B1',
+- 'external_update':'A2 independently solved/accepted each round; actual first a changes; ACK survives D private version changes',
+- 'successor_update':'12 Solved/accepted; each arm round2 rebuilt from actual cycle2 successor and tail',
+- 'mixed_fallback':f"16 recorded mixed choices ({len({physical_id(load(m['plan'])) for e in events for m in e['mixes']})} unique full physical plans), both real second-source rejection tails retain A2 new first command and complete",
+- 'dependency_expansion':'old frame rejects B2 lease at855 and definite B2 corner leaves old occupancy at863; discovered4 endpoints, new-frame allACK and missingACK completions, new lease components split D/A2/B2',
+- 'full_completion':'main1822, extension success1753; six-pair/road/resource, all goals and permanent hold, per-car deadlines and B decrease; independent full replay',
+- 'fair_comparison':'identical C/L per-car model and matrices/actual final physical plan; common JE/receivers; setup/global reads and cache effects disclosed'} .items()}
+- gate={'passed':True,'task':'local_frame_001','criteria':criteria,'native_attempts':12,'native_solved':12,'certificate_accepted':12,'actual_adopted':12,'physical_first_actions_changed':12,'actual_activity':[len(e['actual_first']['bounds']['active']) for e in events],'new_budget_remaining':0,'zero_call_post_repair':'proposal import context restore; original raw/model/controls frozen and unchanged','scope':'controlled nominal synchronous experiment; local application dispatch and sequential independent workers, no real-time/network/performance or disturbance guarantee'};write(HERE/'GATE.json',gate)
+- effective=[]
+- for event in events:
+-  advances={c:abs(H*(2*F(event['source']['v'][c])+H*F(event['actual_first']['commands'][c][0]))/2) for c in CARS};assert all(value>=F(1,50) for value in advances.values());effective.append({'label':event['label'],'progress_m':advances,'threshold_m':'1/50','effective_activity':len(advances)})
+- write(HERE/'results/effective_activity_certificate.json',{'passed':True,'events':effective,'source_patch_note':'these actual first intervals are straight with zero first omega; exact signed speed integral equals directed task progress','new_optimizer_calls':0})
+- cs=next(r for r in wiretable if r['stream']=='C');ls=next(r for r in wiretable if r['stream']=='L');rows={r['branch']:r for r in comparisons};native=[float(x['solve_time']) for x in ledger]
+- report=['# local_frame_001 结果','', '分项 GATE 全部通过。12 次正式尝试全部 Solved、完整证书受理并实际采用；C/L 各两轮、每轮 A1/B1/A2 各自独立求解本车 64 输入。每个已执行首拍均四车实际有效运动，B2 保留认可尾段。两臂每份本车模型及锥矩阵相同，最终物理策略也逐内容一致。','', '实际首源 k=1 由 A1/B1 对向资源意图冲突触发；k=0 因实际速度为零跳过。D={A1,B1}，外部 X=A2 实际速度 .2、具有非零能量下降方向。两轮源为1、2，第二轮来自本臂实际联合后继。源窗口为初始直线/随后曲线接续，沿用 curve_joint 的开放 a/omega 模型，实际首拍只采用 a 变化，omega 增量为零；不声称本轮新增弯道转向收益。','', '|内部／外部承诺|R-old|固定框架内新约|外授保护余量后|','|---|---|---|---|','|D 对外租约|[26,924)|[26,924)|[26,855)|','|A1 内部 owner|[26,475)|[26,406)|[26,406)|','|B1 内部 owner|[475,924)|[406,855)|[406,855)|','|保护空闲|无|[855,924)|授予 B2|','|B2 租约|[924,1373)|[924,1373)|[855,1304)|','|A2 租约|[1373,1822)|[1373,1822)|[1304,1753)|','', '资源租约为半开区间，发现占用采用闭时间端点；守卫检查实际整车清空，未用拍号替代物理释放。有限分支并集避免把 B1 旧／新时序凸包化；每个分支全程六对分离面、道路和非 owner 资源净空均留出原 .05 管、.025m 本车节点变化和15h²/8连续角点弦余项。正半径位姿接收、精确末 v/delta 与同输入 SE2 后续、停车／释放守卫和永久目标在同一框架内。','', '|物理分支|全任务拍数|A1目标|B1目标|B2目标|A2目标|全程 JE 节省 (U_J)|节省 / R-old JE (%)|','|---|---:|---:|---:|---:|---:|---:|---:|']
+- for r in comparisons:report.append(f'|{r["branch"]}|{r["task_ticks"]}|{r["absolute_goal_A1"]}|{r["absolute_goal_B1"]}|{r["absolute_goal_B2"]}|{r["absolute_goal_A2"]}|{r["JE_saving_vs_R_old_cost_units"]:.11g}|{r["JE_saving_pct_of_R_old"]:.9g}|')
+- report += ['',f'JE=h·sum(uᵀRu)，R=S=I；单位 U_J 为既有尺度下归一化输入平方×秒，非焦耳。R-old JE={float(baseE):.12g} U_J。上表节省为 JE_R-old−JE_branch 的正绝对量，百分比分母为 R-old 全程 JE；按唯一绝对区间 [0,B0) 计费。零等待搬移本身不降低输入代价，主臂数值节省归于 MPC。每轮同源窗口 ΔJE、Δs、统一报告用 ΔF=ΔJE−Δs 的外向上下界见 local_tradeoff.csv；E 仍是实际优化目标，不相加重叠窗口。','', '主臂只将 B1 静止等待444→375拍、恢复运动区间480→411、目标924→855，均提前69拍/13.8秒；B2/A2承诺保持，因此最晚完成仍1822拍/364.4秒。B1静止等待减少约15.5405%，目标时刻提前约7.46753%；它们与 JE 节省是不同指标。扩展成功才将全任务1822→1753，减少69拍/13.8秒（约3.78705%）；缺ACK扩展仍1822。逐车绝对期限均非增，主臂 B 按共同逻辑时间每拍减1，扩展另减69，最终0。','', '|组织（两轮稳态合计）|D 每轮 ACK 端点|X 每轮 ACK 端点|应用序列化消息总数|字节|跨逻辑端点消息数|跨端点字节|','|---|---|---|---:|---:|---:|---:|',f'|C-frame|四车|同一四车事务|{cs["messages"]}|{cs["serialized_bytes"]}|{cs["inter_endpoint_messages"]}|{cs["inter_endpoint_bytes"]}|',f'|L-frame|A1/B1|A2 独立|{ls["messages"]}|{ls["serialized_bytes"]}|{ls["inter_endpoint_messages"]}|{ls["inter_endpoint_bytes"]}|','', '上述字节来自实际编码并交付给进程内逻辑端点的 wire_json，包含查询、候选、prepare/ACK和commit；自投递单列，不能当真实网络流量。初始化框架一次由全四车认可，见 initialization_ACK/wire；稳态 L 的 D 事务不向外车重新索取 ACK，X 自己独立更新，第四车保留旧尾段。扩展框架事务才要求四车。失败尝试的应用日志单独保存在 failed_post_v1，不混入成功稳态计数。完整初建/稳态/扩展分组消息统计见 communication.csv，worker 应用模型字节与实际通道请求／最终响应字节另见 timing.csv。','', '身份分为 outer_frame_id、D inner_version/同版 bundle、per_car_plan_id。本车模型 parent 绑定本车输入；外部 ACK 只依赖本车计划和公共框架／有效期，不绑定 D 的私有整体 hash。已验证 D 旧／新私有计划下 A2 本车模型完全相同；每次 D 提交后 A2 ACK 仍有效。共同初始化可读取联合地图与全部参考轨迹；在线生成仍读取联合实际源/history摘要和本车参考，未宣称只需局部传感。每车接收自身完整模型，不收四车联合优化变量。','', '每轮保存 D新/旧 × X新/旧 四种选择，四事件共16条证书；相同内容的 C/L 组合复用经哈希核对的物理证书，独立裁判按唯一物理对象完整重放。第二轮真实源另做：损坏 D 内 A1 raw 身份时该车用合法锚点、B1仍可更新；缺 D ACK 时整 D 保留首轮内部计划。两者 A2 都实际输出本轮已受理新首拍，身份/命令一致，完整后续完成，非法提案零提交零执行。','', '外授分支从实际第二轮首拍后 k=3 复制，保留已执行数值前缀及真实尾段。原框架先因 B2 在855开始的新租约被拒，B2新角点在863拍明确超出旧占用包络。先登记新 intent/全尾段/永久目标再查询；租约端点和 B2/A2 接收目标变化形成真实四车闭包。全ACK后整体切换新 outer_frame_id；缺A2 ACK为明确 fixture，旧框架及旧义务完整保留。新框架固定后重算共享租约图，得到 {A1,B1}/{A2}/{B2}，跨块边由固定框架证书解除；三个本车移位零增量合法候选经真实 worker assemble 检查，无新增求解。','',f'原生求解内部 elapsed 范围 {min(native):.6g}–{max(native):.6g} 秒。worker 实际顺序启动，未测并行加速或 solver CPU；无独立埋点的构造/目录/受理/提交计入所属轮总时间。初始共同框架认证约 {read(HERE/"results/outer_frame_certificate.json")["wall"]:.4g}s，扩展框架认证约 {read(HERE/"results/extended_frame_certificate.json")["wall"]:.4g}s；本轮读取已有同内容证书时明确计为缓存复用。C 为混合全尾段审计冷缓存，L 复用同内容物理缓存，不能将两臂总墙钟差归因于局部认可加速。逻辑 h=.2s，不据此声称实时达标。','', '独立验收重建实际首拍／后继、raw/模型/矩阵身份、精确 E/T 量化、真实目标下降、正域接收与实际 K，完整8子段重放主臂、第一轮策略、全部混合组合、两拒绝及扩展成功／缺ACK；逐节点独立重算占用包含，并用物理角点加速度弦界连接连续段。结果见 independent_acceptance；actual_C/actual_L.jsonl.gz保存从初态到四车完成的逐拍实际命令、状态与history，二者内容相同且完整trace经独立物理重放核验。','', '失败与修复完整保留：预释放发现证书缓存命中路径先引用未赋值变量，保存限制行并修复／零调用回归；历史全局 parent 会误作废外车认可，已用 own/outer/inner 身份分开回归。数值后扩展零调用 worker 初次因解析生成器导入时遗留 sources 路径而加载错误 common.py；failed_post_v1保存源码／traceback／原 wire。解析提案共同入口用 finally 恢复原 sys.path，三个 split worker 零调用回归通过；正式12次数字输入／源码／raw和预算未重跑、未改写。','', '局部能改：在已发布占用／租约／接收／期限内改变 D 的 owner 划分与输入。仍需共享：公共占用并集、分离证书、租约、守卫、接收期限、框架身份和实际源摘要。需要扩组：超包络、转让外部租约或改变外部接收／目标承诺时，由目录和端点差分发现全部受影响者。组拒绝时：保留该组旧合法策略，外组只要自己的输入与公共依赖仍有效便继续新动作。','', '保留历史和论文，无Git提交。范围为固定地图、名义同步、理想通信的受控机制实例；未检验扰动、异步、持续物理时钟或规模性能。']
+- (HERE/'report.md').write_text('\n'.join(report)+'\n')
+- (HERE/'README.md').write_text('# local_frame_001\n\nRead report.md, GATE.json, method_spec.md, implementation_map.md. All12 formal attempts consumed; do not rerun native stages.\n\nDefault no-solve verification: `python3 verify_delivery.py`\nFull independent physical replay: `python3 verify_delivery.py --full-replay`\nBoth verification modes use Python standard library only; optional model reconstruction uses requirements.txt and existing isolated /tmp/dmpc-p0-deps.\n\nSource provenance source_inventory.json; executed numerical_v1 immutable; acceptance sources frozen separately. Original failures retained under results/failed_post_v1 and cache_guard_failure.json.\n')
+- patch=[];prior=HERE.parent/'curve_joint_001'
+- for q in sorted(HERE.glob('*.py')):
+-  p=prior/q.name;patch.extend(difflib.unified_diff(p.read_text().splitlines(True) if p.exists() else [],q.read_text().splitlines(True),fromfile=f'curve_joint_001/{q.name}' if p.exists() else '/dev/null',tofile=f'local_frame_001/{q.name}'))
+- (HERE/'changes.patch').write_text(''.join(patch));versions={p.name:sha(p) for p in sorted(HERE.glob('*.py'))};write(HERE/'acceptance_source_versions.json',versions)
+- (HERE/'HANDOFF.md').write_text('# Completed experiment boundary\nGoal local_frame_001; main and extension gates passed. Formal attempts12/12 consumed; no further solve authorization, no commits.\nSource executed_source_versions.json/source_archive/numerical_v1; zero-call post import-context repair and independent audit sources in acceptance_source_versions.json.\nEvidence GATE.json, report.md, solver_calls.json, results/independent_acceptance.json, post_branches.json, wire/*.jsonl. No open experiment limitation beyond nominal/ideal-clock scope and disclosed global initialization reads/cache timing.\nResume zero-solve: python3 experiments/local_coordination_p0/local_frame_001/verify_delivery.py --full-replay\nFinal delivery step: default/full verification and archive portable-read check.\n')
+- manifest={str(p.relative_to(HERE)):sha(p) for p in sorted(HERE.rglob('*')) if p.is_file() and '__pycache__' not in p.parts and p.name!='SHA256SUMS.json' and not p.name.endswith('.log') and p.name!='stage_events.jsonl'};write(HERE/'SHA256SUMS.json',manifest);print(json.dumps({'passed':True,'files':len(manifest),'attempts':12}))
++ acc=read(HERE/'results/independent_acceptance.json');assert acc['passed'];assert read(HERE/'results/raw_adoption_certificate.json')['passed'];assert read(HERE/'results/directory_union_acceptance.json')['passed'];ledger=read(HERE/'solver_calls.json');assert len(ledger)==8
++ names=['R-fixed','E-anchor','E-MPC','recovery_missing_ACK','recovery_stale_K'];summaries={n:read(HERE/f'results/{n}_summary.json') for n in names};p0=load(summaries['R-fixed']['plan']);baseJE=energy(p0);comparison=[];stats={};eventrows=[];proposals=[];deadline_rows=[];scans=[];timing=[]
++ for name,s in summaries.items():
++  p=load(s['plan']);path=s.get('full_trace',s['trace']);stats[name]=trace_stats(p,path);JE=energy(p);gain=baseJE-JE;g=goals(p);zero_wait={c:p['per_car_policies'][c]['service_start']-p['per_car_policies'][c]['approach_end'] for c in CARS};comparison.append({'branch':name,'unique_charged_ticks':f'[0,{p["B0"]})','task_ticks':p['B0'],'task_logical_seconds':float(H*p['B0']),'ticks_saved_vs_R_fixed':p0['B0']-p['B0'],'task_reduction_pct':100*(p0['B0']-p['B0'])/p0['B0'],'goal_A1':g['A1'],'goal_B1':g['B1'],'goal_B2':g['B2'],'goal_A2':g['A2'],'JE_cost_units':float(JE),'JE_saving_absolute_cost_units':float(gain),'JE_saving_pct_of_R_fixed':float(100*gain/baseJE),'distance_all_cars_m':float(sum(stats[name]['distance_m'].values())),'maximum_effective_activity':stats[name]['maximum_activity'],'ticks_two_effective_cars':stats[name]['effective_activity_ticks']['2'],'initial_zero_wait_ticks_by_car':json.dumps(zero_wait),'B_final':0})
++  obs=read(HERE/f'results/{name}_observer_summary.json')
++  for c,row in obs['first_hits'].items():scans.append({'branch':name,'actor':c,'scan_start':s['start_cycle'],**{field:row.get(field,'not_seen') for field in ('geometric_clear','future_clear','post_exit_phase','receiver_valid','full_Clear')}})
++  for i,e in enumerate(s['events'],1):
++   old,new=load(e['old_plan']),load(e['candidate']);c=e['meta']['outgoing'];cut=e['meta']['start'];group=old['lease_groups'][group_for(old,c)];accepted=e['transaction']['accepted'];d=e['meta']['deadlines'];row={'branch':name,'attempt':i,'scan_start_cycle':s['start_cycle'],'first_hit_scope':'since checkpoint; earlier actual prefix in E-MPC observer' if s['start_cycle'] else 'whole task','cycle':e['cycle'],'actor':c,'incoming':e['meta']['incoming'],'kind':e['meta']['kind'],'accepted':accepted,'first_geometric_clear':obs['first_hits'][c]['geometric_clear'],'first_full_Clear':obs['first_hits'][c]['full_Clear'],'proposal_and_ACK_boundary':e['cycle'],'actual_release_boundary':cut if accepted else 'not_committed','next_motion_start':cut+new['paths'][e['meta']['incoming']]['ranges']['merge_first'][0]-new['per_car_policies'][e['meta']['incoming']]['approach_end'] if accepted else 'old_plan','owner_unused_before_cut':owner_intervals(old)[c][1]-cut,'group_lease_unused_before_cut':group['window'][1]-cut,'participants':','.join(e['transaction']['participants']),'ACK':','.join(e['transaction']['ACK']),'Phi_old':d['Phi_old'],'Phi_new_actual':d['Phi_new'] if accepted else d['Phi_old'],'B_old':d['B_old'],'B_new_actual':d['B_new'] if accepted else d['B_old'],'source_token':e['clear']['token'],'history':e['source']['history'],'support_gap_m':float(F(e['clear']['support_gap'])),'future_min_gap_m':float(F(e['clear']['future_min_gap'])),'actual_source_v':e['clear']['source']['v'],'actual_source_delta':e['clear']['source']['delta'],'blocks_before':json.dumps(e['transaction']['closure']['blocks_before']),'blocks_after':json.dumps(e['transaction']['closure']['blocks_after']),'reason':e['transaction']['reason']};eventrows.append(row)
++   for trial in e['attempts']:proposals.append({'branch':name,'attempt':i,'source_cycle':e['cycle'],'start':trial['start'],'search_low':e['search_range'][0],'search_high':e['search_range'][1],'max_checks':e['maximum_checks'],'physical_passed':trial['accepted_physical'],'limitation':trial.get('limitation','none'),'candidate_id':trial.get('candidate_id','none')})
++  for row in load(f'results/{name}_deadline_trace.json.gz'):
++   assert row['B_after']==max(row['B_before']-1,0);deadline_rows.append({'branch':name,'cycle':row['cycle'],'deadlines':json.dumps(row['deadlines']),'b_i':json.dumps(row['b']),'B_before':row['B_before'],'B_after_clock':row['B_after'],'Phi':row['Phi']})
++  timing.append({'stage':'actual_full_loop','branch':name,'logical_ticks':s['final_cycle']-s['start_cycle'],'seconds':s['wall'],'note':'includes observer, retained actual execution, source/proposal/dir/commit or cache work; independently untimed components not split'})
++ csvout('comparison.csv',comparison);csvout('event_trace.csv',eventrows);csvout('proposal_trace.csv',proposals);csvout('deadline_trace.csv',deadline_rows);csvout('source_scan.csv',scans);save_stats=HERE/'results/activity_and_distance.json';write(save_stats,stats)
++ numeric=[];trade=[]
++ for win in (1,2):
++  for rnd in (1,2):
++   label=f'e{win}_r{rnd}';e=read(HERE/f'results/numeric/{label}_event.json');de=anchor=slo=shi=F(0)
++   for worker in e['workers']:
++    c=worker['actor'];job=load(f'results/numeric/{label}_{c}_job.json.gz');a=read(HERE/f'results/numeric/{label}_{c}_admission.json');raw=read(HERE/f'results/workers/{label}_{c}_response.json');old,new=a['baseline_objective'],a['objective'];delta=F(new['JE'])-F(old['JE']);lo=F(new['actual_progress_Q'][0]-old['actual_progress_Q'][1],m.Q);hi=F(new['actual_progress_Q'][1]-old['actual_progress_Q'][0],m.Q);de+=delta;anchor+=F(old['JE']);slo+=lo;shi+=hi;source=tuple(m.I.raw(*q) for q in e['source']['poses_Q'][c]);dest=tuple(m.I.raw(*q) for q in e['successor']['poses_Q'][c]);first_progress=coordinate(dest,job['progression']['source_chart'])-coordinate(source,job['progression']['source_chart']);assert F(first_progress.l,m.Q)>=F(1,50)
++    numeric.append({'label':label,'actor':c,'source_cycle':e['source']['cycle'],'status':raw['status'],'accepted':a['accepted'],'alpha':a['alpha'],'first_delta_a':float(F(a['delta'][0])),'first_delta_omega':float(F(a['delta'][1])),'first_directed_progress_lower_m':float(F(first_progress.l,m.Q)),'JE_window':float(F(new['JE'])),'delta_JE':float(delta),'delta_s_lower_m':str(lo),'delta_s_upper_m':str(hi),'delta_F_common_mid':float(delta-(lo+hi)/2),'native_gap_scaled_objective':raw['obj_val']-raw['obj_val_dual'],'r_prim':raw['r_prim'],'r_dual':raw['r_dual'],'receiver_phase':job['receiver']['phase'],'K_id':job['receiver']['K_id'],'model_id':job['model_id'],'source_history':e['source']['history'],'successor_history':e['successor']['history']})
++    meta=worker['transport'];timing.append({'stage':'native_worker','branch':label+'_'+c,'logical_ticks':1,'seconds':raw['solve_time'],'note':json.dumps({'worker_roundtrip_s':meta['roundtrip_wall'],'precheck_roundtrip_s':worker['assembly_transport']['roundtrip_wall'],'application_model_JSON_bytes':len(json.dumps(job,sort_keys=True,separators=(',',':')).encode()),'worker_request_bytes':meta['sent_bytes'],'worker_final_response_bytes':meta['received_bytes'],'solver_CPU':'not independently timed','worker_concurrency':'sequential independent spawn; no overlap-speed claim','native_handshake':'ready recorded, release durable ledger; no separate original byte counter'})})
++   timing.append({'stage':'numeric_round_before_execution','branch':label,'logical_ticks':1,'seconds':e['wall_before_execution'],'note':'model/derivative+actual zero assembly+two sequential native workers+admit+all mixed continuation certificates+ACK/commit bookkeeping; includes source/cache/I-O'})
++   timing.append({'stage':'actual_first_step_and_record_read','branch':label,'logical_ticks':1,'seconds':e['execution_wall'],'note':'actual simultaneous physical first step plus small obligation/event read bookkeeping, not pure solver CPU'})
++   trade.append({'label':label,'actors':','.join(e['actors']),'delta_JE_cost_units':str(de),'anchor_JE_cost_units':str(anchor),'delta_JE_pct_of_same_window_anchor':float(100*de/anchor),'delta_s_mid_m':float((slo+shi)/2),'delta_s_lower_m':str(slo),'delta_s_upper_m':str(shi),'delta_F_common_mid_cost_units':float(de-(slo+shi)/2),'delta_F_common_lower':str(de-shi),'delta_F_common_upper':str(de-slo),'lambda_cost_units_per_m':1,'definition':'candidate minus own same-source anchor; common F report-only, actual objective JE; never sum overlapping prediction windows'})
++ csvout('per_event.csv',numeric);csvout('tradeoff.csv',trade)
++ communications=[]
++ for p in sorted((HERE/'results/wire').glob('*.jsonl')):
++  lines=[json.loads(x) for x in p.read_text().splitlines()];segments=[lines]
++  if p.stem=='E-anchor':
++   segments=[];current=[]
++   for row in lines:
++    if current and row['seq']<=current[-1]['seq']:segments.append(current);current=[]
++    current.append(row)
++   if current:segments.append(current)
++  for index,segment in enumerate(segments):
++   scope=('certified_analytic' if index==len(segments)-1 else f'diagnostic_before_tail_repair_{index+1}') if p.stem=='E-anchor' else 'current_experiment'
++   for phase in sorted({r['phase'] for r in segment}):
++    rows=[r for r in segment if r['phase']==phase];remote=[r for r in rows if r['sender']!=r['receiver']];communications.append({'stream':p.stem,'phase':phase,'scope':scope,'messages':len(rows),'JSON_bytes':sum(r['bytes'] for r in rows),'cross_logical_endpoint_messages':len(remote),'cross_logical_endpoint_bytes':sum(r['bytes'] for r in remote),'note':'actual serialized in-process application dispatch; not real network; original log retained'})
++ csvout('communication.csv',communications)
++ initack=read(HERE/'results/initialization_ACK.json');write(HERE/'results/initialization_cost.json',{'approved_endpoints':len(initack),'ACK_object_file_bytes':(HERE/'results/initialization_ACK.json').stat().st_size,'wire_message_bytes':'not independently instrumented; ACK artifact size is not claimed as transmission','initial_frame_certificate':load('results/initial_bound.json.gz')['frame_file']})
++ for path in sorted((HERE/'results/frames').glob('*.json')):
++  frame=read(path);timing.append({'stage':'frame_certificate_first_construction','branch':frame['outer_frame_id'][:12],'logical_ticks':0,'seconds':frame['construction_wall'],'note':'content-addressed reference union/separation/directory; reused under same key, later cache reads not charged as cold builds'})
++ csvout('timing.csv',timing)
++ passed={k:{'status':'pass','evidence':v} for k,v in {'theory_instantiated':'release_theory.md + actual_future/Q_wait/K seam proofs + exact Phi/deadlines','state_triggered':'actual goal-side supports, actual saved tail, Q_phase, source/frame/history/K checks; no vehicle-specific trigger clock','repeated_release':'three accepted events406/786/1166: internal,external,external; final unused69 has no strict deadline benefit','local_dependency':'catalog slots/resource signers + registered intent/goal directory; independent explicit old/new union query agrees, scopes2/4/2 and post-frame split','mpc_successor':'8 Solved/accepted/adopted, windows412/413 and792/793, actual successor identities, raw-x exact lattice adoption','fallback_recovery':'both once-fault branches reject786, execute old step, retry787 and later1167 release, finish1616; no extra solve','full_safety_completion':'independent8-subinterval six-body-pair/road/resource/goal/permanent hold audit for main, all numeric backups/mixes and recovery traces','comparison':'same fresh1822 baseline; E-anchor/E-MPC common online rule, same event dates/goals; calendar207ticks separate from MPC JE reduction'}.items()}
++ write(HERE/'GATE.json',{'passed':True,'task':'slack_release_001','criteria':passed,'formal_attempts':8,'Solved':8,'certificate_accepted':8,'actual_adopted':8,'remaining_budget':0,'main_goal_ticks':summaries['E-MPC']['goals'],'initial_ticks':1822,'released_ticks':1615,'recovery_ticks':1616,'scope':'nominal synchronous finite connection family; global initial/certificate reads and ideal logical-boundary activation; no hard real-time, disturbance/asynchronous or network-speed guarantee'})
++ rows={r['branch']:r for r in comparison};g=rows['E-MPC']['JE_saving_absolute_cost_units'];pct=rows['E-MPC']['JE_saving_pct_of_R_fixed'];main_events=[r for r in eventrows if r['branch']=='E-MPC'];report=['# slack_release_001 结果','', '八项 GATE 全部通过。相同初始1822拍策略下，R-fixed保持1822，E-anchor与E-MPC均由实际Clear触发三次有效释放，完成于1615拍（323秒），节省207拍/41.4秒，约11.3611%。8次正式尝试全部Solved、完整证书受理并实际采用；两个事件后各两轮双车更新，真实后继接续通过。','', '|分支|完成拍数|A1目标|B1目标|B2目标|A2目标|JE节省绝对量 (U_J)|JE节省比例 (%)|','|---|---:|---:|---:|---:|---:|---:|---:|']
++ for r in comparison:report.append(f'|{r["branch"]}|{r["task_ticks"]}|{r["goal_A1"]}|{r["goal_B1"]}|{r["goal_B2"]}|{r["goal_A2"]}|{r["JE_saving_absolute_cost_units"]:.11g}|{r["JE_saving_pct_of_R_fixed"]:.9g}|')
++ report += ['',f'JE=h sum(uᵀRu)，R=S=I；U_J为既有归一化输入平方×秒，非焦耳。R-fixed与E-anchor JE均为{float(baseJE):.12g} U_J；节省是 JE_R-fixed−JE_branch 的正绝对量，比例分母为R-fixed全程JE。全程按唯一绝对区间[0,B0)计费。解析释放仅搬移零等待，JE不下降；MPC额外节省{g:.11g} U_J（{pct:.9g}%），没有额外缩短任务。','', '|实际事件|旧本车claim末端|旧组租约末端|实际完整Clear／释放|直接后继|认可端点|Phi变化|B日历调整|','|---|---:|---:|---:|---|---|---|---|']
++ for r in main_events:report.append(f'|{r["actor"]}，{r["kind"]}|{r["cycle"]+r["owner_unused_before_cut"]}|{r["cycle"]+r["group_lease_unused_before_cut"]}|{r["cycle"]}|{r["incoming"]}|{r["participants"]}|{r["Phi_old"]}→{r["Phi_new_actual"]}|{r["B_new_actual"]-r["B_old"]:+d}|')
++ report += ['', 'A1内部提前把B1服务移至406，外部承诺保持；B1在786满足实际出口与后续守卫，将D的剩余保护权授给B2，并传播到A2；B2在1166再释放给A2。每次日期来自实际矩形支持、实际保存尾段与相位Q，整数启动拍由早到晚完整认证，非固定69拍剪切。初建D允许的B1启动整数族由模型出口相位与旧启动时刻计算（本例70种），有限分支逐个认证，未把并集强制成道路内凸包。','', 'Phi=sum d_i 的粗下界取0，初始4594，三次认可分别4525、4249、4180，累计减少414车辆·拍；全任务B的日历缩短是207个共同控制拍，两者不混用。每个实际执行边界B只因时钟前进一步下降1，协商调整另列。末车1546已完整Clear但无后继可改善期限，因此保留最后69拍保护，不虚报第四次收益事件。','', '几何刚清空与完整Clear分列于source_scan.csv；恢复分支first-hit限定从检查点开始的观测范围，检查点之前沿共同E-MPC实际前缀，不把后段首次观测误作全程首次清空。完整守卫还要求当前post-exit流像Q、精确相位v/delta及实际K全未来清空。一次失败后的下一拍可处于非零转角的停车调轮相位，仍由流像域合法接续；不是只在某一个拍号可释放。保留原停车/调轮/服务输入，删掉的仅为已认证零等待。','', '两个数值窗口按事件后绝对拍号升序选在412/413（A1/B1）和792/793（B1/B2），均是实际移动曲线窗口。每车64实际输入加1个范数辅助量，独立worker、原JE目标，a/omega开放能力与原正半径接收版本保留；每份raw按同一E/T精确格、固定alpha线搜索、原行与真实Q/K完整受理。a与omega的实际首拍变化分列per_event.csv。tradeoff.csv并列候选减同源锚点的ΔJE、Δs、统一报告用ΔF=ΔJE−lambdaΔs（lambda=1 U_J/m）；E实际仍优化JE，重叠窗口不相加。','', '第二轮从已执行首拍的完整联合pose/v/delta/history生成，未拿首轮预测顶替。四份前后Q/K义务替换见raw_adoption_certificate；第一轮完整策略作为有效备份单独重放，不声称被替换的旧K在主轨迹实际到达。每轮两本车新/旧输入四种组合均完整认证。','', '两条拒绝分支从第二次真实释放k786的实际检查点复制：缺真实受影响端点ACK、或损坏K，均零非法提交/输出；执行原认可旧首拍，k787从新history重新生成后成功，后续k1167再次释放，完整完成1616拍。故障仅一次，未重求解。B1重试源已是非零轮角停车相位，原转向输入和接收链保留；一拍延迟反映在B2/A2目标，不是放宽已承诺期限。','', '运行期闭包由已登记目录中的公共slot/租约/接收字段差分、租约签署者和有效的完成目标—全空间路径接口形成；scope依次2、4、2。额外独立地把新旧目录全未来占用/接收/K/永久目标合并后先登记再查询，确认同一参与者且无遗漏。未改变的已完成车辆仍以永久目标参加发现；只有静态目标/整条路径接口证书有效才解除其依赖。框架固定后按尚未结束的共同可变租约重算块，外授后成为独立单车块。','', '未参与末次事务的A1/B1保留相同controls-through-goal、目标与无限零保持、公共outer slot。全局B0变短只裁剪有限数组的尾部零填充，独立裁判记录稳定的语义program ID及不同raw array hash，不把这种序列化变化说成未经认可的新指令。','', '有效活动按每拍实际有向速度积分至少.02m统计；两个数值窗口每个新首拍另用真实路径投影区间认证至少.02m。activity_and_distance保存逐车路程、活动区间及持续拍数。当前地图初始最高4车活动，释放后出口/入口可两车重叠；未把同轮worker数量当活动人数。','', '通信见communication.csv：实际进程内逻辑端点的JSON消息和跨端点字节，非真实网络流量；worker请求/最终响应另计。初始化保存4端点ACK对象，未对初建单独wire插桩，ACK文件大小只作存储量，未伪装成传输字节。内部、稳态MPC、外授、拒绝与恢复分别统计。E-anchor原日志保留两次零调用解析迭代，用seq重启边界把修复前诊断与正式解析重跑分列，未重复计入正式通信。数值worker实际顺序启动，source/证书/目录/认可/提交未独立埋点项合入对应总窗口；原生solver内部elapsed不是测得CPU时间。内容相同的框架/物理证明复用，冷构造与暖读不用于声称时延加速；逻辑h=.2s不代表实际实时达标。','', '独立裁判以8子段外向ZOH重建三主轨迹、所有数值完整策略/混合选择和两拒绝恢复全轨迹；64子段本车重算真实目标/接收，原始x精确映射到采用格点，锥矩阵指纹及源码身份核对通过。元数据集合接口按内容ID集合比较，保留原始顺序；验收器顺序比较及缓存返回问题的失败已保留并零求解修复，未改正式数值源码/控制。','', '共同规则修复均保留限制行：原Clear只引用名义逆向support，无法排除保存尾段回侵；正式前已加入实际修改前缀积分、同输入尾段SE2与永久零保持检查，回侵反例的实际support为负。历史map_domain导入路径污染在本任务共同入口finally恢复，零调用回归。12类损坏/边界/闭包/版本/期限/已执行前缀检查通过。','', '初始化器只用静态地图、车型、任务、请求生成；source_inventory此前做过历史文件二进制SHA读取，历史完整策略的反序列化与语义比较在新生成和独立验收之后，二者在input_lineage明确区分。历史数值向量未作初始化输入。历史文件SHA保持，论文保留，无Git提交。','', '结论限于名义同步逻辑控制与当前有限连接族，首次完整出口Q比刚几何清空更保守；未声称全地图最早时间、真实网络、持续物理时钟、扰动或异步保证。']
++ table=['预测窗差值统一按候选减本轮同源锚点；ΔJE、ΔF为U_J绝对差，百分比分母为该行锚点窗口JE；Δs为米。统一报告F=JE−lambda·s，lambda=1 U_J/m，E-MPC实际优化目标仍为JE。第二轮源已改变，各行不作为跨源最优值比较；两轮重叠窗不累加。Δs区间含0时显示≈0，ΔF显示未舍入进度区间中点的代入近似，不把中点残差当作有效推进；完整外向上下界见tradeoff.csv。', '', '|窗口|车辆|ΔJE (U_J)|ΔJE/锚点 (%)|Δs (m)|ΔF (U_J)|', '|---|---|---:|---:|---:|---:|']
++ for row in trade:
++  display='≈0' if F(row['delta_s_lower_m'])<=0<=F(row['delta_s_upper_m']) else f'{row["delta_s_mid_m"]:+.9g}'
++  table.append(f'|{row["label"]}|{row["actors"]}|{float(F(row["delta_JE_cost_units"])):+.10g}|{row["delta_JE_pct_of_same_window_anchor"]:+.8g}|{display}|{row["delta_F_common_mid_cost_units"]:+.10g}|')
++ table.append('');idx=next(i for i,line in enumerate(report) if line.startswith('|实际事件|'));report[idx:idx]=table
++ (HERE/'report.md').write_text('\n'.join(report)+'\n');(HERE/'README.md').write_text('# slack_release_001\n\nRead report.md, GATE.json, release_theory.md, method_spec.md. All8 native attempts consumed; do not rerun numeric stages.\n\n`python3 verify_delivery.py` validates SHA, raw adoption, events, Phi/B and actual history.\n`python3 verify_delivery.py --full-replay` independently replays every unique complete main/backup/mixed/recovery policy, zero new solves. Verification uses standard Python only; optional compiler reconstruction uses requirements.txt and /tmp/dmpc-p0-deps.\n\nSource numerical_v1 is immutable. Analytic_v0 and all evaluator/guard failures retained. SHA excludes mutable .log/stage-event logs and the checksum file itself; archive checksum protects the whole package.\n')
++ patch=[];prior=HERE.parent/'local_frame_001'
++ for p in sorted(HERE.glob('*.py')):
++  old=prior/p.name;patch.extend(difflib.unified_diff(old.read_text().splitlines(True) if old.exists() else [],p.read_text().splitlines(True),fromfile=f'local_frame_001/{p.name}' if old.exists() else '/dev/null',tofile=f'slack_release_001/{p.name}'))
++ (HERE/'changes.patch').write_text(''.join(patch));write(HERE/'acceptance_source_versions.json',{p.name:sha(p) for p in sorted(HERE.glob('*.py'))})
++ (HERE/'HANDOFF.md').write_text('# Completed boundary\nGoal slack_release_001 complete; all8 GATE conditions passed. 8/8 attempts used, no new solver authorization, no commits/history/paper edits. Source numerical_v1 frozen, independent audit fixes separately versioned.\nEvidence report.md,GATE,independent_acceptance,raw_adoption,directory_union_acceptance,recovery_summary,solver_calls. Main1615 vs1822; faults retry then1616.\nDefault/full18-policy verifier passed; only final archive portable read remains. No open experimental issue beyond declared nominal/finite-family/clock scope.\nResume zero-solve: python3 experiments/local_coordination_p0/slack_release_001/verify_delivery.py --full-replay\n')
++ manifest={str(p.relative_to(HERE)):sha(p) for p in sorted(HERE.rglob('*')) if p.is_file() and '__pycache__' not in p.parts and p.name!='SHA256SUMS.json' and not p.name.endswith('.log') and p.name!='stage_events.jsonl'};write(HERE/'SHA256SUMS.json',manifest);print(json.dumps({'passed':True,'files':len(manifest),'attempts':8}))
+ if __name__=='__main__':run()
+--- local_frame_001/verify_delivery.py
++++ slack_release_001/verify_delivery.py
+@@ -1,60 +1,54 @@
+-"""Portable integrity/protocol/algebra checks; full mode independently replays physics."""
+-import argparse,csv,gzip
++"""Portable immutable evidence, raw/event/history algebra and full physical replay."""
++import argparse,gzip,csv
+ from common import *
+ from plan_io import load,restore
+-from frame import physical_id
++from contracts import physical_id
+ 
+ def verify(full=False):
+  manifest=read(HERE/'SHA256SUMS.json')
+- for n,h in manifest.items():assert sha(HERE/n)==h,('delivery SHA',n)
++ for n,h in manifest.items():assert sha(HERE/n)==h,('SHA',n)
+  for n,h in read(HERE/'executed_source_versions.json').items():assert sha(HERE/n)==h and sha(HERE/'source_archive/numerical_v1'/n)==h,('numeric source',n)
+- for n,h in read(HERE/'acceptance_source_versions.json').items():assert sha(HERE/n)==h,('acceptance source',n)
+- gate=read(HERE/'GATE.json');assert gate['passed'] and all(v['status']=='pass' for v in gate['criteria'].values());calls=read(HERE/'solver_calls.json');assert len(calls)==12 and all(r['status']=='Solved' for r in calls);events=read(HERE/'results/events.json');assert len(events)==4;previous={};plans={};rawstates=[]
+- from audit_updates import actual_successor
+- for e in events:
+-  label=e['label'];org=e['organization'];p=load(f'results/{label}_committed.json.gz');cp=load(f'results/{label}_checkpoint.json.gz');assert p['outer_frame_id']==cp['old']['outer_frame_id']==read(HERE/'outer_frame.json')['outer_frame_id'];assert actual_successor(e,p);assert len(e['actual_first']['bounds']['active'])==4;assert e['transaction']['X_committed'] and e['transaction']['D_committed'];assert set(e['transaction']['ACK'])==set(CARS if org=='C' else ['A1','B1','A2']);assert e['transaction']['external_ack_still_valid']
+-  ack=e['transaction']['external_ack'];assert ack['outer_frame_id']==p['outer_frame_id'] and ack['per_car_plan_id']==content_id(p['controls']['A2']) and ack['valid_from']<=e['source']['cycle']<=ack['valid_through']
+-  if e['round']==2:assert e['source']==previous[org]['successor'] and content_id(cp['old'])==previous[org]['new_id']
+-  previous[org]=e;plans[physical_id(p)]=p
+-  for c in ('A1','B1','A2'):
+-   job=load(f'results/{label}_{c}_job.json.gz');ad=read(HERE/f'results/{label}_{c}_admission.json');raw=read(HERE/f'results/workers/{label}_{c}_response.json');request=HERE/f'results/workers/{label}_{c}_request.json';assert ad['accepted'] and job['arm']=='O-E' and job['objective']['kind']=='energy';assert job['parent']==content_id(cp['anchor']['controls'][c]) and job['source']['history']==e['source']['history'];assert job['model_id']==content_id({k:v for k,v in job.items() if k!='model_id'});assert raw['request_sha']==sha(request) and read(request)['job']==job and raw['model_id']==job['model_id'];assert raw['assembly']['matrix_id']==content_id(load(f'results/matrices/{job["model_id"]}.json.gz'));assert F(ad['delta'][0])!=0 and tuple(map(F,ad['commands'][0]))==tuple(map(F,p['controls'][c][e['source']['cycle']]))
+-   if org=='L':assert job==load(f'results/C_r{e["round"]}_{c}_job.json.gz')
+-   rawstates.append((job,ad,restore(e['source'])))
+-  assert len(e['mixes'])==4 and {(m['D_new'],m['X_new']) for m in e['mixes']}=={(False,False),(False,True),(True,False),(True,True)}
+-  for mix in e['mixes']:
+-   mp=load(mix['plan']);assert read(HERE/mix['certificate'])['passed'];plans[physical_id(mp)]=mp
+- assert physical_id(load('results/C_final_plan.json.gz'))==physical_id(load('results/L_final_plan.json.gz'))
+- post=read(HERE/'results/post_branches.json');assert post['passed'] and set(post['extension']['closure']['participants'])==set(CARS);assert post['extension']['post_frame_independent_blocks']==[['A1','B1'],['A2'],['B2']]
+- for e in post['rejections']:
+-  assert e['external_new_first_executed'] and e['external_changed_output_ticks'] and e['illegal_commits']==e['illegal_executions']==0;assert e['transaction']['X_committed'];p=load(e['plan']);actual_successor(e,p);plans[physical_id(p)]=p
+-  if e['name']=='D_missing_ACK':assert not e['transaction']['D_committed']
+- for e in post['extension']['branches']:
+-  p=load(e['plan']);plans[physical_id(p)]=p;assert e['new_frame_committed']==(set(e['ACK'])==set(CARS));assert p['outer_frame_id']==read(HERE/('extended_frame.json' if e['new_frame_committed'] else 'outer_frame.json'))['outer_frame_id']
++ for n,h in read(HERE/'acceptance_source_versions.json').items():assert sha(HERE/n)==h,('audit source',n)
++ gate=read(HERE/'GATE.json');assert gate['passed'] and all(v['status']=='pass' for v in gate['criteria'].values());calls=read(HERE/'solver_calls.json');assert len(calls)==8 and all(c['status']=='Solved' for c in calls)
++ requests=[p for p in (HERE/'results/workers').glob('*_request.json') if read(p)['mode']=='solve'];assert len(requests)==len(calls),'every formal attempt counted, including pre-ready failures'
++ from audit_updates import actual_first,release_events,own_check
++ from frames import validate_publication,RESERVE
++ from quantization import quantize
++ plans={};traces={};summaries={};numeric=[]
++ for name in ('R-fixed','E-anchor','E-MPC','recovery_missing_ACK','recovery_stale_K'):
++  s=read(HERE/f'results/{name}_summary.json');p=load(s['plan']);summaries[name]=s;key=physical_id(p);plans[key]=p;path=s.get('full_trace',s['trace']);traces[key]=HERE/path;history=content_id(TASKS);v={c:F(0) for c in CARS};count=0
++  with gzip.open(HERE/path,'rt') as f:
++   for k,line in enumerate(f):
++    row=json.loads(line);cmd={c:tuple(map(F,p['controls'][c][k])) for c in CARS};history=content_id({'parent':history,'commands':cmd,'owner':p['owners'][k]});assert row['cycle']==k+1 and row['history']==history and row['commands']=={c:list(map(str,u)) for c,u in cmd.items()};count+=1
++  assert count==p['B0'];release_events(s)
++  dt=load(f'results/{name}_deadline_trace.json.gz')
++  for r in dt:assert r['B_after']==max(0,r['B_before']-1) and r['Phi']==sum(r['deadlines'].values())
++ assert summaries['E-anchor']['goals']==summaries['E-MPC']['goals'];assert summaries['E-MPC']['final_cycle']<summaries['R-fixed']['final_cycle'];successes=[e for e in summaries['E-MPC']['events'] if e['transaction']['accepted']];assert len(successes)>=2 and {'internal','external'}<={e['meta']['kind'] for e in successes}
++ previous={}
++ for win in (1,2):
++  for rnd in (1,2):
++   label=f'e{win}_r{rnd}';e=read(HERE/f'results/numeric/{label}_event.json');p=load(f'results/numeric/{label}_committed.json.gz');cp=load(f'results/numeric/{label}_checkpoint.json.gz');assert actual_first(e,p);plans[physical_id(p)]=p
++   if rnd==2:assert e['source']==previous[win]['successor'] and physical_id(cp['plan'])==previous[win]['plan_after']
++   previous[win]=e
++   for c in e['actors']:
++    j=load(f'results/numeric/{label}_{c}_job.json.gz');a=read(HERE/f'results/numeric/{label}_{c}_admission.json');raw=read(HERE/f'results/workers/{label}_{c}_response.json');request=HERE/f'results/workers/{label}_{c}_request.json';assert a['accepted'] and j['objective']['kind']=='energy' and j['arm']=='O-E';assert raw['model_id']==j['model_id']==content_id({k:v for k,v in j.items() if k!='model_id'});assert raw['request_sha']==sha(request) and read(request)['job']==j;assert j['source']['history']==e['source']['history'] and j['source']['poses_Q']==e['source']['poses_Q'][c];assert j['parent']==content_id(cp['plan']['controls'][c]) and j['receiver']['K_id']==content_id(cp['plan']['controls'][c][e['source']['cycle']+32:]);d,q=quantize(raw['x'][:64],F(a['alpha']),j['lattice']);assert d==list(map(F,a['delta'])) and q['integer_coordinates']==a['quantization']['integer_coordinates'];assert raw['assembly']['matrix_id']==content_id(load(f'results/matrices/{j["model_id"]}.json.gz'));numeric.append((j,a,restore(e['source'])))
++   assert len(e['mixes'])==4
++   for mix in e['mixes']:q=load(mix['plan']);plans[physical_id(q)]=q;assert read(HERE/mix['certificate'])['passed']
++ for name in ('recovery_missing_ACK','recovery_stale_K'):
++  s=summaries[name];assert not s['events'][0]['transaction']['accepted'] and s['events'][1]['transaction']['accepted'];assert s['events'][1]['cycle']==s['events'][0]['cycle']+1 and s['events'][0]['source']['history']!=s['events'][1]['source']['history'];assert s['illegal_commits']==s['illegal_outputs']==0
++ for path in (HERE/'results/frames').glob('*.json'):
++  frame=read(path);validate_publication(frame);assert frame['passed'] and all(F(v)>=0 for v in frame['minimum'].values());faces=load(frame['faces'])
++  for k,v in faces['objects'].items():assert content_id(v)==k and sum(F(a)**2 for a in v['n'])<=1 and F(v['margin'])==F(v['gap'])-2*RESERVE-SAFE and F(v['margin'])>=0
++  assert all(set(row['face_ids'])<=set(faces['objects']) for row in faces['links'])
+  for path in (HERE/'results/wire').glob('*.jsonl'):
+-  for line in path.read_text().splitlines():
+-   r=json.loads(line);assert r['bytes']==len(r['wire_json'].encode());payload=json.loads(r['wire_json']);assert payload['sender']==r['sender'] and payload['receiver']==r['receiver']
+- with (HERE/'local_tradeoff.csv').open() as f:
+-  for row in csv.DictReader(f):
+-   de=lo=hi=F(0)
+-   for c in ('A1','B1','A2'):
+-    ad=read(HERE/f'results/{row["organization"]}_r{row["round"]}_{c}_admission.json');a,b=ad['baseline_objective'],ad['objective'];de+=F(b['JE'])-F(a['JE']);lo+=F(b['actual_progress_Q'][0]-a['actual_progress_Q'][1],m.Q);hi+=F(b['actual_progress_Q'][1]-a['actual_progress_Q'][0],m.Q)
+-   assert de==F(row['delta_JE_cost_units']) and lo==F(row['delta_s_lower_m']) and hi==F(row['delta_s_upper_m']);assert de-hi==F(row['delta_F_common_lower_cost_units']) and de-lo==F(row['delta_F_common_upper_cost_units'])
+- assert read(HERE/'results/independent_acceptance.json')['passed']
+- tracecheck=read(HERE/'results/actual_trace_acceptance.json');assert tracecheck['passed']
+- for org in ('C','L'):
+-  data=gzip.decompress((HERE/f'results/actual_{org}.jsonl.gz').read_bytes());assert hashlib.sha256(data).hexdigest()==tracecheck['full_trace_uncompressed_sha'][org];p=load(f'results/{org}_final_plan.json.gz');rows=data.splitlines();assert len(rows)==p['B0'];history=content_id(TASKS)
+-  for k,line in enumerate(rows):
+-   row=json.loads(line);commands={c:tuple(map(F,p['controls'][c][k])) for c in CARS};history=content_id({'parent':history,'commands':commands,'owner':p['owners'][k]});assert row['history']==history and row['cycle']==k+1 and row['commands']=={c:list(map(str,u)) for c,u in commands.items()}
+- assert read(HERE/'results/effective_activity_certificate.json')['passed']
++  for text in path.read_text().splitlines():r=json.loads(text);assert r['bytes']==len(r['wire_json'].encode());msg=json.loads(r['wire_json']);assert msg['sender']==r['sender'] and msg['receiver']==r['receiver']
++ with (HERE/'tradeoff.csv').open() as f:
++  for row in csv.DictReader(f):assert F(row['delta_F_common_lower'])==F(row['delta_JE_cost_units'])-F(row['delta_s_upper_m']) and F(row['delta_F_common_upper'])==F(row['delta_JE_cost_units'])-F(row['delta_s_lower_m'])
++ assert read(HERE/'results/independent_acceptance.json')['passed'] and read(HERE/'results/raw_adoption_certificate.json')['passed'] and read(HERE/'results/directory_union_acceptance.json')['passed']
+  if full:
+   from audit import audit
+-  from audit_updates import own_check,trace_inclusion
+-  for job,ad,state in rawstates:own_check(job,ad,state)
+-  for name in ('old','new'):p=load(f'results/{name}.json.gz');plans[physical_id(p)]=p
+-  for key,p in plans.items():assert audit(p)['passed'];print('REPLAY',key[:12],p['B0'],flush=True)
+-  for e in events:
+-   for mix in e['mixes']:trace_inclusion(load(mix['plan']),read(HERE/mix['certificate']))
+-  for e in post['rejections']+post['extension']['branches']:trace_inclusion(load(e['plan']),read(HERE/e['certificate']))
+- print(json.dumps({'passed':True,'mode':'full-replay' if full else 'default','files':len(manifest),'formal_attempts':len(calls),'unique_physical_plans':len(plans),'new_optimizer_calls':0}),flush=True)
++  for job,a,state in numeric:own_check(job,a,state)
++  for key,p in plans.items():assert audit(p,trace=str(traces[key]) if key in traces else None)['passed'];print('REPLAY',key[:12],p['B0'],flush=True)
++ print(json.dumps({'passed':True,'mode':'full-replay' if full else 'default','files':len(manifest),'formal_attempts':len(calls),'unique_complete_physical_plans':len(plans),'new_optimizer_calls':0}),flush=True)
+ if __name__=='__main__':
+- ap=argparse.ArgumentParser();ap.add_argument('--full-replay',action='store_true');args=ap.parse_args();verify(args.full_replay)
++ ap=argparse.ArgumentParser();ap.add_argument('--full-replay',action='store_true');verify(ap.parse_args().full_replay)
+--- /dev/null
++++ slack_release_001/verify_raw.py
+@@ -0,0 +1,17 @@
++"""Independent saved-raw adoption and obligation seam recomputation, no solve."""
++from common import *
++from plan_io import load
++from quantization import quantize
++
++def run():
++ rows=[];seams=[]
++ for win in (1,2):
++  for rnd in (1,2):
++   label=f'e{win}_r{rnd}';e=read(HERE/f'results/numeric/{label}_event.json')
++   for c in e['actors']:
++    job=load(f'results/numeric/{label}_{c}_job.json.gz');raw=read(HERE/f'results/workers/{label}_{c}_response.json');ad=read(HERE/f'results/numeric/{label}_{c}_admission.json');assert len(raw['x'])==65 and len(raw['s'])==len(raw['z'])==raw['assembly']['shape'][0];delta,q=quantize(raw['x'][:64],F(ad['alpha']),job['lattice']);assert delta==list(map(F,ad['delta'])) and q['integer_coordinates']==ad['quantization']['integer_coordinates'];rows.append({'label':label,'actor':c,'raw_model_id':raw['model_id'],'raw_x_to_adopted_exact_grid':True,'alpha':ad['alpha'],'new_solver_calls':0})
++  a=read(HERE/f'results/numeric/e{win}_r1_event.json');b=read(HERE/f'results/numeric/e{win}_r2_event.json');p=load(f'results/numeric/e{win}_r1_committed.json.gz');q=load(f'results/numeric/e{win}_r2_committed.json.gz');assert b['source']==a['successor']
++  for c in a['actors']:
++   oldphase=a['source']['cycle']+32;newphase=b['source']['cycle']+32;seams.append({'event':win,'actor':c,'old_phase':oldphase,'new_phase':newphase,'old_K_id':content_id(p['controls'][c][oldphase:]),'new_K_id':content_id(q['controls'][c][newphase:]),'parent_before_round2':content_id(p['controls'][c]),'new_own_plan_id':content_id(q['controls'][c]),'old_complete_policy':f'results/numeric/e{win}_r1_committed.json.gz','replacement':'whole new prefix/Q/new-phase K accepted; old complete policy remains valid fallback, old phase is not claimed actually reached'})
++ write(HERE/'results/raw_adoption_certificate.json',{'passed':True,'rows':rows,'obligation_replacement':seams,'new_optimizer_calls':0});print('PASS8 raw quantized adoption and4 obligation seams',flush=True)
++if __name__=='__main__':run()
+--- /dev/null
++++ slack_release_001/wire.py
+@@ -0,0 +1,10 @@
++import time
++from common import *
++class Wire:
++ def __init__(self,name):self.path=HERE/f'results/wire/{name}.jsonl';self.path.parent.mkdir(parents=True,exist_ok=True);self.sequence=0
++ def send(self,sender,receiver,kind,payload,phase):
++  data=json.dumps({'sender':sender,'receiver':receiver,'kind':kind,'payload':payload},sort_keys=True,separators=(',',':'),default=str).encode();decoded=json.loads(data);assert decoded['kind']==kind;self.sequence+=1
++  row={'seq':self.sequence,'time':time.time(),'phase':phase,'wire_json':data.decode(),'bytes':len(data),'sender':sender,'receiver':receiver,'kind':kind,'transport':'serialized in-process dispatch; not measured network'}
++  with self.path.open('a') as f:f.write(json.dumps(row)+'\n')
++  return decoded['payload']
++

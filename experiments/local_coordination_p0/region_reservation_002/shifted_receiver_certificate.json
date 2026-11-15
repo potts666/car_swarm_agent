@@ -1,0 +1,27 @@
+{
+  "certificate_id": "cf6d183b51a1afe69abffb7018b67b2779c3805bece0ee7823d3cc92dfbe6177",
+  "passed": true,
+  "source_domain_certificate": "68fb4525449d56da49557f2bfbdaf235faadb7e67893e9e1ecf3b606561bea6a",
+  "source_kind": "G_in_shifted",
+  "center_local_x": "-219/10",
+  "position_l1": "21/1000",
+  "yaw": "119/500000",
+  "v": [
+    "99/200",
+    "101/200"
+  ],
+  "delta": [
+    "-1/100000",
+    "1/100000"
+  ],
+  "K": "a=(1/2-v)/h; omega=-delta/h",
+  "nominal_remaining_distance": "559/10",
+  "remaining_ticks": 561,
+  "after_K_yaw": "64360999996787/269999999986500000",
+  "after_K_position_l1": "896636584726719158193883222078377701/41657142852977142857247000000000000000",
+  "G_out_position_l1_upper": "10162521498123020318099607670501298107/291599999970840000000729000000000000000",
+  "G_out_yaw_limit": "3/12500",
+  "G_out_position_limit": "7/200",
+  "completion_ticks": 2802,
+  "proof": "K normalizes v/delta exactly. Position L1 drift <= h*rv/2*(1+theta+theta^2/2) + vmax*h*(theta+theta^2/2); saved straight/braking suffix adds <=55.9*(theta+theta^2/2). This deliberately double-counts the first nominal tick and is conservative."
+}

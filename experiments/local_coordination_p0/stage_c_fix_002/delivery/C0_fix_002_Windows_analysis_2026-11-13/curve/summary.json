@@ -1,0 +1,149 @@
+{
+  "passed": true,
+  "error": null,
+  "interface": "curve",
+  "method": "B-JL",
+  "shift_recert": true,
+  "actual_steps": 240,
+  "remaining_budget": 1039,
+  "accepted_numeric_candidates": 2,
+  "numeric_proposals_rejected": 0,
+  "solver_events": [
+    {
+      "run_id": "two_updates_001",
+      "interface": "curve",
+      "round": 1,
+      "phase": 5,
+      "history": "5a94259278c6ea59598f8ad9c4584e90791ddc9d2beab73c7b20664e7aa3c341",
+      "parent_plan_id": "baffd3e92180d0fbd46aaa0671d563cc917a367787ccfa7ed126572b389f652e",
+      "anchor_id": "7ae7fa1524ad5244443df8749c8419a532e1cb84710fd55ce1a66a2338a809c6",
+      "derivative_id": "6f92d40887c9f948c7c12277681b641a38e21681e27e75a4364e0f5db3b5d479",
+      "assembly_id": "0600d2263413410c970cbce4b4e43263dee5e4c770521384bfd7f4d8eae13628",
+      "raw_result_id": "fc45b9b0089944b509147c16d650b4170ab7c56fabe6a8d5829f1e9261df4b89",
+      "policy_result_id": "b8db43479b60547ca51b2f25786bd454a6fcf751165c78fb4730c9951bb3b5ec",
+      "accepted": true,
+      "accepted_plan_id": "5ebca65237fc889940f95685b0bf4866c68da8b11a40e998fb3d2ff1882713d1",
+      "commit_id": "8b4272b879e0271a3f0fbfc35c28acb3d5ef2dc51054ba51e218c0ba6cc62d2e",
+      "derivative_and_solve_and_cert_wall_s": 2.125234000995988,
+      "failure_layer": null,
+      "old_pending_reset": null,
+      "new_pending_reset": {
+        "phase": 37,
+        "next_phase": 38,
+        "row_sha256": "e1ac5e65dfa5ce2f75cf261673f8fd60cd42899e1c395e565ccffb0942a4e83e",
+        "input": [
+          "4332551291/250000000000",
+          "143618028667/500000000000"
+        ]
+      },
+      "old_K_disposition": "first box contract",
+      "selected_plan_id": "5ebca65237fc889940f95685b0bf4866c68da8b11a40e998fb3d2ff1882713d1",
+      "actual_selected_first": [
+        "97729645647/125000000000",
+        "4565101967/15625000000"
+      ],
+      "old_first": [
+        "3128363/4000000",
+        "5843627/20000000"
+      ],
+      "actual_output": [
+        "97729645647/125000000000",
+        "4565101967/15625000000"
+      ],
+      "actual_successor_history": "98ac975602d9c75a9872684556fe24e816d76eb10c61459ba09e09c2e9725c6e",
+      "actual_first_changed": true
+    },
+    {
+      "run_id": "two_updates_001",
+      "interface": "curve",
+      "round": 2,
+      "phase": 6,
+      "history": "98ac975602d9c75a9872684556fe24e816d76eb10c61459ba09e09c2e9725c6e",
+      "parent_plan_id": "11717c5cda51300d68d847299f2c730ca23919fe4dd27b236086633d089cb17e",
+      "anchor_id": "8f7c1733b49d894bebe7ccb2f9656d096d509ba46d6c0dff837161bbe308a544",
+      "derivative_id": "b927415d04298506e35c42e2c7bd76caec51eb56adcd5f196b2f9d4d9ea8f555",
+      "assembly_id": "cbeb8790b0d34b0de73cb3a06d1f3fe68f89293ac6ba6642172a2497d187af11",
+      "raw_result_id": "6328fd530e5db456dc988f5c7d6ff5a94d54375d479ff00c242dd1a15cd1f0dd",
+      "policy_result_id": "bfd2b912c29a91ca6fdfa7766bd3d7de87a07861d53112861a47c2796fd51670",
+      "accepted": true,
+      "accepted_plan_id": "73a25b3daa567895f576a6e0b992276e6adca058947c07c51d894a18469e6319",
+      "commit_id": "afa56a9340a8215ca6026c02404f01bbbd00bd2e82061dac4a3408da1dd2f0c3",
+      "derivative_and_solve_and_cert_wall_s": 2.1063821879797615,
+      "failure_layer": null,
+      "old_pending_reset": {
+        "phase": 37,
+        "next_phase": 38,
+        "row_sha256": "e1ac5e65dfa5ce2f75cf261673f8fd60cd42899e1c395e565ccffb0942a4e83e",
+        "input": [
+          "4332551291/250000000000",
+          "143618028667/500000000000"
+        ]
+      },
+      "new_pending_reset": {
+        "phase": 38,
+        "next_phase": 39,
+        "row_sha256": "c4988632dd04743c5ffc1d913afee223dba9c753c2c52881d5600b0980c0df7d",
+        "input": [
+          "17374208213/1000000000000",
+          "205458897309/500000000000"
+        ]
+      },
+      "old_K_disposition": "entire accepted prefix/receiver/K replaces old obligation atomically",
+      "selected_plan_id": "73a25b3daa567895f576a6e0b992276e6adca058947c07c51d894a18469e6319",
+      "actual_selected_first": [
+        "390769799793/500000000000",
+        "143850646011/500000000000"
+      ],
+      "old_first": [
+        "156367051049/200000000000",
+        "287714786251/1000000000000"
+      ],
+      "actual_output": [
+        "390769799793/500000000000",
+        "143850646011/500000000000"
+      ],
+      "actual_successor_history": "30dd12a5301b3bdd9b6e496c780a6c638969e6b98db6dbf84de35771742c65bb",
+      "actual_first_changed": true
+    }
+  ],
+  "K_executions": [
+    {
+      "phase": 38,
+      "actual": {
+        "minimum_road_lower_Q": 159999999999999916328,
+        "minimum_pair_lower_Q": 125059568300946476532,
+        "executed_input": [
+          "17374208213/1000000000000",
+          "205458897309/500000000000"
+        ],
+        "actual_pose_Q": [
+          [
+            -2953914102589209311750,
+            -2953913136059511035799
+          ],
+          [
+            -446236267878013203,
+            -445269738179738026
+          ],
+          [
+            2325924190321431674,
+            2325941963758932893
+          ]
+        ],
+        "v": "148611087/100000000",
+        "delta": "-21786051/100000000"
+      }
+    }
+  ],
+  "saved_K_shifts": 2,
+  "rejected_K_fixtures": [
+    {
+      "phase": 38,
+      "old_plan_id": "54adcf1a709828222f2055c0755f5fb16d4d29ce9908f1712a97a6df6f6812c4"
+    }
+  ],
+  "all_numeric_candidate_inputs_from_Clarabel": true,
+  "full_fourcar_task": false,
+  "formal_batch": false,
+  "wall_s": 13.28188212600071
+}

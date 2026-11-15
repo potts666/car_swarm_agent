@@ -1,0 +1,66 @@
+{
+  "task": "autonomy_init_002",
+  "archive": "/home/sunflower/car_swarm_switch_ws/src/car_swarm_single_lane/experiments/local_coordination_p0/autonomy_init_002_evidence.tar.gz",
+  "bytes": 3426380,
+  "sha256": "c6895d92910ecac274b3b61f3c21fcdef43269b783b08d918fdecae24a8aa43f",
+  "manifest_sha256": "8cb2fbfc362a9bdbe4e13b62bc93db7252a6325b6439bc5653b70e327a029177",
+  "default": {
+    "integrity_passed": true,
+    "experiment_passed": true,
+    "files": 262,
+    "full_replay": false,
+    "new_native_calls": 0,
+    "recorded_native_calls": 8
+  },
+  "full_replay": {
+    "integrity_passed": true,
+    "experiment_passed": true,
+    "files": 262,
+    "full_replay": true,
+    "new_native_calls": 0,
+    "recorded_native_calls": 8
+  },
+  "portable": {
+    "integrity_passed": true,
+    "experiment_passed": true,
+    "files": 262,
+    "full_replay": false,
+    "new_native_calls": 0,
+    "recorded_native_calls": 8
+  },
+  "numerical": {
+    "passed": true,
+    "native_calls": 8,
+    "releases": 8,
+    "accepted": [
+      4,
+      4
+    ],
+    "first_changed": [
+      0,
+      4
+    ],
+    "steps": 1822
+  },
+  "preservation": {
+    "autonomy_init_001": {
+      "passed": true,
+      "files": 256
+    },
+    "dynamic_groups_001": {
+      "passed": true,
+      "files": 741
+    },
+    "dynamic_groups_002": {
+      "passed": true,
+      "files": 1425
+    },
+    "region_reservation_003_reverse": {
+      "passed": true,
+      "files": 509
+    }
+  },
+  "GATE": "passed",
+  "new_native_calls_during_verification": 0,
+  "git_commit_performed": false
+}
